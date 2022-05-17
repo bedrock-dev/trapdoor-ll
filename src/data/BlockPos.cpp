@@ -92,4 +92,8 @@ namespace tr {
         if (rhs.x < x) return false;
         return z < rhs.z;
     }
+
+    std::string BlockPos2::toString() const {
+        return "[" + std::to_string(x) + "," + std::to_string(z) + "]";
+    }
 }

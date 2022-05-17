@@ -6,9 +6,12 @@
 #define TRAPDOOR_CONFIGURATION_H
 
 
-class Configuration {
+namespace tr {
+    //TODO 设计配置文件的结构
+    class Configuration {
 
-};
+    };
+}
 
 
 #endif //TRAPDOOR_CONFIGURATION_H

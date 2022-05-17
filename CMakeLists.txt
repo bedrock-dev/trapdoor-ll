@@ -23,6 +23,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
 
         src/dllmain.cpp
         src/base/TrapdoorMod.cpp
+        src/base/Configuration.cpp
         src/pch.cpp
         src/Plugin.cpp
         src/tick/ProfileInfo.cpp
