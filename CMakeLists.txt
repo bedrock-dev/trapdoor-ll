@@ -15,7 +15,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
 
 include_directories(SDK/Header)
 include_directories(SDK/Header/third-party)
-include_directories(Template)
+include_directories(src/include)
 
 link_directories(.)
 
