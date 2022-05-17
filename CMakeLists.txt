@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.19)
-project(TemplatePlugin)
+project(Trapdoor)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE Release)
@@ -16,7 +16,6 @@ file(GLOB_RECURSE SRC_FILES_DIR
 include_directories(SDK/Header)
 include_directories(SDK/Header/third-party)
 include_directories(src/include)
-
 link_directories(.)
 
 add_definitions(-D"NDEBUG" -D"TEMPLATE_EXPORTS" -D"WIN32_LEAN_AND_MEAN" -D"_CRT_SECURE_NO_WARNINGS" -D"_WINDOWS"

@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "trapdoor.h"
 #include <EventAPI.h>
 #include <LoggerAPI.h>
 #include <MC/Level.hpp>
@@ -26,7 +27,7 @@ inline void CheckProtocolVersion() {
 #endif // TARGET_BDS_PROTOCOL_VERSION
 }
 
-void PluginInit()
-{
+void PluginInit() {
     CheckProtocolVersion();
+    tr::InitMod();
 }
