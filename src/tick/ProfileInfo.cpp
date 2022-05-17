@@ -7,20 +7,20 @@
 
 namespace tr {
 
-    double MSPTInfo::mean() const {
-        return this->values.empty() ? 0.0 :
-               std::accumulate(values.begin(), values.end(), 0.0) /
-               static_cast<double >(values.size());
+    int64_t MSPTInfo::mean() const {
+        return this->values.empty() ? 0 :
+               std::accumulate(values.begin(), values.end(), 0ll) /
+               static_cast<int64_t>(values.size());
     }
 
-    void MSPTInfo::push(double value) {
+    void MSPTInfo::push(int64_t value) {
         this->values.push_back(value);
         if (this->values.size() > 20) {
             this->values.pop_front();
         }
     }
 
-    double MSPTInfo::min() const {
+    int64_t MSPTInfo::min() const {
         if (values.empty()) {
             return 0;
         }
@@ -29,11 +29,9 @@ namespace tr {
             if (min > v)min = v;
         }
         return min;
-
-
     }
 
-    double MSPTInfo::max() const {
+    int64_t MSPTInfo::max() const {
         if (values.empty()) {
             return 0;
         }
@@ -42,5 +40,9 @@ namespace tr {
             if (max < v)max = v;
         }
         return max;
+    }
+
+    double micro_to_mill(uint64_t v) {
+        return static_cast<double >(v) / 1000.0;
     }
 }

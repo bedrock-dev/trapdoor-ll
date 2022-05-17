@@ -11,4 +11,6 @@ void SetupProfCommand();
 
 void SetupVillageCommand();
 
+void SetupLogCommand();
+
 #endif //TRAPDOOR_TRCOMMAND_H

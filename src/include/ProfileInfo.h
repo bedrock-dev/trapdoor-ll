@@ -7,19 +7,33 @@
 
 #include <deque>
 
+#include <chrono>
+
+typedef std::chrono::high_resolution_clock timer_clock;
+#define TIMER_START auto start = timer_clock::now();
+#define TIMER_END                                                      \
+    auto elapsed = timer_clock::now() - start;                         \
+    long long timeReslut =                                             \
+        std::chrono::duration_cast<std::chrono::microseconds>(elapsed) \
+            .count();
 
 namespace tr {
 
+
+    double micro_to_mill(uint64_t v);
+
     struct MSPTInfo {
-        std::deque<double> values;
 
-        double mean() const;
+        std::deque<int64_t> values;
 
-        void push(double value);
+        int64_t mean() const;
 
-        double min() const;
+        void push(int64_t value);
 
-        double max() const;
+        int64_t min() const;
+
+        int64_t max() const;
+
     };
 }
 

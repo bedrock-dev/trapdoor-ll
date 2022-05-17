@@ -17,6 +17,7 @@ namespace tr {
         SetupTickCommand();
         SetupVillageCommand();
         SetupProfCommand();
+        SetupLogCommand();
     }
 
 } // namespace tr

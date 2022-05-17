@@ -12,6 +12,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/commands/DrawCommand.cpp
         src/commands/CounterCommand.cpp
         src/commands/HsaCommand.cpp
+        src/commands/LogCommand.cpp
         src/commands/ProfCommand.cpp
         src/commands/VillageCommand.cpp
         src/commands/TrFunctionCommand.cpp
