@@ -6,6 +6,7 @@
 #include "Vec3.h"
 
 #include <ostream>
+#include <random>
 
 namespace tr {
     bool BlockPos::operator==(const BlockPos &v) const {
@@ -80,4 +81,15 @@ namespace tr {
         return {x + pos.x, y + pos.y, z + pos.z};
     }
 
+    bool BlockPos2::isSlimeChunk() const {
+        auto seed = (x * 0x1f1f1f1fu) ^ (uint32_t) z;
+        std::mt19937 mt(seed);
+        return mt() % 10 == 0;
+    }
+
+    bool BlockPos2::operator<(const BlockPos2 &rhs) const {
+        if (x < rhs.x) return true;
+        if (rhs.x < x) return false;
+        return z < rhs.z;
+    }
 }
