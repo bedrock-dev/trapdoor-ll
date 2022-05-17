@@ -8,8 +8,11 @@
 #include <map>
 #include <deque>
 #include <chrono>
+#include "BlockPos.h"
+
 
 typedef std::chrono::high_resolution_clock timer_clock;
+typedef int64_t microsecond_t;
 #define TIMER_START auto start = timer_clock::now();
 #define TIMER_END                                                      \
     auto elapsed = timer_clock::now() - start;                         \
@@ -33,6 +36,22 @@ namespace tr {
         int64_t min() const;
 
         int64_t max() const;
+    };
+
+    struct ChunkStat {
+        std::map<ChunkPos, microsecond_t> chunk_counter;
+        microsecond_t blockEntitiesTick = 0;
+        microsecond_t randomTick = 0;
+        microsecond_t pendingTick = 0;
+        size_t totalTick = 0;
+
+        void reset() {
+            chunk_counter.clear();
+            blockEntitiesTick = 0;
+            randomTick = 0;
+            pendingTick = 0;
+            totalTick = 0;
+        }
     };
 
 //    struct ChunkStat {

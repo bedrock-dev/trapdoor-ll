@@ -43,6 +43,7 @@ namespace tr {
     }
 
     double micro_to_mill(uint64_t v) {
+
         return static_cast<double >(v) / 1000.0;
     }
 }
