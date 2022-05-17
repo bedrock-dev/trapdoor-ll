@@ -1,6 +1,6 @@
-#include "trapdoor.h"
+#include "TrapdoorMod.h"
 #include "LoggerAPI.h"
-#include "commands.h"
+#include "TrCommand.h"
 
 namespace tr {
 
@@ -14,6 +14,8 @@ namespace tr {
     }
 
     void setupCommands() {
-        setupTickCommand();
+        SetupTickCommand();
+        SetupVillageCommand();
+        SetupProfCommand();
     }
 } // namespace tr

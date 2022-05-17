@@ -1,7 +1,7 @@
-#include "game_tick.h"
+#include "MCTick.h"
 #include "HookAPI.h"
 #include "LoggerAPI.h"
-#include "trapdoor.h"
+#include "TrapdoorMod.h"
 
 namespace tr {
     namespace {

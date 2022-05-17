@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "trapdoor.h"
+#include "TrapdoorMod.h"
 #include <EventAPI.h>
 #include <LoggerAPI.h>
 #include <MC/Level.hpp>

@@ -8,9 +8,13 @@ file(GLOB_RECURSE SRC_FILES_DIR
         ${PROJECT_SOURCE_DIR}/SDK/Header/*.cpp
         ${PROJECT_SOURCE_DIR}/SDK/Header/*.hpp
         ${PROJECT_SOURCE_DIR}/SDK/Header/*.h
-        ${PROJECT_SOURCE_DIR}/src/*.cpp
-        ${PROJECT_SOURCE_DIR}/src/*.hpp
-        ${PROJECT_SOURCE_DIR}/src/*.h
+        src/commands/TrCommand.cpp
+        src/commands/TrapdoorCommand.cpp
+        src/tick/MCTick.cpp
+        src/dllmain.cpp
+        src/TrapdoorMod.cpp
+        src/pch.cpp
+        src/Plugin.cpp
         )
 
 include_directories(SDK/Header)
