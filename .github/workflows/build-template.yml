@@ -1,0 +1,125 @@
+name: Build Plugin(Publish if tag)
+
+on: [ workflow_dispatch ]
+
+env:
+  PLUGIN_NAME: Template
+  SOLUTION_FILE_PATH: ./Template.sln
+  VERSION_FILE_PATH: Template/Version.h
+  BUILD_CONFIGURATION: Release
+  Platform: X64
+  SDK_DIR: ./SDK
+  BDS_VERSION: 1.18.31.04
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: 'true'
+
+      # - name: Get information from Version.h file (TODO)
+      #   working-directory: ${{env.GITHUB_WORKSPACE}}
+      #   id: ver
+      #   run: |
+      #     pwd
+      #   shell: bash
+
+      - name: Download Server
+        working-directory: ${{env.GITHUB_WORKSPACE}}
+        run: |
+          mkdir -p ${{ env.SDK_DIR }}/Tools/Server
+          # ServerLink=$(cat 'Scripts/LINK.txt')
+          ServerLink=https://minecraft.azureedge.net/bin-win/bedrock-server-${{ env.BDS_VERSION }}.zip
+          curl -L -o ${{ env.SDK_DIR }}/Tools/Server/server.zip "$ServerLink"
+          unzip ${{ env.SDK_DIR }}/Tools/Server/server.zip -d ${{ env.SDK_DIR }}/Tools/Server/ > /dev/null
+        shell: bash
+
+      - name: Build Library
+        working-directory: ${{env.GITHUB_WORKSPACE}}
+        run: |
+          cd ${{ env.SDK_DIR }}\Tools
+          LibraryBuilder.exe -o ..\Lib .\Server
+        shell: cmd
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v1
+
+      - name: Change PLUGIN_VERSION_STATUS_BETA
+        working-directory: ${{env.GITHUB_WORKSPACE}}
+        if: false == startsWith(github.ref, 'refs/tags/')
+        run: |
+          sed -r -i 's/#define\s+PLUGIN_VERSION_STATUS\s+PLUGIN_VERSION_\w+/#define PLUGIN_VERSION_STATUS   PLUGIN_VERSION_BETA/' ${{env.VERSION_FILE_PATH}}
+          sed -r -i 's/#define\s+PLUGIN_VERSION_BUILD\s+.*/#define PLUGIN_VERSION_BUILD  ${{ github.run_number }}\r/' ${{env.VERSION_FILE_PATH}}
+        shell: bash
+
+      - name: Change PLUGIN_VERSION_STATUS_RELEASE
+        working-directory: ${{env.GITHUB_WORKSPACE}}
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          sed -r -i 's/#define\s+PLUGIN_VERSION_STATUS\s+PLUGIN_VERSION_\w+/#define PLUGIN_VERSION_STATUS   PLUGIN_VERSION_RELEASE/' ${{env.VERSION_FILE_PATH}}
+          sed -r -i 's/#define\s+PLUGIN_VERSION_BUILD\s+.*/#define PLUGIN_VERSION_BUILD  ${{ github.run_number }}\r/' ${{env.VERSION_FILE_PATH}}
+        shell: bash
+
+      - name: Build
+        working-directory: ${{env.GITHUB_WORKSPACE}}
+        id: build
+        run: |
+          MSBuild.exe ${{env.SOLUTION_FILE_PATH}} -property:Configuration=${{env.BUILD_CONFIGURATION}}
+        shell: bash
+      
+      - name: copy dll and pdb files
+        working-directory: ${{env.GITHUB_WORKSPACE}}
+        run: |
+          mkdir output/
+          mkdir output/${{env.PLUGIN_NAME}}/
+          cp -f x64/Release/*.dll output/${{env.PLUGIN_NAME}}/
+          mkdir output/PDB/
+          cp -f x64/Release/*.pdb output/PDB/
+          # mkdir output/${{env.PLUGIN_NAME}}/${{env.PLUGIN_NAME}}/
+          # cp -r Data/* output/${{env.PLUGIN_NAME}}/${{env.PLUGIN_NAME}}/
+        shell: bash
+
+      - name: Pack Release
+        working-directory: ${{env.GITHUB_WORKSPACE}}
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          Compress-Archive -Path output\${{env.PLUGIN_NAME}}\ ${{env.PLUGIN_NAME}}.zip
+          Compress-Archive -Path output\PDB\ PDB.zip
+
+      - name: Prepare for creating Release
+        working-directory: ${{env.GITHUB_WORKSPACE}}
+        id: rel
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          echo ::set-output name=tag::${GITHUB_REF#refs/tags/*}
+          mv ${{env.PLUGIN_NAME}}.zip ${{env.PLUGIN_NAME}}-${GITHUB_REF#refs/tags/*}.zip
+          mv PDB.zip PDB-${GITHUB_REF#refs/tags/*}.zip
+        shell: bash
+
+      - name: Upload PLUGIN
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{env.PLUGIN_NAME}}-actions-${{ github.run_number }}
+          path: ${{ github.workspace }}\output\${{env.PLUGIN_NAME}}
+
+      - name: Upload PDB
+        uses: actions/upload-artifact@v2
+        with:
+          name: PDB-actions-${{ github.run_number }}
+          path: ${{ github.workspace }}\output\PDB
+          
+
+      - name: Create New Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          # body_path: ${{ github.workspace }}\CHANGELOG.txt
+          files: |
+            ${{ github.workspace }}\${{env.PLUGIN_NAME}}-${{ steps.rel.outputs.tag }}.zip
+            ${{ github.workspace }}\output\PDB-${{ steps.rel.outputs.tag }}.zip
+        env:
+          GITHUB_REPOSITORY: ${{env.GITHUB_ACTION_REPOSITORY}}
+          

@@ -1,0 +1,25 @@
+name: Update SDK
+
+on:
+  schedule:
+  - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    
+    steps:
+    
+    - name: Checkout
+      uses: actions/checkout@v2.4.0
+      
+    - name: Update SDK
+      run: git submodule update --init --recursive --remote
+      
+    - name: Push
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git commit -am "fetch upstream SDK" || exit 0
+        git push || exit 0
