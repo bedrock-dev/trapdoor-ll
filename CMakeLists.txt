@@ -18,6 +18,9 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/commands/TrFunctionCommand.cpp
         src/commands/OSCommand.cpp
         src/commands/TrapdoorCommand.cpp
+        src/data/Vec3.cpp
+        src/data/BlockPos.cpp
+
         src/dllmain.cpp
         src/base/TrapdoorMod.cpp
         src/pch.cpp
