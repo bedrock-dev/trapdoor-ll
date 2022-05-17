@@ -9,10 +9,17 @@ file(GLOB_RECURSE SRC_FILES_DIR
         ${PROJECT_SOURCE_DIR}/SDK/Header/*.hpp
         ${PROJECT_SOURCE_DIR}/SDK/Header/*.h
         src/commands/TrCommand.cpp
+        src/commands/DrawCommand.cpp
+        src/commands/CounterCommand.cpp
+        src/commands/HsaCommand.cpp
+        src/commands/ProfCommand.cpp
+        src/commands/VillageCommand.cpp
+        src/commands/TrFunctionCommand.cpp
+        src/commands/OSCommand.cpp
         src/commands/TrapdoorCommand.cpp
         src/tick/MCTick.cpp
         src/dllmain.cpp
-        src/TrapdoorMod.cpp
+        src/base/TrapdoorMod.cpp
         src/pch.cpp
         src/Plugin.cpp
         )

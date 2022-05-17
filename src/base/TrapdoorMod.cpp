@@ -18,4 +18,5 @@ namespace tr {
         SetupVillageCommand();
         SetupProfCommand();
     }
+
 } // namespace tr
