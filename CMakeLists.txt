@@ -17,11 +17,12 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/commands/TrFunctionCommand.cpp
         src/commands/OSCommand.cpp
         src/commands/TrapdoorCommand.cpp
-        src/tick/MCTick.cpp
         src/dllmain.cpp
         src/base/TrapdoorMod.cpp
         src/pch.cpp
         src/Plugin.cpp
+        src/tick/ProfileInfo.cpp
+        src/tick/MCTick.cpp
         )
 
 include_directories(SDK/Header)
