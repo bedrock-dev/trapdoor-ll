@@ -3,7 +3,7 @@
 
 namespace tr {
 
-    class ActionResult;
+    struct ActionResult;
 
     enum class TickingStatus { Normal, Forwarding, SlowDown, Frozen, Acc };
 
@@ -30,6 +30,8 @@ namespace tr {
     ActionResult SlowDownWorld(int times);
 
     ActionResult AccWorld(int times);
+
+    ActionResult StartNormalProfiler(int rounds);
 
 }  // namespace tr
 #endif

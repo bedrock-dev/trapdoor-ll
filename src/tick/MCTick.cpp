@@ -11,6 +11,8 @@
 namespace tr {
     namespace {
 
+        // In-file varilable;
+
         TickingInfo &getTickingInfo() {
             static TickingInfo info;
             return info;
@@ -21,10 +23,18 @@ namespace tr {
             return info;
         }
 
+        NormalProfiler &normalProfiler() {
+            static NormalProfiler prof;
+            return prof;
+        }
+
+        ActorProfiler &actorProfiler() {
+            static ActorProfiler prof;
+            return prof;
+        }
     }  // namespace
 
     // Command Aciton
-
     ActionResult FreezeWorld() {
         auto &info = getTickingInfo();
         if (info.status == TickingStatus::Frozen) {
@@ -82,6 +92,14 @@ namespace tr {
         }
     }
 
+    ActionResult StartNormalProfiler(int rounds) {
+        if (normalProfiler().profiling) {
+            return {"err", false};
+        } else {
+            normalProfiler().Start(rounds);
+        }
+    }
+
     double getMeanMSPT() { return tr::micro_to_mill(getMSPTinfo().mean()); }
 
     double getMeanTPS() {
@@ -99,6 +117,11 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
         original(level);
         TIMER_END
         tr::getMSPTinfo().push(timeResult);
+        auto &prof = tr::normalProfiler();
+        prof.current_round++;
+        if (prof.current_round == prof.total_round) {
+            prof.Stop();
+        }
         return;
     }
 
@@ -124,3 +147,63 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
             break;
     }
 }
+
+THook(void, "?tick@LevelChunk@@QEAAXAEAVBlockSource@@AEBUTick@@@Z", void *chunk,
+      void *bs, void *tick) {
+    auto &prof = tr::normalProfiler();
+    if (prof.profiling) {
+        TIMER_START
+        original(chunk, bs, tick);
+        TIMER_END
+        prof.chunk_info.total_tick_time += timeResult;
+    } else {
+        original(chunk, bs, tick);
+    }
+}
+
+THook(void, "?tickBlocks@LevelChunk@@QEAAXAEAVBlockSource@@@Z", void *chunk,
+      void *bs) {
+    auto &prof = tr::normalProfiler();
+    if (prof.profiling) {
+        TIMER_START
+        original(chunk, bs);
+        TIMER_END
+        prof.chunk_info.random_tick_time += timeResult;
+    } else {
+        original(chunk, bs);
+    }
+}
+
+THook(void, "?tickBlockEntities@LevelChunk@@QEAAXAEAVBlockSource@@@Z",
+      void *chunk, void *bs) {
+    auto &prof = tr::normalProfiler();
+    if (prof.profiling) {
+        TIMER_START
+        original(chunk, bs);
+        TIMER_END
+        prof.chunk_info.block_entities_tick_time += timeResult;
+    } else {
+        original(chunk, bs);
+    }
+}
+
+THook(void,
+      "?tickPendingTicks@BlockTickingQueue@@QEAA_NAEAVBlockSource@@AEBUTick@@H_"
+      "N@Z",
+      void *queue, void *bs, uint64_t until, int max, bool instalTick) {
+    auto &prof = tr::normalProfiler();
+    if (prof.profiling) {
+        TIMER_START
+        original(queue, bs, until, max, instalTick);
+        TIMER_END
+        prof.chunk_info.pending_tick_time += timeResult;
+    } else {
+        original(queue, bs, until, max, instalTick);
+    }
+}
+
+// redstone stuff
+
+// pending update
+// pemding remove
+// pending add
