@@ -76,9 +76,6 @@ namespace tr {
     class BoundingBox {
     };
 
-    class ChunkPos {
-
-    };
 }
 
 

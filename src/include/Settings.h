@@ -13,10 +13,6 @@
 
 namespace tr {
 
-    void f() {
-        Level::getPlayer("12")->getPlayerGameType();
-    }
-
     //TODO 设计配置文件的结构
     struct CommandConfig {
         bool enable = true;
