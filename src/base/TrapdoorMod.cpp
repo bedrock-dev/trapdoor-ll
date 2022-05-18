@@ -1,6 +1,6 @@
 #include "TrapdoorMod.h"
 #include "LoggerAPI.h"
-#include "TrCommand.h"
+#include "CommandHelper.h"
 
 namespace tr {
 

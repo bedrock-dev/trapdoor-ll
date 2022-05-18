@@ -9,6 +9,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         ${PROJECT_SOURCE_DIR}/SDK/Header/*.hpp
         ${PROJECT_SOURCE_DIR}/SDK/Header/*.h
         src/commands/TrCommand.cpp
+        src/commands/TickCommand.cpp
         src/commands/DrawCommand.cpp
         src/commands/CounterCommand.cpp
         src/commands/HsaCommand.cpp
@@ -17,6 +18,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/commands/VillageCommand.cpp
         src/commands/TrFunctionCommand.cpp
         src/commands/OSCommand.cpp
+        src/commands/CommandHelper.cpp
         src/commands/TrapdoorCommand.cpp
         src/data/Vec3.cpp
         src/data/BlockPos.cpp
