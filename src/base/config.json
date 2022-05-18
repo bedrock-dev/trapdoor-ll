@@ -1,0 +1,34 @@
+{
+  "commands": {
+    "func": {
+      "enable": true,
+      "survival": true,
+      "permissionLevel": 0
+    },
+    "tick": {
+      "enable": true,
+      "survival": true,
+      "permissionLevel": 1
+    }
+  },
+  "village": {
+
+  },
+  "functions": {
+    "simpleDraw": true,
+    "hopperCounter": false,
+    "CactusRotation": false,
+    "dispenserNoCost": true,
+    "forcePlaceLevel": 0,
+    "gaussRand": 0,
+    "forceOpenContainer": true
+  },
+  "parameters": {
+    "maxPtSize": 100,
+    "simDistance": 4
+  },
+  "self": {
+    "chunkBorder": true,
+    "f3": true
+  }
+}

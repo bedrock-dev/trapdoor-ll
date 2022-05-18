@@ -9,6 +9,12 @@ namespace tr {
         return logger;
     }
 
+    TrapdoorMod &mod() {
+        static TrapdoorMod mod;
+        return mod;
+    }
+
+
     void InitMod() {
         setupCommands();
     }
@@ -19,5 +25,6 @@ namespace tr {
         SetupProfCommand();
         SetupLogCommand();
     }
+
 
 } // namespace tr
