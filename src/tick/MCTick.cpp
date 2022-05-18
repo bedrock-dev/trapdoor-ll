@@ -97,6 +97,7 @@ namespace tr {
             return {"err", false};
         } else {
             normalProfiler().Start(rounds);
+            return {"~", true};
         }
     }
 

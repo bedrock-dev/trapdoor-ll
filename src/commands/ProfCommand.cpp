@@ -4,6 +4,7 @@
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"
 #include "MCTick.h"
+#include "Msg.h"
 
 namespace tr {
     void SetupProfCommand() {
@@ -29,10 +30,15 @@ namespace tr {
                      std::unordered_map<std::string, DynamicCommand::Result>
                          &results) {
             switch (do_hash(results["prof"].getRaw<std::string>().c_str())) {
+                // case do_hash("continue"):
+                //     tr::StartNormalProfiler(
+                //         results["NumberOfTick"].getRaw<int>())
+                //         .SendTo(output);
+                //     break;
                 case do_hash("continue"):
-                    tr::StartNormalProfiler(
-                        results["NumberOfTick"].getRaw<int>())
-                        .SendTo(output);
+                    tr::BroadcastMessage("this is a normal message");
+                    tr::BroadcastMessage("this is an unimportant message", -1);
+                    tr::BroadcastMessage("this is an important message", 1);
             }
         };
         command->setCallback(cb);
