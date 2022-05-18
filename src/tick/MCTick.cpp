@@ -2,6 +2,7 @@
 
 #include <chrono>
 
+#include "CommandHelper.h"
 #include "HookAPI.h"
 #include "LoggerAPI.h"
 #include "ProfileInfo.h"
@@ -9,14 +10,11 @@
 
 namespace tr {
     namespace {
-        struct TickingParam {
-            size_t slow_dome_time;
-            size_t forward_tick;
-            size_t acc_tile;
-            TickingStatus status = TickingStatus::Normal;
-        };
 
-        TickingStatus TICKING_STATUS = TickingStatus::Normal;
+        TickingInfo &getTickingInfo() {
+            static TickingInfo info;
+            return info;
+        }
 
         MSPTInfo &getMSPTinfo() {
             static MSPTInfo info;
@@ -25,7 +23,64 @@ namespace tr {
 
     }  // namespace
 
-    void freeze_world() { TICKING_STATUS = TickingStatus::Frozen; }
+    // Command Aciton
+
+    ActionResult FreezeWorld() {
+        auto &info = getTickingInfo();
+        if (info.status == TickingStatus::Frozen) {
+            return {"Already in freeze status", false};
+        }
+
+        info.status = TickingStatus::Frozen;
+        return {"success", true};
+    }
+
+    ActionResult ResetWorld() {
+        auto &info = getTickingInfo();
+        info.acc_time = 1;
+        info.forward_tick_num = 0;
+        info.slow_down_time = 1;
+        info.status = TickingStatus::Normal;
+        return {"success", true};
+    }
+
+    ActionResult ForwardWorld(int gt) {
+        auto &info = getTickingInfo();
+        if (info.status == TickingStatus::Frozen ||
+            info.status == TickingStatus::Normal) {
+            info.forward_tick_num = gt;
+            info.status = TickingStatus::Forwarding;
+            if (gt >= 1200) {
+                return {"~", true};
+            } else {
+                return {"", true};
+            }
+        } else {
+            return {"err", false};
+        }
+    }
+
+    ActionResult SlowDownWorld(int times) {
+        auto &info = getTickingInfo();
+        if (info.status == TickingStatus::Normal) {
+            info.status = TickingStatus::SlowDown;
+            info.slow_down_time = times;
+            return {"~", true};
+        } else {
+            return {"err", false};
+        }
+    }
+
+    ActionResult AccWorld(int times) {
+        auto &info = getTickingInfo();
+        if (info.status == TickingStatus::Normal) {
+            info.acc_time = times;
+            info.status = TickingStatus::Acc;
+            return {"~", true};
+        } else {
+            return {"err", false};
+        }
+    }
 
     double getMeanMSPT() { return tr::micro_to_mill(getMSPTinfo().mean()); }
 
@@ -37,21 +92,35 @@ namespace tr {
 }  // namespace tr
 
 THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
-    TIMER_START
-    original(level);
-    TIMER_END
-    tr::getMSPTinfo().push(timeReslut);
+    auto &info = tr::getTickingInfo();
 
-    switch (tr::TICKING_STATUS) {
-        case tr::TickingStatus::Normal:
+    if (info.status == tr::TickingStatus::Normal) {
+        TIMER_START
+        original(level);
+        TIMER_END
+        tr::getMSPTinfo().push(timeResult);
+        return;
+    }
+
+    switch (info.status) {
+        case tr::TickingStatus::SlowDown:
+            if (info.slow_down_counter % info.slow_down_time == 0) {
+                original(level);
+            }
+            info.slow_down_counter =
+                (info.slow_down_counter + 1) % info.slow_down_time;
             break;
+
         case tr::TickingStatus::Forwarding:
-            break;
-        case tr::TickingStatus::Slowing:
-            break;
-        case tr::TickingStatus::Frozen:
+            for (auto i = 0; i < info.forward_tick_num; i++) {
+                original(level);
+            }
+            tr::ResetWorld();
             break;
         case tr::TickingStatus::Acc:
+            for (int i = 0; i < info.acc_time; i++) {
+                original(level);
+            }
             break;
     }
 }

@@ -5,19 +5,19 @@
 #ifndef TRAPDOOR_COMMANDHELPER_H
 #define TRAPDOOR_COMMANDHELPER_H
 
+#include <string>
 #include <tuple>
 #include <utility>
-#include <string>
 
 class CommandOutput;
 namespace tr {
-    struct CommandResult {
+    struct ActionResult {
         std::string msg;
         bool success;
 
-        CommandResult(std::string m, bool su);
+        ActionResult(std::string m, bool su);
 
-        void Send(CommandOutput &output) const;
+        void SendTo(CommandOutput &output) const;
     };
 
     void SetupTickCommand();
@@ -28,7 +28,6 @@ namespace tr {
 
     void SetupLogCommand();
 
-}
+}  // namespace tr
 
-
-#endif //TRAPDOOR_COMMANDHELPER_H
+#endif  // TRAPDOOR_COMMANDHELPER_H
