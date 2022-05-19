@@ -119,6 +119,7 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
         TIMER_END
         tr::getMSPTinfo().push(timeResult);
         auto &prof = tr::normalProfiler();
+        prof.server_level_tick_time += timeResult;
         prof.current_round++;
         if (prof.current_round == prof.total_round) {
             prof.Stop();
@@ -203,8 +204,64 @@ THook(void,
     }
 }
 
+THook(void, "?tick@Dimension@@UEAAXXZ", void *dim) {
+    auto &prof = tr::normalProfiler();
+    if (prof.profiling) {
+        TIMER_START
+        original(dim);
+        TIMER_END
+        prof.dimension_tick_time += timeResult;
+    } else {
+        original(dim);
+    }
+}
+
+THook(void, "?tick@EntitySystems@@QEAAXAEAVEntityRegistry@@@Z", void *es,
+      void *arg) {
+    auto &prof = tr::normalProfiler();
+    if (prof.profiling) {
+        TIMER_START
+        original(es);
+        TIMER_END
+        prof.entity_system_tick_time += timeResult;
+    } else {
+        original(es);
+    }
+}
+
+// Redstone
+THook(void, "?tickRedstone@Dimension@@UEAAXXZ", void *dim) {
+    auto &prof = tr::normalProfiler();
+    if (prof.profiling) {
+        TIMER_START
+        original(dim);
+        TIMER_END
+        prof.redstone_info.signal_update += timeResult;
+    } else {
+        original(dim);
+    }
+}
+
 // redstone stuff
 
 // pending update
+
+THook(void, "?processPendingAdds@CircuitSceneGraph@@AEAAXXZ", void *c) {
+    auto &prof = tr::normalProfiler();
+    if (prof.profiling) {
+        TIMER_START
+        original(c);
+        TIMER_END
+        prof.redstone_info.pending_add += timeResult;
+    } else {
+        original(c);
+    }
+}
+
 // pemding remove
+
+THook(void, "?removeComponent@CircuitSceneGraph@@AEAAXAEBVBlockPos@@@Z",
+      void *c, void *pos) {
+    original(c, pos);
+}
 // pending add

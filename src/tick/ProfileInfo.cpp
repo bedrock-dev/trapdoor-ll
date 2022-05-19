@@ -48,10 +48,13 @@ namespace tr {
 
     double micro_to_mill(uint64_t v) { return static_cast<double>(v) / 1000.0; }
 
-    void NormalProfiler::Reset() {}
+    void NormalProfiler::Reset(NormalProfiler::Type type) {
+        this->type = type;
+        this->chunk_info.reset();
+    }
 
-    void NormalProfiler::Start(size_t round) {
-        this->Reset();
+    void NormalProfiler::Start(size_t round, NormalProfiler::Type type) {
+        this->Reset(type);
         this->profiling = true;
         this->current_round = 0;
         this->total_round = round;
@@ -62,6 +65,6 @@ namespace tr {
             "mspt: {}",
             tr::micro_to_mill(this->server_level_tick_time / total_round)));
         this->profiling = false;
-        this->Reset();
+        this->Reset(Normal);
     }
 }  // namespace tr

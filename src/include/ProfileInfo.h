@@ -45,7 +45,7 @@ namespace tr {
         microsecond_t pending_tick_time = 0;
         size_t total_tick_time = 0;
 
-        void reset() {
+        inline void reset() {
             chunk_counter.clear();
             block_entities_tick_time = 0;
             random_tick_time = 0;
@@ -54,18 +54,44 @@ namespace tr {
         }
     };
 
+    struct RedstoneProfileInfo {
+        microsecond_t signal_update = 0;
+        microsecond_t pending_add = 0;
+        microsecond_t pending_update = 0;
+        microsecond_t pending_remove = 0;
+        inline void reset() {
+            signal_update = 0;
+            pending_add = 0;
+            pending_update = 0;
+            pending_remove = 0;
+        }
+    };
+
     //普通profile
     struct NormalProfiler {
+        enum Type { Normal, Chunk, PendingTick };
+
+        NormalProfiler::Type type = Normal;
         bool profiling = false;
-        ChunkProfileInfo chunk_info{};
         size_t total_round = 100;
         size_t current_round = 0;
+        ChunkProfileInfo chunk_info{};
+        RedstoneProfileInfo redstone_info{};
+
         microsecond_t server_level_tick_time = 0;  // mspt
         microsecond_t dimension_tick_time = 0;     //区块加载卸载&村庄
         microsecond_t entity_system_tick_time = 0;
 
-        void Reset();
-        void Start(size_t round);
+        void Print() const;
+
+        void PrintChunks() const;
+
+        void PrintPendingTicks() const;
+
+        void PrintBasics() const;
+
+        void Reset(NormalProfiler::Type type);
+        void Start(size_t round, NormalProfiler::Type type = Normal);
         void Stop();
     };
 
