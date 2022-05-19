@@ -1,6 +1,6 @@
 #ifndef _TRAPDOOR_GAME_TICK_H_
 #define _TRAPDOOR_GAME_TICK_H_
-
+#include "ProfileInfo.h"
 namespace tr {
 
     struct ActionResult;
@@ -31,7 +31,9 @@ namespace tr {
 
     ActionResult AccWorld(int times);
 
-    ActionResult StartNormalProfiler(int rounds);
+    ActionResult WrapWorld(int times);
+
+    ActionResult StartProfiler(int rounds, SimpleProfiler::Type type);
 
 }  // namespace tr
 #endif

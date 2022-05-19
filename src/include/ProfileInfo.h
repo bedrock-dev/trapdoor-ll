@@ -5,6 +5,7 @@
 #ifndef TRAPDOOR_PROFILEINFO_H
 #define TRAPDOOR_PROFILEINFO_H
 
+#include <array>
 #include <chrono>
 #include <deque>
 #include <map>
@@ -39,14 +40,17 @@ namespace tr {
     };
 
     struct ChunkProfileInfo {
-        std::map<ChunkPos, microsecond_t> chunk_counter{};
+        std::array<std::map<ChunkPos, microsecond_t>, 3> chunk_counter{};
         microsecond_t block_entities_tick_time = 0;
         microsecond_t random_tick_time = 0;
         microsecond_t pending_tick_time = 0;
         size_t total_tick_time = 0;
 
         inline void reset() {
-            chunk_counter.clear();
+            for (int i = 0; i < 3; i++) {
+                this->chunk_counter[i].clear();
+            }
+
             block_entities_tick_time = 0;
             random_tick_time = 0;
             pending_tick_time = 0;
@@ -54,45 +58,38 @@ namespace tr {
         }
     };
 
+    /*
+    ServerLevel::tick
+     - Redstone
+        - Dimension::tickRedstone(shouldUpdate,cacueValue,evaluate)
+        - pendingUpdate
+        - pendinnRemove
+        - pendingAdd
+     - Dimension::tick(chunk load/village)
+     - entitySystem
+     - Lvevl::tick
+        - LevelChunk::Tick
+            - blockEnties
+            - randomChunk
+            - Actor::tick(non global)
+    */
+
     struct RedstoneProfileInfo {
-        microsecond_t signal_update = 0;
-        microsecond_t pending_add = 0;
-        microsecond_t pending_update = 0;
-        microsecond_t pending_remove = 0;
+        microsecond_t signal_update = 0;   // Dimension::tickRedstone
+        microsecond_t pending_add = 0;     // PendingAdd
+        microsecond_t pending_update = 0;  // PendingUpdate
+        microsecond_t pending_remove = 0;  // pendingRemove
         inline void reset() {
             signal_update = 0;
             pending_add = 0;
             pending_update = 0;
             pending_remove = 0;
         }
-    };
 
-    //普通profile
-    struct NormalProfiler {
-        enum Type { Normal, Chunk, PendingTick };
-
-        NormalProfiler::Type type = Normal;
-        bool profiling = false;
-        size_t total_round = 100;
-        size_t current_round = 0;
-        ChunkProfileInfo chunk_info{};
-        RedstoneProfileInfo redstone_info{};
-
-        microsecond_t server_level_tick_time = 0;  // mspt
-        microsecond_t dimension_tick_time = 0;     //区块加载卸载&村庄
-        microsecond_t entity_system_tick_time = 0;
-
-        void Print() const;
-
-        void PrintChunks() const;
-
-        void PrintPendingTicks() const;
-
-        void PrintBasics() const;
-
-        void Reset(NormalProfiler::Type type);
-        void Start(size_t round, NormalProfiler::Type type = Normal);
-        void Stop();
+        inline microsecond_t sum() const {
+            return signal_update + pending_add + pending_remove +
+                   pending_update;
+        }
     };
 
     //实体profile
@@ -107,48 +104,35 @@ namespace tr {
         std::map<std::string, ActorProfilerInfo> actor_ticking_list;
     };
 
-    //    //红石统计数据
-    //    struct RedstoneStat {
-    //        microsecond_t signals = 0;
-    //        microsecond_t pendingAdd = 0;
-    //        microsecond_t pendingRemove = 0;
-    //        microsecond_t pendingUpdate = 0;
-    //
-    //        inline void reset() {
-    //            signals = 0;
-    //            pendingAdd = 0;
-    //            pendingRemove = 0;
-    //            pendingUpdate = 0;
-    //        }
-    //
-    //        microsecond_t total() const {
-    //            return signals + pendingAdd + pendingRemove + pendingUpdate;
-    //        }
-    //    };
-    //
-    //    class SimpleProfiler : {
-    //    public:
-    //
-    //        ChunkStat chunkStat;
-    //        RedstoneStat redstonStat;
-    //        microsecond_t serverLevelTickTime = 0;  // mspt
-    //        microsecond_t dimensionTickTime = 0;    //区块加载卸载&村庄
-    //        microsecond_t levelEntitySystemTickTime = 0;
-    //        std::map<trapdoor::BlockPos2, size_t> ptCounter;
-    //        size_t totalRound = 100;
-    //        size_t currentRound = 0;
-    //        bool inProfiling = false;
-    //
-    //        //重重所有数据
-    //        void reset() {
-    //            serverLevelTickTime = 0;  // mspt
-    //            dimensionTickTime = 0;    //区块加载卸载&村庄
-    //            chunkStat.reset();
-    //            levelEntitySystemTickTime = 0;  //实体系统更新
-    //            redstonStat.reset();
-    //            currentRound = 0;
-    //            this->ptCounter.clear();
-    //        }
+    //普通profile
+    struct SimpleProfiler {
+        enum Type { Normal, Chunk, PendingTick, Actor };
+
+        SimpleProfiler::Type type = Normal;
+        bool profiling = false;
+        size_t total_round = 100;
+        size_t current_round = 0;
+        ChunkProfileInfo chunk_info{};
+        RedstoneProfileInfo redstone_info{};
+
+        microsecond_t server_level_tick_time = 0;  // mspt
+        microsecond_t dimension_tick_time = 0;     //区块加载卸载&村庄
+        microsecond_t entity_system_tick_time = 0;
+
+        void Print();
+
+        void PrintChunks() const;
+
+        void PrintPendingTicks() const;
+
+        void PrintBasics() const;
+
+        void PrintActor() const;
+
+        void Reset(SimpleProfiler::Type type);
+        void Start(size_t round, SimpleProfiler::Type type = Normal);
+        void Stop();
+    };
 
 }  // namespace tr
 

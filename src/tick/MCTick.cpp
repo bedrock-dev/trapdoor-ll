@@ -1,5 +1,7 @@
 #include "MCTick.h"
 
+#include <MC/Dimension.hpp>
+#include <MC/LevelChunk.hpp>
 #include <chrono>
 
 #include "CommandHelper.h"
@@ -23,8 +25,8 @@ namespace tr {
             return info;
         }
 
-        NormalProfiler &normalProfiler() {
-            static NormalProfiler prof;
+        SimpleProfiler &normalProfiler() {
+            static SimpleProfiler prof;
             return prof;
         }
 
@@ -92,13 +94,17 @@ namespace tr {
         }
     }
 
-    ActionResult StartNormalProfiler(int rounds) {
+    ActionResult StartProfiler(int rounds, SimpleProfiler::Type type) {
         if (normalProfiler().profiling) {
             return {"err", false};
         } else {
-            normalProfiler().Start(rounds);
+            normalProfiler().Start(rounds, type);
             return {"~", true};
         }
+    }
+
+    ActionResult WrapWorld(int times) {
+        // TODO
     }
 
     double getMeanMSPT() { return tr::micro_to_mill(getMSPTinfo().mean()); }
@@ -109,6 +115,22 @@ namespace tr {
     }
 
 }  // namespace tr
+
+/*
+ServerLevel::tick
+ - Redstone
+    - Dimension::tickRedstone(shouldUpdate,cacueValue,evaluate)
+    - pendingUpdate
+    - pendinnRemove
+    - pendingAdd
+ - Dimension::tick(chunk load/village)
+ - entitySystem
+ - Lvevl::tick
+    - LevelChunk::Tick
+        - blockEnties
+        - randomChunk
+        - Actor::tick(non global)
+*/
 
 THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
     auto &info = tr::getTickingInfo();
@@ -150,27 +172,35 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
     }
 }
 
-THook(void, "?tick@LevelChunk@@QEAAXAEAVBlockSource@@AEBUTick@@@Z", void *chunk,
-      void *bs, void *tick) {
+THook(void, "?tick@LevelChunk@@QEAAXAEAVBlockSource@@AEBUTick@@@Z",
+      LevelChunk *chunk, void *bs, void *tick) {
     auto &prof = tr::normalProfiler();
     if (prof.profiling) {
         TIMER_START
         original(chunk, bs, tick);
         TIMER_END
         prof.chunk_info.total_tick_time += timeResult;
+        auto cx = chunk->getPosition().x;
+        auto cz = chunk->getPosition().z;
+        auto dim_id = chunk->getDimension().getDimensionId();
+        auto pos = tr::ChunkPos(cx, cz);
+        prof.chunk_info.chunk_counter[static_cast<int>(dim_id)][pos] +=
+            timeResult;
+
     } else {
         original(chunk, bs, tick);
     }
 }
 
-THook(void, "?tickBlocks@LevelChunk@@QEAAXAEAVBlockSource@@@Z", void *chunk,
-      void *bs) {
+THook(void, "?tickBlocks@LevelChunk@@QEAAXAEAVBlockSource@@@Z",
+      LevelChunk *chunk, void *bs) {
     auto &prof = tr::normalProfiler();
     if (prof.profiling) {
         TIMER_START
         original(chunk, bs);
         TIMER_END
         prof.chunk_info.random_tick_time += timeResult;
+
     } else {
         original(chunk, bs);
     }
@@ -228,8 +258,9 @@ THook(void, "?tick@EntitySystems@@QEAAXAEAVEntityRegistry@@@Z", void *es,
         original(es, arg);
     }
 }
+// redstone stuff
 
-// Redstone
+// signal update
 THook(void, "?tickRedstone@Dimension@@UEAAXXZ", void *dim) {
     auto &prof = tr::normalProfiler();
     if (prof.profiling) {
@@ -242,10 +273,7 @@ THook(void, "?tickRedstone@Dimension@@UEAAXXZ", void *dim) {
     }
 }
 
-// redstone stuff
-
 // pending update
-
 THook(void, "?processPendingAdds@CircuitSceneGraph@@AEAAXXZ", void *c) {
     auto &prof = tr::normalProfiler();
     if (prof.profiling) {
@@ -259,9 +287,16 @@ THook(void, "?processPendingAdds@CircuitSceneGraph@@AEAAXXZ", void *c) {
 }
 
 // pemding remove
-
 THook(void, "?removeComponent@CircuitSceneGraph@@AEAAXAEBVBlockPos@@@Z",
       void *c, void *pos) {
-    original(c, pos);
+    auto &prof = tr::normalProfiler();
+    if (prof.profiling) {
+        TIMER_START
+        original(c, pos);
+        TIMER_END
+        prof.redstone_info.pending_remove += timeResult;
+    } else {
+        original(c, pos);
+    }
 }
 // pending add

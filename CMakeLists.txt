@@ -22,7 +22,6 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/commands/TrapdoorCommand.cpp
         src/data/Vec3.cpp
         src/data/BlockPos.cpp
-
         src/dllmain.cpp
         src/base/TrapdoorMod.cpp
         src/base/Settings.cpp
