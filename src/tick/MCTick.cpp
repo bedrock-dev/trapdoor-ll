@@ -221,11 +221,11 @@ THook(void, "?tick@EntitySystems@@QEAAXAEAVEntityRegistry@@@Z", void *es,
     auto &prof = tr::normalProfiler();
     if (prof.profiling) {
         TIMER_START
-        original(es);
+        original(es, arg);
         TIMER_END
         prof.entity_system_tick_time += timeResult;
     } else {
-        original(es);
+        original(es, arg);
     }
 }
 

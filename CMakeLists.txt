@@ -31,6 +31,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/Plugin.cpp
         src/tick/ProfileInfo.cpp
         src/tick/MCTick.cpp
+        src/functions/VillageHelper.cpp
         )
 
 include_directories(SDK/Header)
