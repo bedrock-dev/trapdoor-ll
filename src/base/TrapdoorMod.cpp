@@ -22,6 +22,7 @@ namespace tr {
 
     void setupCommands() {
         SetupTickCommand();
+        SetupTestCommand();
         SetupVillageCommand();
         SetupProfCommand();
         SetupLogCommand();

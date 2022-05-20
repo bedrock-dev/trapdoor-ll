@@ -9,6 +9,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         ${PROJECT_SOURCE_DIR}/SDK/Header/*.hpp
         ${PROJECT_SOURCE_DIR}/SDK/Header/*.h
         src/commands/TrCommand.cpp
+        src/commands/TestCommand.cpp
         src/commands/TickCommand.cpp
         src/commands/DrawCommand.cpp
         src/commands/CounterCommand.cpp

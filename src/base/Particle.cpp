@@ -16,7 +16,7 @@ namespace tr {
 
         std::array<std::string, 6>& lineParticleFacing() {
             static std::array<std::string, 6> facing{"Yp", "Ym", "Zp",
-                                                     "Zm", "Xp", "xm"};
+                                                     "Zm", "Xp", "Xm"};
             return facing;
         }
 
@@ -121,11 +121,11 @@ namespace tr {
 
         for (auto points : positionList) {
             auto particleType =
-                buildLienParticleType(points.second, direction, color);
+                buildLienParticleType(points.second, direction, color, false);
             auto backParticleType =
                 buildLienParticleType(points.second, direction, color, true);
             auto particleTypeInv = buildLienParticleType(
-                points.second, invFacing(direction), color);
+                points.second, invFacing(direction), color, false);
             auto backParticleTypeInv = buildLienParticleType(
                 points.second, invFacing(direction), color, true);
 
