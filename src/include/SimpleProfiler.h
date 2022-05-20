@@ -10,7 +10,7 @@
 #include <deque>
 #include <map>
 
-#include "BlockPos.h"
+#include "TBlockPos.h"
 
 typedef std::chrono::high_resolution_clock timer_clock;
 typedef int64_t microsecond_t;
@@ -40,7 +40,7 @@ namespace tr {
     };
 
     struct ChunkProfileInfo {
-        std::array<std::map<tr::BlockPos2, microsecond_t>, 3> chunk_counter{};
+        std::array<std::map<tr::TBlockPos2, microsecond_t>, 3> chunk_counter{};
         microsecond_t block_entities_tick_time = 0;
         microsecond_t random_tick_time = 0;
         microsecond_t pending_tick_time = 0;

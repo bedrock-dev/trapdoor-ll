@@ -20,12 +20,13 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/commands/OSCommand.cpp
         src/commands/CommandHelper.cpp
         src/commands/TrapdoorCommand.cpp
-        src/data/Vec3.cpp
-        src/data/BlockPos.cpp
+        src/data/TVec3.cpp
+        src/data/TBlockPos.cpp
         src/dllmain.cpp
         src/base/TrapdoorMod.cpp
         src/base/Settings.cpp
         src/base/Msg.cpp
+        src/base/Particle.cpp
         src/pch.cpp
         src/Plugin.cpp
         src/tick/SimpleProfiler.cpp

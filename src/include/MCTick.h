@@ -20,6 +20,8 @@ namespace tr {
 
     double getMeanTPS();
 
+    ActionResult PrintMspt();
+
     // Tick Command action
     ActionResult FreezeWorld();
 

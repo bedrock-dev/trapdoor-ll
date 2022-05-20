@@ -108,6 +108,7 @@ namespace tr {
         // TODO
     }
 
+    ActionResult PrintMspt() { auto mspt = getMSPTinfo().mean(); }
     double getMeanMSPT() { return tr::micro_to_mill(getMSPTinfo().mean()); }
 
     double getMeanTPS() {
@@ -189,7 +190,6 @@ THook(void, "?tick@LevelChunk@@QEAAXAEAVBlockSource@@AEBUTick@@@Z",
         // auto pos = tr::ChunkPos(cx, cz);
         // prof.chunk_info.chunk_counter[static_cast<int>(dim_id)][pos] +=
         //     timeResult;
-
     } else {
         original(chunk, bs, tick);
     }

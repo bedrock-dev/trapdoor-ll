@@ -17,6 +17,11 @@ namespace tr {
     void InitMod();
 
     void setupCommands();
+
+    void HeavyTick();
+
+    void LightTick();
+
 }  // namespace tr
 
 #endif
