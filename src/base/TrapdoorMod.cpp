@@ -1,6 +1,7 @@
 #include "TrapdoorMod.h"
-#include "LoggerAPI.h"
+
 #include "CommandHelper.h"
+#include "LoggerAPI.h"
 
 namespace tr {
 
@@ -14,8 +15,8 @@ namespace tr {
         return mod;
     }
 
-
     void InitMod() {
+        logger().consoleLevel = 8;
         setupCommands();
     }
 
@@ -26,5 +27,4 @@ namespace tr {
         SetupLogCommand();
     }
 
-
-} // namespace tr
+}  // namespace tr

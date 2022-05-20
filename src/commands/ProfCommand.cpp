@@ -5,7 +5,7 @@
 #include "DynamicCommandAPI.h"
 #include "MCTick.h"
 #include "Msg.h"
-#include "ProfileInfo.h"
+#include "SimpleProfiler.h"
 
 namespace tr {
     void SetupProfCommand() {

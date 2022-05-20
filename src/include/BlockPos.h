@@ -5,7 +5,6 @@
 #ifndef TRAPDOOR_BLOCKPOS_H
 #define TRAPDOOR_BLOCKPOS_H
 
-
 #include <string>
 #include <vector>
 
@@ -27,7 +26,7 @@ namespace tr {
         explicit BlockPos(float x) : BlockPos(x, x, x) {}
 
         BlockPos(float _x, float _y, float _z)
-                : x((int) _x), y((int) _y), z((int) _z) {}
+            : x((int)_x), y((int)_y), z((int)_z) {}
 
         bool operator==(const BlockPos &v) const;
 
@@ -54,7 +53,6 @@ namespace tr {
         BlockPos operator+(const BlockPos &pos) const;
 
         bool operator<(const BlockPos &rhs) const;
-
     };
 
     struct BlockPos2 {
@@ -70,13 +68,10 @@ namespace tr {
         bool operator<(const BlockPos2 &rhs) const;
     };
 
-    typedef BlockPos2 ChunkPos;
+    // typedef BlockPos2 ChunkPos;
 
+    class BoundingBox {};
 
-    class BoundingBox {
-    };
+}  // namespace tr
 
-}
-
-
-#endif //TRAPDOOR_BLOCKPOS_H
+#endif  // TRAPDOOR_BLOCKPOS_H

@@ -2,8 +2,8 @@
 // Created by xhy on 2022/5/17.
 //
 
-#ifndef TRAPDOOR_PROFILEINFO_H
-#define TRAPDOOR_PROFILEINFO_H
+#ifndef TRAPDOOR_SIMPLE_PROFILER_H
+#define TRAPDOOR_SIMPLE_PROFILER_H
 
 #include <array>
 #include <chrono>
@@ -40,7 +40,7 @@ namespace tr {
     };
 
     struct ChunkProfileInfo {
-        std::array<std::map<ChunkPos, microsecond_t>, 3> chunk_counter{};
+        std::array<std::map<tr::BlockPos2, microsecond_t>, 3> chunk_counter{};
         microsecond_t block_entities_tick_time = 0;
         microsecond_t random_tick_time = 0;
         microsecond_t pending_tick_time = 0;

@@ -1,5 +1,6 @@
 #include "MCTick.h"
 
+#include <MC/ChunkPos.hpp>
 #include <MC/Dimension.hpp>
 #include <MC/LevelChunk.hpp>
 #include <chrono>
@@ -7,7 +8,7 @@
 #include "CommandHelper.h"
 #include "HookAPI.h"
 #include "LoggerAPI.h"
-#include "ProfileInfo.h"
+#include "SimpleProfiler.h"
 #include "TrapdoorMod.h"
 
 namespace tr {
@@ -141,10 +142,13 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
         TIMER_END
         tr::getMSPTinfo().push(timeResult);
         auto &prof = tr::normalProfiler();
-        prof.server_level_tick_time += timeResult;
-        prof.current_round++;
-        if (prof.current_round == prof.total_round) {
-            prof.Stop();
+        if (prof.profiling) {
+            tr::logger().debug("Profiling!!");
+            prof.server_level_tick_time += timeResult;
+            prof.current_round++;
+            if (prof.current_round == prof.total_round) {
+                prof.Stop();
+            }
         }
         return;
     }
@@ -180,12 +184,11 @@ THook(void, "?tick@LevelChunk@@QEAAXAEAVBlockSource@@AEBUTick@@@Z",
         original(chunk, bs, tick);
         TIMER_END
         prof.chunk_info.total_tick_time += timeResult;
-        auto cx = chunk->getPosition().x;
-        auto cz = chunk->getPosition().z;
-        auto dim_id = chunk->getDimension().getDimensionId();
-        auto pos = tr::ChunkPos(cx, cz);
-        prof.chunk_info.chunk_counter[static_cast<int>(dim_id)][pos] +=
-            timeResult;
+        // tr::logger().info(fmt::format("{}{}\n"), cp.x, cp.z);
+        // auto dim_id = chunk->getDimension().getDimensionId();
+        // auto pos = tr::ChunkPos(cx, cz);
+        // prof.chunk_info.chunk_counter[static_cast<int>(dim_id)][pos] +=
+        //     timeResult;
 
     } else {
         original(chunk, bs, tick);
@@ -200,7 +203,6 @@ THook(void, "?tickBlocks@LevelChunk@@QEAAXAEAVBlockSource@@@Z",
         original(chunk, bs);
         TIMER_END
         prof.chunk_info.random_tick_time += timeResult;
-
     } else {
         original(chunk, bs);
     }

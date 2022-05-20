@@ -2,7 +2,7 @@
 // Created by xhy on 2022/5/17.
 //
 
-#include "ProfileInfo.h"
+#include "SimpleProfiler.h"
 
 #include <numeric>
 
@@ -51,10 +51,15 @@ namespace tr {
 
     void SimpleProfiler::Reset(SimpleProfiler::Type type) {
         this->type = type;
+        this->redstone_info.reset();
         this->chunk_info.reset();
+        this->server_level_tick_time = 0;
+        this->dimension_tick_time = 0;
+        this->entity_system_tick_time = 0;
     }
 
     void SimpleProfiler::Start(size_t round, SimpleProfiler::Type type) {
+        tr::logger().debug("Begin profiling with total round {}", round);
         this->Reset(type);
         this->profiling = true;
         this->current_round = 0;
@@ -62,10 +67,9 @@ namespace tr {
     }
 
     void SimpleProfiler::Stop() {
-        logger().info(fmt::format(
-            "mspt: {}",
-            tr::micro_to_mill(this->server_level_tick_time / total_round)));
+        tr::logger().debug("Stop profiling");
         this->profiling = false;
+        this->Print();
         this->Reset(Normal);
     }
 
@@ -106,27 +110,36 @@ namespace tr {
     */
 
         const double divide = 1000.0 * static_cast<double>(total_round);
-        auto cf = [&](microsecond_t time) { return time / divide; };
+        tr::logger().debug("divide = {}", divide);
+        auto cf = [divide](microsecond_t time) { return time * 1.0f / divide; };
         auto mspt = cf(server_level_tick_time);
         int tps = mspt <= 50 ? 20 : static_cast<int>(1000.0 / mspt);
         auto res = fmt::format(
-            "- MSPT: {} TPS: {} Chunks\n"
-            "- Redstone: {}\n"
-            "  - Signal: {}\n"
-            "  - Add: {}\n"
-            "  - Update: {}\n"
-            "  - Remove: {}\n"
-            "- EntitySystems: {}\n"
-            "- Chunk (un)load & village: {}\n"
-            "- Chunk tick: {}\n"
-            "  - BlockEntities: {}\n"
-            "  - RandomTick: {}\n"
-            "  - PendingTick: {}\n",
+            "- MSPT: {:.3f} ms TPS: {} Chunks: {}\n"
+            "- Redstone: {:.3f} ms\n"
+            "  - Signal: {:.3f} ms\n"
+            "  - Add: {:.3f} ms\n"
+            "  - Update: {:.3f} ms\n"
+            "  - Remove: {:.3f} ms\n"
+            "- EntitySystems: {:.3f} ms\n"
+            "- Chunk (un)load & village: {:.3f} ms\n"
+            "- Chunk tick: {:.3f} ms\n"
+            "  - BlockEntities: {:.3f} ms\n"
+            "  - RandomTick: {:.3f} ms\n"
+            "  - PendingTick: {:.3f} ms\n",
+
+            /*summary*/
             mspt, tps, this->chunk_info.chunk_counter.size() / total_round,
-            cf(redstone_info.sum()), cf(redstone_info.signal_update),
+            /*redstone*/
+            cf(redstone_info.sum()), cf(redstone_info.signal_update),  //
             cf(redstone_info.pending_add), cf(redstone_info.pending_update),
-            cf(redstone_info.pending_remove), cf(entity_system_tick_time),
-            cf(dimension_tick_time), 0, 0, 0, 0);
+            cf(redstone_info.pending_remove),  //
+            /*entities system & dimension*/
+            cf(entity_system_tick_time), cf(dimension_tick_time),  //
+            /*chunks*/
+            cf(chunk_info.total_tick_time),
+            cf(chunk_info.block_entities_tick_time),
+            cf(chunk_info.random_tick_time), cf(chunk_info.pending_tick_time));
         tr::BroadcastMessage(res);
     }
 

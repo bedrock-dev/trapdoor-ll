@@ -17,6 +17,6 @@ namespace tr {
     void InitMod();
 
     void setupCommands();
-} // namespace tr
+}  // namespace tr
 
 #endif

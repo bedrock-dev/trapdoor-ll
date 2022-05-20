@@ -28,7 +28,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/base/Msg.cpp
         src/pch.cpp
         src/Plugin.cpp
-        src/tick/ProfileInfo.cpp
+        src/tick/SimpleProfiler.cpp
         src/tick/MCTick.cpp
         src/functions/VillageHelper.cpp
         )

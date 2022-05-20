@@ -21,6 +21,7 @@
 #define PH_LIGHT_PURLPE "§d{}§r"
 #define PH_WHITE "§f{}§r"
 #define PH_GRAY "§7{}§r"
+#define PH_DOUB "§f{:.3lf}§r"
 
 #define PH_NUM "§2{}§r"
 #define PH_POS "§a{},{},{}§r"

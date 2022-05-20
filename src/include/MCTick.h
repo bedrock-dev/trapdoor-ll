@@ -1,6 +1,6 @@
 #ifndef _TRAPDOOR_GAME_TICK_H_
 #define _TRAPDOOR_GAME_TICK_H_
-#include "ProfileInfo.h"
+#include "SimpleProfiler.h"
 namespace tr {
 
     struct ActionResult;
