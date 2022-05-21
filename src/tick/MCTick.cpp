@@ -106,9 +106,13 @@ namespace tr {
 
     ActionResult WrapWorld(int times) {
         // TODO
+        return {"~", true};
     }
 
-    ActionResult PrintMspt() { auto mspt = getMSPTinfo().mean(); }
+    ActionResult PrintMspt() {
+        auto mspt = getMSPTinfo().mean();
+        return {"~", true};
+    }
     double getMeanMSPT() { return tr::micro_to_mill(getMSPTinfo().mean()); }
 
     double getMeanTPS() {

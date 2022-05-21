@@ -1,5 +1,7 @@
-#include "pch.h"
+#include <ctype.h>
+
 #include "TrapdoorMod.h"
+#include "pch.h"
 
 inline void CheckProtocolVersion() {}
 

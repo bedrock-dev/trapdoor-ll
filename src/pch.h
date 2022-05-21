@@ -8,7 +8,8 @@
 #define PCH_H
 
 // 添加要在此处预编译的标头
-#include <iostream>
 #include <Global.h>
 
-#endif //PCH_H
+#include <iostream>
+
+#endif  // PCH_H
