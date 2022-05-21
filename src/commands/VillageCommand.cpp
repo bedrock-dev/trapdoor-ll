@@ -21,11 +21,12 @@ namespace tr {
         command->mandatory("village", ParamType::Enum, optOther,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->addOverload({optOther});
+
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result>
                          &results) {
-            switch (do_hash(results["tick"].getRaw<std::string>().c_str())) {
+            switch (do_hash(results["village"].getRaw<std::string>().c_str())) {
                 case do_hash("list"):
                     tr::printTickingVillages().SendTo(output);
                     break;

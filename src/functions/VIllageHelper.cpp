@@ -24,9 +24,10 @@ namespace tr {
         for (auto v : tickingVillages()) {
             if (v) {
                 auto c = v->getCenter();
-                tr::logger().debug("uid: {} radius:{} center: [{} {} {}]",
-                                   v->getUniqueID().asString(),
-                                   v->getApproximateRadius(), c.x, c.y, c.z);
+                tr::logger().debug(
+                    fmt::format("uid: {} radius:{} center: [{} {} {}]",
+                                v->getUniqueID().asString(),
+                                v->getApproximateRadius(), c.x, c.y, c.z));
             }
         }
         return {"~", true};
