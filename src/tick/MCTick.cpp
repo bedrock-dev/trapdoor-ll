@@ -3,11 +3,13 @@
 #include <MC/ChunkPos.hpp>
 #include <MC/Dimension.hpp>
 #include <MC/LevelChunk.hpp>
+#include <algorithm>
 #include <chrono>
 
 #include "CommandHelper.h"
 #include "HookAPI.h"
 #include "LoggerAPI.h"
+#include "Msg.h"
 #include "SimpleProfiler.h"
 #include "TrapdoorMod.h"
 
@@ -61,6 +63,7 @@ namespace tr {
         auto &info = getTickingInfo();
         if (info.status == TickingStatus::Frozen ||
             info.status == TickingStatus::Normal) {
+            info.old_status = info.status;
             info.forward_tick_num = gt;
             info.status = TickingStatus::Forwarding;
             if (gt >= 1200) {
@@ -72,7 +75,18 @@ namespace tr {
             return {"err", false};
         }
     }
-
+    ActionResult WrapWorld(int gt) {
+        auto &info = getTickingInfo();
+        if (info.status == TickingStatus::Normal ||
+            info.status == TickingStatus::Frozen) {
+            // record old status
+            info.old_status = info.status;
+            info.remain_wrap_tick = gt;
+            info.status = TickingStatus::Wrap;
+            return {"~", true};
+        }
+        return {"~", false};
+    }
     ActionResult SlowDownWorld(int times) {
         auto &info = getTickingInfo();
         if (info.status == TickingStatus::Normal) {
@@ -102,11 +116,6 @@ namespace tr {
             normalProfiler().Start(rounds, type);
             return {"~", true};
         }
-    }
-
-    ActionResult WrapWorld(int times) {
-        // TODO
-        return {"~", true};
     }
 
     ActionResult PrintMspt() {
@@ -156,6 +165,23 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
             }
         }
         return;
+        // Wrap
+    } else if (info.status == tr::TickingStatus::Wrap) {
+        auto mean_mspt = tr::micro_to_mill(tr::getMSPTinfo().mean());
+        int max_wrap_time = static_cast<int>(45.0 / mean_mspt);
+        max_wrap_time = std::min(max_wrap_time, 8);
+        int m = std::min(max_wrap_time, info.remain_wrap_tick);
+        // tr::logger().debug("acc branch {} {} \n", mean_mspt, max_wrap_time);
+        for (int i = 0; i < m; i++) {
+            // tr::logger().debug("Acc tick!");
+            original(level);
+        }
+        info.remain_wrap_tick -= m;
+        if (info.remain_wrap_tick == 0) {
+            tr::BroadcastMessage("Wrap finished", -1);
+            //结束，回到之前的状态
+            info.status = info.old_status;
+        }
     }
 
     switch (info.status) {
@@ -171,12 +197,15 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
             for (auto i = 0; i < info.forward_tick_num; i++) {
                 original(level);
             }
+            tr::BroadcastMessage("Froward finished", -1);
             tr::ResetWorld();
             break;
         case tr::TickingStatus::Acc:
             for (int i = 0; i < info.acc_time; i++) {
                 original(level);
             }
+            break;
+        default:
             break;
     }
 }

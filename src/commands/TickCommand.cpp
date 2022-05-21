@@ -15,7 +15,7 @@ namespace tr {
             DynamicCommand::createCommand("tick", "change world tick command",
                                           CommandPermissionLevel::GameMasters);
 
-        auto &optForward = command->setEnum("forward", {"forward"});
+        auto &optForward = command->setEnum("forward", {"forward", "wrap"});
         command->mandatory("tick", ParamType::Enum, optForward,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("tickNumber", ParamType::Int);
@@ -48,6 +48,10 @@ namespace tr {
                     break;
                 case do_hash("forward"):
                     tr::ForwardWorld(results["tickNumber"].getRaw<int>())
+                        .SendTo(output);
+                    break;
+                case do_hash("wrap"):
+                    tr::WrapWorld(results["tickNumber"].getRaw<int>())
                         .SendTo(output);
                     break;
                 case do_hash("freeze"):

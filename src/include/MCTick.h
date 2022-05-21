@@ -5,14 +5,23 @@ namespace tr {
 
     struct ActionResult;
 
-    enum class TickingStatus { Normal, Forwarding, SlowDown, Frozen, Acc };
+    enum class TickingStatus {
+        Normal,
+        Forwarding,
+        SlowDown,
+        Frozen,
+        Acc,
+        Wrap
+    };
 
     struct TickingInfo {
+        int remain_wrap_tick = 0;
         size_t slow_down_time = 1;
         size_t forward_tick_num = 0;
         size_t acc_time = 1;
         size_t slow_down_counter = 0;
         TickingStatus status = TickingStatus::Normal;
+        TickingStatus old_status = TickingStatus::Normal;
     };
 
     // Log Commmand action
