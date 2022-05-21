@@ -23,6 +23,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/commands/TrapdoorCommand.cpp
         src/data/TVec3.cpp
         src/data/TBlockPos.cpp
+        src/data/TAABB.cpp
         src/dllmain.cpp
         src/base/TrapdoorMod.cpp
         src/base/Settings.cpp
