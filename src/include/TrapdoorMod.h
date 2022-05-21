@@ -3,11 +3,19 @@
 
 #include "LoggerAPI.h"
 #include "Settings.h"
-
+#include "VillageHelper.h"
 namespace tr {
 
     class TrapdoorMod {
-        Settings settings;
+        void HeavyTick();
+
+        void LightTick();
+
+        inline VillageHelper &village_helper() { return this->village_helper_; }
+
+       private:
+        VillageHelper village_helper_;
+        Settings settings_;
     };
 
     Logger &logger();
@@ -17,10 +25,6 @@ namespace tr {
     void InitMod();
 
     void setupCommands();
-
-    void HeavyTick();
-
-    void LightTick();
 
 }  // namespace tr
 

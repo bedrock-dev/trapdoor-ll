@@ -120,7 +120,14 @@ namespace tr {
 
     ActionResult PrintMspt() {
         auto mspt = getMSPTinfo().mean();
-        return {"~", true};
+        auto max = getMSPTinfo().max();
+        auto min = getMSPTinfo().min();
+        auto tps = 1000.0 / tr::micro_to_mill(mspt);
+        tps = tps > 20.0 ? 20.0 : tps;
+        auto res = fmt::format("min:{.3f} max:{.3f} avg:{.3f} tps:{.1f}",
+                               tr::micro_to_mill(min), tr::micro_to_mill(max),
+                               tr::micro_to_mill(mspt), tps);
+        return {res, true};
     }
     double getMeanMSPT() { return tr::micro_to_mill(getMSPTinfo().mean()); }
 
@@ -218,11 +225,11 @@ THook(void, "?tick@LevelChunk@@QEAAXAEAVBlockSource@@AEBUTick@@@Z",
         original(chunk, bs, tick);
         TIMER_END
         prof.chunk_info.total_tick_time += timeResult;
-        // tr::logger().info(fmt::format("{}{}\n"), cp.x, cp.z);
-        // auto dim_id = chunk->getDimension().getDimensionId();
-        // auto pos = tr::ChunkPos(cx, cz);
-        // prof.chunk_info.chunk_counter[static_cast<int>(dim_id)][pos] +=
-        //     timeResult;
+        auto dim_id = chunk->getDimension().getDimensionId();
+        auto &cp = chunk->getPosition();
+        auto tpos = tr::TBlockPos2(cp.x, cp.z);
+        prof.chunk_info.chunk_counter[static_cast<int>(dim_id)][tpos] +=
+            timeResult;
     } else {
         original(chunk, bs, tick);
     }

@@ -11,33 +11,24 @@
 
 namespace tr {
 
-    namespace {
-
-        std::unordered_set<Village*>& tickingVillages() {
-            static std::unordered_set<Village*> vs;
-            return vs;
-        }
-    }  // namespace
-
-    // Actions
-    ActionResult printTickingVillages() {
-        for (auto v : tickingVillages()) {
+    void VillageHelper::TickParticles() {}
+    ActionResult VillageHelper::ListTickingVillages() {
+        std::string res;
+        for (auto v : this->vs_) {
             if (v) {
                 auto c = v->getCenter();
-                tr::logger().debug(
-                    fmt::format("uid: {} radius:{} center: [{} {} {}]",
-                                v->getUniqueID().asString(),
-                                v->getApproximateRadius(), c.x, c.y, c.z));
+                res += fmt::format("uid: {} radius:{} center: [{} {} {}]\n",
+                                   v->getUniqueID().asString().substr(0, 5),
+                                   v->getApproximateRadius(), c.x, c.y, c.z);
             }
         }
-        return {"~", true};
+        return {res, true};
     }
-    ActionResult printNearestVillageInfo() { return {"~", true}; }
 
 }  // namespace tr
 
 THook(void, "?tick@Village@@QEAAXUTick@@AEAVBlockSource@@@Z", Village* village,
       void* tick, void* bs) {
-    tr::tickingVillages().insert(village);
+    //  tr::tickingVillages().insert(village);
     original(village, tick, bs);
 }

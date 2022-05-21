@@ -129,7 +129,7 @@ namespace tr {
             "  - PendingTick: {:.3f} ms\n",
 
             /*summary*/
-            mspt, tps, this->chunk_info.chunk_counter.size() / total_round,
+            mspt, tps, this->chunk_info.getChunkNumber(),
             /*redstone*/
             cf(redstone_info.sum()), cf(redstone_info.signal_update),  //
             cf(redstone_info.pending_add), cf(redstone_info.pending_update),

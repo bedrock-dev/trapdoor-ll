@@ -46,6 +46,14 @@ namespace tr {
         microsecond_t pending_tick_time = 0;
         size_t total_tick_time = 0;
 
+        inline size_t getChunkNumber() const {
+            size_t num = 0;
+            for (auto &m : chunk_counter) {
+                num += m.size();
+            }
+            return num;
+        }
+
         inline void reset() {
             for (int i = 0; i < 3; i++) {
                 this->chunk_counter[i].clear();
