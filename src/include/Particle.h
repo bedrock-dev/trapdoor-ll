@@ -11,5 +11,6 @@ namespace tr {
     void DrawLine(const TVec3& originPoint, TFACING direction, float length,
                   PCOLOR color, int dimType);
 
+    void DrawAABB(const TAABB& aabb, PCOLOR color, bool mark, int dimType = 0);
 }  // namespace tr
 #endif

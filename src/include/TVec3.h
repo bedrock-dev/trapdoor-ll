@@ -45,7 +45,14 @@ namespace tr {
         TBlockPos toBlockPos() const;
     };
 
-    class AABB {};
+    struct TAABB {
+        TVec3 p1;
+        TVec3 p2;
+
+        AABB(const TVec3 &p1_, const TVec3 &p2_) : p1(p1_), p2(p2_) {}
+
+        inline TVec3 getCenter() const { return (p1 + p2) * 0.5; }
+    };
 }  // namespace tr
 
 #endif  // TRAPDOOR_VEC3_H

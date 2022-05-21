@@ -135,4 +135,32 @@ namespace tr {
             spawnParticle(points.first, backParticleTypeInv, dimType);
         }
     }
+
+    void DrawAABB(const TAABB& aabb, PCOLOR color, bool mark, int dimType = 0) {
+        auto p1 = aabb.p1, p2 = aabb.p2;
+        auto dx = p2.x - p1.x;
+        auto dy = p2.y - p1.y;
+        auto dz = p2.z - p1.z;
+        DrawLine(p1, TFACING::POS_X, dx, color, dimType);
+        if (mark) {
+            DrawLine(p1, TFACING::POS_Y, dy, PCOLOR::WHITE, dimType);
+        } else {
+            DrawLine(p1, TFACING::POS_Y, dy, color, dimType);
+        }
+        DrawLine(p1, TFACING::POS_Z, dz, color, dimType);
+
+        TVec3 p3{p2.x, p1.y, p2.z};
+        DrawLine(p3, TFACING::NEG_X, dx, color, dimType);
+        DrawLine(p3, TFACING::POS_Y, dy, color, dimType);
+        DrawLine(p3, TFACING::NEG_Z, dz, color, dimType);
+        TVec3 p4{p2.x, p2.y, p1.z};
+        DrawLine(p4, TFACING::NEG_X, dx, color, dimType);
+        DrawLine(p4, TFACING::NEG_Y, dy, color, dimType);
+        DrawLine(p4, TFACING::POS_Z, dz, color, dimType);
+
+        TVec3 p5{p1.x, p2.y, p2.z};
+        DrawLine(p5, TFACING::POS_X, dx, color, dimType);
+        DrawLine(p5, TFACING::NEG_Y, dy, color, dimType);
+        DrawLine(p5, TFACING::NEG_Z, dz, color, dimType);
+    }
 }  // namespace tr
