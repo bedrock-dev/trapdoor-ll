@@ -10,8 +10,14 @@ namespace tr {
 
     class VillageHelper {
        public:
-        void TickParticles();
-        ActionResult ListTickingVillages();
+        void HeavyTick();
+        void LightTick();
+        void InsertVillage(Village* village);
+        // action
+        ActionResult ListTickingVillages(bool details);
+
+        ActionResult ShowBounds(bool able);
+
 
        private:
         std::unordered_set<Village*> vs_;

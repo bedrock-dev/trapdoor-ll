@@ -20,6 +20,8 @@ namespace tr {
         void SendTo(CommandOutput &output) const;
     };
 
+    ActionResult ErrorMsg(const std::string &msg);
+
     void SetupTickCommand();
 
     void SetupProfCommand();

@@ -12,4 +12,7 @@ namespace tr {
     void ActionResult::SendTo(CommandOutput &output) const {
         success ? output.success(msg) : output.error(msg);
     }
+
+    ActionResult ErrorMsg(const std::string &msg) { return {msg, false}; }
+
 }  // namespace tr

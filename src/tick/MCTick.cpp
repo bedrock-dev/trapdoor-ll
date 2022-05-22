@@ -158,10 +158,12 @@ ServerLevel::tick
 
 THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
     auto &info = tr::getTickingInfo();
-
+    auto &mod = tr::mod();
     if (info.status == tr::TickingStatus::Normal) {
         TIMER_START
         original(level);
+        mod.LightTick();
+        mod.HeavyTick();
         TIMER_END
         tr::getMSPTinfo().push(timeResult);
         auto &prof = tr::normalProfiler();
@@ -184,7 +186,9 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
         for (int i = 0; i < m; i++) {
             // tr::logger().debug("Acc tick!");
             original(level);
+            mod.LightTick();
         }
+        mod.HeavyTick();
         info.remain_wrap_tick -= m;
         if (info.remain_wrap_tick == 0) {
             tr::BroadcastMessage("Wrap finished", -1);
@@ -197,7 +201,10 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
         case tr::TickingStatus::SlowDown:
             if (info.slow_down_counter % info.slow_down_time == 0) {
                 original(level);
+                mod.LightTick();
+                mod.HeavyTick();
             }
+
             info.slow_down_counter =
                 (info.slow_down_counter + 1) % info.slow_down_time;
             break;
@@ -205,14 +212,18 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
         case tr::TickingStatus::Forwarding:
             for (auto i = 0; i < info.forward_tick_num; i++) {
                 original(level);
+                mod.LightTick();
             }
+            mod.HeavyTick();
             tr::BroadcastMessage("Froward finished", -1);
             tr::ResetWorld();
             break;
         case tr::TickingStatus::Acc:
             for (int i = 0; i < info.acc_time; i++) {
+                mod.LightTick();
                 original(level);
             }
+            mod.HeavyTick();
             break;
         default:
             break;

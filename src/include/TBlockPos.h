@@ -99,8 +99,6 @@ namespace tr {
 
     // typedef TBlockPos2 ChunkPos;
 
-    class BoundingBox {};
-
 }  // namespace tr
 
 #endif  // TRAPDOOR_BLOCKPOS_H

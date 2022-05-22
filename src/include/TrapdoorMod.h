@@ -7,6 +7,7 @@
 namespace tr {
 
     class TrapdoorMod {
+       public:
         void HeavyTick();
 
         void LightTick();

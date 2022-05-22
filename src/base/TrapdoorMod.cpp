@@ -4,8 +4,8 @@
 #include "LoggerAPI.h"
 
 namespace tr {
-    void TrapdoorMod::HeavyTick() { village_helper_.TickParticles(); }
-    void TrapdoorMod::LightTick() {}
+    void TrapdoorMod::HeavyTick() { village_helper_.HeavyTick(); }
+    void TrapdoorMod::LightTick() { village_helper_.LightTick(); }
     Logger &logger() {
         static Logger logger("Trapdoor");
         return logger;

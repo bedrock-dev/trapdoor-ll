@@ -2,7 +2,9 @@
 // Created by xhy on 2022/5/17.
 //
 #include "DynamicCommandAPI.h"
+#include "TrapdoorMod.h"
 #include "VillageHelper.h"
+
 namespace tr {
     void SetupVillageCommand() {
         using ParamType = DynamicCommand::ParameterType;
@@ -28,7 +30,13 @@ namespace tr {
                          &results) {
             switch (do_hash(results["village"].getRaw<std::string>().c_str())) {
                 case do_hash("list"):
-                    // tr::printTickingVillages().SendTo(output);
+                    tr::mod().village_helper().ListTickingVillages(true).SendTo(
+                        output);
+                case do_hash("bound"):
+                    tr::mod()
+                        .village_helper()
+                        .ShowBounds(results["onOroff"].getRaw<bool>())
+                        .SendTo(output);
                     break;
             }
         };

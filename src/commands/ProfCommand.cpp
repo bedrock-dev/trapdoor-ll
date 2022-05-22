@@ -41,6 +41,10 @@ namespace tr {
                 case do_hash("actor"):
                     tr::StartProfiler(20, SimpleProfiler::Actor).SendTo(output);
                     break;
+                case do_hash("pt"):
+                    ErrorMsg("Function is developing by developer")
+                        .SendTo(output);
+                    break;
             }
         };
         command->setCallback(cb);
