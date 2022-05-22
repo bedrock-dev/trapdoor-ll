@@ -33,10 +33,6 @@ namespace tr {
             return prof;
         }
 
-        ActorProfiler &actorProfiler() {
-            static ActorProfiler prof;
-            return prof;
-        }
     }  // namespace
 
     // Command Aciton
@@ -134,6 +130,7 @@ namespace tr {
                                tr::micro_to_mill(mspt), tps);
         return {res, true};
     }
+
     double getMeanMSPT() { return tr::micro_to_mill(getMSPTinfo().mean()); }
 
     double getMeanTPS() {
@@ -344,6 +341,19 @@ THook(void, "?removeComponent@CircuitSceneGraph@@AEAAXAEBVBlockPos@@@Z",
         prof.redstone_info.pending_remove += timeResult;
     } else {
         original(c, pos);
+    }
+}
+
+THook(void, "?tick@Actor@@QEAA_NAEAVBlockSource@@@Z", Actor *actor, void *bs) {
+    auto &prof = tr::normalProfiler();
+    if (prof.profiling) {
+        TIMER_START
+        original(actor, bs);
+        TIMER_END
+        prof.actor_info[static_cast<int>(actor->getDimensionId())]
+                       [actor->getTypeName()] += timeResult;
+    } else {
+        original(actor, bs);
     }
 }
 // pending add

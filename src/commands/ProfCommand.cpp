@@ -35,14 +35,15 @@ namespace tr {
                     tr::StartProfiler(results["NumberOfTick"].getRaw<int>(),
                                       SimpleProfiler::Normal)
                         .SendTo(output);
-
                 case do_hash("chunk"):
                     tr::StartProfiler(20, SimpleProfiler::Chunk).SendTo(output);
+                    break;
+                case do_hash("actor"):
+                    tr::StartProfiler(20, SimpleProfiler::Actor).SendTo(output);
                     break;
             }
         };
         command->setCallback(cb);
-
         DynamicCommand::setup(std::move(command));
     }
 

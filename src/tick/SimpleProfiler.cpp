@@ -57,6 +57,9 @@ namespace tr {
         this->server_level_tick_time = 0;
         this->dimension_tick_time = 0;
         this->entity_system_tick_time = 0;
+        for (auto &m : this->actor_info) {
+            m.clear();
+        }
     }
 
     void SimpleProfiler::Start(size_t round, SimpleProfiler::Type type) {
@@ -119,8 +122,8 @@ namespace tr {
                     });
 
                 for (int i = 0; i < sort_count; i++) {
-                    builder
-                        .sTextF(TextBuilder::GREEN, "- [%d %d]   ",
+                    builder.text(" - ")
+                        .sTextF(TextBuilder::GREEN, "[%d %d]   ",
                                 v[i].first.x * 16 + 8, v[i].first.z * 16 + 8)
                         .textF("%.3f ms\n", v[i].second);
                 }
@@ -181,5 +184,39 @@ namespace tr {
         tr::BroadcastMessage(res);
     }
 
-    void SimpleProfiler::PrintActor() const {}
+    void SimpleProfiler::PrintActor() const {
+        const static std::string dims[] = {"Overworld", "Nether", "The end"};
+        TextBuilder builder;
+        for (int i = 0; i < 3; i++) {
+            auto &actor_data = this->actor_info[i];
+            if (!actor_data.empty()) {
+                builder.sTextF(TextBuilder::AQUA | TextBuilder::BOLD,
+                               "-- %s --\n", dims[i].c_str());
+                std::vector<std::pair<std::string, double>> v;
+
+                for (auto &kv : actor_data) {
+                    assert(!kv.second.empty());
+                    auto time = micro_to_mill(kv.second);
+                    v.push_back({kv.first, time});
+                }
+
+                auto sort_count = std::min(v.size(), static_cast<size_t>(5));
+                std::sort(v.begin(), v.end(),
+                          [](const std::pair<std::string, double> &p1,
+                             const std::pair<std::string, double> &p2) {
+                              return p1.second > p2.second;
+                          });
+
+                for (int i = 0; i < v.size(); i++) {
+                    builder.text(" - ")
+                        .sTextF(TextBuilder::GREEN, "%s   ", v[i].first.c_str())
+                        .textF("%.3f ms\n",
+                               v[i].second /
+                                   static_cast<double>(this->total_round));
+                }
+            }
+        }
+
+        tr::BroadcastMessage(builder.get());
+    }  // namespace tr
 }  // namespace tr

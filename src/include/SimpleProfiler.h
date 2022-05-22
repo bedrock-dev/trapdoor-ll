@@ -101,18 +101,6 @@ namespace tr {
         }
     };
 
-    //实体profile
-    struct ActorProfiler {
-        struct ActorProfilerInfo {
-            microsecond_t time = 0;
-            size_t count = 0;
-        };
-        bool profiling = false;
-        size_t total_round = 100;
-        size_t current_round = 0;
-        std::map<std::string, ActorProfilerInfo> actor_ticking_list;
-    };
-
     //普通profile
     struct SimpleProfiler {
         enum Type { Normal, Chunk, PendingTick, Actor };
@@ -122,8 +110,8 @@ namespace tr {
         size_t total_round = 100;
         size_t current_round = 0;
         ChunkProfileInfo chunk_info{};
+        std::array<std::map<std::string, microsecond_t>, 3> actor_info{};
         RedstoneProfileInfo redstone_info{};
-
         microsecond_t server_level_tick_time = 0;  // mspt
         microsecond_t dimension_tick_time = 0;     //区块加载卸载&村庄
         microsecond_t entity_system_tick_time = 0;
