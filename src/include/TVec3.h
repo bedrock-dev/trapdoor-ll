@@ -11,9 +11,9 @@ namespace tr {
     struct TBlockPos;
 
     struct TVec3 {
-        float x;
-        float y;
-        float z;
+        float x = 0;
+        float y = 0;
+        float z = 0;
 
         TVec3() = default;
 

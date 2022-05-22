@@ -1,6 +1,7 @@
 #ifndef PARTICLE_H
 
 #define PARTICLE_H
+#include "TAABB.h"
 #include "TBlockPos.h"
 #include "TVec3.h"
 
@@ -11,6 +12,6 @@ namespace tr {
     void DrawLine(const TVec3& originPoint, TFACING direction, float length,
                   PCOLOR color, int dimType);
 
-    void DrawAABB(const TAABB& aabb, PCOLOR color, bool mark, int dimType = 0);
+    void DrawAABB(const TAABB& aabb, PCOLOR color, bool mark, int dimType);
 }  // namespace tr
 #endif

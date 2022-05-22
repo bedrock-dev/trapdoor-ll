@@ -4,6 +4,7 @@
 #include <MC/Level.hpp>
 
 #include "FMT/core.h"
+#include "TAABB.h"
 #include "TBlockPos.h"
 #include "TVec3.h"
 
@@ -57,7 +58,7 @@ namespace tr {
 
     TextBuilder &TextBuilder::aabb(const TAABB &aabb) {
         auto str = "[" + aabb.p1.toString() + "," + aabb.p2.toString() + "]";
-        return this->sText(WHITE | str);
+        return this->sText(WHITE, str);
     }
 
     std::string TextBuilder::get() {

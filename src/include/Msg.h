@@ -7,6 +7,7 @@
 
 #include <cstdarg>
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -30,8 +31,8 @@ namespace tr {
 
     template <typename... Args>
     std::string format(const std::string &format, Args... args) {
-        auto size = snprintf(nullptr, 0, format.c_str(), args...) +
-                    1;  // Extra space for '\0'
+        int size = snprintf(nullptr, 0, format.c_str(), args...) +
+                   1;  // Extra space for '\0'
         if (size <= 0) return "";
         std::unique_ptr<char[]> buf(new char[size]);
         snprintf(buf.get(), size, format.c_str(), args...);
@@ -72,7 +73,7 @@ namespace tr {
         template <typename... Args>
         TextBuilder &sTextF(uint8_t style, const std::string &format,
                             Args... args) {
-            this->sText(trapdoor::format(format, args...), style);
+            this->sText(tr::format(format, args...), style);
             return *this;
         }
         TextBuilder &sText(uint8_t style, const std::string &s);

@@ -28,7 +28,7 @@ namespace tr {
                          &results) {
             switch (do_hash(results["village"].getRaw<std::string>().c_str())) {
                 case do_hash("list"):
-                    tr::printTickingVillages().SendTo(output);
+                    // tr::printTickingVillages().SendTo(output);
                     break;
             }
         };
