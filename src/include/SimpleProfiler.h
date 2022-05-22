@@ -40,7 +40,8 @@ namespace tr {
     };
 
     struct ChunkProfileInfo {
-        std::array<std::map<tr::TBlockPos2, microsecond_t>, 3> chunk_counter{};
+        std::array<std::map<tr::TBlockPos2, std::vector<microsecond_t> >, 3>
+            chunk_counter{};
         microsecond_t block_entities_tick_time = 0;
         microsecond_t random_tick_time = 0;
         microsecond_t pending_tick_time = 0;

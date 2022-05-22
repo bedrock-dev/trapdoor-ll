@@ -4,6 +4,7 @@
 
 #include "SimpleProfiler.h"
 
+#include <algorithm>
 #include <numeric>
 
 #include "Msg.h"
@@ -90,7 +91,44 @@ namespace tr {
         }
     }
 
-    void SimpleProfiler::PrintChunks() const {}
+    void SimpleProfiler::PrintChunks() const {
+        const static std::string dims[] = {"Overworld", "Nether", "The end"};
+        TextBuilder builder;
+        for (int i = 0; i < 3; i++) {
+            auto &dim_data = this->chunk_info.chunk_counter[i];
+            if (!dim_data.empty()) {
+                builder.sTextF(TextBuilder::AQUA | TextBuilder::BOLD,
+                               "-- %s --\n", dims[i].c_str());
+
+                std::vector<std::pair<tr::TBlockPos2, double>> v;
+
+                for (auto &kv : dim_data) {
+                    assert(!kv.second.empty());
+                    auto time = micro_to_mill(std::accumulate(
+                                    kv.second.begin(), kv.second.end(), 0ull)) /
+                                static_cast<double>(kv.second.size());
+                    v.push_back({kv.first, time});
+                }
+
+                auto sort_count = std::min(v.size(), static_cast<size_t>(5));
+                std::partial_sort(
+                    v.begin(), v.begin() + sort_count, v.end(),
+                    [](const std::pair<tr::TBlockPos2, double> &p1,
+                       const std::pair<tr::TBlockPos2, double> &p2) {
+                        return p1.second > p2.second;
+                    });
+
+                for (int i = 0; i < sort_count; i++) {
+                    builder
+                        .sTextF(TextBuilder::GREEN, "- [%d %d]   ",
+                                v[i].first.x * 16 + 8, v[i].first.z * 16 + 8)
+                        .textF("%.3f ms\n", v[i].second);
+                }
+            }
+        }
+
+        tr::BroadcastMessage(builder.get());
+    }
     void SimpleProfiler::PrintPendingTicks() const {}
     void SimpleProfiler::PrintBasics() const {
         /*

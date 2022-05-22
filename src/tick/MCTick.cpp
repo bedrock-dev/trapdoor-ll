@@ -110,8 +110,13 @@ namespace tr {
     }
 
     ActionResult StartProfiler(int rounds, SimpleProfiler::Type type) {
+        auto info = getTickingInfo();
+        if (info.status != TickingStatus::Normal) {
+            return {"err1", false};
+        }
+
         if (normalProfiler().profiling) {
-            return {"err", false};
+            return {"err2", false};
         } else {
             normalProfiler().Start(rounds, type);
             return {"~", true};
@@ -228,8 +233,8 @@ THook(void, "?tick@LevelChunk@@QEAAXAEAVBlockSource@@AEBUTick@@@Z",
         auto dim_id = chunk->getDimension().getDimensionId();
         auto &cp = chunk->getPosition();
         auto tpos = tr::TBlockPos2(cp.x, cp.z);
-        prof.chunk_info.chunk_counter[static_cast<int>(dim_id)][tpos] +=
-            timeResult;
+        prof.chunk_info.chunk_counter[static_cast<int>(dim_id)][tpos].push_back(
+            timeResult);
     } else {
         original(chunk, bs, tick);
     }

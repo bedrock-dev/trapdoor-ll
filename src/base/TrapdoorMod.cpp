@@ -29,8 +29,4 @@ namespace tr {
         SetupLogCommand();
     }
 
-    void HeavyTick() {}
-
-    void LightTick() {}
-
 }  // namespace tr

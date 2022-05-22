@@ -73,7 +73,7 @@ namespace tr {
         template <typename... Args>
         TextBuilder &sTextF(uint8_t style, const std::string &format,
                             Args... args) {
-            this->sText(tr::format(format, args...), style);
+            this->sText(style, tr::format(format, args...));
             return *this;
         }
         TextBuilder &sText(uint8_t style, const std::string &s);
