@@ -29,6 +29,10 @@ namespace tr {
 
         ActionResult ShowVillagerHeadInfo(bool able);
 
+        ActionResult PrintDetails(int vid, const Vec3& pos);
+
+        ActionResult Goto(int vid, const Vec3& pos);
+
        private:
         std::unordered_map<int, Village*> vs_;
         bool show_center_ = false;

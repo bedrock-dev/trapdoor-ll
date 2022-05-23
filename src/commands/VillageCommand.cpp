@@ -74,13 +74,21 @@ namespace tr {
                         .village_helper()
                         .ShowVillagerHeadInfo(results["onOroff"].getRaw<bool>())
                         .SendTo(output);
+
                     break;
 
                 case do_hash("info"):
                     if (results["villageID"].isSet) {
-                        output.success("You choose one");
+                        tr::mod()
+                            .village_helper()
+                            .PrintDetails(results["villageID"].getRaw<int>(),
+                                          Vec3::ZERO)
+                            .SendTo(output);
                     } else {
-                        output.success("You choose nearest");
+                        tr::mod()
+                            .village_helper()
+                            .PrintDetails(-1, origin.getPlayer()->getPos())
+                            .SendTo(output);
                     }
                     break;
             }
