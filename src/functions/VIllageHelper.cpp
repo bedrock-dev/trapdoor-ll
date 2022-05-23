@@ -50,6 +50,11 @@ namespace tr {
             return dAccess<DwellerTickMapType, DWELLER_TICK_MAP_OFFSET>(v);
         }
 
+        std::array<size_t, 4> Village_getDwellerCount(Village *v) {
+            auto &map = Village_getDwellerTickMap(v);
+            return {map[0].size(), map[1].size(), map[2].size(), map[3].size()};
+        }
+
         void Village_showHeadInfo(int vid, Village *v) {
             auto map = Village_getDwellerPOIMap(v);
             int idx = 1;
@@ -177,17 +182,16 @@ namespace tr {
             if (kv.second) {
                 auto v = kv.second;
                 auto bound = fromAABB(v->getBounds());
+                auto dc_map = Village_getDwellerCount(v);
                 builder.text(" - ")
-                    .sTextF(TextBuilder::GREEN, "[%-2d]", kv.first)
+                    .sTextF(TextBuilder::GREEN, "[%d] ", kv.first)
                     .pos(tr::fromVec3(v->getCenter()).toBlockPos())
                     .text(" r:")
                     .num(v->getApproximateRadius())
                     .text(" p:")
-                    .num(-1)
-                    .text("/")
-                    .num(-1)
+                    .num(dc_map[static_cast<size_t>(DwellerType::Villager)])
                     .text(" g:")
-                    .num(-1)
+                    .num(dc_map[static_cast<size_t>(DwellerType::IronGolem)])
                     .text(" b:")
                     .num(v->getBedPOICount())
                     .text(" [")
@@ -201,10 +205,10 @@ namespace tr {
     }
 
     ActionResult VillageHelper::PrintDetails(int vid, const Vec3 &pos) {
-        tr::logger().debug("vid = {}, {}{}{}", vid, pos.x, pos.y, pos.z);
         if (this->vs_.empty()) {
             return {"no village", false};
         }
+
         if (vid == -1) {
             vid = this->vs_.begin()->first;
             auto dis = pos.distanceTo(this->vs_.begin()->second->getCenter());
@@ -226,6 +230,7 @@ namespace tr {
         auto center = vill->getCenter().toBlockPos();
         auto minPos = vill->getBounds().pointA.toBlockPos();
         auto maxPos = vill->getBounds().pointB.toBlockPos();
+        auto dc_map = Village_getDwellerCount(vill);
         builder
             .textF("VID: %d          UUID: %s", it->first,
                    vill->getUniqueID().asString().c_str())
@@ -240,11 +245,10 @@ namespace tr {
             .num(vill->getApproximateRadius())
             .text("\n")
             .text("Dwellers: ")
-            .sTextF(TextBuilder::GREEN, "%d / %d %d\n", -1, -1, -1
-                    // getWorkedVillagerNum(),
-                    // getPopulation(),
-                    // getIronGolemNum()
-                    )
+            .sTextF(TextBuilder::GREEN, "%d / %d/ %d\n",
+                    dc_map[static_cast<size_t>(DwellerType::Villager)],
+                    dc_map[static_cast<size_t>(DwellerType::IronGolem)],
+                    dc_map[static_cast<size_t>(DwellerType::Cat)])
             .text(
                 "POIS:\n      Bed               |                  Work       "
                 "|\n");
@@ -288,6 +292,7 @@ namespace tr {
         builder.textF("Alarm:  %d", existAlarm);
         return {builder.get(), true};
     }
+
     ActionResult VillageHelper::ShowBounds(bool able) {
         this->show_bounds_ = able;
         return {"", true};

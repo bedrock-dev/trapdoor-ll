@@ -4,6 +4,7 @@
 #include "LoggerAPI.h"
 #include "Settings.h"
 #include "VillageHelper.h"
+
 namespace tr {
 
     class TrapdoorMod {

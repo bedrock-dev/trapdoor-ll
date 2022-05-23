@@ -31,7 +31,7 @@ namespace tr {
     void SetupLogCommand();
 
     void SetupTestCommand();
-
+    void SetupSpawnCommand();
 }  // namespace tr
 
 #endif  // TRAPDOOR_COMMANDHELPER_H

@@ -1,6 +1,7 @@
 #include "TrapdoorMod.h"
 
 #include "CommandHelper.h"
+#include "Events.h"
 #include "LoggerAPI.h"
 
 namespace tr {
@@ -18,6 +19,7 @@ namespace tr {
 
     void InitMod() {
         logger().consoleLevel = 8;
+        tr::SubscribeEvents();
         setupCommands();
     }
 
