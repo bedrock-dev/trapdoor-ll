@@ -37,6 +37,23 @@ namespace tr {
                         .village_helper()
                         .ShowBounds(results["onOroff"].getRaw<bool>())
                         .SendTo(output);
+                case do_hash("spawn"):
+                    tr::mod()
+                        .village_helper()
+                        .ShowIronSpawnArea(results["onOroff"].getRaw<bool>())
+                        .SendTo(output);
+                case do_hash("center"):
+                    tr::mod()
+                        .village_helper()
+                        .ShowCenter(results["onOroff"].getRaw<bool>())
+                        .SendTo(output);
+
+                case do_hash("poi"):
+                    tr::mod()
+                        .village_helper()
+                        .ShowPoiQury(results["onOroff"].getRaw<bool>())
+                        .SendTo(output);
+
                     break;
             }
         };

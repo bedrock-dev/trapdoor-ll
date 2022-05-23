@@ -87,9 +87,9 @@ namespace tr {
                     char buffer[32];
                     sprintf(buffer, "%.3f", (double)x);
                     std::string s(buffer);
-                    sText(s, DARK_GREEN | BOLD);
+                    sText(DARK_GREEN | BOLD, s);
                 } else {
-                    sText(std::to_string(x), DARK_GREEN | BOLD);
+                    sText(DARK_GREEN | BOLD, std::to_string(x));
                 }
             }
             return *this;

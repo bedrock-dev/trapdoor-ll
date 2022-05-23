@@ -27,25 +27,6 @@ namespace tr {
             return color;
         }
 
-        //对外使用tr自己的vec3，调api时使用自己的
-        void spawnParticle(const TVec3& pos, const std::string& type,
-                           int dimID) {
-            Vec3 p(pos.x, pos.y, pos.z);
-            Level::spawnParticleEffect(
-                type, p,
-                Level::getDimension(
-                    static_cast<AutomaticID<Dimension, int> >(dimID)));
-        }
-
-        std::string buildLienParticleType(int length, TFACING direction,
-                                          PCOLOR color, bool back = false) {
-            std::string str = "trapdoor:line";
-            if (back) str += "_back";
-            str += std::to_string(length);
-            return str + lineParticleFacing()[static_cast<int>(direction)] +
-                   lineParticleColor()[static_cast<int>(color)];
-        }
-
         //把整数进行二进制分割，获取粒子的生成坐标
         std::map<float, int> binSplit(float start, float end) {
             std::map<float, int> lengthMap;
@@ -71,6 +52,23 @@ namespace tr {
         }
 
     }  // namespace
+       //对外使用tr自己的vec3，调api时使用自己的
+    void SpawnParticle(const TVec3& pos, const std::string& type, int dimID) {
+        Vec3 p(pos.x, pos.y, pos.z);
+        Level::spawnParticleEffect(
+            type, p,
+            Level::getDimension(
+                static_cast<AutomaticID<Dimension, int> >(dimID)));
+    }
+
+    std::string buildLienParticleType(int length, TFACING direction,
+                                      PCOLOR color, bool back = false) {
+        std::string str = "trapdoor:line";
+        if (back) str += "_back";
+        str += std::to_string(length);
+        return str + lineParticleFacing()[static_cast<int>(direction)] +
+               lineParticleColor()[static_cast<int>(color)];
+    }
 
     void DrawLine(const TVec3& originPoint, TFACING direction, float length,
                   PCOLOR color, int dimType) {
@@ -129,10 +127,10 @@ namespace tr {
             auto backParticleTypeInv = buildLienParticleType(
                 points.second, invFacing(direction), color, true);
 
-            spawnParticle(points.first, particleType, dimType);
-            spawnParticle(points.first, backParticleType, dimType);
-            spawnParticle(points.first, particleTypeInv, dimType);
-            spawnParticle(points.first, backParticleTypeInv, dimType);
+            SpawnParticle(points.first, particleType, dimType);
+            SpawnParticle(points.first, backParticleType, dimType);
+            SpawnParticle(points.first, particleTypeInv, dimType);
+            SpawnParticle(points.first, backParticleTypeInv, dimType);
         }
     }
 

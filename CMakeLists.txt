@@ -24,6 +24,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/data/TVec3.cpp
         src/data/TBlockPos.cpp
         src/data/TAABB.cpp
+        src/data/TActor.cpp
         src/data/DataConverter.cpp
         src/dllmain.cpp
         src/base/TrapdoorMod.cpp
