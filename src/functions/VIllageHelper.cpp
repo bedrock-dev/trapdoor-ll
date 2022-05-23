@@ -1,4 +1,10 @@
+// clang-format off
+#include "GlobalServiceAPI.h"
+// clang-format on
+
 #include "VillageHelper.h"
+#include <MC/Actor.hpp>
+#include <MC/VillagerV2.hpp>
 
 #include <MC/Dimension.hpp>
 #include <MC/Level.hpp>
@@ -10,7 +16,6 @@
 #include <unordered_set>
 
 #include "DataConverter.h"
-#include "GlobalServiceAPI.h"
 #include "Msg.h"
 #include "Particle.h"
 #include "TAABB.h"
@@ -27,11 +32,15 @@ namespace tr {
         // Village::_getDwellerMap
         constexpr size_t DWELLER_TICK_MAP_OFFSET = 160;
 
-        typedef std::array<std::unordered_map<ActorUniqueID, TDwellerData>, 4>
+        typedef std::array<std::unordered_map<ActorUniqueID, tr::TDwellerData,
+                                              TActorUniqueIDHash>,
+                           4>
             DwellerTickMapType;
 
-        typedef std::unordered_map<TActorUniqueID,
-                                   std::array<std::weak_ptr<POIInstance>, 3>>
+        //村庄的POI分配表
+        typedef std::unordered_map<ActorUniqueID,
+                                   std::array<std::weak_ptr<POIInstance>, 3>,
+                                   TActorUniqueIDHash>
             DwellerPOIMapType;
 
         DwellerPOIMapType &Village_getDwellerPOIMap(Village *v) {
@@ -40,6 +49,31 @@ namespace tr {
 
         DwellerTickMapType &Village_getDwellerTickMap(Village *v) {
             return dAccess<DwellerTickMapType, DWELLER_TICK_MAP_OFFSET>(v);
+        }
+
+        void Village_showHeadInfo(int vid, Village *v) {
+            auto map = Village_getDwellerPOIMap(v);
+            int idx = 1;
+            const char *icons[3] = {"B", "M", "J"};
+            for (auto &kv : map) {
+                // auto actor = Global<Level>->fetchEntity(villager.first,
+                // false); if (actor) {
+                //     TextBuilder builder;
+                //     builder.textF("[%d] %d", vid, idx);
+                //     ++idx;
+                //     for (int index = 0; index < 3; ++index) {
+                //         auto poi = villager.second[index].lock();
+                //         if (poi) {
+                //             // builder.sTextF(MSG_COLOR::GREEN, "
+                //             // %s",icons[index]);
+                //         } else {
+                //             // builder.sTextF(MSG_COLOR::RED, " %s",
+                //             // icons[index]);
+                //         }
+                //     }
+                //     //  actor->setNameTag(builder.get());
+                // }
+            }
         }
 
         int getVIDFormPool(const std::string &uid) {
@@ -70,6 +104,10 @@ namespace tr {
         static int refresh_time = 0;
         refresh_time = (refresh_time + 1) % 40;
         if (refresh_time != 1) return;
+
+        if (this->show_head_info_) {
+            this->SetVillagerHeadInfo();
+        }
         for (auto kv : this->vs_) {
             auto v = kv.second;
             if (this->show_bounds_) {
@@ -108,6 +146,11 @@ namespace tr {
         this->vs_.insert({vid, village});
     }
 
+    void VillageHelper::SetVillagerHeadInfo() {
+        for (auto &kv : this->vs_) {
+            Village_showHeadInfo(kv.first, kv.second);
+        }
+    }
     ActionResult VillageHelper::ListTickingVillages(bool details) {
         std::string res;
         if (this->vs_.empty()) {
@@ -158,6 +201,11 @@ namespace tr {
     }
     ActionResult VillageHelper::ShowIronSpawnArea(bool able) {
         this->show_iron_spawn_ = able;
+        return {"", true};
+    }
+
+    ActionResult VillageHelper::ShowVillagerHeadInfo(bool able) {
+        this->show_head_info_ = true;
         return {"", true};
     }
 }  // namespace tr

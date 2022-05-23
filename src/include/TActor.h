@@ -1,18 +1,11 @@
 #ifndef TRAPDOOR_TACTOR
 #define TRAPDOOR_TACTOR
+#include <MC/ActorUniqueID.hpp>
 #include <cstdint>
 
 #include "TBlockPos.h"
 
 namespace tr {
-
-    struct TActorUniqueID {
-        int64_t uid;
-
-        bool operator==(const TActorUniqueID &u) const {
-            return this->uid == u.uid;
-        }
-    };
 
     struct TActorUniqueIDHash {
         static uint64_t mceHaseAccLong(uint64_t a1, uint64_t a2) {
@@ -24,8 +17,8 @@ namespace tr {
             return mceHaseAccLong(x, a2);
         }
 
-        size_t operator()(const TActorUniqueID &key) const {
-            return mceHsaLongLong(key.uid >> 32, key.uid);
+        size_t operator()(const ActorUniqueID &key) const {
+            return mceHsaLongLong((key.id) >> 32, key.id);
         }
     };
 

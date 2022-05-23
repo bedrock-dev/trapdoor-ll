@@ -13,16 +13,23 @@ namespace tr {
             "village", "village helper", CommandPermissionLevel::GameMasters);
 
         auto &optSwitch = command->setEnum(
-            "switch", {"bound", "spawn", "center", "poi", "head"});
+            "optSwitch", {"bound", "spawn", "center", "poi", "head"});
         command->mandatory("village", ParamType::Enum, optSwitch,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("onOroff", ParamType::Bool);
         command->addOverload({optSwitch, "onOroff"});
 
-        auto &optOther = command->setEnum("other", {"list", "near"});
-        command->mandatory("village", ParamType::Enum, optOther,
+        auto &optList = command->setEnum("optList", {"list"});
+        command->mandatory("village", ParamType::Enum, optList,
                            CommandParameterOption::EnumAutocompleteExpansion);
+        command->addOverload({optList});
+
+        auto &optOther = command->setEnum("optOther", {"info"});
+        command->optional("village", ParamType::Enum, optOther,
+                          CommandParameterOption::EnumAutocompleteExpansion);
         command->addOverload({optOther});
+        command->mandatory("villageID", ParamType::Int);
+        command->addOverload({optOther, "villageID"});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
@@ -32,28 +39,49 @@ namespace tr {
                 case do_hash("list"):
                     tr::mod().village_helper().ListTickingVillages(true).SendTo(
                         output);
+                    break;
+
                 case do_hash("bound"):
                     tr::mod()
                         .village_helper()
                         .ShowBounds(results["onOroff"].getRaw<bool>())
                         .SendTo(output);
+                    break;
+
                 case do_hash("spawn"):
                     tr::mod()
                         .village_helper()
                         .ShowIronSpawnArea(results["onOroff"].getRaw<bool>())
                         .SendTo(output);
+                    break;
+
                 case do_hash("center"):
                     tr::mod()
                         .village_helper()
                         .ShowCenter(results["onOroff"].getRaw<bool>())
                         .SendTo(output);
+                    break;
 
                 case do_hash("poi"):
                     tr::mod()
                         .village_helper()
                         .ShowPoiQury(results["onOroff"].getRaw<bool>())
                         .SendTo(output);
+                    break;
 
+                case do_hash("head"):
+                    tr::mod()
+                        .village_helper()
+                        .ShowVillagerHeadInfo(results["onOroff"].getRaw<bool>())
+                        .SendTo(output);
+                    break;
+
+                case do_hash("info"):
+                    if (results["villageID"].isSet) {
+                        output.success("You choose one");
+                    } else {
+                        output.success("You choose nearest");
+                    }
                     break;
             }
         };
