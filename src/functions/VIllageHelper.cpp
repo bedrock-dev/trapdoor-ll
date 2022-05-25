@@ -245,13 +245,13 @@ namespace tr {
             .num(vill->getApproximateRadius())
             .text("\n")
             .text("Dwellers: ")
-            .sTextF(TextBuilder::GREEN, "%d / %d/ %d\n",
+            .sTextF(TextBuilder::GREEN, "%d / %d / %d\n",
                     dc_map[static_cast<size_t>(DwellerType::Villager)],
                     dc_map[static_cast<size_t>(DwellerType::IronGolem)],
                     dc_map[static_cast<size_t>(DwellerType::Cat)])
             .text(
-                "POIS:\n      Bed               |                  Work       "
-                "|\n");
+                "POIS:\n      Bed               |         Alarm          |     "
+                "              Work         |\n");
         auto map = Village_getDwellerPOIMap(vill);
         bool existAlarm = false;
         for (auto &villager : map) {
@@ -260,10 +260,6 @@ namespace tr {
                     builder.text("|");
                 }
                 auto poi = villager.second[index].lock();
-                if (index == 1) {
-                    if (poi) existAlarm = true;
-                    continue;
-                }
                 if (poi) {
                     auto pos = poi->getPosition();
                     auto cap = poi->getOwnerCapacity();
@@ -289,7 +285,6 @@ namespace tr {
                 }
             }
         }
-        builder.textF("Alarm:  %d", existAlarm);
         return {builder.get(), true};
     }
 
