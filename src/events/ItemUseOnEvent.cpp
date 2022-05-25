@@ -9,7 +9,7 @@
 
 namespace tr {
 
-    void SubscribeEvents() {
+    void SubscribeItemUseOnEvent() {
         // Event::PlayerUseItemOnEvent ::subscribe(
         //     [](const Event::PlayerUseItemOnEvent& ev) {
         //         tr::logger().debug("{} use {} on {}",

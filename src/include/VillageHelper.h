@@ -33,6 +33,8 @@ namespace tr {
 
         ActionResult Goto(int vid, const Vec3& pos);
 
+        bool ShowVillageInfo(Player* p, Actor* actor);
+
        private:
         std::unordered_map<int, Village*> vs_;
         bool show_center_ = false;

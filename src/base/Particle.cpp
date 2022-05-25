@@ -161,4 +161,10 @@ namespace tr {
         DrawLine(p5, TFACING::NEG_Y, dy, color, dimType);
         DrawLine(p5, TFACING::NEG_Z, dz, color, dimType);
     }
+
+    void ShortHightLightBlock(const TBlockPos& pos, PCOLOR color, int dimType) {
+        auto p1 = pos.toVec3();
+        auto aabb = TAABB(p1, p1 + TVec3(1, 1, 1));
+        DrawAABB(aabb, color, false, dimType);
+    }
 }  // namespace tr

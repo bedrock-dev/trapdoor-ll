@@ -302,6 +302,7 @@ namespace tr {
         this->show_poi_query_ = able;
         return {"", true};
     }
+
     ActionResult VillageHelper::ShowIronSpawnArea(bool able) {
         this->show_iron_spawn_ = able;
         return {"", true};
@@ -312,6 +313,39 @@ namespace tr {
         return {"", true};
     }
 
+    bool VillageHelper::ShowVillageInfo(Player *p, Actor *actor) {
+        if (!actor || !p) {
+            return true;
+        }
+        auto auid = actor->getUniqueID();
+
+        for (auto v : this->vs_) {
+            auto dweller_map = Village_getDwellerPOIMap(v.second);
+            auto iter = dweller_map.find(auid);
+            const static std::string name[] = {"Bed", "Alarm", "Work"};
+            if (iter != dweller_map.end()) {
+                TextBuilder builder;
+                builder.textF("VID: %d\n", v.first);
+                for (int i = 0; i < 3; i++) {
+                    const auto &poi = iter->second[i].lock();
+                    if (poi) {
+                        builder.textF(
+                            "%s: [%d %d %d],%d/%d %.2f %zu\n",
+                            poi->getTypeName(), poi->getPosition().x,
+                            poi->getPosition().y, poi->getPosition().z,
+                            poi->getOwnerCount(), poi->getOwnerCapacity(),
+                            poi->getRadius(), poi->getWeight());
+                        tr::ShortHightLightBlock(
+                            fromBlockPos(poi->getPosition()), PCOLOR::YELLOW,
+                            0);
+                    }
+                }
+                p->sendText(builder.get());
+            }
+        }
+
+        return false;
+    }
 }  // namespace tr
 
 THook(void, "?tick@Village@@QEAAXUTick@@AEAVBlockSource@@@Z", Village *village,

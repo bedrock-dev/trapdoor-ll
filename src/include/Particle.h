@@ -14,5 +14,8 @@ namespace tr {
                   PCOLOR color, int dimType);
 
     void DrawAABB(const TAABB& aabb, PCOLOR color, bool mark, int dimType);
+
+    void ShortHightLightBlock(const TBlockPos& pos, PCOLOR color, int dimType);
 }  // namespace tr
+
 #endif

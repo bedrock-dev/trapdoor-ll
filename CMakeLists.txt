@@ -39,6 +39,8 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/functions/VillageHelper.cpp
         src/functions/SpawnHelper.cpp
         src/events/ItemUseOnEvent.cpp
+        src/events/PlayerAttackEvent.cpp
+        
         )
 
 include_directories(SDK/Header)
