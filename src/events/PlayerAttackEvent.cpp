@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 #include "EventAPI.h"
+#include "InfoDisplayer.h"
 #include "TrapdoorMod.h"
 #include "VillageHelper.h"
 
@@ -29,7 +30,9 @@ namespace tr {
                     return tr::mod().village_helper().ShowVillageInfo(
                         ev.mPlayer, ev.mTarget);
                 }
-                return true;
+
+                return tr::displayActorInfo(ev.mPlayer, ev.mTarget);
+                ;
             });
     }
 }  // namespace tr

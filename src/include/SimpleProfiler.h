@@ -103,7 +103,7 @@ namespace tr {
 
     //普通profile
     struct SimpleProfiler {
-        enum Type { Normal, Chunk, PendingTick, Actor };
+        enum Type { Normal, Chunk, PendingTick, Entity };
 
         SimpleProfiler::Type type = Normal;
         bool profiling = false;

@@ -39,7 +39,8 @@ namespace tr {
                     tr::StartProfiler(20, SimpleProfiler::Chunk).SendTo(output);
                     break;
                 case do_hash("actor"):
-                    tr::StartProfiler(20, SimpleProfiler::Actor).SendTo(output);
+                    tr::StartProfiler(20, SimpleProfiler::Entity)
+                        .SendTo(output);
                     break;
                 case do_hash("pt"):
                     ErrorMsg("Function is developing by developer")

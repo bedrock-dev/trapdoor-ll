@@ -82,7 +82,7 @@ namespace tr {
             case SimpleProfiler::Normal:
                 this->PrintBasics();
                 break;
-            case SimpleProfiler::Actor:
+            case SimpleProfiler::Entity:
                 this->PrintActor();
                 break;
             case SimpleProfiler::PendingTick:

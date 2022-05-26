@@ -5,5 +5,4 @@
 #include "DynamicCommandAPI.h"
 namespace tr {
     void SetupSpawnCommand() {}
-
 }  // namespace tr

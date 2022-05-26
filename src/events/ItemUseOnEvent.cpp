@@ -5,19 +5,18 @@
 
 #include "EventAPI.h"
 #include "Events.h"
+#include "InfoDisplayer.h"
 #include "TrapdoorMod.h"
 
 namespace tr {
 
     void SubscribeItemUseOnEvent() {
-        // Event::PlayerUseItemOnEvent ::subscribe(
-        //     [](const Event::PlayerUseItemOnEvent& ev) {
-        //         tr::logger().debug("{} use {} on {}",
-        //         ev.mPlayer->getRealName(),
-        //                            ev.mItemStack->getName(),
-        //                            ev.mBlockInstance.getBlock()->getTypeName());
-        //         return true;
-        //     });
+        Event::PlayerUseItemOnEvent ::subscribe(
+            [](const Event::PlayerUseItemOnEvent& ev) {
+                auto* bi = const_cast<BlockInstance*>(&ev.mBlockInstance);
+                tr::displayerBlockInfo(ev.mPlayer, bi);
+                return true;
+            });
 
         // Event::PlayerAttackEvent::subscribe(
         //     [](const Event::PlayerAttackEvent& ev) {

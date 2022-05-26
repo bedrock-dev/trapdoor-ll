@@ -38,9 +38,9 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/tick/MCTick.cpp
         src/functions/VillageHelper.cpp
         src/functions/SpawnHelper.cpp
+        src/functions/InfoDisplayer.cpp 
         src/events/ItemUseOnEvent.cpp
         src/events/PlayerAttackEvent.cpp
-        
         )
 
 include_directories(SDK/Header)
