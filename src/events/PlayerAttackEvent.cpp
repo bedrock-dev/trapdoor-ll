@@ -31,7 +31,7 @@ namespace tr {
                         ev.mPlayer, ev.mTarget);
                 }
 
-                return tr::displayActorInfo(ev.mPlayer, ev.mTarget);
+                return tr::displayEntityInfo(ev.mPlayer, ev.mTarget);
                 ;
             });
     }

@@ -13,8 +13,9 @@ namespace tr {
     void SubscribeItemUseOnEvent() {
         Event::PlayerUseItemOnEvent ::subscribe(
             [](const Event::PlayerUseItemOnEvent& ev) {
-                auto* bi = const_cast<BlockInstance*>(&ev.mBlockInstance);
-                tr::displayerBlockInfo(ev.mPlayer, bi);
+                // auto* bi = const_cast<BlockInstance*>(&ev.mBlockInstance);
+                // tr::displayerBlockInfo(ev.mPlayer, bi);
+                // return true;
                 return true;
             });
 

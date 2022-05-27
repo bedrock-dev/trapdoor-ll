@@ -27,7 +27,12 @@ namespace tr {
         }
     }  // namespace
 
-    bool displayActorInfo(Player *player, Actor *a) {
+    bool displayEntityInfo(Player *player, Actor *a) {
+        if (!player) return true;
+        if (!a) {
+            player->sendText("No actor");
+            return true;
+        }
         TextBuilder builder;
         builder
             .sText(TextBuilder::AQUA, "Base: \n")
@@ -53,9 +58,11 @@ namespace tr {
         return false;
     }
 
-    bool displayerBlockInfo(Player *p, BlockInstance *bi) {
-        auto *b = bi->getBlock();
-
+    bool displayerBlockInfo(Player *p, Block *b) {
+        if (!p) return true;
+        if (!b) {
+            p->sendText("No block");
+        }
         tr::TextBuilder builder;
         builder.sText(tr::TextBuilder::AQUA, "Base:\n")
             .text("Name / Type/ Id / Rtid: ")
@@ -84,12 +91,10 @@ namespace tr {
         builder.sText(tr::TextBuilder::AQUA, "NBT:\n")
             .textF("  %s", b->getNbt()->toSNBT().c_str());
         p->sendText(builder.get());
-        return displayerRedstoneCompInfo(p, bi);
+        return displayerRedstoneCompInfo(p, b);
     }
     bool displayerEnvInfo() { return true; }
 
-    bool displayerRedstoneCompInfo(Player *p, BlockInstance *bi) {
-        return false;
-    }
+    bool displayerRedstoneCompInfo(Player *p, Block *bi) { return false; }
 
 }  // namespace tr

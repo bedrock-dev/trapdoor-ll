@@ -3,17 +3,18 @@
 
 #include <MC/BlockInstance.hpp>
 #include <MC/Dimension.hpp>
+#include <MC/ServerPlayer.hpp>
 
 #include "Global.h"
 
 namespace tr {
 
-    bool displayActorInfo(Player *player, Actor *target);
+    bool displayEntityInfo(Player *player, Actor *target);
 
-    bool displayerBlockInfo(Player *p, BlockInstance *bi);
+    bool displayerBlockInfo(Player *p, Block *bi);
     bool displayerEnvInfo();
 
-    bool displayerRedstoneCompInfo(Player *p, BlockInstance *bi);
+    bool displayerRedstoneCompInfo(Player *p, Block *b);
 
 }  // namespace tr
 

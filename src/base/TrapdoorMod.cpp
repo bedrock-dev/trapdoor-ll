@@ -29,6 +29,8 @@ namespace tr {
         SetupVillageCommand();
         SetupProfCommand();
         SetupLogCommand();
+        SetupSpawnCommand();
+        SetupDataCommand();
     }
 
 }  // namespace tr
