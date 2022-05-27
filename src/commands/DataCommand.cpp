@@ -49,16 +49,13 @@ namespace tr {
                     if (results["blockPos"].isSet) {
                         tr::displayerBlockInfo(
                             origin.getPlayer(),
-                            const_cast<Block *>(
-                                &origin.getPlayer()->getRegion().getBlock(
-                                    results["blockPos"].get<BlockPos>())));
-
+                            results["blockPos"].get<BlockPos>());
                     } else {
                         tr::displayerBlockInfo(
                             origin.getPlayer(),
                             reinterpret_cast<Actor *>(origin.getPlayer())
                                 ->getBlockFromViewVector()
-                                .getBlock());
+                                .getPosition());
                     }
                     break;
                 case do_hash("entity"):

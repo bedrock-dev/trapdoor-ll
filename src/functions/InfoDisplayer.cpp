@@ -2,6 +2,8 @@
 
 #include <MC/Actor.hpp>
 #include <MC/Block.hpp>
+#include <MC/BlockActor.hpp>
+#include <MC/BlockSource.hpp>
 #include <MC/Brightness.hpp>
 #include <MC/CircuitSystem.hpp>
 #include <MC/Dimension.hpp>
@@ -58,43 +60,59 @@ namespace tr {
         return false;
     }
 
-    bool displayerBlockInfo(Player *p, Block *b) {
+    bool displayerBlockInfo(Player *p, const BlockPos &pos) {
         if (!p) return true;
-        if (!b) {
-            p->sendText("No block");
+        auto &b = p->getRegion().getBlock(pos);
+        if (b.getTypeName() == "minecraft:air") {
+            p->sendText("get block faliure");
         }
+
         tr::TextBuilder builder;
         builder.sText(tr::TextBuilder::AQUA, "Base:\n")
-            .text("Name / Type/ Id / Rtid: ")
-            .sTextF(tr::TextBuilder::GREEN, " - %s / %s / %d / %d\n",
-                    b->getName().c_str(), b->getTypeName().c_str(), b->getId(),
-                    b->getRuntimeId())
-            .text(" - canInstatick: ")
-            .sTextF(tr::TextBuilder::GREEN, "%d\n", b->canInstatick())
+            .text(" - Name / Type: ")
+            .sTextF(tr::TextBuilder::GREEN, "%s / %s\n", b.getName().c_str(),
+                    b.getTypeName().c_str())
+
+            .text(" - ID / RTID: ")
+            .sTextF(tr::TextBuilder::GREEN, "%d / %d\n", b.getId(),
+                    b.getRuntimeId())
+            .text(" - Variant: ")
+            .sTextF(tr::TextBuilder::GREEN, "%d\n", b.getVariant())
+            .text(" - CanInstatick: ")
+            .sTextF(tr::TextBuilder::GREEN, "%d\n", b.canInstatick())
             .text(" - BlockEntity: ")
-            .sTextF(tr::TextBuilder::GREEN, "%d\n", b->hasBlockEntity());
-        auto &m = b->getMaterial();
+            .sTextF(tr::TextBuilder::GREEN, "%d\n", b.hasBlockEntity())
+            .text(" - IsSolid: ")
+            .sTextF(tr::TextBuilder::GREEN, "%d\n", b.isSolid());
+
+        auto &m = b.getMaterial();
         builder.sText(tr::TextBuilder::AQUA, "Material:\n")
             .text(" - Motion: ")
             .sTextF(tr::TextBuilder::GREEN, "%d\n", m.getBlocksMotion())
 
             .text(" - TopSolid: ")
-            .sTextF(tr::TextBuilder::GREEN, "%d\n", m.isTopSolid(true, true))
+            .sTextF(tr::TextBuilder::GREEN, "%d\n", m.isTopSolid(false, false))
             .text(" - IsSolid: ")
             .sTextF(tr::TextBuilder::GREEN, "%d\n", m.isSolid())
             .text(" - IsSolidBlocking: ")
             .sTextF(tr::TextBuilder::GREEN, "%d\n", m.isSolidBlocking())
-            .text(" - Translucency:")
+            .text(" - Translucency: ")
             .sTextF(tr::TextBuilder::GREEN, "%.3f\n", m.getTranslucency());
-        builder.sText(tr::TextBuilder::AQUA, "Debug:\n")
-            .textF("  %s", b->toDebugString().c_str());
-        builder.sText(tr::TextBuilder::AQUA, "NBT:\n")
-            .textF("  %s", b->getNbt()->toSNBT().c_str());
+
+        // builder.sText(tr::TextBuilder::AQUA, "NBT:\n")
+        //     .textF("  %s", b.get->toSNBT().c_str());
+        if (b.hasBlockEntity()) {
+            auto be = p->getRegion().getBlockEntity(pos);
+            if (be) {
+                builder.sText(tr::TextBuilder::AQUA, "BlockEntity:\n")
+                    .textF("  %s", be->getNbt()->toJson(2).c_str());
+            }
+        }
         p->sendText(builder.get());
-        return displayerRedstoneCompInfo(p, b);
+        return false;
     }
+
     bool displayerEnvInfo() { return true; }
 
     bool displayerRedstoneCompInfo(Player *p, Block *bi) { return false; }
-
 }  // namespace tr
