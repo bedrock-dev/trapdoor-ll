@@ -19,16 +19,14 @@ namespace tr {
         auto &placeEnum = command->setEnum("placeSubCommand", {"place"});
         command->mandatory("hsa", ParamType::Enum, showEnum,
                            CommandParameterOption::EnumAutocompleteExpansion);
-
         command->mandatory("hsa", ParamType::Enum, cleanEnum,
                            CommandParameterOption::EnumAutocompleteExpansion);
-
         command->mandatory("hsa", ParamType::Enum, placeEnum,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("onOroff", ParamType::Bool);
         command->mandatory("blockType", ParamType::Block);
 
-        command->addOverload({showEnum, "onOfoff"});
+        command->addOverload({showEnum, "onOroff"});
         command->addOverload({cleanEnum});
         command->addOverload({placeEnum, "blockType"});
 

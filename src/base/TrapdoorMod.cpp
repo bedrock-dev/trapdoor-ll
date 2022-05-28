@@ -34,6 +34,7 @@ namespace tr {
         SetupLogCommand();
         SetupSpawnCommand();
         SetupDataCommand();
+        SetupHsaCommand();
     }
 
 }  // namespace tr
