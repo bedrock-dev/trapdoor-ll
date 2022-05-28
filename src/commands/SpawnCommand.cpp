@@ -4,6 +4,7 @@
 
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"
+#include "SpawnHelper.h"
 
 namespace tr {
     void SetupSpawnCommand() {
@@ -22,17 +23,28 @@ namespace tr {
         command->mandatory("spawn", ParamType::Enum, optCount,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
-        command->mandatory("optCountType", ParamType::Enum, optCountType,
+        command->mandatory("countType", ParamType::Enum, optCountType,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
         // add
         // overload就是增加一些子命令，子命令需要Enum；并设定后面需要接什么类型的参数
-        command->addOverload({optCount, "optCountType"});
+        command->addOverload({optCount, "countType"});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result>
-                         &results) {};
+                         &results) {
+            auto countParam = std::string();
+            switch (do_hash(results["spawn"].getRaw<std::string>().c_str())) {
+                case do_hash("count"):
+                    tr::CountActors(
+                        reinterpret_cast<Player *>(origin.getPlayer()),
+                        results["countType"].getRaw<std::string>())
+                        .SendTo(output);
+                    break;
+            }
+
+        };
         command->setCallback(cb);
         DynamicCommand::setup(std::move(command));
     }

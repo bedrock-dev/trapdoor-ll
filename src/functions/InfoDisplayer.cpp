@@ -55,7 +55,7 @@ namespace tr {
         builder.sText(TextBuilder::AQUA, "Dbg:\n")
             .textF("%s\n", getDbgString(a).c_str());
         builder.sText(tr::TextBuilder::AQUA, "NBT:\n")
-            .textF("  %s", a->getNbt()->toSNBT().c_str());
+            .textF("  %s", a->getNbt()->toPrettySNBT(true).c_str());
         player->sendText(builder.get());
         return false;
     }
@@ -105,7 +105,7 @@ namespace tr {
             auto be = p->getRegion().getBlockEntity(pos);
             if (be) {
                 builder.sText(tr::TextBuilder::AQUA, "BlockEntity:\n")
-                    .textF("  %s", be->getNbt()->toJson(2).c_str());
+                    .textF("  %s", be->getNbt()->toPrettySNBT(true).c_str());
             }
         }
         p->sendText(builder.get());

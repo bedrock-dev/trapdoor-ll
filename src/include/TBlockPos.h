@@ -98,6 +98,16 @@ namespace tr {
     };
 
     // typedef TBlockPos2 ChunkPos;
+    class TBoundingBox {
+       public:
+        TBlockPos minPos{};
+        TBlockPos maxPos{};
+        inline bool operator<(const TBoundingBox &rhs) const {
+            if (minPos < rhs.minPos) return true;
+            if (rhs.minPos < minPos) return false;
+            return maxPos < rhs.maxPos;
+        }
+    };
 
 }  // namespace tr
 

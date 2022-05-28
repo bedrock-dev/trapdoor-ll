@@ -40,6 +40,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/functions/VillageHelper.cpp
         src/functions/SpawnHelper.cpp
         src/functions/InfoDisplayer.cpp 
+        src/functions/HsaHelper.cpp 
         src/events/ItemUseOnEvent.cpp
         src/events/PlayerAttackEvent.cpp
         )
