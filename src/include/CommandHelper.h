@@ -38,6 +38,8 @@ namespace tr {
 
     void SetupHsaCommand();
 
+    void SetupTrapdoorCommand();
+
 }  // namespace tr
 
 #endif  // TRAPDOOR_COMMANDHELPER_H

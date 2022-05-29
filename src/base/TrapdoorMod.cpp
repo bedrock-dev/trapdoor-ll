@@ -35,6 +35,7 @@ namespace tr {
         SetupSpawnCommand();
         SetupDataCommand();
         SetupHsaCommand();
+        SetupTrapdoorCommand();
     }
 
 }  // namespace tr

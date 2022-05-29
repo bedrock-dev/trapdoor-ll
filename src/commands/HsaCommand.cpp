@@ -24,11 +24,11 @@ namespace tr {
         command->mandatory("hsa", ParamType::Enum, placeEnum,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("onOroff", ParamType::Bool);
-        command->mandatory("blockType", ParamType::Block);
+        command->mandatory("block", ParamType::Block);
 
         command->addOverload({showEnum, "onOroff"});
         command->addOverload({cleanEnum});
-        command->addOverload({placeEnum, "blockType"});
+        command->addOverload({placeEnum, "block"});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
@@ -45,6 +45,7 @@ namespace tr {
                     tr::mod().hsa_manager().clear().SendTo(output);
                     break;
                 case do_hash("place"):
+                    // results["block"].get<Block>();
                     break;
             }
         };
