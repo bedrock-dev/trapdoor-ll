@@ -1,10 +1,13 @@
 #include "InfoDisplayer.h"
 
 #include <MC/Actor.hpp>
+#include <MC/BaseCircuitComponent.hpp>
+#include <MC/Biome.hpp>
 #include <MC/Block.hpp>
 #include <MC/BlockActor.hpp>
 #include <MC/BlockSource.hpp>
 #include <MC/Brightness.hpp>
+#include <MC/CircuitSceneGraph.hpp>
 #include <MC/CircuitSystem.hpp>
 #include <MC/Dimension.hpp>
 #include <MC/Material.hpp>
@@ -20,6 +23,12 @@
 namespace tr {
 
     namespace {
+
+        CircuitSceneGraph &getCircuitSceneGraph(CircuitSystem *system) {
+            // !CircuitSystem::updateDependencies
+            return dAccess<CircuitSceneGraph, 8>(system);
+        }
+
         std::string getDbgString(Actor *actor) {
             std::vector<std::string> dbgs;
             actor->getDebugText(dbgs);
@@ -114,5 +123,20 @@ namespace tr {
 
     bool displayerEnvInfo() { return true; }
 
-    bool displayerRedstoneCompInfo(Player *p, Block *bi) { return false; }
+    bool displayerRedstoneCompInfo(Player *p, const BlockPos &pos) {
+        tr::logger().debug("test");
+        auto &cs = p->getDimension().getCircuitSystem();
+        auto &graph = getCircuitSceneGraph(&cs);
+        auto comp = graph.getBaseComponent(pos);
+        if (!comp) {
+            p->sendText("Not an redstone component");
+            return false;
+        }
+        p->sendText("Strength =>  " + std::to_string(comp->getStrength()));
+
+        auto &block = p->getRegion().getBlock(pos);
+        auto &mobs = p->getRegion().getBiome(pos).getMobs();
+        // block.getMobToSpawn("");
+        return false;
+    }
 }  // namespace tr

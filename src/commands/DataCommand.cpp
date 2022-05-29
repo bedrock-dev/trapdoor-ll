@@ -57,6 +57,7 @@ namespace tr {
                                 ->getBlockFromViewVector()
                                 .getPosition());
                     }
+
                     break;
                 case do_hash("entity"):
                     tr::displayEntityInfo(
@@ -64,7 +65,18 @@ namespace tr {
                         reinterpret_cast<Actor *>(origin.getPlayer())
                             ->getActorFromViewVector(10));
                     break;
-                case do_hash("redstne"):
+                case do_hash("redstone"):
+                    if (results["blockPos"].isSet) {
+                        tr::displayerRedstoneCompInfo(
+                            origin.getPlayer(),
+                            results["blockPos"].get<BlockPos>());
+                    } else {
+                        tr::displayerRedstoneCompInfo(
+                            origin.getPlayer(),
+                            reinterpret_cast<Actor *>(origin.getPlayer())
+                                ->getBlockFromViewVector()
+                                .getPosition());
+                    }
                     break;
             }
         };

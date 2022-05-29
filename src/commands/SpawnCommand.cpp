@@ -1,10 +1,13 @@
 
+#include <MC/Actor.hpp>
+#include <MC/BlockInstance.hpp>
 #include <MC/Dimension.hpp>
 #include <string>
 
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"
 #include "SpawnHelper.h"
+
 
 namespace tr {
     void SetupSpawnCommand() {
@@ -16,6 +19,8 @@ namespace tr {
         // set enum就是给这个命令加一些enum值，不会产生任何意义
         auto &optCount =
             command->setEnum("actor counter sub command", {"count"});
+        auto &prob = command->setEnum("actor counter sub command", {"prob"});
+
         auto &optCountType =
             command->setEnum("counter options", {"chunk", "all", "density"});
 
@@ -23,8 +28,15 @@ namespace tr {
         command->mandatory("spawn", ParamType::Enum, optCount,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
+        command->mandatory("spawn", ParamType::Enum, prob,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+
         command->mandatory("countType", ParamType::Enum, optCountType,
                            CommandParameterOption::EnumAutocompleteExpansion);
+
+        command->optional("blockPos", ParamType::BlockPos);
+        //添加子命令并进行类型绑定
+        command->addOverload({prob, "blockPos"});
 
         // add
         // overload就是增加一些子命令，子命令需要Enum；并设定后面需要接什么类型的参数
@@ -42,8 +54,20 @@ namespace tr {
                         results["countType"].getRaw<std::string>())
                         .SendTo(output);
                     break;
-            }
 
+                case do_hash("prob"):
+                    if (results["blockPos"].isSet) {
+                        tr::printSpawnProbability(
+                            reinterpret_cast<Player *>(origin.getPlayer()),
+                            results["blockPos"].get<BlockPos>());
+                    } else {
+                        tr::printSpawnProbability(
+                            reinterpret_cast<Player *>(origin.getPlayer()),
+                            reinterpret_cast<Actor *>(origin.getPlayer())
+                                ->getBlockFromViewVector()
+                                .getPosition());
+                    }
+            }
         };
         command->setCallback(cb);
         DynamicCommand::setup(std::move(command));

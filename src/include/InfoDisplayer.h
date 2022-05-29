@@ -15,9 +15,7 @@ namespace tr {
     bool displayerBlockInfo(Player *p, const BlockPos &pos);
     bool displayerEnvInfo();
 
-    //    bool displayerBlockEntityInfo(Player *p, Block *bi);
-
-    bool displayerRedstoneCompInfo(Player *p, Block *b);
+    bool displayerRedstoneCompInfo(Player *p, const BlockPos &pos);
 
 }  // namespace tr
 
