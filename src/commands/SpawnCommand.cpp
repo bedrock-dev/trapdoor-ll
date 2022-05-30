@@ -1,5 +1,4 @@
 
-#include <MC/Actor.hpp>
 #include <MC/BlockInstance.hpp>
 #include <MC/Dimension.hpp>
 #include <string>
@@ -7,7 +6,6 @@
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"
 #include "SpawnHelper.h"
-
 
 namespace tr {
     void SetupSpawnCommand() {
@@ -17,9 +15,8 @@ namespace tr {
             "spawn", "get spawn info", CommandPermissionLevel::GameMasters);
 
         // set enum就是给这个命令加一些enum值，不会产生任何意义
-        auto &optCount =
-            command->setEnum("actor counter sub command", {"count"});
-        auto &prob = command->setEnum("actor counter sub command", {"prob"});
+        auto &optCount = command->setEnum("CountCmd", {"count"});
+        auto &prob = command->setEnum("probilityCmd", {"prob"});
 
         auto &optCountType =
             command->setEnum("counter options", {"chunk", "all", "density"});
@@ -59,13 +56,15 @@ namespace tr {
                     if (results["blockPos"].isSet) {
                         tr::printSpawnProbability(
                             reinterpret_cast<Player *>(origin.getPlayer()),
-                            results["blockPos"].get<BlockPos>());
+                            results["blockPos"].get<BlockPos>())
+                            .SendTo(output);
                     } else {
                         tr::printSpawnProbability(
                             reinterpret_cast<Player *>(origin.getPlayer()),
                             reinterpret_cast<Actor *>(origin.getPlayer())
                                 ->getBlockFromViewVector()
-                                .getPosition());
+                                .getPosition())
+                            .SendTo(output);
                     }
             }
         };

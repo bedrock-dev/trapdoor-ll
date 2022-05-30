@@ -12,16 +12,25 @@ namespace tr {
     ActionResult printSpawnProbability(Player *player, const BlockPos &pos);
 
     //! 这个结构的代码不要动，顺序也别动
-    struct SpawnConditions {
-        bool isOnSurface = false;
-        bool isInWater = false;
-        bool isInLava = false;
-        bool isUnderground = false;
-        uint32_t gap = 0;
-        uint64_t delayEndWorldAge = 0;
-        uint32_t rawBrightness = 0;
-        BlockPos pos{};
+
+#pragma pack(push, 1)
+    struct TSpawnConditions {
+        /*0*/ bool isOnSurface = false;
+        /*1*/ bool isInWater = false;
+        /*2*/ bool land = false;
+        /*3*/ bool isInLava = false;
+        /*4*/ bool isUnderground = false;
+        char gap2[11]{};
+        /*16*/ uint32_t rawBrightness = 0;
+        /*20*/ BlockPos pos{};
     };
+
+    static_assert(offsetof(TSpawnConditions, isOnSurface) == 0);
+    static_assert(offsetof(TSpawnConditions, isInWater) == 1);
+    static_assert(offsetof(TSpawnConditions, isUnderground) == 4);
+    static_assert(offsetof(TSpawnConditions, rawBrightness) == 16);
+    static_assert(offsetof(TSpawnConditions, pos) == 20);
+#pragma pack(pop)
 
     class SpawnHelper {
         std::vector<BlockPos> verticalSpawnPositions;

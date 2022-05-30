@@ -6,6 +6,7 @@
 #include "HookAPI.h"
 #include "Particle.h"
 
+
 namespace tr {
 
     namespace {
@@ -52,16 +53,6 @@ namespace tr {
     }
 
 }  // namespace tr
-
-/**
- *
- * @brief Construct a new THook object
- 0X1B241B0
-private: void __cdecl Spawner::_spawnStructureMob(class BlockSource &
-__ptr64,class BlockPos const & __ptr64,struct LevelChunk::HardcodedSpawningArea
-const & __ptr64,class SpawnConditions const & __ptr64) __ptr64
-
- */
 
 THook(void,
       "?_spawnStructureMob@Spawner@@AEAAXAEAVBlockSource@@AEBVBlockPos@@"

@@ -6,7 +6,6 @@
 #include "CommandHelper.h"
 #include "TBlockPos.h"
 
-
 namespace tr {
 
     enum StructureType {
