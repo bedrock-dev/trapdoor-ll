@@ -15,8 +15,9 @@ namespace tr {
             "spawn", "get spawn info", CommandPermissionLevel::GameMasters);
 
         // set enum就是给这个命令加一些enum值，不会产生任何意义
-        auto &optCount = command->setEnum("CountCmd", {"count"});
-        auto &prob = command->setEnum("probilityCmd", {"prob"});
+        auto &optCount = command->setEnum("Countcmd", {"count"});
+        auto &prob = command->setEnum("probilitycmd", {"prob"});
+        auto &forcesp = command->setEnum("forcecmd", {"forcesp"});
 
         auto &optCountType =
             command->setEnum("counter options", {"chunk", "all", "density"});
@@ -28,12 +29,19 @@ namespace tr {
         command->mandatory("spawn", ParamType::Enum, prob,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
+        command->mandatory("spawn", ParamType::Enum, forcesp,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+
         command->mandatory("countType", ParamType::Enum, optCountType,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
+        command->mandatory("actorType", ParamType::ActorType);
+
         command->optional("blockPos", ParamType::BlockPos);
+
         //添加子命令并进行类型绑定
         command->addOverload({prob, "blockPos"});
+        command->addOverload({forcesp, "actorType"});
 
         // add
         // overload就是增加一些子命令，子命令需要Enum；并设定后面需要接什么类型的参数
@@ -52,6 +60,18 @@ namespace tr {
                         .SendTo(output);
                     break;
 
+                case do_hash("forcesp"):
+                    tr::ForceSpawn(
+
+                        reinterpret_cast<Player *>(origin.getPlayer()),
+                        results["actorType"]
+                            .get<const ActorDefinitionIdentifier *>(),
+                        reinterpret_cast<Actor *>(origin.getPlayer())
+                            ->getBlockFromViewVector()
+                            .getPosition()
+
+                    );
+                    break;
                 case do_hash("prob"):
                     if (results["blockPos"].isSet) {
                         tr::printSpawnProbability(

@@ -1,18 +1,14 @@
 #ifndef TRAPDOOR_SPAWN_HELPER_H
 #define TRAPDOOR_SPAWN_HELPER_H
+#include <MC/ActorDefinitionIdentifier.hpp>
 #include <MC/Player.hpp>
 
 #include "CommandHelper.h"
 
 namespace tr {
-    ActionResult PrintCap();
-
-    ActionResult CountActors(Player *p, const std::string &type);
-
-    ActionResult printSpawnProbability(Player *player, const BlockPos &pos);
-
     //! 这个结构的代码不要动，顺序也别动
 
+    struct TMobSpawnRules {};
 #pragma pack(push, 1)
     struct TSpawnConditions {
         /*0*/ bool isOnSurface = false;
@@ -31,6 +27,17 @@ namespace tr {
     static_assert(offsetof(TSpawnConditions, rawBrightness) == 16);
     static_assert(offsetof(TSpawnConditions, pos) == 20);
 #pragma pack(pop)
+
+    ActionResult PrintCap();
+
+    ActionResult CountActors(Player *p, const std::string &type);
+
+    ActionResult printSpawnProbability(Player *player, const BlockPos &pos);
+
+    ActionResult SpawnMobCluster(Player *p, const BlockPos &pos);
+
+    ActionResult ForceSpawn(Player *p, const ActorDefinitionIdentifier *id,
+                            const BlockPos &pos);
 
     class SpawnHelper {
         std::vector<BlockPos> verticalSpawnPositions;
