@@ -40,6 +40,10 @@ namespace tr {
 
     void SetupTrapdoorCommand();
 
+    void SetupCounterCommand();
+
+    void SetupTrFunctionCommand();
+
 }  // namespace tr
 
 #endif  // TRAPDOOR_COMMANDHELPER_H
