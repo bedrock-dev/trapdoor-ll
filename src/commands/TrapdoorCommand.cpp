@@ -8,10 +8,10 @@
 #include "DynamicCommandAPI.h"
 
 namespace tr {
-    void SetupTrapdoorCommand() {
+    void setup_trapdoorCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         auto command = DynamicCommand::createCommand(
-            "trapdoor", "config", CommandPermissionLevel::GameMasters);
+            "trapdoor", "config", static_cast<CommandPermissionLevel>(level));
 
         auto &particleShowLevelEnum =
             command->setEnum("particleShowLevelEnum", {"pm"});

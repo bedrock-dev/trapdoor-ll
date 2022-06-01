@@ -4,6 +4,7 @@
 #include <MC/BlockActor.hpp>
 #include <MC/BlockSource.hpp>
 #include <MC/ItemStackBase.hpp>
+#include <stdexcept>
 
 #include "DataConverter.h"
 #include "HookAPI.h"
@@ -58,7 +59,7 @@ namespace tr {
     }
 
     ActionResult CounterChannel::print() {
-        int n = 0;
+        size_t n = 0;
         for (const auto &i : this->counterList) {
             n += i.second;
         }
@@ -68,7 +69,7 @@ namespace tr {
         }
         std::string stringBuilder;
         tr::TextBuilder builder;
-        builder.textF("Channel [%d]: Total %d items in %d gt (%.3f min(s))\n",
+        builder.textF("Channel [%d]: Total %zu items in %d gt (%.3f min(s))\n",
                       channel, n, gameTick, gameTick / 1200.0f);
 
         for (const auto &i : counterList) {
@@ -102,15 +103,19 @@ THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self,
     auto &pos = ba.getPosition();
     // try get player
     Player *nearest = nullptr;
-    Global<Level>->forEachPlayer([&](Player &player) {
-        auto &b = player.getRegion().getBlock(pos);
-        if (&b == block) {
-            tr::logger().debug("find {}", player.getRealName());
-            nearest = &player;
-            //这里能提前跳出吗
-        }
-        return true;
-    });
+
+    try {
+        Global<Level>->forEachPlayer([&](Player &player) {
+            auto &b = player.getRegion().getBlock(pos);
+            if (&b == block) {
+                tr::logger().debug("find {}", player.getRealName());
+                nearest = &player;
+                throw std::logic_error("");
+            }
+            return true;
+        });
+    } catch (std::exception &) {
+    }
 
     if (!nearest) {
         original(self, index, itemStack);

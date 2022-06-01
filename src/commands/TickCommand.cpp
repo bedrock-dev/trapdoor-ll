@@ -8,12 +8,13 @@
 #include "DynamicCommandAPI.h"
 #include "MCTick.h"
 namespace tr {
-    void SetupTickCommand() {
+
+    void setup_tickCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command =
-            DynamicCommand::createCommand("tick", "change world tick command",
-                                          CommandPermissionLevel::GameMasters);
+        auto command = DynamicCommand::createCommand(
+            "tick", "change world tick command",
+            static_cast<CommandPermissionLevel>(level));
 
         auto &optForward = command->setEnum("forward", {"forward", "wrap"});
         command->mandatory("tick", ParamType::Enum, optForward,

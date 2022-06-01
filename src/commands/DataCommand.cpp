@@ -10,11 +10,12 @@
 #include "InfoDisplayer.h"
 
 namespace tr {
-    void SetupDataCommand() {
+    void setup_dataCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
         auto command = DynamicCommand::createCommand(
-            "data", "get game data", CommandPermissionLevel::GameMasters);
+            "data", "print some game data",
+            static_cast<CommandPermissionLevel>(level));
 
         auto &blockSubCommandEnum =
             command->setEnum("blockSubCommand", {"block"});

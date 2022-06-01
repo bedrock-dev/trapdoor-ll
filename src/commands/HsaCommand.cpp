@@ -9,10 +9,11 @@
 #include "TrapdoorMod.h"
 
 namespace tr {
-    void SetupHsaCommand() {
+    void setup_hsaCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         auto command = DynamicCommand::createCommand(
-            "hsa", "show hsa!!", CommandPermissionLevel::GameMasters);
+            "hsa", "show hardcoded spawn area",
+            static_cast<CommandPermissionLevel>(level));
 
         auto &showEnum = command->setEnum("showSubCommand", {"show"});
         auto &cleanEnum = command->setEnum("cleanSubCommand", {"clear"});

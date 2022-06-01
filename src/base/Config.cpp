@@ -11,6 +11,7 @@ namespace tr {
     bool Configuration::init(const std::string& fileName) {
         if (!readConfigFile(fileName)) return false;
         if (!readCommandConfigs()) return false;
+        return true;
     }
 
     bool Configuration::readConfigFile(const std::string& path) {
@@ -20,7 +21,7 @@ namespace tr {
             i >> this->config;
             tr::logger().info("read config file {} successfully", path);
             return true;
-        } catch (std::exception& e) {
+        } catch (std::exception&) {
             tr::logger().error("can not read config file {}", path);
             return false;
         }
@@ -47,7 +48,8 @@ namespace tr {
         auto it = this->commandsConfigs.find(command);
         if (it == this->commandsConfigs.end()) {
             tr::logger().warn(
-                "Can nod find config info of [{}],it will not be registered");
+                "Can nod find config info of [{}],it will not be registered",
+                command);
             return {false, 2};
         }
         return it->second;

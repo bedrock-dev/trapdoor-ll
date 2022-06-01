@@ -8,11 +8,12 @@
 #include "SpawnHelper.h"
 
 namespace tr {
-    void SetupSpawnCommand() {
+    void setup_spawnCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
         auto command = DynamicCommand::createCommand(
-            "spawn", "get spawn info", CommandPermissionLevel::GameMasters);
+            "spawn", "print spawn info",
+            static_cast<CommandPermissionLevel>(level));
 
         // set enum就是给这个命令加一些enum值，不会产生任何意义
         auto &optCount = command->setEnum("Countcmd", {"count"});

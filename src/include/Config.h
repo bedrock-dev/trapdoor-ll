@@ -19,6 +19,7 @@ namespace tr {
         int permissionLevel = 1;
     };
     class Configuration {
+       public:
         CommandConfig getCommmadConfig(const std::string& command);
 
         bool init(const std::string& fileName);

@@ -7,5 +7,5 @@ inline void CheckProtocolVersion() {}
 
 void PluginInit() {
     CheckProtocolVersion();
-    tr::InitMod();
+    tr::mod().Init();
 }

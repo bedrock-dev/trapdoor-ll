@@ -20,12 +20,12 @@ namespace tr {
             20);
     }
 
-    void SetupTestCommand() {
+    void setup_testCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command =
-            DynamicCommand::createCommand("test", "change world tick command",
-                                          CommandPermissionLevel::GameMasters);
+        auto command = DynamicCommand::createCommand(
+            "test", "change world tick command",
+            static_cast<CommandPermissionLevel>(level));
 
         auto &optFreeze = command->setEnum("su", {"particle"});
         command->mandatory("test", ParamType::Enum, optFreeze,

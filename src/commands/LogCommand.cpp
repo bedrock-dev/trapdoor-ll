@@ -9,12 +9,12 @@
 
 namespace tr {
 
-    void SetupLogCommand() {
+    void setup_logCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command =
-            DynamicCommand::createCommand("log", "print some world info",
-                                          CommandPermissionLevel::GameMasters);
+        auto command = DynamicCommand::createCommand(
+            "log", "print some world info",
+            static_cast<CommandPermissionLevel>(level));
 
         auto &optMain = command->setEnum("main", {"mspt", "tps"});
         command->mandatory("log", ParamType::Enum, optMain,

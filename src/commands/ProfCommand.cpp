@@ -8,12 +8,12 @@
 #include "SimpleProfiler.h"
 
 namespace tr {
-    void SetupProfCommand() {
+    void setup_profCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command =
-            DynamicCommand::createCommand("prof", "profile world health",
-                                          CommandPermissionLevel::GameMasters);
+        auto command = DynamicCommand::createCommand(
+            "prof", "profile world health",
+            static_cast<CommandPermissionLevel>(level));
 
         auto &optContinue = command->setEnum("continue", {"continue"});
         command->mandatory("prof", ParamType::Enum, optContinue,

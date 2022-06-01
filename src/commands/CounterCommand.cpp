@@ -7,11 +7,12 @@
 #include "SpawnHelper.h"
 namespace tr {
 
-    void SetupCounterCommand() {
+    void setup_counterCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
         auto command = DynamicCommand::createCommand(
-            "counter", "hopper counter", CommandPermissionLevel::GameMasters);
+            "counter", "hopper counter command",
+            static_cast<CommandPermissionLevel>(level));
 
         auto &printOpt = command->setEnum("printCmd", {"print"});
         auto &resetOpt = command->setEnum("resetCmd", {"reset"});

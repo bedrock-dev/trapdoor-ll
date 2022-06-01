@@ -5,11 +5,12 @@
 #include "DynamicCommandAPI.h"
 #include "SpawnHelper.h"
 namespace tr {
-    void SetupTrFunctionCommand() {
+    void setup_funcCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
         auto command = DynamicCommand::createCommand(
-            "func", "trapdoor functions", CommandPermissionLevel::GameMasters);
+            "func", "trapdoor functions",
+            static_cast<CommandPermissionLevel>(level));
 
         auto &hoppercounterOpt =
             command->setEnum("hoppercounter", {"hoppercounter"});

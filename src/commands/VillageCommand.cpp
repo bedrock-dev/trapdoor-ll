@@ -6,11 +6,12 @@
 #include "VillageHelper.h"
 
 namespace tr {
-    void SetupVillageCommand() {
+    void setup_villageCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
         auto command = DynamicCommand::createCommand(
-            "village", "village helper", CommandPermissionLevel::GameMasters);
+            "village", "village helper",
+            static_cast<CommandPermissionLevel>(level));
 
         auto &optSwitch = command->setEnum(
             "optSwitch", {"bound", "spawn", "center", "poi", "head"});
