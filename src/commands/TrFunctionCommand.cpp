@@ -4,7 +4,7 @@
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"
 #include "SpawnHelper.h"
-namespace {
+namespace tr {
     void SetupTrFunctionCommand() {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
@@ -35,4 +35,4 @@ namespace {
         DynamicCommand::setup(std::move(command));
     }
 
-}  // namespace
+}  // namespace tr

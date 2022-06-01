@@ -41,6 +41,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/functions/SpawnHelper.cpp
         src/functions/InfoDisplayer.cpp 
         src/functions/HsaHelper.cpp 
+        src/functions/HopperCounter.cpp 
         src/events/ItemUseOnEvent.cpp
         src/events/PlayerAttackEvent.cpp
         )
