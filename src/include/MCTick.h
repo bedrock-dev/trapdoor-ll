@@ -1,5 +1,5 @@
-#ifndef _TRAPDOOR_GAME_TICK_H_
-#define _TRAPDOOR_GAME_TICK_H_
+#ifndef TRAPDOOR_GAME_TICK_H
+#define TRAPDOOR_GAME_TICK_H
 #include "SimpleProfiler.h"
 namespace tr {
 
@@ -30,7 +30,6 @@ namespace tr {
     double getMeanTPS();
 
     ActionResult PrintMspt();
-
     // Tick Command action
     ActionResult FreezeWorld();
 
@@ -43,6 +42,10 @@ namespace tr {
     ActionResult AccWorld(int times);
 
     ActionResult WrapWorld(int times);
+
+    ActionResult QueryWorld();
+
+    ActionResult CancelWorld();
 
     ActionResult StartProfiler(int rounds, SimpleProfiler::Type type);
 

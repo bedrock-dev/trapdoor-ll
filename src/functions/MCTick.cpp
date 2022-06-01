@@ -36,6 +36,32 @@ namespace tr {
     }  // namespace
 
     // Command Aciton
+
+    ActionResult QueryWorld() {
+        auto &info = getTickingInfo();
+        switch (info.status) {
+            case TickingStatus::Normal:
+                return {"Normal", true};
+            case TickingStatus::Frozen:
+                return {"Frozen", true};
+            case TickingStatus::Forwarding:
+                return {fmt::format("Forwarding, {} gt left",
+                                    info.forward_tick_num),
+                        true};
+            case TickingStatus::Wrap:
+                return {
+                    fmt::format("Wraping, {} gt left", info.remain_wrap_tick),
+                    true};
+            case TickingStatus::Acc:
+                return {fmt::format("{} times faster", info.acc_time), true};
+            case TickingStatus::SlowDown:
+                return {fmt::format("{} times slower", info.slow_down_time),
+                        true};
+            default:
+                return {"unknown", true};
+        }
+        return {"unknown", true};
+    }
     ActionResult FreezeWorld() {
         auto &info = getTickingInfo();
         if (info.status == TickingStatus::Frozen) {
@@ -51,6 +77,7 @@ namespace tr {
         info.acc_time = 1;
         info.forward_tick_num = 0;
         info.slow_down_time = 1;
+        info.remain_wrap_tick = 0;
         info.status = TickingStatus::Normal;
         return {"success", true};
     }
@@ -63,12 +90,13 @@ namespace tr {
             info.forward_tick_num = gt;
             info.status = TickingStatus::Forwarding;
             if (gt >= 1200) {
-                return {"~", true};
+                tr::BroadcastMessage("The world begins to forward");
+                return {"Forward start", true};
             } else {
                 return {"", true};
             }
         } else {
-            return {"err", false};
+            return {"Forward can only be used on normal or freeze mode", false};
         }
     }
     ActionResult WrapWorld(int gt) {
@@ -79,43 +107,54 @@ namespace tr {
             info.old_status = info.status;
             info.remain_wrap_tick = gt;
             info.status = TickingStatus::Wrap;
-            return {"~", true};
+            return {"Warp start", true};
         }
-        return {"~", false};
+        return {"Wrap can only be used on normal or freeze mode", false};
     }
     ActionResult SlowDownWorld(int times) {
         auto &info = getTickingInfo();
         if (info.status == TickingStatus::Normal) {
+            if (times < 2 || times > 64) {
+                return {"times show be limited in [2,64]", false};
+            }
             info.status = TickingStatus::SlowDown;
             info.slow_down_time = times;
-            return {"~", true};
+            tr::BroadcastMessage(
+                fmt::format("The world will run {} times slower", times), -1);
+            return {"", true};
         } else {
-            return {"err", false};
+            return {"Slow can only be used on normal mode", false};
         }
     }
 
     ActionResult AccWorld(int times) {
         auto &info = getTickingInfo();
         if (info.status == TickingStatus::Normal) {
+            if (times < 2 || times > 10) {
+                return {"times show be limited in [2,10]", false};
+            }
             info.acc_time = times;
             info.status = TickingStatus::Acc;
-            return {"~", true};
+            tr::BroadcastMessage(
+                fmt::format("The world will run {} times faster", times), -1);
+            return {"", true};
         } else {
-            return {"err", false};
+            return {"Acc can only be used on normal mode", false};
         }
     }
 
     ActionResult StartProfiler(int rounds, SimpleProfiler::Type type) {
         auto info = getTickingInfo();
         if (info.status != TickingStatus::Normal) {
-            return {"err1", false};
+            return {"Profiling can only be performed in normal tick state",
+                    false};
         }
 
         if (normalProfiler().profiling) {
-            return {"err2", false};
+            return {"Another profileing are running", false};
         } else {
             normalProfiler().Start(rounds, type);
-            return {"~", true};
+            return {"Profile Start", true};
         }
     }
 
@@ -168,7 +207,6 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
         tr::getMSPTinfo().push(timeResult);
         auto &prof = tr::normalProfiler();
         if (prof.profiling) {
-            tr::logger().debug("Profiling!!");
             prof.server_level_tick_time += timeResult;
             prof.current_round++;
             if (prof.current_round == prof.total_round) {
@@ -180,19 +218,18 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
     } else if (info.status == tr::TickingStatus::Wrap) {
         auto mean_mspt = tr::micro_to_mill(tr::getMSPTinfo().mean());
         int max_wrap_time = static_cast<int>(45.0 / mean_mspt);
-        max_wrap_time = std::min(max_wrap_time, 8);
+        //最快10倍速
+        max_wrap_time = std::min(max_wrap_time, 10);
+        //当前gt要跑的次数
         int m = std::min(max_wrap_time, info.remain_wrap_tick);
-        // tr::logger().debug("acc branch {} {} \n", mean_mspt, max_wrap_time);
         for (int i = 0; i < m; i++) {
-            // tr::logger().debug("Acc tick!");
+            info.remain_wrap_tick--;
             original(level);
             mod.LightTick();
         }
         mod.HeavyTick();
-        info.remain_wrap_tick -= m;
-        if (info.remain_wrap_tick == 0) {
+        if (info.remain_wrap_tick <= 0) {
             tr::BroadcastMessage("Wrap finished", -1);
-            //结束，回到之前的状态
             info.status = info.old_status;
         }
     }
@@ -210,13 +247,15 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
             break;
 
         case tr::TickingStatus::Forwarding:
-            for (auto i = 0; i < info.forward_tick_num; i++) {
+            while (info.forward_tick_num > 0) {
                 original(level);
                 mod.LightTick();
+                --info.forward_tick_num;
             }
-            mod.HeavyTick();
+
             tr::BroadcastMessage("Froward finished", -1);
-            tr::ResetWorld();
+            info.status = info.old_status;
+            mod.HeavyTick();
             break;
         case tr::TickingStatus::Acc:
             for (int i = 0; i < info.acc_time; i++) {

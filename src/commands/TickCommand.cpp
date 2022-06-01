@@ -13,7 +13,7 @@ namespace tr {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
         auto command = DynamicCommand::createCommand(
-            "tick", "change world tick command",
+            "tick", "change world ticking speed",
             static_cast<CommandPermissionLevel>(level));
 
         auto &optForward = command->setEnum("forward", {"forward", "wrap"});
@@ -22,8 +22,7 @@ namespace tr {
         command->mandatory("tickNumber", ParamType::Int);
         command->addOverload({optForward, "tickNumber"});
 
-        auto &optSpeedChange =
-            command->setEnum("speedChange", {"accelerate", "slow"});
+        auto &optSpeedChange = command->setEnum("speedChange", {"acc", "slow"});
         command->mandatory("tick", ParamType::Enum, optSpeedChange,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("times", ParamType::Int);
@@ -39,8 +38,14 @@ namespace tr {
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result>
                          &results) {
+            if (origin.getOriginType() == 1) {
+                output.error(
+                    "tick command cannot be executed inside a command block");
+                return;
+            }
+
             switch (do_hash(results["tick"].getRaw<std::string>().c_str())) {
-                case do_hash("accelerate"):
+                case do_hash("acce"):
                     tr::AccWorld(results["times"].getRaw<int>()).SendTo(output);
                     break;
                 case do_hash("slow"):
@@ -61,6 +66,8 @@ namespace tr {
                 case do_hash("reset"):
                     tr::ResetWorld().SendTo(output);
                     break;
+                case do_hash("query"):
+                    tr::QueryWorld().SendTo(output);
                 default:
                     break;
             }
