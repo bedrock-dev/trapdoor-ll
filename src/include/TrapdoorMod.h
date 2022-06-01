@@ -1,9 +1,9 @@
 #ifndef _TRAPDOOR_TRAPDOOR_H_
 #define _TRAPDOOR_TRAPDOOR_H_
 
+#include "Config.h"
 #include "HsaHelper.h"
 #include "LoggerAPI.h"
-#include "Settings.h"
 #include "VillageHelper.h"
 
 namespace tr {
@@ -22,7 +22,7 @@ namespace tr {
         VillageHelper village_helper_;
         HsaManager hsa_magager_;
 
-        Settings settings_;
+        Configuration config_;
     };
 
     Logger &logger();

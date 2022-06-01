@@ -30,7 +30,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/data/DataConverter.cpp
         src/dllmain.cpp
         src/base/TrapdoorMod.cpp
-        src/base/Settings.cpp
+        src/base/Config.cpp
         src/base/Msg.cpp
         src/base/Particle.cpp
         src/pch.cpp

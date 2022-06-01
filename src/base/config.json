@@ -1,34 +1,55 @@
 {
-  "commands": {
-    "func": {
-      "enable": true,
-      "survival": true,
-      "permissionLevel": 0
+  "commands":{
+    "tick":{
+      "enable":true,
+      "permissionlevel":0
+
     },
-    "tick": {
-      "enable": true,
-      "survival": true,
-      "permissionLevel": 1
+    "prof":{
+      "enable":true,
+      "permissionlevel":0
+
+    },
+    "village":{
+      "enable":true,
+      "permissionlevel":0  
+    },
+    "spawn":{
+      "enable":true,
+      "permissionlevel":0  
+    },
+    "counter":{
+      "enable":true,
+      "permissionlevel":0  
+    },
+    "hsa":{
+      "enable":true,
+      "permissionlevel":0  
     }
   },
-  "village": {
+  
+  "particle":{
+    "showlevel":3,
+    "maxviewdistance":128
+  },
+  "itemhook":{
+  
+  },
+  
 
+  "set":{
+    "maxPt": 100,
+    "focePlacing":0,
+    "dropperNocost": false,
+    "noDropperconst":true
   },
-  "functions": {
-    "simpleDraw": true,
-    "hopperCounter": false,
-    "CactusRotation": false,
-    "dispenserNoCost": true,
-    "forcePlaceLevel": 0,
-    "gaussRand": 0,
-    "forceOpenContainer": true
-  },
-  "parameters": {
-    "maxPtSize": 100,
-    "simDistance": 4
-  },
-  "self": {
-    "chunkBorder": true,
-    "f3": true
+
+  "hopperCounter":{},  
+  "village":{
+    "center": "minecraft:heart",
+    "bound":"blue",
+    "spawn":"red",
+    "poiquery":"green"
   }
+
 }
