@@ -35,8 +35,8 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/base/Particle.cpp
         src/pch.cpp
         src/Plugin.cpp
-        src/tick/SimpleProfiler.cpp
-        src/tick/MCTick.cpp
+        src/functions/SimpleProfiler.cpp
+        src/functions/MCTick.cpp
         src/functions/VillageHelper.cpp
         src/functions/SpawnHelper.cpp
         src/functions/InfoDisplayer.cpp 

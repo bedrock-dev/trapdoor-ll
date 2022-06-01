@@ -1,8 +1,0 @@
-//
-// Created by xhy on 2022/5/17.
-//
-
-#ifndef TRAPDOOR_ABSFUNCTION_H
-#define TRAPDOOR_ABSFUNCTION_H
-
-#endif //TRAPDOOR_ABSFUNCTION_H
