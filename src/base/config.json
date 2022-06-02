@@ -5,6 +5,10 @@
       "permissionlevel":0
 
     },
+    "log":{
+      "enable":true,
+      "permissionlevel":0
+    },
     "prof":{
       "enable":true,
       "permissionlevel":0

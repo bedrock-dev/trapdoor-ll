@@ -29,10 +29,6 @@ namespace tr {
                 case do_hash("mspt"):
                     tr::PrintMspt().SendTo(output);
                     break;
-                case do_hash("tps"):
-                    output.success(
-                        fmt::format("TPS is {} ms", tr::getMeanTPS()));
-                    break;
                 default:
                     break;
             }

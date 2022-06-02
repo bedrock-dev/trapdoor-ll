@@ -36,6 +36,25 @@ namespace tr {
         }
         return min;
     }
+    std::pair<int64_t, int64_t> MSPTInfo::pairs() const {
+        int64_t v1 = 0, cv1 = 0;
+        int64_t v2 = 0, cv2 = 0;
+        for (int i = 0; i < values.size(); i++) {
+            if (i % 2 == 0) {
+                v1 += values[i];
+                cv1++;
+            } else {
+                v2 += values[i];
+                cv2++;
+            }
+        }
+        if (cv1 != 0) v1 /= cv1;
+        if (cv2 != 0) v2 /= cv2;
+        if (v1 > v2) {
+            std::swap(v1, v2);
+        }
+        return {v1, v2};
+    }
 
     int64_t MSPTInfo::max() const {
         if (values.empty()) {

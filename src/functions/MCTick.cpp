@@ -167,10 +167,20 @@ namespace tr {
         auto min = getMSPTinfo().min();
         auto tps = 1000.0 / tr::micro_to_mill(mspt);
         tps = tps > 20.0 ? 20.0 : tps;
-        auto res = fmt::format("min:{.3f} max:{.3f} avg:{.3f} tps:{.1f}",
-                               tr::micro_to_mill(min), tr::micro_to_mill(max),
-                               tr::micro_to_mill(mspt), tps);
-        return {res, true};
+
+        tr::TextBuilder builder;
+        builder.text(" - MSPT / TPS: ")
+            .sTextF(TextBuilder::DARK_GREEN, "%.3f / %.1f\n",
+                    tr::micro_to_mill(mspt), tps)
+            .text(" - MIN / MAX: ")
+            .sTextF(TextBuilder::DARK_GREEN, "%.3f / %.3f \n",
+                    tr::micro_to_mill(min), tr::micro_to_mill(max))
+            .text(" - Normal / Redstone: ");
+        auto pair = getMSPTinfo().pairs();
+        builder.sTextF(TextBuilder::DARK_GREEN, "%.3f / %.3f \n",
+                       tr::micro_to_mill(pair.first),
+                       tr::micro_to_mill(pair.second));
+        return {builder.get(), true};
     }
 
     double getMeanMSPT() { return tr::micro_to_mill(getMSPTinfo().mean()); }

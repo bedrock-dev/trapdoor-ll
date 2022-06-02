@@ -24,13 +24,12 @@ namespace tr {
         TickingStatus old_status = TickingStatus::Normal;
     };
 
-    // Log Commmand action
     double getMeanMSPT();
 
     double getMeanTPS();
 
+    // Tick and prof Command action
     ActionResult PrintMspt();
-    // Tick Command action
     ActionResult FreezeWorld();
 
     ActionResult ResetWorld();

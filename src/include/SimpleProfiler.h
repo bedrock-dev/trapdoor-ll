@@ -37,6 +37,8 @@ namespace tr {
         int64_t min() const;
 
         int64_t max() const;
+
+        std::pair<int64_t, int64_t> pairs() const;
     };
 
     struct ChunkProfileInfo {
