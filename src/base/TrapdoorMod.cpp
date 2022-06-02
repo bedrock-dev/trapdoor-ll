@@ -33,6 +33,7 @@ namespace tr {
     void TrapdoorMod::HeavyTick() {
         village_helper_.HeavyTick();
         hsa_magager_.HeavyTick();
+        hud_helper_.tick();
     }
     void TrapdoorMod::LightTick() { village_helper_.LightTick(); }
     Logger &logger() {

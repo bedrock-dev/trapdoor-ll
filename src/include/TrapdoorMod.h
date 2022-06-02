@@ -2,6 +2,7 @@
 #define _TRAPDOOR_TRAPDOOR_H_
 
 #include "Config.h"
+#include "HUDHelper.h"
 #include "HsaHelper.h"
 #include "LoggerAPI.h"
 #include "VillageHelper.h"
@@ -22,10 +23,13 @@ namespace tr {
 
         inline Configuration &config() { return this->config_; }
 
+        inline HUDHelper &hud_helper() { return this->hud_helper_; }
+
        private:
         VillageHelper village_helper_;
         HsaManager hsa_magager_;
         Configuration config_;
+        HUDHelper hud_helper_;
     };
 
     Logger &logger();
