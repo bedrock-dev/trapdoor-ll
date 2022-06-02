@@ -3,7 +3,6 @@
     "tick":{
       "enable":true,
       "permissionlevel":0
-
     },
     "log":{
       "enable":true,
@@ -36,24 +35,32 @@
     "showlevel":3,
     "maxviewdistance":128
   },
-  "itemhook":{
   
+  "tickoncmmandblock": false,
+  "defaultproftime": 20,
+  "defaultmstptime": 20,
+  "shortcuts":{
+    "data": "stick",
+    "village": "emerald",
+    "hoppercouter": "cactus",
+    "blockrotate": "cactus",
+    "forcespawn": "bone",
+    "spawnprob": "gunpowder"
   },
-  
 
-  "set":{
-    "maxPt": 100,
-    "focePlacing":0,
-    "dropperNocost": false,
-    "noDropperconst":true
+  "trapdoor":{
+    "maxpendingtick": 100,
+    "foceplace":0,
+    "droppernocost": false,
+    "forceopencontainer":true
   },
 
-  "hopperCounter":{},  
   "village":{
     "center": "minecraft:heart",
     "bound":"blue",
     "spawn":"red",
     "poiquery":"green"
-  }
-
+  },
+  "self":{},
+  "lowlevelcommands":[]
 }
