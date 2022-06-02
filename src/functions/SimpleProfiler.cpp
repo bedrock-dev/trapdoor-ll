@@ -192,31 +192,29 @@ namespace tr {
             if (!actor_data.empty()) {
                 builder.sTextF(TextBuilder::AQUA | TextBuilder::BOLD,
                                "-- %s --\n", dims[i].c_str());
-                std::vector<std::pair<std::string, double>> v;
-
+                std::vector<std::pair<std::string, EntityInfo>> v;
                 for (auto &kv : actor_data) {
                     assert(!kv.second.empty());
-                    auto time = micro_to_mill(kv.second);
-                    v.push_back({kv.first, time});
+                    v.push_back(kv);
                 }
 
                 auto sort_count = std::min(v.size(), static_cast<size_t>(5));
                 std::sort(v.begin(), v.end(),
-                          [](const std::pair<std::string, double> &p1,
-                             const std::pair<std::string, double> &p2) {
-                              return p1.second > p2.second;
+                          [](const std::pair<std::string, EntityInfo> &p1,
+                             const std::pair<std::string, EntityInfo> &p2) {
+                              return p1.second.time > p2.second.time;
                           });
 
                 for (int i = 0; i < v.size(); i++) {
                     builder.text(" - ")
                         .sTextF(TextBuilder::GREEN, "%s   ", v[i].first.c_str())
-                        .textF("%.3f ms\n",
-                               v[i].second /
-                                   static_cast<double>(this->total_round));
+                        .textF("%.3f ms (%d)\n",
+                               micro_to_mill(v[i].second.time) /
+                                   static_cast<double>(this->total_round),
+                               v[i].second.count / total_round);
                 }
             }
         }
-
         tr::BroadcastMessage(builder.get());
     }  // namespace tr
 }  // namespace tr

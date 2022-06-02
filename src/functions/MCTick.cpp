@@ -144,15 +144,22 @@ namespace tr {
     }
 
     ActionResult StartProfiler(int rounds, SimpleProfiler::Type type) {
-        auto info = getTickingInfo();
+        if (rounds <= 0 || rounds > 1200) {
+            return {"Rounds show be limited in [1,1200]", false};
+        }
+
+        auto &info = getTickingInfo();
         if (info.status != TickingStatus::Normal) {
             return {"Profiling can only be performed in normal tick state",
                     false};
         }
 
+        tr::logger().debug("t1");
         if (normalProfiler().profiling) {
-            return {"Another profileing are running", false};
+            tr::logger().debug("t2");
+            return {"Another profileing is running", false};
         } else {
+            tr::logger().debug("t3");
             normalProfiler().Start(rounds, type);
             return {"Profile Start", true};
         }
@@ -401,7 +408,11 @@ THook(void, "?tick@Actor@@QEAA_NAEAVBlockSource@@@Z", Actor *actor, void *bs) {
         original(actor, bs);
         TIMER_END
         prof.actor_info[static_cast<int>(actor->getDimensionId())]
-                       [actor->getTypeName()] += timeResult;
+                       [actor->getTypeName()]
+                           .time += timeResult;
+        prof.actor_info[static_cast<int>(actor->getDimensionId())]
+                       [actor->getTypeName()]
+                           .count++;
     } else {
         original(actor, bs);
     }

@@ -40,7 +40,7 @@ namespace tr {
     };
 
     struct ChunkProfileInfo {
-        std::array<std::map<tr::TBlockPos2, std::vector<microsecond_t> >, 3>
+        std::array<std::map<tr::TBlockPos2, std::vector<microsecond_t>>, 3>
             chunk_counter{};
         microsecond_t block_entities_tick_time = 0;
         microsecond_t random_tick_time = 0;
@@ -102,15 +102,19 @@ namespace tr {
     };
 
     //普通profile
+
+    struct EntityInfo {
+        microsecond_t time;
+        int count;
+    };
     struct SimpleProfiler {
         enum Type { Normal, Chunk, PendingTick, Entity };
-
         SimpleProfiler::Type type = Normal;
         bool profiling = false;
         size_t total_round = 100;
         size_t current_round = 0;
         ChunkProfileInfo chunk_info{};
-        std::array<std::map<std::string, microsecond_t>, 3> actor_info{};
+        std::array<std::map<std::string, EntityInfo>, 3> actor_info{};
         RedstoneProfileInfo redstone_info{};
         microsecond_t server_level_tick_time = 0;  // mspt
         microsecond_t dimension_tick_time = 0;     //区块加载卸载&村庄
@@ -127,6 +131,7 @@ namespace tr {
         void PrintActor() const;
 
         void Reset(SimpleProfiler::Type type);
+
         void Start(size_t round, SimpleProfiler::Type type = Normal);
         void Stop();
     };
