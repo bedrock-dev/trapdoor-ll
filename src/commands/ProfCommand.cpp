@@ -33,6 +33,7 @@ namespace tr {
                 case do_hash("normal"):
                     tr::StartProfiler(tickTime, SimpleProfiler::Normal)
                         .SendTo(output);
+                    break;
                 case do_hash("chunk"):
                     tr::StartProfiler(tickTime, SimpleProfiler::Chunk)
                         .SendTo(output);

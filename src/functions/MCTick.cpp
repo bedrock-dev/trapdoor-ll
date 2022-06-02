@@ -153,13 +153,9 @@ namespace tr {
             return {"Profiling can only be performed in normal tick state",
                     false};
         }
-
-        tr::logger().debug("t1");
         if (normalProfiler().profiling) {
-            tr::logger().debug("t2");
             return {"Another profileing is running", false};
         } else {
-            tr::logger().debug("t3");
             normalProfiler().Start(rounds, type);
             return {"Profile Start", true};
         }
