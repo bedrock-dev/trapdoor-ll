@@ -3,6 +3,7 @@
 
 #include "Config.h"
 #include "HUDHelper.h"
+#include "HopperCounter.h"
 #include "HsaHelper.h"
 #include "LoggerAPI.h"
 #include "VillageHelper.h"
@@ -25,10 +26,15 @@ namespace tr {
 
         inline HUDHelper &hud_helper() { return this->hud_helper_; }
 
+        inline HopperChannelManager &hopper_channel_manager() {
+            return this->hopper_channel_manager_;
+        }
+
        private:
         VillageHelper village_helper_;
         HsaManager hsa_magager_;
         Configuration config_;
+        HopperChannelManager hopper_channel_manager_;
         HUDHelper hud_helper_;
     };
 

@@ -5,6 +5,7 @@
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"
 #include "SpawnHelper.h"
+#include "TrapdoorMod.h"
 namespace tr {
 
     void setup_counterCommand(int level) {
@@ -32,6 +33,14 @@ namespace tr {
                          &results) {
             auto countParam = std::string();
             switch (do_hash(results["counter"].getRaw<std::string>().c_str())) {
+                case do_hash("print"):
+                    tr::mod().hopper_channel_manager().printChannel(
+                        results["channel"].getRaw<int>());
+                    break;
+                case do_hash("reset"):
+                    tr::mod().hopper_channel_manager().resetChannel(
+                        results["channel"].getRaw<int>());
+                    break;
             }
         };
         command->setCallback(cb);
