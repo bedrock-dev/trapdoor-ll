@@ -92,6 +92,12 @@ namespace tr {
 
 THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self,
       unsigned int index, ItemStackBase *itemStack) {
+    auto &hcm = tr::mod().hopper_channel_manager();
+    if (!hcm.isEnable()) {
+        original(self, index, itemStack);
+        return;
+    }
+
     auto &ba = dAccess<BlockActor, -200>(self);
     auto *block = ba.getBlock();
     if (!block) {
@@ -116,7 +122,6 @@ THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self,
         });
     } catch (std::exception &) {
     }
-
     if (!nearest) {
         original(self, index, itemStack);
         return;
@@ -126,10 +131,18 @@ THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self,
         tr::facingToBlockPos(static_cast<tr::TFACING>(block->getVariant()));
     auto pointPos = BlockPos(pos.x + dir.x, pos.y + dir.y, pos.z + dir.z);
     auto &pointBlock = nearest->getRegion().getBlock(pointPos);
-    if (pointBlock.getId() != 236) {
+    if (pointBlock.getId() != 236) {  //混凝土
         original(self, index, itemStack);
         return;
     }
 
-    tr::logger().debug("{} * {}", itemStack->getName(), itemStack->getCount());
+    auto ch = pointBlock.getVariant();
+    if (ch < 0 || ch > 15 || itemStack->getName().empty()) {
+        original(self, index, itemStack);
+        return;
+    }
+
+    tr::logger().debug("channel = {}", ch);
+    tr::mod().hopper_channel_manager().getChannel(ch).add(
+        itemStack->getName(), itemStack->getCount());
 }

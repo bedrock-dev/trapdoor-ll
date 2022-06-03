@@ -34,8 +34,10 @@ namespace tr {
             auto countParam = std::string();
             switch (do_hash(results["counter"].getRaw<std::string>().c_str())) {
                 case do_hash("print"):
-                    tr::mod().hopper_channel_manager().printChannel(
-                        results["channel"].getRaw<int>());
+                    tr::mod()
+                        .hopper_channel_manager()
+                        .printChannel(results["channel"].getRaw<int>())
+                        .SendTo(output);
                     break;
                 case do_hash("reset"):
                     tr::mod().hopper_channel_manager().resetChannel(

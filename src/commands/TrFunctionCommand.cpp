@@ -4,6 +4,7 @@
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"
 #include "SpawnHelper.h"
+#include "TrapdoorMod.h"
 namespace tr {
     void setup_funcCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
@@ -21,7 +22,7 @@ namespace tr {
         command->mandatory("func", ParamType::Enum, blockrotateOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
-        command->optional("onoroff", ParamType::Int);
+        command->optional("onoroff", ParamType::Bool);
         command->addOverload({hoppercounterOpt, "onoroff"});
         command->addOverload({blockrotateOpt, "onoroff"});
 
@@ -30,10 +31,16 @@ namespace tr {
                      std::unordered_map<std::string, DynamicCommand::Result>
                          &results) {
             auto countParam = std::string();
-            switch (do_hash(results["func"].getRaw<std::string>().c_str())) {}
+            switch (do_hash(results["func"].getRaw<std::string>().c_str())) {
+                case do_hash("hoppercounter"):
+                    tr::mod()
+                        .hopper_channel_manager()
+                        .setAble(results["onoroff"].get<bool>())
+                        .SendTo(output);
+                    break;
+            }
         };
         command->setCallback(cb);
         DynamicCommand::setup(std::move(command));
     }
-
 }  // namespace tr

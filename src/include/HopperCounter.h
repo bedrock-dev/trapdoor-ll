@@ -46,7 +46,14 @@ namespace tr {
 
         inline bool isEnable() const { return this->enable; }
 
-        inline void setAble(bool able) { this->enable = able; }
+        inline ActionResult setAble(bool able) {
+            this->enable = able;
+            if (this->enable) {
+                return {"Hopper counter is enable", true};
+            } else {
+                return {"Hopper counter is disable", true};
+            }
+        }
 
         //打印某个频道
         ActionResult printChannel(size_t channel);

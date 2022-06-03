@@ -14,9 +14,10 @@ namespace tr {
         if (refresh_time != 1) return;
         for (auto &info : this->playerInfos) {
         }
-        Player *p = Global<Level>->getPlayer("hhhxiao");
-        if (p) {
-            p->sendText(PrintMspt().msg, TextType::TIP);
-        }
+        // Player *p = Global<Level>->getPlayer("hhhxiao");
+
+        // if (p) {
+        //     p->sendText(PrintMspt().msg, TextType::TIP);
+        // }
     }
 }  // namespace tr

@@ -11,7 +11,10 @@
     "prof":{
       "enable":true,
       "permissionlevel":0
-
+    },
+    "func":{
+      "enable":true,
+      "permissionlevel":0
     },
     "village":{
       "enable":true,
