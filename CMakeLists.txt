@@ -46,6 +46,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/functions/HsaHelper.cpp 
         src/functions/HopperCounter.cpp 
         src/functions/HUDHelper.cpp 
+        src/functions/BlockRotateHelper.cpp
         src/events/ItemUseOnEvent.cpp
         src/events/PlayerAttackEvent.cpp
         )
