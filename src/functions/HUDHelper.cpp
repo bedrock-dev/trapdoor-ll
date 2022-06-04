@@ -1,15 +1,65 @@
 #include "HUDHelper.h"
 
+#include <MC/Biome.hpp>
+#include <MC/Block.hpp>
+#include <MC/BlockSource.hpp>
+#include <MC/Brightness.hpp>
 #include <MC/Level.hpp>
 #include <MC/Player.hpp>
 
 #include "CommandHelper.h"
+#include "DataConverter.h"
 #include "MCTick.h"
+#include "Msg.h"
 #include "PlayerInfoAPI.h"
 
 namespace tr {
 
     namespace {
+
+        std::string buildBaseHud(Player* player) {
+            TextBuilder b;
+            auto pos = player->getPos();
+            b.textF("X/Y/Z:  %.3f %.3f %.3f\n", pos.x, pos.y, pos.z);
+            auto view = player->getViewVector(1.0);
+            b.textF("View:  %.3f %.3f %.3f\n", view.x, view.y, view.z);
+            TBlockPos p = fromVec3(pos).toBlockPos();
+            auto cp = p.toChunkPos();
+            auto coff = p.InChunkOffset();
+            b.textF("Chunk:  [%d %d] in [%d %d]\n", coff.x, coff.z, cp.x, cp.z);
+            auto& bs = player->getRegion();
+            auto pointBlock =
+                reinterpret_cast<Actor*>(player)->getBlockFromViewVector();
+            auto pointPos = pointBlock.getPosition();
+            auto block = pointBlock.getBlock();
+            std::string name = "minecraft:air";
+            if (block) {
+                name = block->getTypeName();
+            }
+            if (!pointBlock.isNull()) {
+                b.textF("PointTo: %d %d %d  %s\n", pointPos.x, pointPos.y,
+                        pointPos.z, name.c_str());
+            } else {
+                b.textF("PointTo: Null\n");
+            }
+            auto rb =
+                bs.getRawBrightness(pointPos + BlockPos(0, 1, 0), true, true);
+            auto bright = (uint32_t) * reinterpret_cast<unsigned char*>(&rb);
+            b.textF("Light: %u\n", bright);
+            b.textF("Biome: %d\n", bs.getBiome(pointPos).getBiomeType());
+            return b.get();
+        }
+        std::string buildMsptHud() {
+            TextBuilder builder;
+            auto mspt = tr::getMeanMSPT();
+            auto tps = 1000.0 / mspt;
+            if (tps > 20.0) tps = 20.0;
+            builder.textF("MSPT: %.3f TPS: %.1f", mspt, tps);
+            return builder.get();
+
+            // return fmt::format("MSPT: {.3f} TPS : {.3f}", tr::getMeanMSPT(),
+            //                    tr::getMeanTPS());
+        }
         HUDInfoType getTypeFromString(const std::string& str) {
             if (str == "base") return HUDInfoType::Base;
             if (str == "counter") return HUDInfoType::Counter;
@@ -29,10 +79,10 @@ namespace tr {
                 std::string s;
                 auto& cfg = info.second.config;
                 if (cfg[HUDInfoType::Base]) {
-                    s += "Base\n";
+                    s += buildBaseHud(p);
                 }
                 if (cfg[HUDInfoType::Mspt]) {
-                    s += "MSPT\n";
+                    s += buildMsptHud();
                 }
                 if (cfg[HUDInfoType::Vill]) {
                     s += "Village\n";
