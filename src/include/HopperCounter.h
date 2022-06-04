@@ -4,6 +4,7 @@
 // clang-format off
 #include "Global.h"
 #include <MC/Vec3.hpp>
+#include <MC/Player.hpp>
 #include <map>
 #include <string>
 #include <vector>
@@ -19,7 +20,7 @@ namespace tr {
        public:
         explicit CounterChannel(size_t ch) : channel(ch), gameTick(0) {}
 
-        void reset();
+        ActionResult reset();
 
         ActionResult print();
 
@@ -34,7 +35,7 @@ namespace tr {
         bool enable = false;
 
        public:
-        static const size_t TOTAL_CHANNEL_NUM;
+        static const size_t HOPPER_COUNTER_BLOCK;
         HopperChannelManager() {
             for (int i = 0; i < 16; i++) channels.emplace_back(i);
         }
@@ -55,11 +56,10 @@ namespace tr {
             }
         }
 
-        //打印某个频道
-        ActionResult printChannel(size_t channel);
+        ActionResult modifyChannel(size_t channel, int opt);
 
-        //重置某个频道
-        ActionResult resetChannel(size_t channel);
+        ActionResult quickModifyChannel(Player *player, const BlockPos &pos,
+                                        int opt);
 
         void quickPrintData(const BlockPos &pos);
     };

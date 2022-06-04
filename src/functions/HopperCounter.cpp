@@ -13,8 +13,7 @@
 
 namespace tr {
 
-    const size_t HopperChannelManager::TOTAL_CHANNEL_NUM = 16;
-
+    const size_t HopperChannelManager::HOPPER_COUNTER_BLOCK = 236;
     void HopperChannelManager::tick() {
         if (this->enable) {
             for (auto &channel : channels) {
@@ -23,39 +22,49 @@ namespace tr {
         }
     }
 
-    ActionResult HopperChannelManager::printChannel(size_t channel) {
-        if (channel < 0 || channel >= TOTAL_CHANNEL_NUM) {
-            return {"err", false};
-        } else {
-            return getChannel(channel).print();
-        }
-    }
+    // ActionResult HopperChannelManager::printChannel(size_t channel) {
+    //     if (channel < 0 || channel > 15) {
+    //         return {"Invalid channel number", false};
+    //     } else {
+    //         return getChannel(channel).print();
+    //     }
+    // }
 
-    ActionResult HopperChannelManager::resetChannel(size_t channel) {
+    // ActionResult HopperChannelManager::resetChannel(size_t channel) {
+
+    // }
+
+    ActionResult HopperChannelManager::modifyChannel(size_t channel, int opt) {
         if (channel < 0 || channel > 15) {
-            return {"err", false};
+            return {"Invalid channel number", false};
         } else {
-            getChannel(channel).reset();
-            return {"~", true};
+            auto &ch = this->getChannel(channel);
+            return opt == 0 ? ch.print() : ch.reset();
         }
     }
 
-    void HopperChannelManager::quickPrintData(const BlockPos &pos) {
-        // if (!this->enable) return;
-        // auto *block = player->getBlockSource()->getBlock(pos);
-        // if (block->getLegacy()->getBlockID() !=
-        //     HopperChannelManager::BLOCK_TYPE)
-        //     return;
-        // this->printChannel(player, block->getVariant());
+    ActionResult HopperChannelManager::quickModifyChannel(Player *player,
+                                                          const BlockPos &pos,
+                                                          int opt) {
+        auto &bs = player->getRegion();
+        auto &b = bs.getBlock(pos);
+        if (b.getId() != HOPPER_COUNTER_BLOCK) {
+            return {"", true};
+        }
+        auto ch = b.getVariant();
+        return modifyChannel(ch, opt);
     }
+
+    void HopperChannelManager::quickPrintData(const BlockPos &pos) {}
 
     void CounterChannel::add(const std::string &itemName, size_t num) {
         counterList[itemName] += num;
     }
 
-    void CounterChannel::reset() {
+    ActionResult CounterChannel::reset() {
         gameTick = 0;
         counterList.clear();
+        return {"channel cleaned", true};
     }
 
     ActionResult CounterChannel::print() {
@@ -67,14 +76,15 @@ namespace tr {
         if (this->gameTick == 0 || n == 0) {
             return {"no data in this channel", false};
         }
+
         std::string stringBuilder;
         tr::TextBuilder builder;
-        builder.textF("Channel [%d]: Total %zu items in %d gt (%.3f min(s))\n",
-                      channel, n, gameTick, gameTick / 1200.0f);
+        builder.textF("Channel [%d]: %zu items %d gt (%.3f min(s))\n", channel,
+                      n, gameTick, gameTick / 1200.0f);
 
         for (const auto &i : counterList) {
             //   auto itemName = GetItemLocalName(i.first);
-            builder.textF(" - %s: ", i.first.c_str())
+            builder.textF(" - %s:   ", i.first.c_str())
                 .sTextF(TextBuilder::GREEN, "%d", i.second)
                 .text("(")
                 .sTextF(TextBuilder::GREEN, "%.3f",

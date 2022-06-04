@@ -34,14 +34,42 @@ namespace tr {
             auto countParam = std::string();
             switch (do_hash(results["counter"].getRaw<std::string>().c_str())) {
                 case do_hash("print"):
-                    tr::mod()
-                        .hopper_channel_manager()
-                        .printChannel(results["channel"].getRaw<int>())
-                        .SendTo(output);
+                    if (results["channel"].isSet) {
+                        tr::mod()
+                            .hopper_channel_manager()
+                            .modifyChannel(results["channel"].getRaw<int>(), 0)
+                            .SendTo(output);
+                    } else {
+                        tr::mod()
+                            .hopper_channel_manager()
+                            .quickModifyChannel(
+                                reinterpret_cast<Player *>(origin.getPlayer()),
+                                reinterpret_cast<Actor *>(origin.getPlayer())
+                                    ->getBlockFromViewVector()
+                                    .getPosition(),
+                                0)
+                            .SendTo(output);
+                    }
+
                     break;
                 case do_hash("reset"):
-                    tr::mod().hopper_channel_manager().resetChannel(
-                        results["channel"].getRaw<int>());
+                    if (results["channel"].isSet) {
+                        tr::mod()
+                            .hopper_channel_manager()
+                            .modifyChannel(results["channel"].getRaw<int>(), 1)
+                            .SendTo(output);
+                    } else {
+                        tr::mod()
+                            .hopper_channel_manager()
+                            .quickModifyChannel(
+                                reinterpret_cast<Player *>(origin.getPlayer()),
+                                reinterpret_cast<Actor *>(origin.getPlayer())
+                                    ->getBlockFromViewVector()
+                                    .getPosition(),
+                                1)
+                            .SendTo(output);
+                    }
+
                     break;
             }
         };
