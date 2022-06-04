@@ -26,6 +26,7 @@ namespace tr {
             REG_COMMAND(village)
             REG_COMMAND(prof)
             REG_COMMAND(log)
+            REG_COMMAND(hud)
         }
 
     }  // namespace

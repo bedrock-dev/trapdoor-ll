@@ -34,6 +34,7 @@ namespace tr {
     void setup_trapdoorCommand(int);
     void setup_counterCommand(int);
     void setup_funcCommand(int);
+    void setup_hudCommand(int);
 
 }  // namespace tr
 
