@@ -326,18 +326,18 @@ THook(void, "?tickBlockEntities@LevelChunk@@QEAAXAEAVBlockSource@@@Z",
     }
 }
 
-THook(void,
+THook(bool,
       "?tickPendingTicks@BlockTickingQueue@@QEAA_NAEAVBlockSource@@AEBUTick@@H_"
       "N@Z",
       void *queue, void *bs, uint64_t until, int max, bool instalTick) {
     auto &prof = tr::normalProfiler();
     if (prof.profiling) {
         TIMER_START
-        original(queue, bs, until, max, instalTick);
+        return original(queue, bs, until, max, instalTick);
         TIMER_END
         prof.chunk_info.pending_tick_time += timeResult;
     } else {
-        original(queue, bs, until, max, instalTick);
+        return original(queue, bs, until, max, instalTick);
     }
 }
 
