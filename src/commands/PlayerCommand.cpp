@@ -1,5 +1,7 @@
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"
+#include "SimPlayerHelper.h"
+#include "TrapdoorMod.h"
 
 namespace tr {
 
@@ -40,7 +42,15 @@ namespace tr {
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result>
-                         &results) {};
+                         &results) {
+            switch (do_hash(results["player"].getRaw<std::string>().c_str())) {
+                case do_hash("spawn"):
+                    tr::mod().sim_player_manager().addPlayer(
+                        results["playerName"].getRaw<std::string>(),
+                        origin.getBlockPosition(), 0);
+                    break;
+            }
+        };
         command->setCallback(cb);
         DynamicCommand::setup(std::move(command));
     }

@@ -6,6 +6,7 @@
 #include "HopperCounter.h"
 #include "HsaHelper.h"
 #include "LoggerAPI.h"
+#include "SimPlayerHelper.h"
 #include "VillageHelper.h"
 
 namespace tr {
@@ -30,12 +31,17 @@ namespace tr {
             return this->hopper_channel_manager_;
         }
 
+        inline SimPlayerManager &sim_player_manager() {
+            return this->sim_player_mgr_;
+        }
+
        private:
         VillageHelper village_helper_;
         HsaManager hsa_magager_;
         Configuration config_;
         HopperChannelManager hopper_channel_manager_;
         HUDHelper hud_helper_;
+        SimPlayerManager sim_player_mgr_;
     };
 
     Logger &logger();
