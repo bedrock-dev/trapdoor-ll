@@ -33,7 +33,12 @@
       "permissionlevel":0  
     
     },
-    "hud":{
+    "player":{
+      "enable":true,
+      "permissionlevel":0  
+    
+    },
+     "hud":{
     "enable":true,
       "permissionlevel":0  
  

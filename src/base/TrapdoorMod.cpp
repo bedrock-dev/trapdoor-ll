@@ -26,6 +26,7 @@ namespace tr {
             REG_COMMAND(village)
             REG_COMMAND(prof)
             REG_COMMAND(log)
+            REG_COMMAND(player)
             REG_COMMAND(hud)
         }
 
@@ -48,7 +49,8 @@ namespace tr {
 
     void TrapdoorMod::Init() {
         logger().consoleLevel = 8;
-        this->config_.init("config.json");
+        this->config_.init(
+            "C:\\Users\\xhy\\dev\\trapdoor-ll\\src\\base\\config.json");
         tr::SubscribeEvents();
         setupCommands();
     }

@@ -21,6 +21,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/commands/LogCommand.cpp
         src/commands/ProfCommand.cpp
         src/commands/HudCommand.cpp
+        src/commands/PlayerCommand.cpp
         src/commands/VillageCommand.cpp
         src/commands/TrFunctionCommand.cpp
         src/commands/OSCommand.cpp
