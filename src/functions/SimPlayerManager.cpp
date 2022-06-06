@@ -1,9 +1,82 @@
+#include <MC/ItemStack.hpp>
+#include <MC/SimpleContainer.hpp>
 #include <MC/SimulatedPlayer.hpp>
 
+#include "Msg.h"
 #include "SimPlayerHelper.h"
 #include "TrapdoorMod.h"
 
 namespace tr {
+
+    ActionResult SimPlayerManager::useItemOnBlock(const std::string& name,
+                                                  int slot, const BlockPos& pos,
+                                                  Player* ori) {
+        auto iter = this->players.find(name);
+        if (iter == this->players.end()) {
+            return {"player does not exist", false};
+        }
+        auto& p = iter->second;
+        if (slot < 0 || slot >= p->getInventory().getSize()) {
+            return {"invalid slot number", false};
+        }
+
+        if (!ori) {
+            p->simulateUseItemInSlotOnBlock(
+                slot, pos, static_cast<ScriptFacing>(1), Vec3(0.5, 1.0, 0.5));
+
+            return {"", true};
+        } else {
+            auto* a = reinterpret_cast<Actor*>(ori);
+            auto ins = a->getBlockFromViewVector();
+            if (ins.isNull()) {
+                return {"no pos found", false};
+            } else {
+                p->simulateUseItemInSlotOnBlock(slot, ins.getPosition(),
+                                                static_cast<ScriptFacing>(1),
+                                                Vec3(0.5, 1.0, 0.5));
+            }
+
+            return {"", true};
+        }
+    }
+    ActionResult SimPlayerManager::useItemOnSlot(const std::string& name,
+                                                 int slot) {
+        auto iter = this->players.find(name);
+        if (iter == this->players.end()) {
+            return {"player does not exist", false};
+        }
+        auto& p = iter->second;
+        if (slot < 0 || slot >= p->getInventory().getSize()) {
+            return {"invalid slot number", false};
+        }
+
+        p->simulateUseItemInSlot(slot);
+        return {"", true};
+    }
+    ActionResult SimPlayerManager::getBagpack(const std::string& name,
+                                              int slot) {
+        auto iter = this->players.find(name);
+        if (iter == this->players.end()) {
+            return {"player does not exist", false};
+        }
+        auto& p = iter->second;
+        TextBuilder builder;
+
+        auto& inv = p->getInventory();
+        for (int i = 0; i < inv.getSize(); i++) {
+            auto* itemStack = inv.getSlot(i);
+            if (itemStack && itemStack->getCount() != 0) {
+                builder.textF("[%d] => %s * %d\n", i,
+                              itemStack->getName().c_str(),
+                              itemStack->getCount());
+            }
+        }
+        // tr::logger().debug("inv size:  {}", p->getInventory().getSize());
+        // tr::logger().debug("hands size: {}",
+        // p->getHandContainer().getSize());
+        return {builder.get(), true};
+    }
+
     ActionResult SimPlayerManager::destroy(const std::string& name,
                                            const BlockPos& pos,
                                            Player* origin) {
@@ -103,6 +176,13 @@ namespace tr {
             return {"spawn player failure", false};
         }
         this->players[name] = sim;
+        return {"", true};
+    }
+
+    ActionResult SimPlayerManager::addTask(const std::string& name,
+                                           SimTaskType type, const Vec3* vec3,
+                                           Actor* target, int interval,
+                                           int repeatTime) {
         return {"", true};
     }
 }  // namespace tr

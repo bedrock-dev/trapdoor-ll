@@ -16,8 +16,13 @@ namespace tr {
         auto behOpt = command->setEnum("behOpt", {"lookat", "moveto"});
         auto intOpt = command->setEnum("intOpt", {"interact"});
         auto destroyopt = command->setEnum("destroy", {"destroy"});
-
+        auto attackopt = command->setEnum("attack", {"attack"});
+        auto jumpopt = command->setEnum("jump", {"jump"});
         auto repeatOpt = command->setEnum("repeatOpt", {"repeat"});
+        auto useOpt = command->setEnum("useOpt", {"use"});
+        auto useOnOpt = command->setEnum("useOnOpt", {"useon"});
+
+        auto bagpackOpt = command->setEnum("backpackOpt", {"bagpack"});
 
         command->mandatory("player", ParamType::Enum, spawnOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
@@ -28,23 +33,57 @@ namespace tr {
         command->mandatory("player", ParamType::Enum, destroyopt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
+        command->mandatory("player", ParamType::Enum, attackopt,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+        command->mandatory("player", ParamType::Enum, jumpopt,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+
+        command->mandatory("player", ParamType::Enum, useOnOpt,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+        command->mandatory("player", ParamType::Enum, useOpt,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+
+        command->mandatory("player", ParamType::Enum, bagpackOpt,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+
         command->mandatory("playerName", ParamType::String);
+        command->mandatory("slot", ParamType::Int);
         command->optional("vec3", ParamType::Vec3);
-        command->optional("blockpos", ParamType::Vec3);
+        command->optional("blockpos", ParamType::BlockPos);
 
         command->optional("repeatType", ParamType::Enum, repeatOpt,
                           CommandParameterOption::EnumAutocompleteExpansion);
         command->optional("interval", ParamType::Int);
         command->optional("times", ParamType::Int);
 
+        command->optional("backpackslot", ParamType::Int);
+
+        // check inv
+        command->addOverload({"playerName", bagpackOpt, "backpackslot"});
+        // spawn despawn
         command->addOverload({"playerName", spawnOpt});
+        // move and loopat
         command->addOverload({"playerName", behOpt, "vec3"});
         command->addOverload({"playerName", intOpt});
 
-        command->addOverload(
-            {"playerName", destroyopt, "blockpos", "repeatType"});
+        // destroy
+        //    command->addOverload({"playerName", destroyopt, "blockpos"});
         command->addOverload({"playerName", destroyopt, "blockpos",
                               "repeatType", "interval", "times"});
+
+        // use on
+
+        command->addOverload({"playerName", useOnOpt, "slot", "blockpos",
+                              "repeatType", "interval", "times"});
+
+        command->addOverload(
+            {"playerName", useOpt, "slot", "repeatType", "interval", "times"});
+
+        command->addOverload(
+            {"playerName", attackopt, "repeatType", "interval", "times"});
+
+        command->addOverload(
+            {"playerName", jumpopt, "repeatType", "interval", "times"});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
@@ -83,6 +122,7 @@ namespace tr {
                     break;
                 case do_hash("interact"):
                     tr::mod().sim_player_manager().interact(name,
+
                                                             origin.getPlayer());
                     break;
                 case do_hash("destroy"):
@@ -93,6 +133,26 @@ namespace tr {
                     } else {
                         tr::mod().sim_player_manager().destroy(
                             name, BlockPos(0, 0, 0), origin.getPlayer());
+                    }
+                    break;
+
+                case do_hash("bagpack"):
+                    tr::mod().sim_player_manager().getBagpack(name, 0).SendTo(
+                        output);
+                    break;
+                case do_hash("use"):
+                    tr::mod().sim_player_manager().useItemOnSlot(
+                        name, results["slot"].get<int>());
+                    break;
+                case do_hash("useon"):
+                    if (results["blockpos"].isSet) {
+                        tr::mod().sim_player_manager().useItemOnBlock(
+                            name, results["slot"].get<int>(),
+                            results["blockpos"].get<BlockPos>(), nullptr);
+                    } else {
+                        tr::mod().sim_player_manager().useItemOnBlock(
+                            name, results["slot"].get<int>(), BlockPos(0, 0, 0),
+                            origin.getPlayer());
                     }
                     break;
             }
