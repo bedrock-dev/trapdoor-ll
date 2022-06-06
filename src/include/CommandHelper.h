@@ -5,9 +5,17 @@
 #ifndef TRAPDOOR_COMMANDHELPER_H
 #define TRAPDOOR_COMMANDHELPER_H
 
+//clang-format off
+
+#include <MC/Player.hpp>
+#include <MC/Vec3.hpp>
 #include <string>
 #include <tuple>
 #include <utility>
+
+#include "Global.h"
+
+//clang-format on
 
 class CommandOutput;
 namespace tr {
@@ -19,6 +27,8 @@ namespace tr {
 
         void SendTo(CommandOutput &output) const;
     };
+
+    Vec3 getLookAtPos(Player *player);
 
     ActionResult ErrorMsg(const std::string &msg);
 

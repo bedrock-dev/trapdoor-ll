@@ -3,6 +3,9 @@
 //
 #include "CommandHelper.h"
 
+#include <MC/BlockInstance.hpp>
+#include <MC/Player.hpp>
+
 #include "DynamicCommandAPI.h"
 
 namespace tr {
@@ -14,5 +17,20 @@ namespace tr {
     }
 
     ActionResult ErrorMsg(const std::string &msg) { return {msg, false}; }
+
+    Vec3 getLookAtPos(Player *player) {
+        if (!player) {
+            return {0, 0, 0};
+        }
+        auto *a = reinterpret_cast<Actor *>(player);
+        auto *target = a->getActorFromViewVector(5.25);
+        if (target) return target->getPos();
+        auto ins = a->getBlockFromViewVector();
+        if (ins.isNull()) {
+            return player->getPos();
+        } else {
+            return ins.getPosition().toVec3();
+        }
+    }
 
 }  // namespace tr
