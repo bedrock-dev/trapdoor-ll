@@ -5,23 +5,16 @@
 #include <unordered_set>
 
 #include "CommandHelper.h"
+#include "ScheduleAPI.h"
 
 namespace tr {
 
     enum SimTaskType { Ineract, Destroy, UseOn, Use, Attack, Jump };
 
-    struct SimTask {
-        size_t tick;
-        SimTaskType type;
-        int interval = 0;
-        int repteat_time = 0;
-        SimulatedPlayer* player;
-        Vec3 vec3;
-        Actor* actor;
-    };
-
     class SimPlayerManager {
        public:
+        SimulatedPlayer* tryFetchSimPlayer(const std::string& name);
+
         ActionResult useItemOnBlock(const std::string& name, int slot,
                                     const BlockPos& p, Player* ori);
 
@@ -31,10 +24,7 @@ namespace tr {
 
         ActionResult getBagpack(const std::string& name, int slot);
 
-        ActionResult destroy(const std::string& name, const BlockPos& p,
-                             Player* origin);
-
-        ActionResult interact(const std::string& name, Player* origin);
+        //  ActionResult interact(const std::string& name, Player* origin);
 
         ActionResult behavior(const std::string& name,
                               const std::string& behType, const Vec3& vec);
@@ -42,22 +32,28 @@ namespace tr {
         ActionResult addPlayer(const std::string& name, const BlockPos& p,
                                int dimID);
 
-        ActionResult addTask(const std::string& name, SimTaskType type,
-                             const Vec3* vec3, Actor* target, int interval,
-                             int repeatTime);
-
         ActionResult removePlayer(const std::string& name);
 
         ActionResult actionPlayer(const std::string& name,
                                   const std::string& action,
                                   const std::string& type, int extraAgrs);
 
+        ActionResult interactSchedule(const std::string& name, Player* origin,
+                                      int repType, int interval, int times);
+
+        ActionResult destroySchedule(const std::string& name, const BlockPos& p,
+                                     Player* origin, int repType, int interval,
+                                     int times);
+
         void tick();
+
+        void cancel(const std::string& name);
+
+        bool checkSurvival(const std::string& name);
 
        private:
         std::unordered_map<std::string, SimulatedPlayer*> players;
-
-        std::queue<SimTask> taskqueue;
+        std::unordered_map<std::string, ScheduleTask> taskList;
     };
 }  // namespace tr
 

@@ -19,10 +19,10 @@ namespace tr {
         auto attackopt = command->setEnum("attack", {"attack"});
         auto jumpopt = command->setEnum("jump", {"jump"});
         auto repeatOpt = command->setEnum("repeatOpt", {"repeat"});
-        auto useOpt = command->setEnum("useOpt", {"use"});
-        auto useOnOpt = command->setEnum("useOnOpt", {"useon"});
-
+        auto useOpt = command->setEnum("useOpt", {"useslot"});
+        auto useOnOpt = command->setEnum("useOnOpt", {"usesloton"});
         auto bagpackOpt = command->setEnum("backpackOpt", {"bagpack"});
+        auto stopOpt = command->setEnum("stopOpt", {"stop", "cancel"});
 
         command->mandatory("player", ParamType::Enum, spawnOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
@@ -45,6 +45,8 @@ namespace tr {
 
         command->mandatory("player", ParamType::Enum, bagpackOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
+        command->mandatory("player", ParamType::Enum, stopOpt,
+                           CommandParameterOption::EnumAutocompleteExpansion);
 
         command->mandatory("playerName", ParamType::String);
         command->mandatory("slot", ParamType::Int);
@@ -58,13 +60,16 @@ namespace tr {
 
         command->optional("backpackslot", ParamType::Int);
 
+        command->addOverload({"playerName", stopOpt});
         // check inv
         command->addOverload({"playerName", bagpackOpt, "backpackslot"});
         // spawn despawn
         command->addOverload({"playerName", spawnOpt});
         // move and loopat
         command->addOverload({"playerName", behOpt, "vec3"});
-        command->addOverload({"playerName", intOpt});
+        //和方块/实体交互
+        command->addOverload(
+            {"playerName", intOpt, "repeatType", "interval", "times"});
 
         // destroy
         //    command->addOverload({"playerName", destroyopt, "blockpos"});
@@ -89,26 +94,31 @@ namespace tr {
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result>
                          &results) {
-            auto name = results["playerName"].getRaw<std::string>();
+            auto name = results["playerName"].get<std::string>();
+            //默认1gt一次
+            int interval =
+                results["interval"].isSet ? results["interval"].get<int>() : 1;
+            //默认无限次
+            int times =
+                results["times"].isSet ? results["times"].get<int>() : -1;
+            int rep = results["repeatType"].isSet ? 1 : 0;
+            tr::logger().debug("repeat: {} , interval: {}  times:{}", rep,
+                               interval, times);
 
             switch (do_hash(results["player"].getRaw<std::string>().c_str())) {
                 case do_hash("spawn"):
                     tr::mod()
                         .sim_player_manager()
-                        .addPlayer(results["playerName"].getRaw<std::string>(),
-                                   origin.getBlockPosition(), 0)
+                        .addPlayer(name, origin.getBlockPosition(), 0)
                         .SendTo(output);
                     break;
                 case do_hash("despawn"):
-                    tr::mod()
-                        .sim_player_manager()
-                        .removePlayer(
-                            results["playerName"].getRaw<std::string>())
-                        .SendTo(output);
+                    tr::mod().sim_player_manager().removePlayer(name).SendTo(
+                        output);
                     break;
                 case do_hash("lookat"):
                     tr::mod().sim_player_manager().behavior(
-                        results["playerName"].getRaw<std::string>(), "lookat",
+                        name, "lookat",
                         results["vec3"].isSet
                             ? results["vec3"].get<Vec3>()
                             : getLookAtPos(origin.getPlayer()));
@@ -121,18 +131,23 @@ namespace tr {
                             : getLookAtPos(origin.getPlayer()));
                     break;
                 case do_hash("interact"):
-                    tr::mod().sim_player_manager().interact(name,
-
-                                                            origin.getPlayer());
+                    tr::mod()
+                        .sim_player_manager()
+                        .interactSchedule(name, origin.getPlayer(), rep,
+                                          interval, times)
+                        .SendTo(output);
                     break;
+
                 case do_hash("destroy"):
                     tr::logger().debug("QAQ");
                     if (results["blockpos"].isSet) {
-                        tr::mod().sim_player_manager().destroy(
-                            name, results["blockpos"].get<BlockPos>(), nullptr);
+                        tr::mod().sim_player_manager().destroySchedule(
+                            name, results["blockpos"].get<BlockPos>(), nullptr,
+                            rep, interval, times);
                     } else {
-                        tr::mod().sim_player_manager().destroy(
-                            name, BlockPos(0, 0, 0), origin.getPlayer());
+                        tr::mod().sim_player_manager().destroySchedule(
+                            name, BlockPos(0, 0, 0), origin.getPlayer(), rep,
+                            interval, times);
                     }
                     break;
 
@@ -140,11 +155,11 @@ namespace tr {
                     tr::mod().sim_player_manager().getBagpack(name, 0).SendTo(
                         output);
                     break;
-                case do_hash("use"):
+                case do_hash("useslot"):
                     tr::mod().sim_player_manager().useItemOnSlot(
                         name, results["slot"].get<int>());
                     break;
-                case do_hash("useon"):
+                case do_hash("usesloton"):
                     if (results["blockpos"].isSet) {
                         tr::mod().sim_player_manager().useItemOnBlock(
                             name, results["slot"].get<int>(),
@@ -154,6 +169,9 @@ namespace tr {
                             name, results["slot"].get<int>(), BlockPos(0, 0, 0),
                             origin.getPlayer());
                     }
+                    break;
+                case do_hash("cancel"):
+                    tr::mod().sim_player_manager().cancel(name);
                     break;
             }
         };

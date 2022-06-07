@@ -3,11 +3,39 @@
 #include <MC/SimulatedPlayer.hpp>
 
 #include "Msg.h"
+#include "ScheduleAPI.h"
 #include "SimPlayerHelper.h"
 #include "TrapdoorMod.h"
 
 namespace tr {
 
+    bool SimPlayerManager::checkSurvival(const std::string& name) {
+        return this->players.find(name) != this->players.end();
+    }
+
+    void SimPlayerManager::cancel(const std::string& name) {
+        tr::logger().debug("cancel task of:{}", name);
+        auto it = this->taskList.find(name);
+        if (it != this->taskList.end()) {
+            it->second.cancel();
+            taskList.erase(it);
+        }
+    }
+
+    SimulatedPlayer* SimPlayerManager::tryFetchSimPlayer(
+        const std::string& name) {
+        auto iter = this->players.find(name);
+        if (iter == this->players.end()) {
+            return nullptr;
+        }
+        auto it2 = this->taskList.find(name);
+        //没有任务
+        if (it2 == this->taskList.end()) {
+            return iter->second;
+        } else {
+            return nullptr;
+        }
+    }
     ActionResult SimPlayerManager::useItemOnBlock(const std::string& name,
                                                   int slot, const BlockPos& pos,
                                                   Player* ori) {
@@ -77,56 +105,97 @@ namespace tr {
         return {builder.get(), true};
     }
 
-    ActionResult SimPlayerManager::destroy(const std::string& name,
-                                           const BlockPos& pos,
-                                           Player* origin) {
-        auto iter = this->players.find(name);
-        if (iter == this->players.end()) {
-            return {"player does not exist", false};
-        }
-        auto& p = iter->second;
-        if (!origin) {
-            auto r = p->simulateDestroyBlock(pos, static_cast<ScriptFacing>(1));
-            tr::logger().debug("1 = {}", r);
-            return {"", true};
-        }
-        tr::logger().debug("test!");
-        auto* a = reinterpret_cast<Actor*>(origin);
-        auto ins = a->getBlockFromViewVector();
-        if (ins.isNull()) {
-            p->simulateDestory();
-        } else {
-            auto t = p->simulateDestroyBlock(ins.getPosition(),
-                                             static_cast<ScriptFacing>(1));
-            tr::logger().debug("2 = {}", t);
+    ActionResult SimPlayerManager::destroySchedule(const std::string& name,
+                                                   const BlockPos& p,
+                                                   Player* origin, int repType,
+                                                   int interval, int times) {
+        auto* sim = this->tryFetchSimPlayer(name);
+        if (!sim) {
+            return {"No player or player is in scheduling", false};
         }
 
-        return {"", true};
-    }
-
-    ActionResult SimPlayerManager::interact(const std::string& name,
-                                            Player* origin) {
-        auto iter = this->players.find(name);
-        if (iter == this->players.end()) {
-            return {"player does not exist", false};
-        }
-        auto& p = iter->second;
-        auto* a = reinterpret_cast<Actor*>(origin);
-        auto* target = a->getActorFromViewVector(5.25);
-        if (target) {
-            p->simulateInteract(*target);
-
-        } else {
+        auto pos = p;
+        if (origin) {
+            auto* a = reinterpret_cast<Actor*>(origin);
             auto ins = a->getBlockFromViewVector();
-            if (ins.isNull()) {
-                p->simulateInteract();
-            } else {
-                p->simulateInteract(ins.getPosition(),
-                                    static_cast<ScriptFacing>(0));
+            if (!ins.isNull()) {
+                pos = ins.getPosition();
             }
         }
+
+        auto task = [name, this, sim, pos]() {
+            if (!this->checkSurvival(name)) this->cancel(name);
+            if (pos.y == 512) {
+                sim->simulateDestory();
+            } else {
+                sim->simulateDestroyBlock(pos, static_cast<ScriptFacing>(1));
+            }
+        };
+
+        if (repType == 0) {
+            task();
+        } else {
+            auto sch = Schedule::repeat(task, interval, times);
+            this->taskList[name] = sch;
+        }
         return {"", true};
     }
+
+    ActionResult SimPlayerManager::interactSchedule(const std::string& name,
+                                                    Player* origin, int repType,
+                                                    int interval, int times) {
+        auto* sim = this->tryFetchSimPlayer(name);
+        if (!sim) {
+            return {"No player or player is in scheduling", false};
+        }
+        auto* playerActor = reinterpret_cast<Actor*>(origin);
+        auto* target = playerActor->getActorFromViewVector(5.25);
+        auto ins = playerActor->getBlockFromViewVector();
+        auto pos = ins.isNull() ? BlockPos(0, 512, 0) : ins.getPosition();
+        auto task = [this, sim, name, pos, target]() {
+            if (!this->checkSurvival(name)) this->cancel(name);
+            if (target) {
+                sim->simulateInteract(*target);
+            } else {
+                if (pos.y == 512) {
+                    sim->simulateInteract();
+                } else {
+                    sim->simulateInteract(pos, static_cast<ScriptFacing>(1));
+                }
+            }
+        };
+        if (repType == 0) {
+            task();
+        } else {
+            auto sch = Schedule::repeat(task, interval, times);
+            this->taskList[name] = sch;
+        }
+        return {"", true};
+    }
+
+    // ActionResult SimPlayerManager::interact(const std::string& name,
+    //                                         Player* origin) {
+    //     auto iter = this->players.find(name);
+    //     if (iter == this->players.end()) {
+    //         return {"player does not exist", false};
+    //     }
+    //     auto& p = iter->second;
+    //     auto* a = reinterpret_cast<Actor*>(origin);
+    //     auto* target = a->getActorFromViewVector(5.25);
+    //     if (target) {
+    //         p->simulateInteract(*target);
+
+    //     } else {
+    //         auto ins = a->getBlockFromViewVector();
+    //         if (ins.isNull()) {
+    //             p->simulateInteract();
+    //         } else {
+    //             p->simulateInteract(ins.getPosition(),
+    //                                 static_cast<ScriptFacing>(0));
+    //         }
+    //     }
+    //     return {"", true};
+    // }
 
     ActionResult SimPlayerManager::behavior(const std::string& name,
                                             const std::string& behType,
@@ -179,10 +248,4 @@ namespace tr {
         return {"", true};
     }
 
-    ActionResult SimPlayerManager::addTask(const std::string& name,
-                                           SimTaskType type, const Vec3* vec3,
-                                           Actor* target, int interval,
-                                           int repeatTime) {
-        return {"", true};
-    }
 }  // namespace tr
