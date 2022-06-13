@@ -22,7 +22,7 @@ namespace tr {
 
         ActionResult reset();
 
-        ActionResult print();
+        std::string info();
 
         void add(const std::string &itemName, size_t num);
 
@@ -58,8 +58,9 @@ namespace tr {
 
         ActionResult modifyChannel(size_t channel, int opt);
 
-        ActionResult quickModifyChannel(Player *player, const BlockPos &pos,
-                                        int opt);
+        ActionResult quickModifyChannel(Player *player, const BlockPos &pos, int opt);
+
+        std::string getHUDdata(size_t channel);
 
         void quickPrintData(const BlockPos &pos);
     };

@@ -6,5 +6,4 @@ namespace tr {
     // TAABB fromAABB(const AABB& aabb) {
     //     return {fromVec3(aabb.pointA), fromVec3(aabb.pointB)};
     // }
-
 }  // namespace tr

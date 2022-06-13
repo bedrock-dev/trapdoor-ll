@@ -9,13 +9,29 @@
 
 #include "CommandHelper.h"
 #include "DataConverter.h"
+#include "HopperCounter.h"
 #include "MCTick.h"
 #include "Msg.h"
 #include "PlayerInfoAPI.h"
+#include "Utils.h"
 
 namespace tr {
 
     namespace {
+
+        std::string buildHopperCounter(Player* player) {
+            auto& hcm = tr::mod().hopper_channel_manager();
+            if (!hcm.isEnable()) return "";
+            TextBuilder b;
+            auto pointBlock = reinterpret_cast<Actor*>(player)->getBlockFromViewVector();
+            if (pointBlock.isNull()) return "";
+            auto* block = pointBlock.getBlock();
+            if (block->getId() == HopperChannelManager::HOPPER_COUNTER_BLOCK) {
+                return tr::mod().hopper_channel_manager().getHUDdata(block->getVariant());
+            }
+
+            return "";
+        }
 
         std::string buildBaseHud(Player* player) {
             TextBuilder b;
@@ -28,22 +44,20 @@ namespace tr {
             auto coff = p.InChunkOffset();
             b.textF("Chunk:  [%d %d] in [%d %d]\n", coff.x, coff.z, cp.x, cp.z);
             auto& bs = player->getRegion();
-            auto pointBlock =
-                reinterpret_cast<Actor*>(player)->getBlockFromViewVector();
+            auto pointBlock = reinterpret_cast<Actor*>(player)->getBlockFromViewVector();
             auto pointPos = pointBlock.getPosition();
             auto block = pointBlock.getBlock();
-            std::string name = "minecraft:air";
+            std::string name = "air";
             if (block) {
-                name = block->getTypeName();
+                name = tr::rmmc(block->getTypeName());
             }
             if (!pointBlock.isNull()) {
-                b.textF("PointTo: %d %d %d  %s\n", pointPos.x, pointPos.y,
-                        pointPos.z, name.c_str());
+                b.textF("PointTo: %d %d %d  %s\n", pointPos.x, pointPos.y, pointPos.z,
+                        name.c_str());
             } else {
                 b.textF("PointTo: Null\n");
             }
-            auto rb =
-                bs.getRawBrightness(pointPos + BlockPos(0, 1, 0), true, true);
+            auto rb = bs.getRawBrightness(pointPos + BlockPos(0, 1, 0), true, true);
             auto bright = (uint32_t) * reinterpret_cast<unsigned char*>(&rb);
             b.textF("Light: %u\n", bright);
             b.textF("Biome: %d\n", bs.getBiome(pointPos).getBiomeType());
@@ -54,15 +68,13 @@ namespace tr {
             auto mspt = tr::getMeanMSPT();
             auto tps = 1000.0 / mspt;
             if (tps > 20.0) tps = 20.0;
-            builder.textF("MSPT: %.3f TPS: %.1f", mspt, tps);
+            builder.textF("MSPT: %.3f TPS: %.1f\n", mspt, tps);
             return builder.get();
-
-            // return fmt::format("MSPT: {.3f} TPS : {.3f}", tr::getMeanMSPT(),
-            //                    tr::getMeanTPS());
         }
+
         HUDInfoType getTypeFromString(const std::string& str) {
             if (str == "base") return HUDInfoType::Base;
-            if (str == "counter") return HUDInfoType::Counter;
+            if (str == "hoppercounter") return HUDInfoType::Counter;
             if (str == "village") return HUDInfoType::Vill;
             if (str == "mspt") return HUDInfoType::Mspt;
             return HUDInfoType::Unknown;
@@ -88,15 +100,15 @@ namespace tr {
                     s += "Village\n";
                 }
                 if (cfg[HUDInfoType::Counter]) {
-                    s += "Counter\n";
+                    s += buildHopperCounter(p);
                 }
                 p->sendText(s, TextType::TIP);
             }
         }
     }
 
-    ActionResult HUDHelper::modifyPlayerInfo(const std::string& playerName,
-                                             const std::string& item, int op) {
+    ActionResult HUDHelper::modifyPlayerInfo(const std::string& playerName, const std::string& item,
+                                             int op) {
         auto type = getTypeFromString(item);
         if (type == HUDInfoType::Unknown) {
             return {"Unknown type", false};
@@ -105,8 +117,7 @@ namespace tr {
         return {"success", true};
     }
 
-    ActionResult HUDHelper::setAblePlayer(const std::string& playerName,
-                                          bool able) {
+    ActionResult HUDHelper::setAblePlayer(const std::string& playerName, bool able) {
         this->playerInfos[playerName].enbale = able;
         return {"success", true};
     }

@@ -37,6 +37,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/base/Config.cpp
         src/base/Msg.cpp
         src/base/Particle.cpp
+        src/base/Utils.cpp
         src/pch.cpp
         src/Plugin.cpp
         src/functions/SimpleProfiler.cpp

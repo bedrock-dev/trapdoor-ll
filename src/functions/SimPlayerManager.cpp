@@ -13,7 +13,6 @@ namespace tr {
 
         BlockPos getTargetPos(Player* p, BlockPos pos) {
             if (!p) return pos;
-
             auto* a = reinterpret_cast<Actor*>(p);
             auto ins = a->getBlockFromViewVector();
             if (!ins.isNull()) {
@@ -56,14 +55,16 @@ namespace tr {
         if (sim) {
             sim->simulateStopUsingItem();
             sim->simulateStopMoving();
-            // sim->stopSleepInBed(true, true);
             sim->simulateStopInteracting();
             sim->simulateStopDestroyingBlock();
+            sim->stopDestroying();
+            sim->stopRiding(true, true, true);
+            sim->stopSleepInBed(true, true);
+            sim->stopUsingItem();
         }
     }
 
-    SimulatedPlayer* SimPlayerManager::tryFetchSimPlayer(
-        const std::string& name) {
+    SimulatedPlayer* SimPlayerManager::tryFetchSimPlayer(const std::string& name) {
         auto iter = this->players.find(name);
         if (iter == this->players.end()) {
             return nullptr;
@@ -77,31 +78,27 @@ namespace tr {
         }
     }
 
-    ActionResult SimPlayerManager::getBagpack(const std::string& name,
-                                              int slot) {
+    ActionResult SimPlayerManager::getBagpack(const std::string& name, int slot) {
         auto iter = this->players.find(name);
         if (iter == this->players.end()) {
-            return {"player does not exist", false};
+            return {"Player does not exist", false};
         }
         auto& p = iter->second;
         TextBuilder builder;
-
         auto& inv = p->getInventory();
         for (int i = 0; i < inv.getSize(); i++) {
             auto* itemStack = inv.getSlot(i);
             if (itemStack && itemStack->getCount() != 0) {
-                builder.textF("[%d] => %s * %d\n", i,
-                              itemStack->getName().c_str(),
+                builder.textF("[%d] => %s * %d\n", i, itemStack->getName().c_str(),
                               itemStack->getCount());
             }
         }
         return {builder.get(), true};
     }
 
-    ActionResult SimPlayerManager::destroySchedule(const std::string& name,
-                                                   const BlockPos& p,
-                                                   Player* origin, int repType,
-                                                   int interval, int times) {
+    ActionResult SimPlayerManager::destroySchedule(const std::string& name, const BlockPos& p,
+                                                   Player* origin, int repType, int interval,
+                                                   int times) {
         auto* sim = this->tryFetchSimPlayer(name);
         if (!sim) {
             return {"No player or player is in scheduling", false};
@@ -134,13 +131,13 @@ namespace tr {
         return {"", true};
     }
 
-    ActionResult SimPlayerManager::interactSchedule(const std::string& name,
-                                                    Player* origin, int repType,
-                                                    int interval, int times) {
+    ActionResult SimPlayerManager::interactSchedule(const std::string& name, Player* origin,
+                                                    int repType, int interval, int times) {
         auto* sim = this->tryFetchSimPlayer(name);
         if (!sim) {
             return {"No player or player is in scheduling", false};
         }
+        //这边有个潜在的空指针bug
         auto* playerActor = reinterpret_cast<Actor*>(origin);
         auto* target = playerActor->getActorFromViewVector(5.25);
         auto ins = playerActor->getBlockFromViewVector();
@@ -165,16 +162,14 @@ namespace tr {
         return {"", true};
     }
 
-    ActionResult SimPlayerManager::attackSchedule(const std::string& name,
-                                                  Player* origin, int repType,
-                                                  int interval, int times) {
+    ActionResult SimPlayerManager::attackSchedule(const std::string& name, Player* origin,
+                                                  int repType, int interval, int times) {
         auto* sim = this->tryFetchSimPlayer(name);
         if (!sim) {
             return {"No player or player is in scheduling", false};
         }
 
         Actor* target = nullptr;
-
         ActorUniqueID uid;
         if (origin) {
             auto* playerActor = reinterpret_cast<Actor*>(origin);
@@ -202,8 +197,7 @@ namespace tr {
         return {"", true};
     }
 
-    ActionResult SimPlayerManager::useSchedule(const std::string& name,
-                                               int itemId, int repType,
+    ActionResult SimPlayerManager::useSchedule(const std::string& name, int itemId, int repType,
                                                int interval, int times) {
         auto* sim = this->tryFetchSimPlayer(name);
         if (!sim) {
@@ -226,8 +220,7 @@ namespace tr {
         return {"", true};
     }
 
-    ActionResult SimPlayerManager::jumpSchedule(const std::string& name,
-                                                int repType, int interval,
+    ActionResult SimPlayerManager::jumpSchedule(const std::string& name, int repType, int interval,
                                                 int times) {
         auto* sim = this->tryFetchSimPlayer(name);
         if (!sim) {
@@ -245,10 +238,8 @@ namespace tr {
         return {"", true};
     }
 
-    ActionResult SimPlayerManager::useOnBlockSchedule(const std::string& name,
-                                                      int itemId,
-                                                      const BlockPos& p,
-                                                      Player* ori, int repType,
+    ActionResult SimPlayerManager::useOnBlockSchedule(const std::string& name, int itemId,
+                                                      const BlockPos& p, Player* ori, int repType,
                                                       int interval, int times) {
         auto* sim = this->tryFetchSimPlayer(name);
         if (!sim) {
@@ -272,8 +263,7 @@ namespace tr {
         return {"", true};
     }
 
-    ActionResult SimPlayerManager::behavior(const std::string& name,
-                                            const std::string& behType,
+    ActionResult SimPlayerManager::behavior(const std::string& name, const std::string& behType,
                                             const Vec3& vec) {
         auto iter = this->players.find(name);
         if (iter == this->players.end()) {
@@ -285,7 +275,6 @@ namespace tr {
         } else if (behType == "moveto") {
             p->simulateMoveToLocation(vec + Vec3(0.5, 1.0, 0.5), 1.0f);
         }
-
         return {"", true};
     }
     ActionResult SimPlayerManager::removePlayer(const std::string& name) {
@@ -300,8 +289,8 @@ namespace tr {
         return {"", true};
     }
 
-    ActionResult SimPlayerManager::addPlayer(const std::string& name,
-                                             const BlockPos& p, int dimID) {
+    ActionResult SimPlayerManager::addPlayer(const std::string& name, const BlockPos& p,
+                                             int dimID) {
         auto iter = this->players.find(name);
         if (iter != players.end() && iter->second != nullptr) {
             return {"player has already existed", false};
@@ -313,5 +302,4 @@ namespace tr {
         this->players[name] = sim;
         return {"", true};
     }
-
 }  // namespace tr

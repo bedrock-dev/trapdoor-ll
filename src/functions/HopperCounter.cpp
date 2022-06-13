@@ -22,29 +22,20 @@ namespace tr {
         }
     }
 
-    // ActionResult HopperChannelManager::printChannel(size_t channel) {
-    //     if (channel < 0 || channel > 15) {
-    //         return {"Invalid channel number", false};
-    //     } else {
-    //         return getChannel(channel).print();
-    //     }
-    // }
-
-    // ActionResult HopperChannelManager::resetChannel(size_t channel) {
-
-    // }
-
     ActionResult HopperChannelManager::modifyChannel(size_t channel, int opt) {
         if (channel < 0 || channel > 15) {
             return {"Invalid channel number", false};
         } else {
             auto &ch = this->getChannel(channel);
-            return opt == 0 ? ch.print() : ch.reset();
+            if (opt == 0) {
+                return {ch.info(), true};
+            } else {
+                return ch.reset();
+            }
         }
     }
 
-    ActionResult HopperChannelManager::quickModifyChannel(Player *player,
-                                                          const BlockPos &pos,
+    ActionResult HopperChannelManager::quickModifyChannel(Player *player, const BlockPos &pos,
                                                           int opt) {
         auto &bs = player->getRegion();
         auto &b = bs.getBlock(pos);
@@ -57,6 +48,12 @@ namespace tr {
 
     void HopperChannelManager::quickPrintData(const BlockPos &pos) {}
 
+    std::string HopperChannelManager::getHUDdata(size_t channel) {
+        if (channel < 0 || channel > 15) return "";
+        auto &ch = this->getChannel(channel);
+        return ch.info();
+    }
+
     void CounterChannel::add(const std::string &itemName, size_t num) {
         counterList[itemName] += num;
     }
@@ -67,31 +64,31 @@ namespace tr {
         return {"channel cleaned", true};
     }
 
-    ActionResult CounterChannel::print() {
+    std::string CounterChannel::info() {
         size_t n = 0;
         for (const auto &i : this->counterList) {
             n += i.second;
         }
 
         if (this->gameTick == 0 || n == 0) {
-            return {"no data in this channel", false};
+            return "no data in this channel";
         }
 
         std::string stringBuilder;
         tr::TextBuilder builder;
-        builder.textF("Channel [%d]: %zu items %d gt (%.3f min(s))\n", channel,
-                      n, gameTick, gameTick / 1200.0f);
+        builder.textF("Channel [%d]: %zu items %d gt (%.3f min(s))\n", channel, n, gameTick,
+                      gameTick / 1200.0f);
 
         for (const auto &i : counterList) {
             //   auto itemName = GetItemLocalName(i.first);
             builder.textF(" - %s:   ", i.first.c_str())
                 .sTextF(TextBuilder::GREEN, "%d", i.second)
                 .text("(")
-                .sTextF(TextBuilder::GREEN, "%.3f",
-                        i.second * 1.0f / gameTick * 72000)
+                .sTextF(TextBuilder::GREEN, "%.3f", i.second * 1.0f / gameTick * 72000)
                 .text("/hour)\n");
         }
-        return {builder.get(), true};
+
+        return builder.get();
     }
 
 }  // namespace tr
@@ -100,8 +97,8 @@ namespace tr {
 ?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z
 */
 
-THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self,
-      unsigned int index, ItemStackBase *itemStack) {
+THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self, unsigned int index,
+      ItemStackBase *itemStack) {
     auto &hcm = tr::mod().hopper_channel_manager();
     if (!hcm.isEnable()) {
         original(self, index, itemStack);
@@ -137,8 +134,7 @@ THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self,
         return;
     }
 
-    auto dir =
-        tr::facingToBlockPos(static_cast<tr::TFACING>(block->getVariant()));
+    auto dir = tr::facingToBlockPos(static_cast<tr::TFACING>(block->getVariant()));
     auto pointPos = BlockPos(pos.x + dir.x, pos.y + dir.y, pos.z + dir.z);
     auto &pointBlock = nearest->getRegion().getBlock(pointPos);
     if (pointBlock.getId() != 236) {  //混凝土
@@ -153,6 +149,6 @@ THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self,
     }
 
     tr::logger().debug("channel = {}", ch);
-    tr::mod().hopper_channel_manager().getChannel(ch).add(
-        itemStack->getName(), itemStack->getCount());
+    tr::mod().hopper_channel_manager().getChannel(ch).add(itemStack->getName(),
+                                                          itemStack->getCount());
 }

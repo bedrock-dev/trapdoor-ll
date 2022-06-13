@@ -16,48 +16,33 @@ namespace tr {
        public:
         SimulatedPlayer* tryFetchSimPlayer(const std::string& name);
 
-        // ActionResult useItemOnBlock(const std::string& name, int slot,
-        //                             const BlockPos& p, Player* ori);
-
-        // ActionResult useItemOnSlot(const std::string& name, int slot);
-
-        // ActionResult setItem(const std::string& name);
-
         ActionResult getBagpack(const std::string& name, int slot);
 
-        //  ActionResult interact(const std::string& name, Player* origin);
+        ActionResult behavior(const std::string& name, const std::string& behType, const Vec3& vec);
 
-        ActionResult behavior(const std::string& name,
-                              const std::string& behType, const Vec3& vec);
-
-        ActionResult addPlayer(const std::string& name, const BlockPos& p,
-                               int dimID);
+        ActionResult addPlayer(const std::string& name, const BlockPos& p, int dimID);
 
         ActionResult removePlayer(const std::string& name);
 
-        ActionResult actionPlayer(const std::string& name,
-                                  const std::string& action,
+        ActionResult actionPlayer(const std::string& name, const std::string& action,
                                   const std::string& type, int extraAgrs);
 
-        ActionResult interactSchedule(const std::string& name, Player* origin,
-                                      int repType, int interval, int times);
+        ActionResult interactSchedule(const std::string& name, Player* origin, int repType,
+                                      int interval, int times);
 
-        ActionResult attackSchedule(const std::string& name, Player* origin,
-                                    int repType, int interval, int times);
+        ActionResult attackSchedule(const std::string& name, Player* origin, int repType,
+                                    int interval, int times);
 
-        ActionResult destroySchedule(const std::string& name, const BlockPos& p,
-                                     Player* origin, int repType, int interval,
-                                     int times);
+        ActionResult destroySchedule(const std::string& name, const BlockPos& p, Player* origin,
+                                     int repType, int interval, int times);
 
-        ActionResult jumpSchedule(const std::string& name, int repType,
-                                  int interval, int times);
+        ActionResult jumpSchedule(const std::string& name, int repType, int interval, int times);
 
-        ActionResult useSchedule(const std::string& name, int itemId,
-                                 int repType, int interval, int times);
+        ActionResult useSchedule(const std::string& name, int itemId, int repType, int interval,
+                                 int times);
 
-        ActionResult useOnBlockSchedule(const std::string& name, int itemID,
-                                        const BlockPos& p, Player* ori,
-                                        int repType, int interval, int times);
+        ActionResult useOnBlockSchedule(const std::string& name, int itemID, const BlockPos& p,
+                                        Player* ori, int repType, int interval, int times);
 
         void cancel(const std::string& name);
 
