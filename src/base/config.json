@@ -41,40 +41,18 @@
      "hud":{
     "enable":true,
       "permissionlevel":0  
- 
+    },
+
+     "trapdoor":{
+    "enable":true,
+      "permissionlevel":0  
+    },  
+     "data":{
+    "enable":true,
+      "permissionlevel":0  
     }
   },
   
-  "particle":{
-    "showlevel":3,
-    "maxviewdistance":128
-  },
-  
-  "tickoncmmandblock": false,
-  "defaultproftime": 20,
-  "defaultmstptime": 20,
-  "shortcuts":{
-    "data": "stick",
-    "village": "emerald",
-    "hoppercouter": "cactus",
-    "blockrotate": "cactus",
-    "forcespawn": "bone",
-    "spawnprob": "gunpowder"
-  },
-
-  "trapdoor":{
-    "maxpendingtick": 100,
-    "foceplace":0,
-    "droppernocost": false,
-    "forceopencontainer":true
-  },
-
-  "village":{
-    "center": "minecraft:heart",
-    "bound":"blue",
-    "spawn":"red",
-    "poiquery":"green"
-  },
   "self":{},
   "lowlevelcommands":[]
 }

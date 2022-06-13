@@ -1,5 +1,6 @@
 #ifndef TRAPDOOR_SIM_PLAYER_H
 #define TRAPDOOR_SIM_PLAYER_H
+#include <MC/BlockSource.hpp>
 #include <MC/SimulatedPlayer.hpp>
 #include <unordered_map>
 #include <unordered_set>
@@ -15,10 +16,10 @@ namespace tr {
        public:
         SimulatedPlayer* tryFetchSimPlayer(const std::string& name);
 
-        ActionResult useItemOnBlock(const std::string& name, int slot,
-                                    const BlockPos& p, Player* ori);
+        // ActionResult useItemOnBlock(const std::string& name, int slot,
+        //                             const BlockPos& p, Player* ori);
 
-        ActionResult useItemOnSlot(const std::string& name, int slot);
+        // ActionResult useItemOnSlot(const std::string& name, int slot);
 
         // ActionResult setItem(const std::string& name);
 
@@ -41,13 +42,26 @@ namespace tr {
         ActionResult interactSchedule(const std::string& name, Player* origin,
                                       int repType, int interval, int times);
 
+        ActionResult attackSchedule(const std::string& name, Player* origin,
+                                    int repType, int interval, int times);
+
         ActionResult destroySchedule(const std::string& name, const BlockPos& p,
                                      Player* origin, int repType, int interval,
                                      int times);
 
-        void tick();
+        ActionResult jumpSchedule(const std::string& name, int repType,
+                                  int interval, int times);
+
+        ActionResult useSchedule(const std::string& name, int itemId,
+                                 int repType, int interval, int times);
+
+        ActionResult useOnBlockSchedule(const std::string& name, int itemID,
+                                        const BlockPos& p, Player* ori,
+                                        int repType, int interval, int times);
 
         void cancel(const std::string& name);
+
+        void stopAction(const std::string& nmae);
 
         bool checkSurvival(const std::string& name);
 
