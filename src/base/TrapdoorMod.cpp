@@ -1,5 +1,7 @@
 #include "TrapdoorMod.h"
 
+#include <MC/MapItem.hpp>
+
 #include "CommandHelper.h"
 #include "Config.h"
 #include "Events.h"
@@ -49,8 +51,7 @@ namespace tr {
 
     void TrapdoorMod::Init() {
         logger().consoleLevel = 8;
-        this->config_.init(
-            "C:\\Users\\xhy\\dev\\trapdoor-ll\\src\\base\\config.json");
+        this->config_.init("C:\\Users\\xhy\\dev\\trapdoor-ll\\src\\base\\config.json");
         tr::SubscribeEvents();
         setupCommands();
     }

@@ -8,9 +8,8 @@ namespace tr {
     void setup_playerCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand(
-            "player", "sapwn sim player",
-            static_cast<CommandPermissionLevel>(level));
+        auto command = DynamicCommand::createCommand("player", "sapwn sim player",
+                                                     static_cast<CommandPermissionLevel>(level));
 
         auto spawnOpt = command->setEnum("spawnOpt", {"spawn", "despawn"});
         auto behOpt = command->setEnum("behOpt", {"lookat", "moveto"});
@@ -86,22 +85,15 @@ namespace tr {
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
-                     std::unordered_map<std::string, DynamicCommand::Result>
-                         &results) {
+                     std::unordered_map<std::string, DynamicCommand::Result> &results) {
             auto name = results["playerName"].get<std::string>();
             //默认1gt一次
-            int interval =
-                results["interval"].isSet ? results["interval"].get<int>() : 1;
+            int interval = results["interval"].isSet ? results["interval"].get<int>() : 1;
             //默认无限次
-            int times =
-                results["times"].isSet ? results["times"].get<int>() : -1;
+            int times = results["times"].isSet ? results["times"].get<int>() : -1;
             int rep = results["repeatType"].isSet ? 1 : 0;
-            int itemId = results["itemId"].isSet
-                             ? results["itemId"].getRaw<CommandItem>().getId()
-                             : 0;
-
-            tr::logger().debug("repeat: {} , interval: {}  times:{}", rep,
-                               interval, times);
+            int itemId =
+                results["itemId"].isSet ? results["itemId"].getRaw<CommandItem>().getId() : 0;
 
             switch (do_hash(results["player"].getRaw<std::string>().c_str())) {
                 case do_hash("spawn"):
@@ -111,74 +103,89 @@ namespace tr {
                         .SendTo(output);
                     break;
                 case do_hash("despawn"):
-                    tr::mod().sim_player_manager().removePlayer(name).SendTo(
-                        output);
+                    tr::mod().sim_player_manager().removePlayer(name).SendTo(output);
                     break;
 
                 case do_hash("lookat"):
-                    tr::mod().sim_player_manager().behavior(
-                        name, "lookat",
-                        results["vec3"].isSet
-                            ? results["vec3"].get<Vec3>()
-                            : getLookAtPos(origin.getPlayer()));
+                    tr::mod()
+                        .sim_player_manager()
+                        .behavior(name, "lookat",
+                                  results["vec3"].isSet ? results["vec3"].get<Vec3>()
+                                                        : getLookAtPos(origin.getPlayer()))
+                        .SendTo(output);
                     break;
+
                 case do_hash("moveto"):
-                    tr::mod().sim_player_manager().behavior(
-                        name, "moveto",
-                        results["vec3"].isSet
-                            ? results["vec3"].get<Vec3>()
-                            : getLookAtPos(origin.getPlayer()));
+                    tr::mod()
+                        .sim_player_manager()
+                        .behavior(name, "moveto",
+                                  results["vec3"].isSet ? results["vec3"].get<Vec3>()
+                                                        : getLookAtPos(origin.getPlayer()))
+                        .SendTo(output);
                     break;
+
                 case do_hash("interact"):
                     tr::mod()
                         .sim_player_manager()
-                        .interactSchedule(name, origin.getPlayer(), rep,
-                                          interval, times)
+                        .interactSchedule(name, origin.getPlayer(), rep, interval, times)
                         .SendTo(output);
                     break;
 
                 case do_hash("attack"):
-                    tr::mod().sim_player_manager().attackSchedule(
-                        name, origin.getPlayer(), rep, interval, times);
+                    tr::mod()
+                        .sim_player_manager()
+                        .attackSchedule(name, origin.getPlayer(), rep, interval, times)
+                        .SendTo(output);
                     break;
 
                 case do_hash("jump"):
-                    tr::mod().sim_player_manager().jumpSchedule(
-                        name, rep, interval, times);
+                    tr::mod()
+                        .sim_player_manager()
+                        .jumpSchedule(name, rep, interval, times)
+                        .SendTo(output);
                     break;
 
                 case do_hash("destroy"):
                     tr::logger().debug("QAQ");
                     if (results["blockpos"].isSet) {
-                        tr::mod().sim_player_manager().destroySchedule(
-                            name, results["blockpos"].get<BlockPos>(), nullptr,
-                            rep, interval, times);
+                        tr::mod()
+                            .sim_player_manager()
+                            .destroySchedule(name, results["blockpos"].get<BlockPos>(), nullptr,
+                                             rep, interval, times)
+                            .SendTo(output);
                     } else {
-                        tr::mod().sim_player_manager().destroySchedule(
-                            name, BlockPos(0, 0, 0), origin.getPlayer(), rep,
-                            interval, times);
+                        tr::mod()
+                            .sim_player_manager()
+                            .destroySchedule(name, BlockPos(0, 0, 0), origin.getPlayer(), rep,
+                                             interval, times)
+                            .SendTo(output);
                     }
                     break;
 
                 case do_hash("bagpack"):
-                    tr::mod().sim_player_manager().getBagpack(name, 0).SendTo(
-                        output);
+                    tr::mod().sim_player_manager().getBagpack(name, 0).SendTo(output);
                     break;
 
                 // use
                 case do_hash("use"):
-                    tr::mod().sim_player_manager().useSchedule(
-                        name, itemId, rep, interval, times);
+                    tr::mod()
+                        .sim_player_manager()
+                        .useSchedule(name, itemId, rep, interval, times)
+                        .SendTo(output);
                     break;
                 case do_hash("useon"):
                     if (results["blockpos"].isSet) {
-                        tr::mod().sim_player_manager().useOnBlockSchedule(
-                            name, itemId, results["blockpos"].get<BlockPos>(),
-                            nullptr, rep, interval, times);
+                        tr::mod()
+                            .sim_player_manager()
+                            .useOnBlockSchedule(name, itemId, results["blockpos"].get<BlockPos>(),
+                                                nullptr, rep, interval, times)
+                            .SendTo(output);
                     } else {
-                        tr::mod().sim_player_manager().useOnBlockSchedule(
-                            name, itemId, BlockPos(0, 0, 0), origin.getPlayer(),
-                            rep, interval, times);
+                        tr::mod()
+                            .sim_player_manager()
+                            .useOnBlockSchedule(name, itemId, BlockPos(0, 0, 0), origin.getPlayer(),
+                                                rep, interval, times)
+                            .SendTo(output);
                     }
 
                     break;
