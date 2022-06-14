@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.16)
 project(Trapdoor)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -44,11 +44,11 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/functions/MCTick.cpp
         src/functions/VillageHelper.cpp
         src/functions/SpawnHelper.cpp
-        src/functions/InfoDisplayer.cpp 
-        src/functions/HsaHelper.cpp 
-        src/functions/HopperCounter.cpp 
-        src/functions/HUDHelper.cpp 
-        src/functions/SimPlayerManager.cpp 
+        src/functions/InfoDisplay.cpp
+        src/functions/HsaHelper.cpp
+        src/functions/HopperCounter.cpp
+        src/functions/HUDHelper.cpp
+        src/functions/SimPlayerManager.cpp
         src/functions/BlockRotateHelper.cpp
         src/events/ItemUseOnEvent.cpp
         src/events/PlayerAttackEvent.cpp
@@ -60,8 +60,7 @@ include_directories(src/include)
 link_directories(.)
 
 
-
-        add_definitions(-D"NDEBUG" -D"TEMPLATE_EXPORTS" -D"WIN32_LEAN_AND_MEAN" -D"_CRT_SECURE_NO_WARNINGS" -D"_WINDOWS"
+add_definitions(-D"NDEBUG" -D"TEMPLATE_EXPORTS" -D"WIN32_LEAN_AND_MEAN" -D"_CRT_SECURE_NO_WARNINGS" -D"_WINDOWS"
         -D"_USRDLL" -D"_AMD64_" -D"NOMINMAX" -D"_WINDLL" -D"_UNICODE" -D"UNICODE")
 
 add_compile_options(
@@ -73,7 +72,7 @@ add_compile_options(
 add_link_options(
         /DELAYLOAD:bedrock_server.dll
         /MANIFEST /LTCG:incremental /NXCOMPAT /DEBUG /DLL /MACHINE:X64 /OPT:REF /INCREMENTAL:NO /SUBSYSTEM:WINDOWS
-        /MANIFESTUAC:NO /OPT:ICF /ERRORREPORT:PROMPT /NOLOGO  /TLBID:1
+        /MANIFESTUAC:NO /OPT:ICF /ERRORREPORT:PROMPT /NOLOGO /TLBID:1
 )
 
 add_library(trapdoor SHARED ${SRC_FILES_DIR})

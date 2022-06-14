@@ -12,10 +12,10 @@ namespace tr {
 
     bool displayEntityInfo(Player *player, Actor *target);
 
-    bool displayerBlockInfo(Player *p, const BlockPos &pos);
-    bool displayerEnvInfo();
+    bool displayBlockInfo(Player *p, const BlockPos &pos);
+    bool displayEnvInfo();
 
-    bool displayerRedstoneCompInfo(Player *p, const BlockPos &pos);
+    bool displayRedstoneCompInfo(Player *p, const BlockPos &pos);
 
 }  // namespace tr
 

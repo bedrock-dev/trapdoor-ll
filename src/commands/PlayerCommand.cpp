@@ -98,102 +98,102 @@ namespace tr {
             switch (do_hash(results["player"].getRaw<std::string>().c_str())) {
                 case do_hash("spawn"):
                     tr::mod()
-                        .sim_player_manager()
+                        .getSimPlayerManager()
                         .addPlayer(name, origin.getBlockPosition(), 0)
-                        .SendTo(output);
+                        .sendTo(output);
                     break;
                 case do_hash("despawn"):
-                    tr::mod().sim_player_manager().removePlayer(name).SendTo(output);
+                    tr::mod().getSimPlayerManager().removePlayer(name).sendTo(output);
                     break;
 
                 case do_hash("lookat"):
                     tr::mod()
-                        .sim_player_manager()
+                        .getSimPlayerManager()
                         .behavior(name, "lookat",
                                   results["vec3"].isSet ? results["vec3"].get<Vec3>()
                                                         : getLookAtPos(origin.getPlayer()))
-                        .SendTo(output);
+                        .sendTo(output);
                     break;
 
                 case do_hash("moveto"):
                     tr::mod()
-                        .sim_player_manager()
+                        .getSimPlayerManager()
                         .behavior(name, "moveto",
                                   results["vec3"].isSet ? results["vec3"].get<Vec3>()
                                                         : getLookAtPos(origin.getPlayer()))
-                        .SendTo(output);
+                        .sendTo(output);
                     break;
 
                 case do_hash("interact"):
                     tr::mod()
-                        .sim_player_manager()
+                        .getSimPlayerManager()
                         .interactSchedule(name, origin.getPlayer(), rep, interval, times)
-                        .SendTo(output);
+                        .sendTo(output);
                     break;
 
                 case do_hash("attack"):
                     tr::mod()
-                        .sim_player_manager()
+                        .getSimPlayerManager()
                         .attackSchedule(name, origin.getPlayer(), rep, interval, times)
-                        .SendTo(output);
+                        .sendTo(output);
                     break;
 
                 case do_hash("jump"):
                     tr::mod()
-                        .sim_player_manager()
+                        .getSimPlayerManager()
                         .jumpSchedule(name, rep, interval, times)
-                        .SendTo(output);
+                        .sendTo(output);
                     break;
 
                 case do_hash("destroy"):
                     tr::logger().debug("QAQ");
                     if (results["blockpos"].isSet) {
                         tr::mod()
-                            .sim_player_manager()
+                            .getSimPlayerManager()
                             .destroySchedule(name, results["blockpos"].get<BlockPos>(), nullptr,
                                              rep, interval, times)
-                            .SendTo(output);
+                            .sendTo(output);
                     } else {
                         tr::mod()
-                            .sim_player_manager()
+                            .getSimPlayerManager()
                             .destroySchedule(name, BlockPos(0, 0, 0), origin.getPlayer(), rep,
                                              interval, times)
-                            .SendTo(output);
+                            .sendTo(output);
                     }
                     break;
 
                 case do_hash("bagpack"):
-                    tr::mod().sim_player_manager().getBagpack(name, 0).SendTo(output);
+                    tr::mod().getSimPlayerManager().getBackpack(name, 0).sendTo(output);
                     break;
 
                 // use
                 case do_hash("use"):
                     tr::mod()
-                        .sim_player_manager()
+                        .getSimPlayerManager()
                         .useSchedule(name, itemId, rep, interval, times)
-                        .SendTo(output);
+                        .sendTo(output);
                     break;
                 case do_hash("useon"):
                     if (results["blockpos"].isSet) {
                         tr::mod()
-                            .sim_player_manager()
+                            .getSimPlayerManager()
                             .useOnBlockSchedule(name, itemId, results["blockpos"].get<BlockPos>(),
                                                 nullptr, rep, interval, times)
-                            .SendTo(output);
+                            .sendTo(output);
                     } else {
                         tr::mod()
-                            .sim_player_manager()
+                            .getSimPlayerManager()
                             .useOnBlockSchedule(name, itemId, BlockPos(0, 0, 0), origin.getPlayer(),
                                                 rep, interval, times)
-                            .SendTo(output);
+                            .sendTo(output);
                     }
 
                     break;
                 case do_hash("cancel"):
-                    tr::mod().sim_player_manager().cancel(name);
+                    tr::mod().getSimPlayerManager().cancel(name);
                     break;
                 case do_hash("stop"):
-                    tr::mod().sim_player_manager().stopAction(name);
+                    tr::mod().getSimPlayerManager().stopAction(name);
             }
         };
 

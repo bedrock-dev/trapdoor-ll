@@ -8,7 +8,7 @@
 #include "LoggerAPI.h"
 
 #define REG_COMMAND(c)                                   \
-    auto cfg_##c = cmdCfg.getCommmadConfig(#c);          \
+    auto cfg_##c = cmdCfg.getCommandConfig(#c);          \
     if (cfg_##c.enable) {                                \
         tr::setup_##c##Command(cfg_##c.permissionLevel); \
         tr::logger().debug("register command " #c);      \
@@ -17,7 +17,7 @@
 namespace tr {
     namespace {
         void setupCommands() {
-            auto &cmdCfg = tr::mod().config();
+            auto &cmdCfg = tr::mod().getConfig();
             REG_COMMAND(spawn)
             REG_COMMAND(data)
             REG_COMMAND(trapdoor)
@@ -34,14 +34,14 @@ namespace tr {
 
     }  // namespace
 
-    void TrapdoorMod::HeavyTick() {
-        village_helper_.HeavyTick();
-        hsa_magager_.HeavyTick();
-        hud_helper_.tick();
+    void TrapdoorMod::heavyTick() {
+        villageHelper.heavyTick();
+        hsaManager.HeavyTick();
+        HUDHelper.tick();
     }
-    void TrapdoorMod::LightTick() {
-        village_helper_.LightTick();
-        hopper_channel_manager_.tick();
+    void TrapdoorMod::lightTick() {
+        villageHelper.lightTick();
+        hopperChannelManager.tick();
     }
 
     Logger &logger() {
@@ -49,9 +49,9 @@ namespace tr {
         return logger;
     }
 
-    void TrapdoorMod::Init() {
+    void TrapdoorMod::init() {
         logger().consoleLevel = 8;
-        this->config_.init("C:\\Users\\xhy\\dev\\trapdoor-ll\\src\\base\\config.json");
+        this->config.init("getConfig.json");
         tr::SubscribeEvents();
         setupCommands();
     }

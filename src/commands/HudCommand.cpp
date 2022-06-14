@@ -10,7 +10,7 @@ namespace tr {
     void setup_hudCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand("hud", "config hud display",
+        auto command = DynamicCommand::createCommand("hud", "getConfig hud display",
                                                      static_cast<CommandPermissionLevel>(level));
 
         auto &modifyOpt = command->setEnum("modify", {"add", "remove"});
@@ -37,27 +37,27 @@ namespace tr {
             switch (do_hash(results["hud"].getRaw<std::string>().c_str())) {
                 case do_hash("add"):
                     tr::mod()
-                        .hud_helper()
+                        .getHUDHelper()
                         .modifyPlayerInfo(
                             reinterpret_cast<Player *>(origin.getPlayer())->getRealName(),
                             results["itemType"].get<std::string>(), 1)
-                        .SendTo(output);
+                        .sendTo(output);
                     break;
                 case do_hash("remove"):
                     tr::mod()
-                        .hud_helper()
+                        .getHUDHelper()
                         .modifyPlayerInfo(
                             reinterpret_cast<Player *>(origin.getPlayer())->getRealName(),
                             results["itemType"].get<std::string>(), 0)
-                        .SendTo(output);
+                        .sendTo(output);
                     break;
                 case do_hash("show"):
                     tr::mod()
-                        .hud_helper()
+                        .getHUDHelper()
                         .setAblePlayer(
                             reinterpret_cast<Player *>(origin.getPlayer())->getRealName(),
                             results["onoroff"].get<bool>())
-                        .SendTo(output);
+                        .sendTo(output);
                     break;
             }
         };

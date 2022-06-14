@@ -16,7 +16,7 @@ namespace tr {
 
     struct PlayerHudInfo {
         std::string realName;
-        bool enbale;
+        bool enable;
         std::array<int, 4> config{};
     };
 
@@ -24,8 +24,8 @@ namespace tr {
        public:
         void tick();
 
-        ActionResult modifyPlayerInfo(const std::string& playerName,
-                                      const std::string& item, int op);
+        ActionResult modifyPlayerInfo(const std::string& playerName, const std::string& item,
+                                      int op);
 
         ActionResult setAblePlayer(const std::string& playerName, bool able);
 

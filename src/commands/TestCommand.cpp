@@ -15,7 +15,7 @@ namespace tr {
     void test_particle() {
         Schedule::repeat(
             []() {
-                tr::DrawLine({0, 80, 0}, TFACING::POS_X, 120, PCOLOR::GREEN, 0);
+                tr::drawLine({0, 80, 0}, TFACING::POS_X, 120, PCOLOR::GREEN, 0);
             },
             20);
     }

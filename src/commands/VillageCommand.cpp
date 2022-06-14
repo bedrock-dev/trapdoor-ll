@@ -38,58 +38,56 @@ namespace tr {
                          &results) {
             switch (do_hash(results["village"].getRaw<std::string>().c_str())) {
                 case do_hash("list"):
-                    tr::mod().village_helper().ListTickingVillages(true).SendTo(
-                        output);
+                    tr::mod().getVillageHelper().listTickingVillages(true).sendTo(output);
                     break;
 
                 case do_hash("bound"):
                     tr::mod()
-                        .village_helper()
-                        .ShowBounds(results["onOroff"].getRaw<bool>())
-                        .SendTo(output);
+                        .getVillageHelper()
+                        .setShowBounds(results["onOroff"].getRaw<bool>())
+                        .sendTo(output);
                     break;
 
                 case do_hash("spawn"):
                     tr::mod()
-                        .village_helper()
-                        .ShowIronSpawnArea(results["onOroff"].getRaw<bool>())
-                        .SendTo(output);
+                        .getVillageHelper()
+                        .setShowIronSpawnArea(results["onOroff"].getRaw<bool>())
+                        .sendTo(output);
                     break;
 
                 case do_hash("center"):
                     tr::mod()
-                        .village_helper()
-                        .ShowCenter(results["onOroff"].getRaw<bool>())
-                        .SendTo(output);
+                        .getVillageHelper()
+                        .setShowCenter(results["onOroff"].getRaw<bool>())
+                        .sendTo(output);
                     break;
 
                 case do_hash("poi"):
                     tr::mod()
-                        .village_helper()
-                        .ShowPoiQury(results["onOroff"].getRaw<bool>())
-                        .SendTo(output);
+                        .getVillageHelper()
+                        .setShowPoiQuery(results["onOroff"].getRaw<bool>())
+                        .sendTo(output);
                     break;
 
                 case do_hash("head"):
                     tr::mod()
-                        .village_helper()
-                        .ShowVillagerHeadInfo(results["onOroff"].getRaw<bool>())
-                        .SendTo(output);
+                        .getVillageHelper()
+                        .setShowVillagerHeadInfo(results["onOroff"].getRaw<bool>())
+                        .sendTo(output);
 
                     break;
 
                 case do_hash("info"):
                     if (results["villageID"].isSet) {
                         tr::mod()
-                            .village_helper()
-                            .PrintDetails(results["villageID"].getRaw<int>(),
-                                          Vec3::ZERO)
-                            .SendTo(output);
+                            .getVillageHelper()
+                            .printDetails(results["villageID"].getRaw<int>(), Vec3::ZERO)
+                            .sendTo(output);
                     } else {
                         tr::mod()
-                            .village_helper()
-                            .PrintDetails(-1, origin.getPlayer()->getPos())
-                            .SendTo(output);
+                            .getVillageHelper()
+                            .printDetails(-1, origin.getPlayer()->getPos())
+                            .sendTo(output);
                     }
                     break;
             }

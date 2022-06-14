@@ -48,7 +48,7 @@ namespace tr {
 
     void HopperChannelManager::quickPrintData(const BlockPos &pos) {}
 
-    std::string HopperChannelManager::getHUDdata(size_t channel) {
+    std::string HopperChannelManager::getHUDData(size_t channel) {
         if (channel < 0 || channel > 15) return "";
         auto &ch = this->getChannel(channel);
         return ch.info();
@@ -99,7 +99,7 @@ namespace tr {
 
 THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self, unsigned int index,
       ItemStackBase *itemStack) {
-    auto &hcm = tr::mod().hopper_channel_manager();
+    auto &hcm = tr::mod().getHopperChannelManager();
     if (!hcm.isEnable()) {
         original(self, index, itemStack);
         return;
@@ -137,7 +137,7 @@ THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self, un
     auto dir = tr::facingToBlockPos(static_cast<tr::TFACING>(block->getVariant()));
     auto pointPos = BlockPos(pos.x + dir.x, pos.y + dir.y, pos.z + dir.z);
     auto &pointBlock = nearest->getRegion().getBlock(pointPos);
-    if (pointBlock.getId() != 236) {  //混凝土
+    if (pointBlock.getId() != 236) {  // 混凝土
         original(self, index, itemStack);
         return;
     }
@@ -149,6 +149,6 @@ THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self, un
     }
 
     tr::logger().debug("channel = {}", ch);
-    tr::mod().hopper_channel_manager().getChannel(ch).add(itemStack->getName(),
-                                                          itemStack->getCount());
+    tr::mod().getHopperChannelManager().getChannel(ch).add(itemStack->getName(),
+                                                           itemStack->getCount());
 }

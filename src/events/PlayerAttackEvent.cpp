@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 #include "EventAPI.h"
-#include "InfoDisplayer.h"
+#include "InfoDisplay.h"
 #include "TrapdoorMod.h"
 #include "VillageHelper.h"
 
@@ -27,7 +27,7 @@ namespace tr {
         //                            ev.mPlayer->getRealName(),
         //                            ev.mTarget->getTypeName());
         //         if (ev.mTarget->getTypeName() == "minecraft:villager_v2") {
-        //             return tr::mod().village_helper().ShowVillageInfo(
+        //             return tr::mod().getVillageHelper().ShowVillageInfo(
         //                 ev.mPlayer, ev.mTarget);
         //         }
 

@@ -16,7 +16,7 @@ namespace tr {
        public:
         SimulatedPlayer* tryFetchSimPlayer(const std::string& name);
 
-        ActionResult getBagpack(const std::string& name, int slot);
+        ActionResult getBackpack(const std::string& name, int slot);
 
         ActionResult behavior(const std::string& name, const std::string& behType, const Vec3& vec);
 
@@ -24,8 +24,8 @@ namespace tr {
 
         ActionResult removePlayer(const std::string& name);
 
-        ActionResult actionPlayer(const std::string& name, const std::string& action,
-                                  const std::string& type, int extraAgrs);
+        //        ActionResult actionPlayer(const std::string& name, const std::string& action,
+        //                                  const std::string& type, int extraAgrs);
 
         ActionResult interactSchedule(const std::string& name, Player* origin, int repType,
                                       int interval, int times);
@@ -46,7 +46,7 @@ namespace tr {
 
         void cancel(const std::string& name);
 
-        void stopAction(const std::string& nmae);
+        void stopAction(const std::string& name);
 
         bool checkSurvival(const std::string& name);
 

@@ -11,7 +11,7 @@ namespace tr {
     void setup_trapdoorCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         auto command = DynamicCommand::createCommand(
-            "trapdoor", "config", static_cast<CommandPermissionLevel>(level));
+            "trapdoor", "getConfig", static_cast<CommandPermissionLevel>(level));
 
         auto &particleShowLevelEnum =
             command->setEnum("particleShowLevelEnum", {"pm"});

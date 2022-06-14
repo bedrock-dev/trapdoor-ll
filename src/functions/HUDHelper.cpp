@@ -20,14 +20,14 @@ namespace tr {
     namespace {
 
         std::string buildHopperCounter(Player* player) {
-            auto& hcm = tr::mod().hopper_channel_manager();
+            auto& hcm = tr::mod().getHopperChannelManager();
             if (!hcm.isEnable()) return "";
             TextBuilder b;
             auto pointBlock = reinterpret_cast<Actor*>(player)->getBlockFromViewVector();
             if (pointBlock.isNull()) return "";
             auto* block = pointBlock.getBlock();
             if (block->getId() == HopperChannelManager::HOPPER_COUNTER_BLOCK) {
-                return tr::mod().hopper_channel_manager().getHUDdata(block->getVariant());
+                return tr::mod().getHopperChannelManager().getHUDData(block->getVariant());
             }
 
             return "";
@@ -87,7 +87,7 @@ namespace tr {
         if (refresh_time != 1) return;
         for (auto& info : this->playerInfos) {
             auto* p = Global<Level>->getPlayer(info.first);
-            if (p && info.second.enbale) {
+            if (p && info.second.enable) {
                 std::string s;
                 auto& cfg = info.second.config;
                 if (cfg[HUDInfoType::Base]) {
@@ -118,7 +118,7 @@ namespace tr {
     }
 
     ActionResult HUDHelper::setAblePlayer(const std::string& playerName, bool able) {
-        this->playerInfos[playerName].enbale = able;
+        this->playerInfos[playerName].enable = able;
         return {"success", true};
     }
 }  // namespace tr

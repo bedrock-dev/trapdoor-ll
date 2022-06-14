@@ -70,7 +70,7 @@ namespace tr {
             return nullptr;
         }
         auto it2 = this->taskList.find(name);
-        //没有任务
+        // 没有任务
         if (it2 == this->taskList.end()) {
             return iter->second;
         } else {
@@ -78,7 +78,7 @@ namespace tr {
         }
     }
 
-    ActionResult SimPlayerManager::getBagpack(const std::string& name, int slot) {
+    ActionResult SimPlayerManager::getBackpack(const std::string& name, int slot) {
         auto iter = this->players.find(name);
         if (iter == this->players.end()) {
             return {"Player does not exist", false};
@@ -137,7 +137,7 @@ namespace tr {
         if (!sim) {
             return {"No player or player is in scheduling", false};
         }
-        //这边有个潜在的空指针bug
+        // 这边有个潜在的空指针bug
         auto* playerActor = reinterpret_cast<Actor*>(origin);
         auto* target = playerActor->getActorFromViewVector(5.25);
         auto ins = playerActor->getBlockFromViewVector();

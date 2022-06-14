@@ -6,7 +6,6 @@
 #include "HookAPI.h"
 #include "Particle.h"
 
-
 namespace tr {
 
     namespace {
@@ -45,8 +44,7 @@ namespace tr {
                     default:
                         break;
                 }
-                tr::DrawAABB(getSpawnAreaFromHSA(hsa.bb), color, true,
-                             hsa.dimensionID);
+                tr::drawAABB(getSpawnAreaFromHSA(hsa.bb), color, true, hsa.dimensionID);
             }
         }
         gt = (gt + 1) % 80;
@@ -57,10 +55,10 @@ namespace tr {
 THook(void,
       "?_spawnStructureMob@Spawner@@AEAAXAEAVBlockSource@@AEBVBlockPos@@"
       "AEBUHardcodedSpawningArea@LevelChunk@@AEBVSpawnConditions@@@Z",
-      void *spawner, const BlockSource &bs, const BlockPos &blockPos,
-      const tr::TBoundingBox &hsa, void *spawnConditions) {
+      void *spawner, const BlockSource &bs, const BlockPos &blockPos, const tr::TBoundingBox &hsa,
+      void *spawnConditions) {
     original(spawner, bs, blockPos, hsa, spawnConditions);
-    auto &hsaManager = tr::mod().hsa_manager();
+    auto &hsaManager = tr::mod().getHsaManager();
     tr::HsaInfo info;
     info.bb = hsa;
     auto biome = bs.tryGetBiome(blockPos);

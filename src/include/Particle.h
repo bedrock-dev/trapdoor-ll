@@ -8,14 +8,14 @@
 namespace tr {
 
     enum class PCOLOR { WHITE = 0, RED = 1, YELLOW = 2, BLUE = 3, GREEN = 4 };
-    void SpawnParticle(const TVec3& pos, const std::string& type, int dimID);
+    void spawnParticle(const TVec3& pos, const std::string& type, int dimID);
 
-    void DrawLine(const TVec3& originPoint, TFACING direction, float length,
-                  PCOLOR color, int dimType);
+    void drawLine(const TVec3& originPoint, TFACING direction, float length, PCOLOR color,
+                  int dimType);
 
-    void DrawAABB(const TAABB& aabb, PCOLOR color, bool mark, int dimType);
+    void drawAABB(const TAABB& aabb, PCOLOR color, bool mark, int dimType);
 
-    void ShortHightLightBlock(const TBlockPos& pos, PCOLOR color, int dimType);
+    void shortHighlightBlock(const TBlockPos& pos, PCOLOR color, int dimType);
 }  // namespace tr
 
 #endif

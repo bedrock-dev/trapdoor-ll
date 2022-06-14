@@ -34,9 +34,9 @@ namespace tr {
             switch (do_hash(results["func"].getRaw<std::string>().c_str())) {
                 case do_hash("hoppercounter"):
                     tr::mod()
-                        .hopper_channel_manager()
+                        .getHopperChannelManager()
                         .setAble(results["onoroff"].get<bool>())
-                        .SendTo(output);
+                        .sendTo(output);
                     break;
             }
         };

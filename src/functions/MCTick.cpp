@@ -37,7 +37,7 @@ namespace tr {
 
     // Command Aciton
 
-    ActionResult QueryWorld() {
+    ActionResult queryWorld() {
         auto &info = getTickingInfo();
         switch (info.status) {
             case TickingStatus::Normal:
@@ -45,24 +45,19 @@ namespace tr {
             case TickingStatus::Frozen:
                 return {"Frozen", true};
             case TickingStatus::Forwarding:
-                return {fmt::format("Forwarding, {} gt left",
-                                    info.forward_tick_num),
-                        true};
+                return {fmt::format("Forwarding, {} gt left", info.forwardTickNum), true};
             case TickingStatus::Wrap:
-                return {
-                    fmt::format("Wraping, {} gt left", info.remain_wrap_tick),
-                    true};
+                return {fmt::format("Wraping, {} gt left", info.remainWrapTick), true};
             case TickingStatus::Acc:
-                return {fmt::format("{} times faster", info.acc_time), true};
+                return {fmt::format("{} times faster", info.accTime), true};
             case TickingStatus::SlowDown:
-                return {fmt::format("{} times slower", info.slow_down_time),
-                        true};
+                return {fmt::format("{} times slower", info.slowDownTime), true};
             default:
                 return {"unknown", true};
         }
         return {"unknown", true};
     }
-    ActionResult FreezeWorld() {
+    ActionResult freezeWorld() {
         auto &info = getTickingInfo();
         if (info.status == TickingStatus::Frozen) {
             return {"Already in freeze status", false};
@@ -72,22 +67,21 @@ namespace tr {
         return {"success", true};
     }
 
-    ActionResult ResetWorld() {
+    ActionResult resetWorld() {
         auto &info = getTickingInfo();
-        info.acc_time = 1;
-        info.forward_tick_num = 0;
-        info.slow_down_time = 1;
-        info.remain_wrap_tick = 0;
+        info.accTime = 1;
+        info.forwardTickNum = 0;
+        info.slowDownTime = 1;
+        info.remainWrapTick = 0;
         info.status = TickingStatus::Normal;
         return {"success", true};
     }
 
-    ActionResult ForwardWorld(int gt) {
+    ActionResult forwardWorld(int gt) {
         auto &info = getTickingInfo();
-        if (info.status == TickingStatus::Frozen ||
-            info.status == TickingStatus::Normal) {
-            info.old_status = info.status;
-            info.forward_tick_num = gt;
+        if (info.status == TickingStatus::Frozen || info.status == TickingStatus::Normal) {
+            info.oldStatus = info.status;
+            info.forwardTickNum = gt;
             info.status = TickingStatus::Forwarding;
             if (gt >= 1200) {
                 tr::BroadcastMessage("The world begins to forward");
@@ -99,69 +93,65 @@ namespace tr {
             return {"Forward can only be used on normal or freeze mode", false};
         }
     }
-    ActionResult WrapWorld(int gt) {
+    ActionResult wrapWorld(int gt) {
         auto &info = getTickingInfo();
-        if (info.status == TickingStatus::Normal ||
-            info.status == TickingStatus::Frozen) {
+        if (info.status == TickingStatus::Normal || info.status == TickingStatus::Frozen) {
             // record old status
-            info.old_status = info.status;
-            info.remain_wrap_tick = gt;
+            info.oldStatus = info.status;
+            info.remainWrapTick = gt;
             info.status = TickingStatus::Wrap;
             return {"Warp start", true};
         }
         return {"Wrap can only be used on normal or freeze mode", false};
     }
-    ActionResult SlowDownWorld(int times) {
+    ActionResult slowDownWorld(int times) {
         auto &info = getTickingInfo();
         if (info.status == TickingStatus::Normal) {
             if (times < 2 || times > 64) {
                 return {"times show be limited in [2,64]", false};
             }
             info.status = TickingStatus::SlowDown;
-            info.slow_down_time = times;
-            tr::BroadcastMessage(
-                fmt::format("The world will run {} times slower", times), -1);
+            info.slowDownTime = times;
+            tr::BroadcastMessage(fmt::format("The world will run {} times slower", times), -1);
             return {"", true};
         } else {
             return {"Slow can only be used on normal mode", false};
         }
     }
 
-    ActionResult AccWorld(int times) {
+    ActionResult accWorld(int times) {
         auto &info = getTickingInfo();
         if (info.status == TickingStatus::Normal) {
             if (times < 2 || times > 10) {
                 return {"times show be limited in [2,10]", false};
             }
-            info.acc_time = times;
+            info.accTime = times;
             info.status = TickingStatus::Acc;
-            tr::BroadcastMessage(
-                fmt::format("The world will run {} times faster", times), -1);
+            tr::BroadcastMessage(fmt::format("The world will run {} times faster", times), -1);
             return {"", true};
         } else {
             return {"Acc can only be used on normal mode", false};
         }
     }
 
-    ActionResult StartProfiler(int rounds, SimpleProfiler::Type type) {
+    ActionResult startProfiler(int rounds, SimpleProfiler::Type type) {
         if (rounds <= 0 || rounds > 1200) {
             return {"Rounds show be limited in [1,1200]", false};
         }
 
         auto &info = getTickingInfo();
         if (info.status != TickingStatus::Normal) {
-            return {"Profiling can only be performed in normal tick state",
-                    false};
+            return {"Profiling can only be performed in normal tick state", false};
         }
         if (normalProfiler().profiling) {
             return {"Another profileing is running", false};
         } else {
-            normalProfiler().Start(rounds, type);
+            normalProfiler().start(rounds, type);
             return {"Profile Start", true};
         }
     }
 
-    ActionResult PrintMspt() {
+    ActionResult printMSPT() {
         auto mspt = getMSPTinfo().mean();
         auto max = getMSPTinfo().max();
         auto min = getMSPTinfo().min();
@@ -170,15 +160,13 @@ namespace tr {
 
         tr::TextBuilder builder;
         builder.text(" - MSPT / TPS: ")
-            .sTextF(TextBuilder::DARK_GREEN, "%.3f / %.1f\n",
-                    tr::micro_to_mill(mspt), tps)
+            .sTextF(TextBuilder::DARK_GREEN, "%.3f / %.1f\n", tr::micro_to_mill(mspt), tps)
             .text(" - MIN / MAX: ")
-            .sTextF(TextBuilder::DARK_GREEN, "%.3f / %.3f \n",
-                    tr::micro_to_mill(min), tr::micro_to_mill(max))
+            .sTextF(TextBuilder::DARK_GREEN, "%.3f / %.3f \n", tr::micro_to_mill(min),
+                    tr::micro_to_mill(max))
             .text(" - Normal / Redstone: ");
         auto pair = getMSPTinfo().pairs();
-        builder.sTextF(TextBuilder::DARK_GREEN, "%.3f / %.3f \n",
-                       tr::micro_to_mill(pair.first),
+        builder.sTextF(TextBuilder::DARK_GREEN, "%.3f / %.3f \n", tr::micro_to_mill(pair.first),
                        tr::micro_to_mill(pair.second));
         return {builder.get(), true};
     }
@@ -214,16 +202,16 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
     if (info.status == tr::TickingStatus::Normal) {
         TIMER_START
         original(level);
-        mod.LightTick();
-        mod.HeavyTick();
+        mod.lightTick();
+        mod.heavyTick();
         TIMER_END
         tr::getMSPTinfo().push(timeResult);
         auto &prof = tr::normalProfiler();
         if (prof.profiling) {
-            prof.server_level_tick_time += timeResult;
-            prof.current_round++;
-            if (prof.current_round == prof.total_round) {
-                prof.Stop();
+            prof.serverLevelTickTime += timeResult;
+            prof.currentRound++;
+            if (prof.currentRound == prof.totalRound) {
+                prof.stop();
             }
         }
         return;
@@ -231,96 +219,92 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
     } else if (info.status == tr::TickingStatus::Wrap) {
         auto mean_mspt = tr::micro_to_mill(tr::getMSPTinfo().mean());
         int max_wrap_time = static_cast<int>(45.0 / mean_mspt);
-        //最快10倍速
+        // 最快10倍速
         max_wrap_time = std::min(max_wrap_time, 10);
-        //当前gt要跑的次数
-        int m = std::min(max_wrap_time, info.remain_wrap_tick);
+        // 当前gt要跑的次数
+        int m = std::min(max_wrap_time, info.remainWrapTick);
         for (int i = 0; i < m; i++) {
-            info.remain_wrap_tick--;
+            info.remainWrapTick--;
             original(level);
-            mod.LightTick();
+            mod.lightTick();
         }
-        mod.HeavyTick();
-        if (info.remain_wrap_tick <= 0) {
+        mod.heavyTick();
+        if (info.remainWrapTick <= 0) {
             tr::BroadcastMessage("Wrap finished", -1);
-            info.status = info.old_status;
+            info.status = info.oldStatus;
         }
     }
 
     switch (info.status) {
         case tr::TickingStatus::SlowDown:
-            if (info.slow_down_counter % info.slow_down_time == 0) {
+            if (info.slowDownCounter % info.slowDownTime == 0) {
                 original(level);
-                mod.LightTick();
-                mod.HeavyTick();
+                mod.lightTick();
+                mod.heavyTick();
             }
 
-            info.slow_down_counter =
-                (info.slow_down_counter + 1) % info.slow_down_time;
+            info.slowDownCounter = (info.slowDownCounter + 1) % info.slowDownTime;
             break;
 
         case tr::TickingStatus::Forwarding:
-            while (info.forward_tick_num > 0) {
+            while (info.forwardTickNum > 0) {
                 original(level);
-                mod.LightTick();
-                --info.forward_tick_num;
+                mod.lightTick();
+                --info.forwardTickNum;
             }
 
             tr::BroadcastMessage("Froward finished", -1);
-            info.status = info.old_status;
-            mod.HeavyTick();
+            info.status = info.oldStatus;
+            mod.heavyTick();
             break;
         case tr::TickingStatus::Acc:
-            for (int i = 0; i < info.acc_time; i++) {
-                mod.LightTick();
+            for (int i = 0; i < info.accTime; i++) {
+                mod.lightTick();
                 original(level);
             }
-            mod.HeavyTick();
+            mod.heavyTick();
             break;
         default:
             break;
     }
 }
 
-THook(void, "?tick@LevelChunk@@QEAAXAEAVBlockSource@@AEBUTick@@@Z",
-      LevelChunk *chunk, void *bs, void *tick) {
+THook(void, "?tick@LevelChunk@@QEAAXAEAVBlockSource@@AEBUTick@@@Z", LevelChunk *chunk, void *bs,
+      void *tick) {
     auto &prof = tr::normalProfiler();
     if (prof.profiling) {
         TIMER_START
         original(chunk, bs, tick);
         TIMER_END
-        prof.chunk_info.total_tick_time += timeResult;
+        prof.chunkInfo.totalTickTime += timeResult;
         auto dim_id = chunk->getDimension().getDimensionId();
         auto &cp = chunk->getPosition();
         auto tpos = tr::TBlockPos2(cp.x, cp.z);
-        prof.chunk_info.chunk_counter[static_cast<int>(dim_id)][tpos].push_back(
-            timeResult);
+        prof.chunkInfo.chunk_counter[static_cast<int>(dim_id)][tpos].push_back(timeResult);
     } else {
         original(chunk, bs, tick);
     }
 }
 
-THook(void, "?tickBlocks@LevelChunk@@QEAAXAEAVBlockSource@@@Z",
-      LevelChunk *chunk, void *bs) {
+THook(void, "?tickBlocks@LevelChunk@@QEAAXAEAVBlockSource@@@Z", LevelChunk *chunk, void *bs) {
     auto &prof = tr::normalProfiler();
     if (prof.profiling) {
         TIMER_START
         original(chunk, bs);
         TIMER_END
-        prof.chunk_info.random_tick_time += timeResult;
+        prof.chunkInfo.randomTickTime += timeResult;
     } else {
         original(chunk, bs);
     }
 }
 
-THook(void, "?tickBlockEntities@LevelChunk@@QEAAXAEAVBlockSource@@@Z",
-      void *chunk, void *bs) {
+THook(void, "?tickBlockEntities@LevelChunk@@QEAAXAEAVBlockSource@@@Z", void *chunk, void *bs) {
     auto &prof = tr::normalProfiler();
     if (prof.profiling) {
         TIMER_START
         original(chunk, bs);
         TIMER_END
-        prof.chunk_info.block_entities_tick_time += timeResult;
+        prof.chunkInfo.blockEntitiesTickTime += timeResult;
     } else {
         original(chunk, bs);
     }
@@ -335,7 +319,7 @@ THook(bool,
         TIMER_START
         return original(queue, bs, until, max, instalTick);
         TIMER_END
-        prof.chunk_info.pending_tick_time += timeResult;
+        prof.chunkInfo.pendingTickTime += timeResult;
     } else {
         return original(queue, bs, until, max, instalTick);
     }
@@ -347,20 +331,19 @@ THook(void, "?tick@Dimension@@UEAAXXZ", void *dim) {
         TIMER_START
         original(dim);
         TIMER_END
-        prof.dimension_tick_time += timeResult;
+        prof.dimensionTickTime += timeResult;
     } else {
         original(dim);
     }
 }
 
-THook(void, "?tick@EntitySystems@@QEAAXAEAVEntityRegistry@@@Z", void *es,
-      void *arg) {
+THook(void, "?tick@EntitySystems@@QEAAXAEAVEntityRegistry@@@Z", void *es, void *arg) {
     auto &prof = tr::normalProfiler();
     if (prof.profiling) {
         TIMER_START
         original(es, arg);
         TIMER_END
-        prof.entity_system_tick_time += timeResult;
+        prof.entitySystemTickTime += timeResult;
     } else {
         original(es, arg);
     }
@@ -374,7 +357,7 @@ THook(void, "?tickRedstone@Dimension@@UEAAXXZ", void *dim) {
         TIMER_START
         original(dim);
         TIMER_END
-        prof.redstone_info.signal_update += timeResult;
+        prof.redstoneInfo.signalUpdate += timeResult;
     } else {
         original(dim);
     }
@@ -387,21 +370,20 @@ THook(void, "?processPendingAdds@CircuitSceneGraph@@AEAAXXZ", void *c) {
         TIMER_START
         original(c);
         TIMER_END
-        prof.redstone_info.pending_add += timeResult;
+        prof.redstoneInfo.pendingAdd += timeResult;
     } else {
         original(c);
     }
 }
 
 // pemding remove
-THook(void, "?removeComponent@CircuitSceneGraph@@AEAAXAEBVBlockPos@@@Z",
-      void *c, void *pos) {
+THook(void, "?removeComponent@CircuitSceneGraph@@AEAAXAEBVBlockPos@@@Z", void *c, void *pos) {
     auto &prof = tr::normalProfiler();
     if (prof.profiling) {
         TIMER_START
         original(c, pos);
         TIMER_END
-        prof.redstone_info.pending_remove += timeResult;
+        prof.redstoneInfo.pendingRemove += timeResult;
     } else {
         original(c, pos);
     }
@@ -413,12 +395,9 @@ THook(void, "?tick@Actor@@QEAA_NAEAVBlockSource@@@Z", Actor *actor, void *bs) {
         TIMER_START
         original(actor, bs);
         TIMER_END
-        prof.actor_info[static_cast<int>(actor->getDimensionId())]
-                       [actor->getTypeName()]
-                           .time += timeResult;
-        prof.actor_info[static_cast<int>(actor->getDimensionId())]
-                       [actor->getTypeName()]
-                           .count++;
+        prof.actorInfo[static_cast<int>(actor->getDimensionId())][actor->getTypeName()].time +=
+            timeResult;
+        prof.actorInfo[static_cast<int>(actor->getDimensionId())][actor->getTypeName()].count++;
     } else {
         original(actor, bs);
     }

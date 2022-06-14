@@ -46,28 +46,25 @@ namespace tr {
 
             switch (do_hash(results["tick"].getRaw<std::string>().c_str())) {
                 case do_hash("acce"):
-                    tr::AccWorld(results["times"].getRaw<int>()).SendTo(output);
+                    tr::accWorld(results["times"].getRaw<int>()).sendTo(output);
                     break;
                 case do_hash("slow"):
-                    tr::SlowDownWorld(results["times"].getRaw<int>())
-                        .SendTo(output);
+                    tr::slowDownWorld(results["times"].getRaw<int>()).sendTo(output);
                     break;
                 case do_hash("forward"):
-                    tr::ForwardWorld(results["tickNumber"].getRaw<int>())
-                        .SendTo(output);
+                    tr::forwardWorld(results["tickNumber"].getRaw<int>()).sendTo(output);
                     break;
                 case do_hash("wrap"):
-                    tr::WrapWorld(results["tickNumber"].getRaw<int>())
-                        .SendTo(output);
+                    tr::wrapWorld(results["tickNumber"].getRaw<int>()).sendTo(output);
                     break;
                 case do_hash("freeze"):
-                    tr::FreezeWorld().SendTo(output);
+                    tr::freezeWorld().sendTo(output);
                     break;
                 case do_hash("reset"):
-                    tr::ResetWorld().SendTo(output);
+                    tr::resetWorld().sendTo(output);
                     break;
                 case do_hash("query"):
-                    tr::QueryWorld().SendTo(output);
+                    tr::queryWorld().sendTo(output);
                 default:
                     break;
             }

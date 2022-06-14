@@ -4,7 +4,6 @@
 
 namespace tr {
     std::string rmmc(const std::string& s);
-
 }  // namespace tr
 
 #endif

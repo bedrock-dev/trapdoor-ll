@@ -20,7 +20,7 @@ namespace tr {
     };
     class Configuration {
        public:
-        CommandConfig getCommmadConfig(const std::string& command);
+        CommandConfig getCommandConfig(const std::string& command);
 
         bool init(const std::string& fileName);
 

@@ -36,38 +36,36 @@ namespace tr {
                 case do_hash("print"):
                     if (results["channel"].isSet) {
                         tr::mod()
-                            .hopper_channel_manager()
+                            .getHopperChannelManager()
                             .modifyChannel(results["channel"].getRaw<int>(), 0)
-                            .SendTo(output);
+                            .sendTo(output);
                     } else {
                         tr::mod()
-                            .hopper_channel_manager()
-                            .quickModifyChannel(
-                                reinterpret_cast<Player *>(origin.getPlayer()),
-                                reinterpret_cast<Actor *>(origin.getPlayer())
-                                    ->getBlockFromViewVector()
-                                    .getPosition(),
-                                0)
-                            .SendTo(output);
+                            .getHopperChannelManager()
+                            .quickModifyChannel(reinterpret_cast<Player *>(origin.getPlayer()),
+                                                reinterpret_cast<Actor *>(origin.getPlayer())
+                                                    ->getBlockFromViewVector()
+                                                    .getPosition(),
+                                                0)
+                            .sendTo(output);
                     }
 
                     break;
                 case do_hash("reset"):
                     if (results["channel"].isSet) {
                         tr::mod()
-                            .hopper_channel_manager()
+                            .getHopperChannelManager()
                             .modifyChannel(results["channel"].getRaw<int>(), 1)
-                            .SendTo(output);
+                            .sendTo(output);
                     } else {
                         tr::mod()
-                            .hopper_channel_manager()
-                            .quickModifyChannel(
-                                reinterpret_cast<Player *>(origin.getPlayer()),
-                                reinterpret_cast<Actor *>(origin.getPlayer())
-                                    ->getBlockFromViewVector()
-                                    .getPosition(),
-                                1)
-                            .SendTo(output);
+                            .getHopperChannelManager()
+                            .quickModifyChannel(reinterpret_cast<Player *>(origin.getPlayer()),
+                                                reinterpret_cast<Actor *>(origin.getPlayer())
+                                                    ->getBlockFromViewVector()
+                                                    .getPosition(),
+                                                1)
+                            .sendTo(output);
                     }
 
                     break;

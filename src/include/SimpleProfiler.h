@@ -15,11 +15,9 @@
 typedef std::chrono::high_resolution_clock timer_clock;
 typedef int64_t microsecond_t;
 #define TIMER_START auto start = timer_clock::now();
-#define TIMER_END                                                      \
-    auto elapsed = timer_clock::now() - start;                         \
-    long long timeResult =                                             \
-        std::chrono::duration_cast<std::chrono::microseconds>(elapsed) \
-            .count();
+#define TIMER_END                              \
+    auto elapsed = timer_clock::now() - start; \
+    long long timeResult = std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count();
 
 namespace tr {
 
@@ -42,12 +40,11 @@ namespace tr {
     };
 
     struct ChunkProfileInfo {
-        std::array<std::map<tr::TBlockPos2, std::vector<microsecond_t>>, 3>
-            chunk_counter{};
-        microsecond_t block_entities_tick_time = 0;
-        microsecond_t random_tick_time = 0;
-        microsecond_t pending_tick_time = 0;
-        size_t total_tick_time = 0;
+        std::array<std::map<tr::TBlockPos2, std::vector<microsecond_t>>, 3> chunk_counter{};
+        microsecond_t blockEntitiesTickTime = 0;
+        microsecond_t randomTickTime = 0;
+        microsecond_t pendingTickTime = 0;
+        size_t totalTickTime = 0;
 
         inline size_t getChunkNumber() const {
             size_t num = 0;
@@ -62,10 +59,10 @@ namespace tr {
                 this->chunk_counter[i].clear();
             }
 
-            block_entities_tick_time = 0;
-            random_tick_time = 0;
-            pending_tick_time = 0;
-            total_tick_time = 0;
+            blockEntitiesTickTime = 0;
+            randomTickTime = 0;
+            pendingTickTime = 0;
+            totalTickTime = 0;
         }
     };
 
@@ -86,24 +83,23 @@ namespace tr {
     */
 
     struct RedstoneProfileInfo {
-        microsecond_t signal_update = 0;   // Dimension::tickRedstone
-        microsecond_t pending_add = 0;     // PendingAdd
-        microsecond_t pending_update = 0;  // PendingUpdate
-        microsecond_t pending_remove = 0;  // pendingRemove
+        microsecond_t signalUpdate = 0;   // Dimension::tickRedstone
+        microsecond_t pendingAdd = 0;     // PendingAdd
+        microsecond_t pendingUpdate = 0;  // PendingUpdate
+        microsecond_t pendingRemove = 0;  // pendingRemove
         inline void reset() {
-            signal_update = 0;
-            pending_add = 0;
-            pending_update = 0;
-            pending_remove = 0;
+            signalUpdate = 0;
+            pendingAdd = 0;
+            pendingUpdate = 0;
+            pendingRemove = 0;
         }
 
         inline microsecond_t sum() const {
-            return signal_update + pending_add + pending_remove +
-                   pending_update;
+            return signalUpdate + pendingAdd + pendingRemove + pendingUpdate;
         }
     };
 
-    //普通profile
+    // 普通profile
 
     struct EntityInfo {
         microsecond_t time;
@@ -113,31 +109,31 @@ namespace tr {
         enum Type { Normal, Chunk, PendingTick, Entity };
         SimpleProfiler::Type type = Normal;
         bool profiling = false;
-        size_t total_round = 100;
-        size_t current_round = 0;
-        ChunkProfileInfo chunk_info{};
-        std::array<std::map<std::string, EntityInfo>, 3> actor_info{};
-        RedstoneProfileInfo redstone_info{};
-        microsecond_t server_level_tick_time = 0;  // mspt
-        microsecond_t dimension_tick_time = 0;     //区块加载卸载&村庄
-        microsecond_t entity_system_tick_time = 0;
+        size_t totalRound = 100;
+        size_t currentRound = 0;
+        ChunkProfileInfo chunkInfo{};
+        std::array<std::map<std::string, EntityInfo>, 3> actorInfo{};
+        RedstoneProfileInfo redstoneInfo{};
+        microsecond_t serverLevelTickTime = 0;  // mspt
+        microsecond_t dimensionTickTime = 0;    // 区块加载卸载&村庄
+        microsecond_t entitySystemTickTime = 0;
 
-        void Print();
+        void print() const;
 
-        void PrintChunks() const;
+        void printChunks() const;
 
-        void PrintPendingTicks() const;
+        void printPendingTicks() const;
 
-        void PrintBasics() const;
+        void printBasics() const;
 
-        void PrintActor() const;
+        void printActor() const;
 
-        void Reset(SimpleProfiler::Type type);
+        void reset(SimpleProfiler::Type type);
 
-        void Start(size_t round, SimpleProfiler::Type type = Normal);
-        void Stop();
+        void start(size_t round, SimpleProfiler::Type type = Normal);
+        void stop();
     };
 
 }  // namespace tr
 
-#endif  // TRAPDOOR_PROFILEINFO_H
+#endif  // TRAPDOOR_SIMPLE_PROFILER_H

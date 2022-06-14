@@ -31,20 +31,16 @@ namespace tr {
                                 : 20;
             switch (do_hash(results["prof"].getRaw<std::string>().c_str())) {
                 case do_hash("normal"):
-                    tr::StartProfiler(tickTime, SimpleProfiler::Normal)
-                        .SendTo(output);
+                    tr::startProfiler(tickTime, SimpleProfiler::Normal).sendTo(output);
                     break;
                 case do_hash("chunk"):
-                    tr::StartProfiler(tickTime, SimpleProfiler::Chunk)
-                        .SendTo(output);
+                    tr::startProfiler(tickTime, SimpleProfiler::Chunk).sendTo(output);
                     break;
                 case do_hash("entity"):
-                    tr::StartProfiler(tickTime, SimpleProfiler::Entity)
-                        .SendTo(output);
+                    tr::startProfiler(tickTime, SimpleProfiler::Entity).sendTo(output);
                     break;
                 case do_hash("pt"):
-                    ErrorMsg("Function is developing by developer")
-                        .SendTo(output);
+                    ErrorMsg("Function is developing by developer").sendTo(output);
                     break;
             }
         };

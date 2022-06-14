@@ -5,23 +5,16 @@ namespace tr {
 
     struct ActionResult;
 
-    enum class TickingStatus {
-        Normal,
-        Forwarding,
-        SlowDown,
-        Frozen,
-        Acc,
-        Wrap
-    };
+    enum class TickingStatus { Normal, Forwarding, SlowDown, Frozen, Acc, Wrap };
 
     struct TickingInfo {
-        int remain_wrap_tick = 0;
-        size_t slow_down_time = 1;
-        size_t forward_tick_num = 0;
-        size_t acc_time = 1;
-        size_t slow_down_counter = 0;
+        int remainWrapTick = 0;
+        size_t slowDownTime = 1;
+        size_t forwardTickNum = 0;
+        size_t accTime = 1;
+        size_t slowDownCounter = 0;
         TickingStatus status = TickingStatus::Normal;
-        TickingStatus old_status = TickingStatus::Normal;
+        TickingStatus oldStatus = TickingStatus::Normal;
     };
 
     double getMeanMSPT();
@@ -29,24 +22,24 @@ namespace tr {
     double getMeanTPS();
 
     // Tick and prof Command action
-    ActionResult PrintMspt();
-    ActionResult FreezeWorld();
+    ActionResult printMSPT();
+    ActionResult freezeWorld();
 
-    ActionResult ResetWorld();
+    ActionResult resetWorld();
 
-    ActionResult ForwardWorld(int gt);
+    ActionResult forwardWorld(int gt);
 
-    ActionResult SlowDownWorld(int times);
+    ActionResult slowDownWorld(int times);
 
-    ActionResult AccWorld(int times);
+    ActionResult accWorld(int times);
 
-    ActionResult WrapWorld(int times);
+    ActionResult wrapWorld(int times);
 
-    ActionResult QueryWorld();
+    ActionResult queryWorld();
 
-    ActionResult CancelWorld();
+    ActionResult cancelWorld();
 
-    ActionResult StartProfiler(int rounds, SimpleProfiler::Type type);
+    ActionResult startProfiler(int rounds, SimpleProfiler::Type type);
 
 }  // namespace tr
 #endif

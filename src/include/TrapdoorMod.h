@@ -13,35 +13,33 @@ namespace tr {
 
     class TrapdoorMod {
        public:
-        void Init();
+        void init();
 
-        void HeavyTick();
+        void heavyTick();
 
-        void LightTick();
+        void lightTick();
 
-        inline VillageHelper &village_helper() { return this->village_helper_; }
+        inline VillageHelper &getVillageHelper() { return this->villageHelper; }
 
-        inline HsaManager &hsa_manager() { return this->hsa_magager_; }
+        inline HsaManager &getHsaManager() { return this->hsaManager; }
 
-        inline Configuration &config() { return this->config_; }
+        inline Configuration &getConfig() { return this->config; }
 
-        inline HUDHelper &hud_helper() { return this->hud_helper_; }
+        inline HUDHelper &getHUDHelper() { return this->HUDHelper; }
 
-        inline HopperChannelManager &hopper_channel_manager() {
-            return this->hopper_channel_manager_;
+        inline HopperChannelManager &getHopperChannelManager() {
+            return this->hopperChannelManager;
         }
 
-        inline SimPlayerManager &sim_player_manager() {
-            return this->sim_player_mgr_;
-        }
+        inline SimPlayerManager &getSimPlayerManager() { return this->simPlayerManager; }
 
        private:
-        VillageHelper village_helper_;
-        HsaManager hsa_magager_;
-        Configuration config_;
-        HopperChannelManager hopper_channel_manager_;
-        HUDHelper hud_helper_;
-        SimPlayerManager sim_player_mgr_;
+        VillageHelper villageHelper;
+        HsaManager hsaManager;
+        Configuration config;
+        HopperChannelManager hopperChannelManager;
+        HUDHelper HUDHelper;
+        SimPlayerManager simPlayerManager;
     };
 
     Logger &logger();

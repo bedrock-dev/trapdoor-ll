@@ -27,7 +27,7 @@ namespace tr {
                          &results) {
             switch (do_hash(results["log"].getRaw<std::string>().c_str())) {
                 case do_hash("mspt"):
-                    tr::PrintMspt().SendTo(output);
+                    tr::printMSPT().sendTo(output);
                     break;
                 default:
                     break;

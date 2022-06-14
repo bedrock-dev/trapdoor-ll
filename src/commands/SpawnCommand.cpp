@@ -55,18 +55,16 @@ namespace tr {
             auto countParam = std::string();
             switch (do_hash(results["spawn"].getRaw<std::string>().c_str())) {
                 case do_hash("count"):
-                    tr::CountActors(
-                        reinterpret_cast<Player *>(origin.getPlayer()),
-                        results["countType"].getRaw<std::string>())
-                        .SendTo(output);
+                    tr::countActors(reinterpret_cast<Player *>(origin.getPlayer()),
+                                    results["countType"].getRaw<std::string>())
+                        .sendTo(output);
                     break;
 
                 case do_hash("forcesp"):
-                    tr::ForceSpawn(
+                    tr::forceSpawn(
 
                         reinterpret_cast<Player *>(origin.getPlayer()),
-                        results["actorType"]
-                            .get<const ActorDefinitionIdentifier *>(),
+                        results["actorType"].get<const ActorDefinitionIdentifier *>(),
                         reinterpret_cast<Actor *>(origin.getPlayer())
                             ->getBlockFromViewVector()
                             .getPosition()
@@ -75,17 +73,15 @@ namespace tr {
                     break;
                 case do_hash("prob"):
                     if (results["blockPos"].isSet) {
-                        tr::printSpawnProbability(
-                            reinterpret_cast<Player *>(origin.getPlayer()),
-                            results["blockPos"].get<BlockPos>())
-                            .SendTo(output);
+                        tr::printSpawnProbability(reinterpret_cast<Player *>(origin.getPlayer()),
+                                                  results["blockPos"].get<BlockPos>())
+                            .sendTo(output);
                     } else {
-                        tr::printSpawnProbability(
-                            reinterpret_cast<Player *>(origin.getPlayer()),
-                            reinterpret_cast<Actor *>(origin.getPlayer())
-                                ->getBlockFromViewVector()
-                                .getPosition())
-                            .SendTo(output);
+                        tr::printSpawnProbability(reinterpret_cast<Player *>(origin.getPlayer()),
+                                                  reinterpret_cast<Actor *>(origin.getPlayer())
+                                                      ->getBlockFromViewVector()
+                                                      .getPosition())
+                            .sendTo(output);
                     }
             }
         };

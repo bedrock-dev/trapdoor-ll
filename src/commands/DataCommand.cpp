@@ -7,24 +7,20 @@
 
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"
-#include "InfoDisplayer.h"
+#include "InfoDisplay.h"
 
 namespace tr {
     void setup_dataCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand(
-            "data", "print some game data",
-            static_cast<CommandPermissionLevel>(level));
+        auto command = DynamicCommand::createCommand("data", "print some game data",
+                                                     static_cast<CommandPermissionLevel>(level));
 
-        auto &blockSubCommandEnum =
-            command->setEnum("blockSubCommand", {"block"});
-        auto &entitySubCommand =
-            command->setEnum("entitySubCommand", {"entity"});
-        auto &redstoneSubCommand =
-            command->setEnum("redstoneSubCommand", {"redstone"});
+        auto &blockSubCommandEnum = command->setEnum("blockSubCommand", {"block"});
+        auto &entitySubCommand = command->setEnum("entitySubCommand", {"entity"});
+        auto &redstoneSubCommand = command->setEnum("redstoneSubCommand", {"redstone"});
 
-        //给根命令+enum提示信息
+        // 给根命令+enum提示信息
         command->mandatory("data", ParamType::Enum, blockSubCommandEnum,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("data", ParamType::Enum, entitySubCommand,
@@ -32,51 +28,45 @@ namespace tr {
         command->mandatory("data", ParamType::Enum, redstoneSubCommand,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
-        //设置每个enum后面需要的参数类型
+        // 设置每个enum后面需要的参数类型
         command->optional("blockPos", ParamType::BlockPos);
 
-        //添加子命令并进行类型绑定
+        // 添加子命令并进行类型绑定
         command->addOverload({blockSubCommandEnum, "blockPos"});
         command->addOverload({entitySubCommand});
         command->addOverload({redstoneSubCommand, "blockPos"});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
-                     std::unordered_map<std::string, DynamicCommand::Result>
-                         &results) {
+                     std::unordered_map<std::string, DynamicCommand::Result> &results) {
             switch (do_hash(results["data"].getRaw<std::string>().c_str())) {
                 case do_hash("block"):
 
                     if (results["blockPos"].isSet) {
-                        tr::displayerBlockInfo(
-                            origin.getPlayer(),
-                            results["blockPos"].get<BlockPos>());
+                        tr::displayBlockInfo(origin.getPlayer(),
+                                             results["blockPos"].get<BlockPos>());
                     } else {
-                        tr::displayerBlockInfo(
-                            origin.getPlayer(),
-                            reinterpret_cast<Actor *>(origin.getPlayer())
-                                ->getBlockFromViewVector()
-                                .getPosition());
+                        tr::displayBlockInfo(origin.getPlayer(),
+                                             reinterpret_cast<Actor *>(origin.getPlayer())
+                                                 ->getBlockFromViewVector()
+                                                 .getPosition());
                     }
 
                     break;
                 case do_hash("entity"):
                     tr::displayEntityInfo(
                         origin.getPlayer(),
-                        reinterpret_cast<Actor *>(origin.getPlayer())
-                            ->getActorFromViewVector(10));
+                        reinterpret_cast<Actor *>(origin.getPlayer())->getActorFromViewVector(10));
                     break;
                 case do_hash("redstone"):
                     if (results["blockPos"].isSet) {
-                        tr::displayerRedstoneCompInfo(
-                            origin.getPlayer(),
-                            results["blockPos"].get<BlockPos>());
+                        tr::displayRedstoneCompInfo(origin.getPlayer(),
+                                                    results["blockPos"].get<BlockPos>());
                     } else {
-                        tr::displayerRedstoneCompInfo(
-                            origin.getPlayer(),
-                            reinterpret_cast<Actor *>(origin.getPlayer())
-                                ->getBlockFromViewVector()
-                                .getPosition());
+                        tr::displayRedstoneCompInfo(origin.getPlayer(),
+                                                    reinterpret_cast<Actor *>(origin.getPlayer())
+                                                        ->getBlockFromViewVector()
+                                                        .getPosition());
                     }
                     break;
             }

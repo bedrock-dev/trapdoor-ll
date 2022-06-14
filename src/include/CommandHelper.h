@@ -25,7 +25,7 @@ namespace tr {
 
         ActionResult(std::string m, bool su);
 
-        void SendTo(CommandOutput &output) const;
+        void sendTo(CommandOutput &output) const;
     };
 
     Vec3 getLookAtPos(Player *player);

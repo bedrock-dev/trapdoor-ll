@@ -5,7 +5,7 @@
 
 #include "EventAPI.h"
 #include "Events.h"
-#include "InfoDisplayer.h"
+#include "InfoDisplay.h"
 #include "TrapdoorMod.h"
 
 namespace tr {
@@ -14,7 +14,7 @@ namespace tr {
         Event::PlayerUseItemOnEvent ::subscribe(
             [](const Event::PlayerUseItemOnEvent& ev) {
                 // auto* bi = const_cast<BlockInstance*>(&ev.mBlockInstance);
-                // tr::displayerBlockInfo(ev.mPlayer, bi);
+                // tr::displayBlockInfo(ev.mPlayer, bi);
                 // return true;
                 return true;
             });

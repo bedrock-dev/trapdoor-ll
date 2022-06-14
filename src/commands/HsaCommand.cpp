@@ -38,12 +38,12 @@ namespace tr {
             switch (do_hash(results["hsa"].getRaw<std::string>().c_str())) {
                 case do_hash("show"):
                     tr::mod()
-                        .hsa_manager()
+                        .getHsaManager()
                         .ShowHsa(results["onOroff"].getRaw<bool>())
-                        .SendTo(output);
+                        .sendTo(output);
                     break;
                 case do_hash("clear"):
-                    tr::mod().hsa_manager().clear().SendTo(output);
+                    tr::mod().getHsaManager().clear().sendTo(output);
                     break;
                 case do_hash("place"):
                     // results["block"].get<Block>();

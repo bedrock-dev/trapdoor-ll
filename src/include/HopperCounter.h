@@ -14,9 +14,9 @@
 namespace tr {
 
     class CounterChannel {
-        const size_t channel;                       //频道号
-        std::map<std::string, size_t> counterList;  //数据
-        size_t gameTick = 0;                        //游戏刻
+        const size_t channel;                       // 频道号
+        std::map<std::string, size_t> counterList;  // 数据
+        size_t gameTick = 0;                        // 游戏刻
        public:
         explicit CounterChannel(size_t ch) : channel(ch), gameTick(0) {}
 
@@ -29,7 +29,7 @@ namespace tr {
         inline void tick() { ++gameTick; }
     };
 
-    //漏斗频道管理器
+    // 漏斗频道管理器
     class HopperChannelManager {
         std::vector<CounterChannel> channels;
         bool enable = false;
@@ -42,7 +42,7 @@ namespace tr {
 
         inline CounterChannel &getChannel(size_t ch) { return channels[ch]; }
 
-        //更新计数器
+        // 更新计数器
         void tick();
 
         inline bool isEnable() const { return this->enable; }
@@ -60,7 +60,7 @@ namespace tr {
 
         ActionResult quickModifyChannel(Player *player, const BlockPos &pos, int opt);
 
-        std::string getHUDdata(size_t channel);
+        std::string getHUDData(size_t channel);
 
         void quickPrintData(const BlockPos &pos);
     };

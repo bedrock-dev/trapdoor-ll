@@ -21,7 +21,7 @@ namespace tr {
 
     inline TBlockPos fromBlockPos(const BlockPos& v) { return {v.x, v.y, v.z}; }
 
-    inline const TAABB fromAABB(const AABB& aabb) {
+    inline TAABB fromAABB(const AABB& aabb) {
         return {fromVec3(aabb.pointA), fromVec3(aabb.pointB)};
     }
 

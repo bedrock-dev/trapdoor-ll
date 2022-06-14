@@ -1,4 +1,4 @@
-#include "InfoDisplayer.h"
+#include "InfoDisplay.h"
 
 #include <MC/Actor.hpp>
 #include <MC/BaseCircuitComponent.hpp>
@@ -49,31 +49,29 @@ namespace tr {
             .sText(TextBuilder::AQUA, "Base: \n")
 
             .text(" - type / UID: ")
-            .sTextF(TextBuilder::GREEN, "%s    %llx\n",
-                    a->getTypeName().c_str(), a->getUniqueID().get())
+            .sTextF(TextBuilder::GREEN, "%s    %llx\n", a->getTypeName().c_str(),
+                    a->getUniqueID().get())
 
             .text(" - Pos/DeltaPos   AABB: ")
-            .sTextF(TextBuilder::GREEN, "%s / %s|%s",
-                    fromVec3(a->getPos()).toString().c_str(),
+            .sTextF(TextBuilder::GREEN, "%s / %s|%s", fromVec3(a->getPos()).toString().c_str(),
                     fromVec3(a->getPosDelta()).toString().c_str(),
                     fromAABB(a->getAABB()).ToString().c_str())
             .text("\n")
             .text(" - Surface: ")
             .sTextF(TextBuilder::GREEN, "%d\n", a->isSurfaceMob());
 
-        builder.sText(TextBuilder::AQUA, "Dbg:\n")
-            .textF("%s\n", getDbgString(a).c_str());
+        builder.sText(TextBuilder::AQUA, "Dbg:\n").textF("%s\n", getDbgString(a).c_str());
         builder.sText(tr::TextBuilder::AQUA, "NBT:\n")
             .textF("  %s", a->getNbt()->toPrettySNBT(true).c_str());
         player->sendText(builder.get());
         return false;
     }
 
-    bool displayerBlockInfo(Player *p, const BlockPos &pos) {
+    bool displayBlockInfo(Player *p, const BlockPos &pos) {
         if (!p) return true;
         auto &b = p->getRegion().getBlock(pos);
         if (b.getTypeName() == "minecraft:air") {
-            p->sendText("get block faliure");
+            p->sendText("get block failure");
         }
 
         tr::TextBuilder builder;
@@ -83,8 +81,7 @@ namespace tr {
                     b.getTypeName().c_str())
 
             .text(" - ID / RTID: ")
-            .sTextF(tr::TextBuilder::GREEN, "%d / %d\n", b.getId(),
-                    b.getRuntimeId())
+            .sTextF(tr::TextBuilder::GREEN, "%d / %d\n", b.getId(), b.getRuntimeId())
             .text(" - Variant: ")
             .sTextF(tr::TextBuilder::GREEN, "%d\n", b.getVariant())
             .text(" - CanInstatick: ")
@@ -121,9 +118,9 @@ namespace tr {
         return false;
     }
 
-    bool displayerEnvInfo() { return true; }
+    bool displayEnvInfo() { return true; }
 
-    bool displayerRedstoneCompInfo(Player *p, const BlockPos &pos) {
+    bool displayRedstoneCompInfo(Player *p, const BlockPos &pos) {
         tr::logger().debug("test");
         auto &cs = p->getDimension().getCircuitSystem();
         auto &graph = getCircuitSceneGraph(&cs);

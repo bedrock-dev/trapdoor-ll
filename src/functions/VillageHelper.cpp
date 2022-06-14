@@ -4,6 +4,7 @@
 // clang-format on
 
 #include "VillageHelper.h"
+
 #include <MC/Dimension.hpp>
 #include <MC/Level.hpp>
 #include <MC/POIInstance.hpp>
@@ -31,14 +32,12 @@ namespace tr {
         // Village::_getDwellerMap
         constexpr size_t DWELLER_TICK_MAP_OFFSET = 160;
 
-        typedef std::array<std::unordered_map<ActorUniqueID, tr::TDwellerData,
-                                              TActorUniqueIDHash>,
+        typedef std::array<std::unordered_map<ActorUniqueID, tr::TDwellerData, TActorUniqueIDHash>,
                            4>
             DwellerTickMapType;
 
-        //村庄的POI分配表
-        typedef std::unordered_map<ActorUniqueID,
-                                   std::array<std::weak_ptr<POIInstance>, 3>,
+        // 村庄的POI分配表
+        typedef std::unordered_map<ActorUniqueID, std::array<std::weak_ptr<POIInstance>, 3>,
                                    TActorUniqueIDHash>
             DwellerPOIMapType;
 
@@ -68,11 +67,9 @@ namespace tr {
                     for (int index = 0; index < 3; ++index) {
                         auto poi = kv.second[index].lock();
                         if (poi) {
-                            builder.sTextF(TextBuilder::GREEN, "%s",
-                                           icons[index]);
+                            builder.sTextF(TextBuilder::GREEN, "%s", icons[index]);
                         } else {
-                            builder.sTextF(TextBuilder::RED, " %s",
-                                           icons[index]);
+                            builder.sTextF(TextBuilder::RED, " %s", icons[index]);
                         }
                     }
                     actor->setNameTag(builder.get());
@@ -81,15 +78,14 @@ namespace tr {
 
             auto tickMap = Village_getDwellerTickMap(v);
             int index = 0;
-            for (auto i : tickMap) {
+            for (const auto &i : tickMap) {
                 for (auto &kv : i) {
-                    auto actor = Global<Level>->fetchEntity(kv.first, false);
-                    if (actor) {
+                    auto ac = Global<Level>->fetchEntity(kv.first, false);
+                    if (ac) {
                         if (index == DwellerType::Villager) {
-                            actor->setNameTag(actor->getNameTag() + " " +
-                                              std::to_string(kv.second.tick));
+                            ac->setNameTag(ac->getNameTag() + " " + std::to_string(kv.second.tick));
                         } else {
-                            actor->setNameTag(std::to_string(kv.second.tick));
+                            ac->setNameTag(std::to_string(kv.second.tick));
                         }
                     }
                 }
@@ -121,38 +117,34 @@ namespace tr {
 
     }  // namespace
 
-    void VillageHelper::HeavyTick() {
+    void VillageHelper::heavyTick() {
         static int refresh_time = 0;
         refresh_time = (refresh_time + 1) % 40;
         if (refresh_time != 1) return;
 
-        if (this->show_head_info_) {
-            this->SetVillagerHeadInfo();
+        if (this->showHeadInfo) {
+            this->setVillagerHeadInfo();
         }
         for (auto kv : this->vs_) {
             auto v = kv.second;
-            if (this->show_bounds_) {
-                tr::DrawAABB(fromAABB(v->getBounds()), tr::PCOLOR::RED, false,
+            if (this->showBounds) {
+                tr::drawAABB(fromAABB(v->getBounds()), tr::PCOLOR::RED, false, 0);
+            }
+            if (this->showIronSpawn) {
+                tr::drawAABB(getIronSpawnArea(v->getCenter()), tr::PCOLOR::BLUE, false, 0);
+            }
+            if (this->showCenter) {
+                tr::spawnParticle(fromVec3(v->getCenter()) + TVec3(0.5f, 0.9f, 0.5f),
+                                  "minecraft:heart_particle", 0);
+            }
+            if (this->showPoiQuery) {
+                tr::drawAABB(getPOIQueryRange(fromAABB(v->getBounds())), tr::PCOLOR::BLUE, false,
                              0);
-            }
-            if (this->show_iron_spawn_) {
-                tr::DrawAABB(getIronSpawnArea(v->getCenter()), tr::PCOLOR::BLUE,
-                             false, 0);
-            }
-            if (this->show_center_) {
-                tr::SpawnParticle(
-                    fromVec3(v->getCenter()) + TVec3(0.5f, 0.9f, 0.5f),
-                    "minecraft:heart_particle", 0);
-            }
-
-            if (this->show_poi_query_) {
-                tr::DrawAABB(getPOIQueryRange(fromAABB(v->getBounds())),
-                             tr::PCOLOR::BLUE, false, 0);
             }
         }
     }
 
-    void VillageHelper::LightTick() {
+    void VillageHelper::lightTick() {
         static int refresh_time = 0;
         refresh_time = (refresh_time + 1) % 20;
         if (refresh_time == 0) {
@@ -160,19 +152,19 @@ namespace tr {
         }
     }
 
-    void VillageHelper::InsertVillage(Village *village) {
+    void VillageHelper::insertVillage(Village *village) {
         if (!village) return;
         auto uid = village->getUniqueID().asString();
         auto vid = getVIDFormPool(uid);
         this->vs_.insert({vid, village});
     }
 
-    void VillageHelper::SetVillagerHeadInfo() {
+    void VillageHelper::setVillagerHeadInfo() {
         for (auto &kv : this->vs_) {
             Village_showHeadInfo(kv.first, kv.second);
         }
     }
-    ActionResult VillageHelper::ListTickingVillages(bool details) {
+    ActionResult VillageHelper::listTickingVillages(bool details) {
         if (this->vs_.empty()) {
             return {"no village in ticking", true};
         }
@@ -204,7 +196,7 @@ namespace tr {
         return {builder.get(), true};
     }
 
-    ActionResult VillageHelper::PrintDetails(int vid, const Vec3 &pos) {
+    ActionResult VillageHelper::printDetails(int vid, const Vec3 &pos) {
         if (this->vs_.empty()) {
             return {"no village", false};
         }
@@ -232,8 +224,7 @@ namespace tr {
         auto maxPos = vill->getBounds().pointB.toBlockPos();
         auto dc_map = Village_getDwellerCount(vill);
         builder
-            .textF("VID: %d          UUID: %s", it->first,
-                   vill->getUniqueID().asString().c_str())
+            .textF("VID: %d          UUID: %s", it->first, vill->getUniqueID().asString().c_str())
             .text("\n- Center: ")
             .pos(fromBlockPos(center))
             .text("\n- Bounds: ")
@@ -261,23 +252,18 @@ namespace tr {
                 }
                 auto poi = villager.second[index].lock();
                 if (poi) {
-                    auto pos = poi->getPosition();
+                    auto position = poi->getPosition();
                     auto cap = poi->getOwnerCapacity();
                     auto own = poi->getOwnerCount();
                     auto radius = poi->getRadius();
                     auto weight = poi->getWeight();
 
                     builder
-                        .sTextF(TextBuilder::WHITE,
-                                " [%d, %d, %d] %d/%d, %.1f, %lld ", pos.x,
-                                pos.y, pos.z, own, cap, radius, weight)
+                        .sTextF(TextBuilder::WHITE, " [%d, %d, %d] %d/%d, %.1f, %lld ", position.x,
+                                position.y, position.z, own, cap, radius, weight)
                         .text("|");
-
                 } else {
-                    builder
-                        .sText(TextBuilder::GRAY,
-                               "            (null)             ")
-                        .text("|");
+                    builder.sText(TextBuilder::GRAY, "            (null)             ").text("|");
                 }
 
                 if (index == 2) {
@@ -288,28 +274,28 @@ namespace tr {
         return {builder.get(), true};
     }
 
-    ActionResult VillageHelper::ShowBounds(bool able) {
-        this->show_bounds_ = able;
+    ActionResult VillageHelper::setShowBounds(bool able) {
+        this->showBounds = able;
         return {"", true};
     }
 
-    ActionResult VillageHelper::ShowCenter(bool able) {
-        this->show_center_ = able;
+    ActionResult VillageHelper::setShowCenter(bool able) {
+        this->showCenter = able;
         return {"", true};
     }
 
-    ActionResult VillageHelper::ShowPoiQury(bool able) {
-        this->show_poi_query_ = able;
+    ActionResult VillageHelper::setShowPoiQuery(bool able) {
+        this->showPoiQuery = able;
         return {"", true};
     }
 
-    ActionResult VillageHelper::ShowIronSpawnArea(bool able) {
-        this->show_iron_spawn_ = able;
+    ActionResult VillageHelper::setShowIronSpawnArea(bool able) {
+        this->showIronSpawn = able;
         return {"", true};
     }
 
-    ActionResult VillageHelper::ShowVillagerHeadInfo(bool able) {
-        this->show_head_info_ = true;
+    ActionResult VillageHelper::setShowVillagerHeadInfo(bool able) {
+        this->showHeadInfo = true;
         return {"", true};
     }
 
@@ -317,11 +303,12 @@ namespace tr {
         if (!actor || !p) {
             return true;
         }
-        auto auid = actor->getUniqueID();
+        auto aUid = actor->getUniqueID();
 
         for (auto v : this->vs_) {
             auto dweller_map = Village_getDwellerPOIMap(v.second);
-            auto iter = dweller_map.find(auid);
+            auto iter = dweller_map.find(aUid);
+
             const static std::string name[] = {"Bed", "Alarm", "Work"};
             if (iter != dweller_map.end()) {
                 TextBuilder builder;
@@ -329,15 +316,13 @@ namespace tr {
                 for (int i = 0; i < 3; i++) {
                     const auto &poi = iter->second[i].lock();
                     if (poi) {
-                        builder.textF(
-                            "%s: [%d %d %d],%d/%d %.2f %zu\n",
-                            poi->getTypeName(), poi->getPosition().x,
-                            poi->getPosition().y, poi->getPosition().z,
-                            poi->getOwnerCount(), poi->getOwnerCapacity(),
-                            poi->getRadius(), poi->getWeight());
-                        tr::ShortHightLightBlock(
-                            fromBlockPos(poi->getPosition()), PCOLOR::YELLOW,
-                            0);
+                        builder.textF("%s: [%d %d %d],%d/%d %.2f %zu\n", poi->getTypeName(),
+                                      poi->getPosition().x, poi->getPosition().y,
+                                      poi->getPosition().z, poi->getOwnerCount(),
+                                      poi->getOwnerCapacity(), poi->getRadius(), poi->getWeight());
+
+                        tr::shortHighlightBlock(fromBlockPos(poi->getPosition()), PCOLOR::YELLOW,
+                                                0);
                     }
                 }
                 p->sendText(builder.get());
@@ -348,8 +333,8 @@ namespace tr {
     }
 }  // namespace tr
 
-THook(void, "?tick@Village@@QEAAXUTick@@AEAVBlockSource@@@Z", Village *village,
-      void *tick, void *bs) {
-    tr::mod().village_helper().InsertVillage(village);
+THook(void, "?tick@Village@@QEAAXUTick@@AEAVBlockSource@@@Z", Village *village, void *tick,
+      void *bs) {
+    tr::mod().getVillageHelper().insertVillage(village);
     original(village, tick, bs);
 }

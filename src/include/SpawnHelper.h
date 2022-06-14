@@ -28,16 +28,15 @@ namespace tr {
     static_assert(offsetof(TSpawnConditions, pos) == 20);
 #pragma pack(pop)
 
-    ActionResult PrintCap();
+    ActionResult printCap();
 
-    ActionResult CountActors(Player *p, const std::string &type);
+    ActionResult countActors(Player *p, const std::string &type);
 
     ActionResult printSpawnProbability(Player *player, const BlockPos &pos);
 
-    ActionResult SpawnMobCluster(Player *p, const BlockPos &pos);
+    ActionResult spawnMobCluster(Player *p, const BlockPos &pos);
 
-    ActionResult ForceSpawn(Player *p, const ActorDefinitionIdentifier *id,
-                            const BlockPos &pos);
+    ActionResult forceSpawn(Player *p, const ActorDefinitionIdentifier *id, const BlockPos &pos);
 
     class SpawnHelper {
         std::vector<BlockPos> verticalSpawnPositions;

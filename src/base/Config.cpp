@@ -19,10 +19,10 @@ namespace tr {
             this->config.clear();
             std::ifstream i(path);
             i >> this->config;
-            tr::logger().info("read config file {} successfully", path);
+            tr::logger().info("read getConfig file {} successfully", path);
             return true;
         } catch (std::exception&) {
-            tr::logger().error("can not read config file {}", path);
+            tr::logger().error("can not read getConfig file {}", path);
             return false;
         }
     }
@@ -34,22 +34,20 @@ namespace tr {
             for (const auto& i : cc.items()) {
                 const auto& value = i.value();
                 tempConfig.enable = value["enable"].get<bool>();
-                tempConfig.permissionLevel =
-                    value["permissionlevel"].get<int>();
+                tempConfig.permissionLevel = value["permissionlevel"].get<int>();
                 this->commandsConfigs.insert({i.key(), tempConfig});
             }
         } catch (const std::exception& e) {
-            tr::logger().error("error read command config: {}", e.what());
+            tr::logger().error("error read command getConfig: {}", e.what());
             return false;
         }
         return true;
     }
-    CommandConfig Configuration::getCommmadConfig(const std::string& command) {
+    CommandConfig Configuration::getCommandConfig(const std::string& command) {
         auto it = this->commandsConfigs.find(command);
         if (it == this->commandsConfigs.end()) {
-            tr::logger().warn(
-                "Can nod find config info of [{}],it will not be registered",
-                command);
+            tr::logger().warn("Can nod find getConfig info of [{}],it will not be registered",
+                              command);
             return {false, 2};
         }
         return it->second;

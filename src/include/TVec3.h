@@ -21,8 +21,7 @@ namespace tr {
 
         explicit TVec3(float _x);
 
-        TVec3(int _x, int _y, int _z)
-            : x((float)_x), y((float)_y), z((float)_z) {}
+        TVec3(int _x, int _y, int _z) : x((float)_x), y((float)_y), z((float)_z) {}
 
         TVec3(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {}
 

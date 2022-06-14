@@ -10,38 +10,38 @@ namespace tr {
 
     class VillageHelper {
        private:
-        void SetVillagerHeadInfo();
+        void setVillagerHeadInfo();
 
        public:
-        void HeavyTick();
-        void LightTick();
-        void InsertVillage(Village* village);
+        void heavyTick();
+        void lightTick();
+        void insertVillage(Village* village);
         // action
-        ActionResult ListTickingVillages(bool details);
+        ActionResult listTickingVillages(bool details);
 
-        ActionResult ShowBounds(bool able);
+        ActionResult setShowBounds(bool able);
 
-        ActionResult ShowCenter(bool able);
+        ActionResult setShowCenter(bool able);
 
-        ActionResult ShowPoiQury(bool able);
+        ActionResult setShowPoiQuery(bool able);
 
-        ActionResult ShowIronSpawnArea(bool able);
+        ActionResult setShowIronSpawnArea(bool able);
 
-        ActionResult ShowVillagerHeadInfo(bool able);
+        ActionResult setShowVillagerHeadInfo(bool able);
 
-        ActionResult PrintDetails(int vid, const Vec3& pos);
+        ActionResult printDetails(int vid, const Vec3& pos);
 
-        ActionResult Goto(int vid, const Vec3& pos);
+        //  ActionResult Goto(int vid, const Vec3& pos);
 
         bool ShowVillageInfo(Player* p, Actor* actor);
 
        private:
         std::unordered_map<int, Village*> vs_;
-        bool show_center_ = false;
-        bool show_iron_spawn_ = false;
-        bool show_bounds_ = false;
-        bool show_poi_query_ = false;
-        bool show_head_info_ = false;
+        bool showCenter = false;
+        bool showIronSpawn = false;
+        bool showBounds = false;
+        bool showPoiQuery = false;
+        bool showHeadInfo = false;
     };
 
 }  // namespace tr
