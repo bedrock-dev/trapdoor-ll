@@ -9,6 +9,7 @@
 
 #include "Msg.h"
 #include "TrapdoorMod.h"
+#include "Utils.h"
 
 namespace tr {
 
@@ -221,13 +222,12 @@ namespace tr {
                               return p1.second.time > p2.second.time;
                           });
 
-                for (int i = 0; i < v.size(); i++) {
+                for (auto &i : v) {
                     builder.text(" - ")
-                        .sTextF(TextBuilder::GREEN, "%s   ", v[i].first.c_str())
-                        .textF(
-                            "%.3f ms (%d)\n",
-                            micro_to_mill(v[i].second.time) / static_cast<double>(this->totalRound),
-                            v[i].second.count / totalRound);
+                        .sTextF(TextBuilder::GREEN, "%s   ", tr::rmmc(i.first).c_str())
+                        .textF("%.3f ms (%d)\n",
+                               micro_to_mill(i.second.time) / static_cast<double>(this->totalRound),
+                               i.second.count / totalRound);
                 }
             }
         }
