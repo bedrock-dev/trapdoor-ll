@@ -41,7 +41,7 @@ namespace tr {
             }
 
             switch (do_hash(results["tick"].getRaw<std::string>().c_str())) {
-                case do_hash("acce"):
+                case do_hash("acc"):
                     tr::accWorld(results["times"].getRaw<int>()).sendTo(output);
                     break;
                 case do_hash("slow"):
