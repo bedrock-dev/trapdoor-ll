@@ -23,9 +23,8 @@ namespace tr {
     void setup_testCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand(
-            "test", "change world tick command",
-            static_cast<CommandPermissionLevel>(level));
+        auto command = DynamicCommand::createCommand("test", "change world tick command",
+                                                     static_cast<CommandPermissionLevel>(level));
 
         auto &optFreeze = command->setEnum("su", {"particle"});
         command->mandatory("test", ParamType::Enum, optFreeze,
@@ -34,8 +33,7 @@ namespace tr {
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
-                     std::unordered_map<std::string, DynamicCommand::Result>
-                         &results) {
+                     std::unordered_map<std::string, DynamicCommand::Result> &results) {
             switch (do_hash(results["test"].getRaw<std::string>().c_str())) {
                 case do_hash("particle"):
                     test_particle();

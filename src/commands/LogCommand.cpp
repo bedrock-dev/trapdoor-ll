@@ -12,9 +12,8 @@ namespace tr {
     void setup_logCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand(
-            "log", "print some world info",
-            static_cast<CommandPermissionLevel>(level));
+        auto command = DynamicCommand::createCommand("log", "print some world info",
+                                                     static_cast<CommandPermissionLevel>(level));
 
         auto &optMain = command->setEnum("main", {"mspt", "tps"});
         command->mandatory("log", ParamType::Enum, optMain,
@@ -23,8 +22,7 @@ namespace tr {
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
-                     std::unordered_map<std::string, DynamicCommand::Result>
-                         &results) {
+                     std::unordered_map<std::string, DynamicCommand::Result> &results) {
             switch (do_hash(results["log"].getRaw<std::string>().c_str())) {
                 case do_hash("mspt"):
                     tr::printMSPT().sendTo(output);

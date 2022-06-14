@@ -11,9 +11,8 @@
 namespace tr {
     void setup_hsaCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
-        auto command = DynamicCommand::createCommand(
-            "hsa", "show hardcoded spawn area",
-            static_cast<CommandPermissionLevel>(level));
+        auto command = DynamicCommand::createCommand("hsa", "show hardcoded spawn area",
+                                                     static_cast<CommandPermissionLevel>(level));
 
         auto &showEnum = command->setEnum("showSubCommand", {"show"});
         auto &cleanEnum = command->setEnum("cleanSubCommand", {"clear"});
@@ -33,8 +32,7 @@ namespace tr {
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
-                     std::unordered_map<std::string, DynamicCommand::Result>
-                         &results) {
+                     std::unordered_map<std::string, DynamicCommand::Result> &results) {
             switch (do_hash(results["hsa"].getRaw<std::string>().c_str())) {
                 case do_hash("show"):
                     tr::mod()

@@ -10,22 +10,19 @@
 namespace tr {
     void setup_trapdoorCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
-        auto command = DynamicCommand::createCommand(
-            "trapdoor", "getConfig", static_cast<CommandPermissionLevel>(level));
+        auto command = DynamicCommand::createCommand("trapdoor", "getConfig",
+                                                     static_cast<CommandPermissionLevel>(level));
 
-        auto &particleShowLevelEnum =
-            command->setEnum("particleShowLevelEnum", {"pm"});
+        auto &particleShowLevelEnum = command->setEnum("particleShowLevelEnum", {"pm"});
         auto &particleShowLevelOpt =
             command->setEnum("particleLevelenum", {"low", "medium", "high"});
-        auto &particleDistanceEnum =
-            command->setEnum("particleDistanceEnum", {"pvd"});
+        auto &particleDistanceEnum = command->setEnum("particleDistanceEnum", {"pvd"});
 
         command->mandatory("trapdoor", ParamType::Enum, particleShowLevelEnum,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("trapdoor", ParamType::Enum, particleDistanceEnum,
                            CommandParameterOption::EnumAutocompleteExpansion);
-        command->mandatory("particleLevelOpt", ParamType::Enum,
-                           particleShowLevelOpt,
+        command->mandatory("particleLevelOpt", ParamType::Enum, particleShowLevelOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("maxDistance", ParamType::Int);
         command->addOverload({particleShowLevelEnum, "particleLevelOpt"});
@@ -33,10 +30,8 @@ namespace tr {
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
-                     std::unordered_map<std::string, DynamicCommand::Result>
-                         &results) {
-            switch (
-                do_hash(results["trapdoor"].getRaw<std::string>().c_str())) {
+                     std::unordered_map<std::string, DynamicCommand::Result> &results) {
+            switch (do_hash(results["trapdoor"].getRaw<std::string>().c_str())) {
                 case do_hash("particleLevel"):
                     break;
                 case do_hash("particleDitance"):

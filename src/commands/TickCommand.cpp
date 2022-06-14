@@ -12,9 +12,8 @@ namespace tr {
     void setup_tickCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand(
-            "tick", "change world ticking speed",
-            static_cast<CommandPermissionLevel>(level));
+        auto command = DynamicCommand::createCommand("tick", "change world ticking speed",
+                                                     static_cast<CommandPermissionLevel>(level));
 
         auto &optForward = command->setEnum("forward", {"forward", "wrap"});
         command->mandatory("tick", ParamType::Enum, optForward,
@@ -28,19 +27,16 @@ namespace tr {
         command->mandatory("times", ParamType::Int);
         command->addOverload({optSpeedChange, "times"});
 
-        auto &optFreeze =
-            command->setEnum("freeze", {"freeze", "reset", "query"});
+        auto &optFreeze = command->setEnum("freeze", {"freeze", "reset", "query"});
         command->mandatory("tick", ParamType::Enum, optFreeze,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->addOverload({optFreeze});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
-                     std::unordered_map<std::string, DynamicCommand::Result>
-                         &results) {
+                     std::unordered_map<std::string, DynamicCommand::Result> &results) {
             if (origin.getOriginType() == 1) {
-                output.error(
-                    "tick command cannot be executed inside a command block");
+                output.error("tick command cannot be executed inside a command block");
                 return;
             }
 

@@ -11,9 +11,8 @@ namespace tr {
     void setup_counterCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand(
-            "counter", "hopper counter command",
-            static_cast<CommandPermissionLevel>(level));
+        auto command = DynamicCommand::createCommand("counter", "hopper counter command",
+                                                     static_cast<CommandPermissionLevel>(level));
 
         auto &printOpt = command->setEnum("printCmd", {"print"});
         auto &resetOpt = command->setEnum("resetCmd", {"reset"});
@@ -29,8 +28,7 @@ namespace tr {
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
-                     std::unordered_map<std::string, DynamicCommand::Result>
-                         &results) {
+                     std::unordered_map<std::string, DynamicCommand::Result> &results) {
             auto countParam = std::string();
             switch (do_hash(results["counter"].getRaw<std::string>().c_str())) {
                 case do_hash("print"):

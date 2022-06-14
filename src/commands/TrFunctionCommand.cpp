@@ -9,12 +9,10 @@ namespace tr {
     void setup_funcCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand(
-            "func", "trapdoor functions",
-            static_cast<CommandPermissionLevel>(level));
+        auto command = DynamicCommand::createCommand("func", "trapdoor functions",
+                                                     static_cast<CommandPermissionLevel>(level));
 
-        auto &hoppercounterOpt =
-            command->setEnum("hoppercounter", {"hoppercounter"});
+        auto &hoppercounterOpt = command->setEnum("hoppercounter", {"hoppercounter"});
         command->mandatory("func", ParamType::Enum, hoppercounterOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
@@ -28,8 +26,7 @@ namespace tr {
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
-                     std::unordered_map<std::string, DynamicCommand::Result>
-                         &results) {
+                     std::unordered_map<std::string, DynamicCommand::Result> &results) {
             auto countParam = std::string();
             switch (do_hash(results["func"].getRaw<std::string>().c_str())) {
                 case do_hash("hoppercounter"):

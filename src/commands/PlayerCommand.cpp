@@ -87,9 +87,9 @@ namespace tr {
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
             auto name = results["playerName"].get<std::string>();
-            //默认1gt一次
+            // 默认1gt一次
             int interval = results["interval"].isSet ? results["interval"].get<int>() : 1;
-            //默认无限次
+            // 默认无限次
             int times = results["times"].isSet ? results["times"].get<int>() : -1;
             int rep = results["repeatType"].isSet ? 1 : 0;
             int itemId =
