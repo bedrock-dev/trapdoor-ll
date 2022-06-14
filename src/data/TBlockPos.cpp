@@ -10,6 +10,7 @@
 #include "TVec3.h"
 
 namespace tr {
+
     bool TBlockPos::operator==(const TBlockPos &v) const {
         return x == v.x && y == v.y && z == v.z;
     }
@@ -32,8 +33,7 @@ namespace tr {
     TVec3 TBlockPos::toVec3() const { return {x, y, z}; }
 
     std::string TBlockPos::toString() const {
-        return "[" + std::to_string(x) + "," + std::to_string(y) + "," +
-               std::to_string(z) + "]";
+        return "[" + std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(z) + "]";
     }
 
     std::vector<TBlockPos> TBlockPos::getNeighbourPos() {
@@ -148,26 +148,18 @@ namespace tr {
     }
 
     bool facingIsPos(TFACING facing) {
-        return facing == TFACING::POS_X || facing == TFACING::POS_Y ||
-               facing == TFACING::POS_Z;
+        return facing == TFACING::POS_X || facing == TFACING::POS_Y || facing == TFACING::POS_Z;
     }
 
     bool facingIsNeg(TFACING facing) {
-        return facing == TFACING::NEG_X || facing == TFACING::NEG_Y ||
-               facing == TFACING::NEG_Z;
+        return facing == TFACING::NEG_X || facing == TFACING::NEG_Y || facing == TFACING::NEG_Z;
     }
 
-    bool facingIsX(TFACING facing) {
-        return facing == TFACING::POS_X || facing == TFACING::NEG_X;
-    }
+    bool facingIsX(TFACING facing) { return facing == TFACING::POS_X || facing == TFACING::NEG_X; }
 
-    bool facingIsY(TFACING facing) {
-        return facing == TFACING::POS_Y || facing == TFACING::NEG_Y;
-    }
+    bool facingIsY(TFACING facing) { return facing == TFACING::POS_Y || facing == TFACING::NEG_Y; }
 
-    bool facingIsZ(TFACING facing) {
-        return facing == TFACING::POS_Z || facing == TFACING::NEG_Z;
-    }
+    bool facingIsZ(TFACING facing) { return facing == TFACING::POS_Z || facing == TFACING::NEG_Z; }
 
     TFACING invFacing(TFACING facing) {
         switch (facing) {

@@ -6,6 +6,7 @@
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"
 #include "SpawnHelper.h"
+#include "TBlockPos.h"
 
 namespace tr {
     void setup_spawnCommand(int level) {
@@ -40,8 +41,7 @@ namespace tr {
 
         // 添加子命令并进行类型绑定
         command->addOverload({prob, "blockPos"});
-        command->addOverload({forcesp, "actorType"});
-
+        command->addOverload({forcesp, "actorType", "blockPos"});
         // add
         // overload就是增加一些子命令，子命令需要Enum；并设定后面需要接什么类型的参数
         command->addOverload({optCount, "countType"});
@@ -58,15 +58,11 @@ namespace tr {
                     break;
 
                 case do_hash("forcesp"):
-                    tr::forceSpawn(
-
-                        reinterpret_cast<Player *>(origin.getPlayer()),
-                        results["actorType"].get<const ActorDefinitionIdentifier *>(),
-                        reinterpret_cast<Actor *>(origin.getPlayer())
-                            ->getBlockFromViewVector()
-                            .getPosition()
-
-                    );
+                    tr::forceSpawn(reinterpret_cast<Player *>(origin.getPlayer()),
+                                   results["actorType"].get<const ActorDefinitionIdentifier *>(),
+                                   results["blockPos"].isSet ? results["blockPos"].get<BlockPos>()
+                                                             : tr::INVALID_POS)
+                        .sendTo(output);
                     break;
                 case do_hash("prob"):
                     if (results["blockPos"].isSet) {

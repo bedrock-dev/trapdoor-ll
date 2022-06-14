@@ -111,7 +111,7 @@ namespace tr {
                         .getSimPlayerManager()
                         .behavior(name, "lookat",
                                   results["vec3"].isSet ? results["vec3"].get<Vec3>()
-                                                        : getLookAtPos(origin.getPlayer()))
+                                                        : getLookAtVec3(origin.getPlayer()))
                         .sendTo(output);
                     break;
 
@@ -120,7 +120,7 @@ namespace tr {
                         .getSimPlayerManager()
                         .behavior(name, "moveto",
                                   results["vec3"].isSet ? results["vec3"].get<Vec3>()
-                                                        : getLookAtPos(origin.getPlayer()))
+                                                        : getLookAtVec3(origin.getPlayer()))
                         .sendTo(output);
                     break;
 

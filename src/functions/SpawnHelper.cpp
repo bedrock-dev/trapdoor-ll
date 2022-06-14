@@ -5,13 +5,11 @@
 #include <MC/BlockSource.hpp>
 #include <MC/Brightness.hpp>
 #include <MC/Dimension.hpp>
-#include <MC/Level.hpp>
-#include <MC/LevelChunk.hpp>
 #include <MC/Material.hpp>
 #include <MC/Spawner.hpp>
 
+#include "CommandHelper.h"
 #include "DataConverter.h"
-#include "GlobalServiceAPI.h"
 #include "HookAPI.h"
 #include "Msg.h"
 
@@ -53,14 +51,28 @@ namespace tr {
         auto &sp = Global<Level>->getSpawner();
         return {"", true};
     }
-    ActionResult spawnMobCluster(Player *p, const BlockPos &pos) { return {"~", true}; }
+    ActionResult spawnMobCluster(Player *player, const BlockPos &pos) { return {"~", true}; }
 
-    ActionResult countActors(Player *p, const std::string &type) { return {"", true}; }
-    ActionResult forceSpawn(Player *p, const ActorDefinitionIdentifier *id, const BlockPos &pos) {
-        auto &bs = p->getRegion();
-        Vec3 v(pos.x, pos.y + 1, pos.z);
-        auto *mob = p->getLevel().getSpawner().spawnMob(bs, *id, nullptr, v, true, false, false);
-        return {"", mob != nullptr};
+    ActionResult countActors(Player *player, const std::string &type) { return {"", true}; }
+    ActionResult forceSpawn(Player *player, const ActorDefinitionIdentifier *id,
+                            const BlockPos &pos) {
+        auto targetPos = pos;
+        if (targetPos == tr::INVALID_POS) {
+            targetPos = tr::getLookAtPos(player);
+        }
+        if (targetPos == tr::INVALID_POS) {
+            return {"Invalid pos", false};
+        }
+
+        auto &bs = player->getRegion();
+        Vec3 v(targetPos.x, targetPos.y + 1, targetPos.z);
+        auto *mob =
+            player->getLevel().getSpawner().spawnMob(bs, *id, nullptr, v, true, false, false);
+        if (mob) {
+            return {"", true};
+        } else {
+            return {"Failed to spawn mob", false};
+        }
     }
 
     ActionResult printSpawnProbability(Player *player, const BlockPos &pos) {
@@ -97,7 +109,7 @@ namespace tr {
             auto *mobData = block.getMobToSpawn(*reinterpret_cast<SpawnConditions *>(&cond),
                                                 player->getRegion());
             if (!mobData) {
-                return {"no mob to spawn", true};
+                return {"No mob to spawn", true};
             }
             auto &id = dAccess<ActorDefinitionIdentifier, 8>(mobData);
             auto iter = spawnMap.find(id.getIdentifier());

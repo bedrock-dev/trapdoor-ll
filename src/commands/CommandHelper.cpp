@@ -7,18 +7,18 @@
 #include <MC/Player.hpp>
 
 #include "DynamicCommandAPI.h"
+#include "TBlockPos.h"
 
 namespace tr {
 
-    ActionResult::ActionResult(std::string m, bool su)
-        : msg(std::move(m)), success(su) {}
+    ActionResult::ActionResult(std::string m, bool su) : msg(std::move(m)), success(su) {}
     void ActionResult::sendTo(CommandOutput &output) const {
         success ? output.success(msg) : output.error(msg);
     }
 
     ActionResult ErrorMsg(const std::string &msg) { return {msg, false}; }
 
-    Vec3 getLookAtPos(Player *player) {
+    Vec3 getLookAtVec3(Player *player) {
         if (!player) {
             return {0, 0, 0};
         }
@@ -33,4 +33,10 @@ namespace tr {
         }
     }
 
+    BlockPos getLookAtPos(Player *player) {
+        if (!player) {
+            return tr::INVALID_POS;
+        }
+        return reinterpret_cast<Actor *>(player)->getBlockFromViewVector().getPosition();
+    }
 }  // namespace tr

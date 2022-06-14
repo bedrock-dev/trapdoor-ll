@@ -53,8 +53,7 @@ namespace tr {
 
         explicit TBlockPos(float x) : TBlockPos(x, x, x) {}
 
-        TBlockPos(float _x, float _y, float _z)
-            : x((int)_x), y((int)_y), z((int)_z) {}
+        TBlockPos(float _x, float _y, float _z) : x((int)_x), y((int)_y), z((int)_z) {}
 
         bool operator==(const TBlockPos &v) const;
 
@@ -62,8 +61,7 @@ namespace tr {
 
         double distanceTo(const TBlockPos &blockPos) const;
 
-        friend std::ostream &operator<<(std::ostream &os,
-                                        const TBlockPos &vec3);
+        friend std::ostream &operator<<(std::ostream &os, const TBlockPos &vec3);
 
         TVec3 toVec3() const;
 

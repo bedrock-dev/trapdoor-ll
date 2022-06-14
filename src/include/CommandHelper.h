@@ -7,18 +7,22 @@
 
 //clang-format off
 
+#include "Global.h"
+
 #include <MC/Player.hpp>
 #include <MC/Vec3.hpp>
 #include <string>
 #include <tuple>
 #include <utility>
 
-#include "Global.h"
 
 //clang-format on
 
 class CommandOutput;
 namespace tr {
+
+    const BlockPos INVALID_POS = BlockPos(0, 512, 0);
+
     struct ActionResult {
         std::string msg;
         bool success;
@@ -28,7 +32,9 @@ namespace tr {
         void sendTo(CommandOutput &output) const;
     };
 
-    Vec3 getLookAtPos(Player *player);
+    Vec3 getLookAtVec3(Player *player);
+
+    BlockPos getLookAtPos(Player *player);
 
     ActionResult ErrorMsg(const std::string &msg);
 
