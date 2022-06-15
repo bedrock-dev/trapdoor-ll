@@ -15,7 +15,7 @@ namespace tr {
 
         auto &particleShowLevelEnum = command->setEnum("particleShowLevelEnum", {"pm"});
         auto &particleShowLevelOpt =
-            command->setEnum("particleLevelenum", {"low", "medium", "high"});
+            command->setEnum("particlelevelenum", {"low", "medium", "high"});
         auto &particleDistanceEnum = command->setEnum("particleDistanceEnum", {"pvd"});
 
         command->mandatory("trapdoor", ParamType::Enum, particleShowLevelEnum,

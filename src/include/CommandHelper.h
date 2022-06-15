@@ -7,14 +7,13 @@
 
 //clang-format off
 
-#include "Global.h"
-
 #include <MC/Player.hpp>
 #include <MC/Vec3.hpp>
 #include <string>
 #include <tuple>
 #include <utility>
 
+#include "Global.h"
 
 //clang-format on
 
@@ -52,6 +51,10 @@ namespace tr {
     void setup_funcCommand(int);
     void setup_playerCommand(int);
     void setup_hudCommand(int);
+
+    void setup_oCommand(int);
+    void setup_sCommand(int);
+    void setup_cCommand(int);
 
 }  // namespace tr
 

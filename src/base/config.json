@@ -1,58 +1,62 @@
 {
-  "commands":{
-    "tick":{
-      "enable":true,
-      "permissionlevel":0
+  "commands": {
+    "tick": {
+      "enable": true,
+      "permissionlevel": 0
     },
-    "log":{
-      "enable":true,
-      "permissionlevel":0
+    "log": {
+      "enable": true,
+      "permissionlevel": 0
     },
-    "prof":{
-      "enable":true,
-      "permissionlevel":0
+    "prof": {
+      "enable": true,
+      "permissionlevel": 0
     },
-    "func":{
-      "enable":true,
-      "permissionlevel":0
+    "func": {
+      "enable": true,
+      "permissionlevel": 0
     },
-    "village":{
-      "enable":true,
-      "permissionlevel":0  
+    "village": {
+      "enable": true,
+      "permissionlevel": 0
     },
-    "spawn":{
-      "enable":true,
-      "permissionlevel":0  
+    "spawn": {
+      "enable": true,
+      "permissionlevel": 0
     },
-    "counter":{
-      "enable":true,
-      "permissionlevel":0  
+    "counter": {
+      "enable": true,
+      "permissionlevel": 0
     },
-    "hsa":{
-      "enable":true,
-      "permissionlevel":0  
-    
+    "hsa": {
+      "enable": true,
+      "permissionlevel": 0
     },
-    "player":{
-      "enable":true,
-      "permissionlevel":0  
-    
+    "player": {
+      "enable": true,
+      "permissionlevel": 0
     },
-     "hud":{
-    "enable":true,
-      "permissionlevel":0  
+    "hud": {
+      "enable": true,
+      "permissionlevel": 0
     },
-
-     "trapdoor":{
-    "enable":true,
-      "permissionlevel":0  
-    },  
-     "data":{
-    "enable":true,
-      "permissionlevel":0  
+    "trapdoor": {
+      "enable": true,
+      "permissionlevel": 0
+    },
+    "o": {
+      "enable": true,
+      "permissionlevel": 0
+    },
+    "s": {
+      "enable": true,
+      "permissionlevel": 0
+    },
+    "c": {
+      "enable": true,
+      "permissionlevel": 0
     }
   },
-  
-  "self":{},
-  "lowlevelcommands":[]
+  "self": {},
+  "lowlevelcommands": []
 }

@@ -1,3 +1,5 @@
+### trapdoor-ll-1.18.33-beta-8
+- 修复部分拼写错误
 
 ### trapdoor-ll-1.18.33-beta-7
 
