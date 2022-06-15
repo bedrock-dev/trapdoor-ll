@@ -12,10 +12,10 @@ namespace tr {
     void setup_tickCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand("tick", "change world ticking speed",
+        auto command = DynamicCommand::createCommand("tick", "Change world ticking speed",
                                                      static_cast<CommandPermissionLevel>(level));
 
-        auto &optForward = command->setEnum("forward", {"forward", "wrap"});
+        auto &optForward = command->setEnum("forward", {"forward", "warp"});
         command->mandatory("tick", ParamType::Enum, optForward,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("tickNumber", ParamType::Int);
@@ -50,8 +50,8 @@ namespace tr {
                 case do_hash("forward"):
                     tr::forwardWorld(results["tickNumber"].getRaw<int>()).sendTo(output);
                     break;
-                case do_hash("wrap"):
-                    tr::wrapWorld(results["tickNumber"].getRaw<int>()).sendTo(output);
+                case do_hash("warp"):
+                    tr::warpWorld(results["tickNumber"].getRaw<int>()).sendTo(output);
                     break;
                 case do_hash("freeze"):
                     tr::freezeWorld().sendTo(output);

@@ -5,10 +5,10 @@ namespace tr {
 
     struct ActionResult;
 
-    enum class TickingStatus { Normal, Forwarding, SlowDown, Frozen, Acc, Wrap };
+    enum class TickingStatus { Normal, Forwarding, SlowDown, Frozen, Acc, Warp };
 
     struct TickingInfo {
-        int remainWrapTick = 0;
+        int remainWarpTick = 0;
         size_t slowDownTime = 1;
         size_t forwardTickNum = 0;
         size_t accTime = 1;
@@ -33,7 +33,7 @@ namespace tr {
 
     ActionResult accWorld(int times);
 
-    ActionResult wrapWorld(int times);
+    ActionResult warpWorld(int times);
 
     ActionResult queryWorld();
 

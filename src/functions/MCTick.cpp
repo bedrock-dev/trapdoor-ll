@@ -46,8 +46,8 @@ namespace tr {
                 return {"Frozen", true};
             case TickingStatus::Forwarding:
                 return {fmt::format("Forwarding, {} gt left", info.forwardTickNum), true};
-            case TickingStatus::Wrap:
-                return {fmt::format("Wraping, {} gt left", info.remainWrapTick), true};
+            case TickingStatus::Warp:
+                return {fmt::format("Wraping, {} gt left", info.remainWarpTick), true};
             case TickingStatus::Acc:
                 return {fmt::format("{} times faster", info.accTime), true};
             case TickingStatus::SlowDown:
@@ -72,7 +72,7 @@ namespace tr {
         info.accTime = 1;
         info.forwardTickNum = 0;
         info.slowDownTime = 1;
-        info.remainWrapTick = 0;
+        info.remainWarpTick = 0;
         info.status = TickingStatus::Normal;
         return {"success", true};
     }
@@ -93,16 +93,16 @@ namespace tr {
             return {"Forward can only be used on normal or freeze mode", false};
         }
     }
-    ActionResult wrapWorld(int gt) {
+    ActionResult warpWorld(int gt) {
         auto &info = getTickingInfo();
         if (info.status == TickingStatus::Normal || info.status == TickingStatus::Frozen) {
             // record old status
             info.oldStatus = info.status;
-            info.remainWrapTick = gt;
-            info.status = TickingStatus::Wrap;
+            info.remainWarpTick = gt;
+            info.status = TickingStatus::Warp;
             return {"Warp start", true};
         }
-        return {"Wrap can only be used on normal or freeze mode", false};
+        return {"Warp can only be used on normal or freeze mode", false};
     }
     ActionResult slowDownWorld(int times) {
         auto &info = getTickingInfo();
@@ -215,22 +215,22 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
             }
         }
         return;
-        // Wrap
-    } else if (info.status == tr::TickingStatus::Wrap) {
+        // Warp
+    } else if (info.status == tr::TickingStatus::Warp) {
         auto mean_mspt = tr::micro_to_mill(tr::getMSPTinfo().mean());
         int max_wrap_time = static_cast<int>(45.0 / mean_mspt);
         // 最快10倍速
         max_wrap_time = std::min(max_wrap_time, 10);
         // 当前gt要跑的次数
-        int m = std::min(max_wrap_time, info.remainWrapTick);
+        int m = std::min(max_wrap_time, info.remainWarpTick);
         for (int i = 0; i < m; i++) {
-            info.remainWrapTick--;
+            info.remainWarpTick--;
             original(level);
             mod.lightTick();
         }
         mod.heavyTick();
-        if (info.remainWrapTick <= 0) {
-            tr::BroadcastMessage("Wrap finished", -1);
+        if (info.remainWarpTick <= 0) {
+            tr::BroadcastMessage("Warp finished", -1);
             info.status = info.oldStatus;
         }
     }
