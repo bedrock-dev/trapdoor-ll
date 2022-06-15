@@ -2,61 +2,83 @@
   "commands": {
     "tick": {
       "enable": true,
-      "permissionlevel": 0
+      "permission-level": 0
     },
     "log": {
       "enable": true,
-      "permissionlevel": 0
+      "permission-level": 0
     },
     "prof": {
       "enable": true,
-      "permissionlevel": 0
+      "permission-level": 0
     },
     "func": {
       "enable": true,
-      "permissionlevel": 0
+      "permission-level": 0
     },
     "village": {
       "enable": true,
-      "permissionlevel": 0
+      "permission-level": 0
     },
     "spawn": {
       "enable": true,
-      "permissionlevel": 0
+      "permission-level": 0
     },
     "counter": {
       "enable": true,
-      "permissionlevel": 0
+      "permission-level": 0
     },
     "hsa": {
       "enable": true,
-      "permissionlevel": 0
+      "permission-level": 0
     },
     "player": {
       "enable": true,
-      "permissionlevel": 0
+      "permission-level": 0
     },
     "hud": {
       "enable": true,
-      "permissionlevel": 0
+      "permission-level": 0
     },
     "trapdoor": {
       "enable": true,
-      "permissionlevel": 0
+      "permission-level": 0
     },
     "o": {
       "enable": true,
-      "permissionlevel": 0
+      "permission-level": 0
     },
     "s": {
       "enable": true,
-      "permissionlevel": 0
+      "permission-level": 0
     },
     "c": {
       "enable": true,
-      "permissionlevel": 0
+      "permission-level": 0
     }
   },
   "self": {},
-  "lowlevelcommands": []
+  "shortcuts": [
+    {
+      "type": "use",
+      "item": "cactus",
+      "action": "say hello"
+    },
+    {
+      "type": "use-on",
+      "item": "cactus",
+      "block": "concrete",
+      "action": "counter print"
+    },
+    {
+      "type": "command",
+      "command": "s",
+      "action": "gamemode survival"
+    },
+    {
+      "type": "command",
+      "command": "c",
+      "action": "gamemode creative"
+    }
+  ]
 }

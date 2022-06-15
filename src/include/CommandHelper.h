@@ -37,9 +37,9 @@ namespace tr {
 
     ActionResult ErrorMsg(const std::string &msg);
 
+    void registerShortcutCommand(const std::string &shortcut, const std::string &action);
     void setup_tickCommand(int);
     void setup_profCommand(int);
-
     void setup_villageCommand(int);
     void setup_logCommand(int);
     void setup_testCommand(int);
@@ -52,9 +52,9 @@ namespace tr {
     void setup_playerCommand(int);
     void setup_hudCommand(int);
 
-    void setup_oCommand(int);
-    void setup_sCommand(int);
-    void setup_cCommand(int);
+    //    void setup_oCommand(int);
+    //    void setup_sCommand(int);
+    //    void setup_cCommand(int);
 
 }  // namespace tr
 

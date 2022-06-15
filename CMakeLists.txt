@@ -24,7 +24,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/commands/PlayerCommand.cpp
         src/commands/VillageCommand.cpp
         src/commands/TrFunctionCommand.cpp
-        src/commands/OSCommand.cpp
+        src/commands/ShortcutCommand.cpp
         src/commands/CommandHelper.cpp
         src/commands/TrapdoorCommand.cpp
         src/data/TVec3.cpp
@@ -45,6 +45,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/functions/VillageHelper.cpp
         src/functions/SpawnHelper.cpp
         src/functions/InfoDisplay.cpp
+        src/functions/Shortcuts.cpp
         src/functions/HsaHelper.cpp
         src/functions/HopperCounter.cpp
         src/functions/HUDHelper.cpp
