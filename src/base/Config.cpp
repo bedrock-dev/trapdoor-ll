@@ -95,7 +95,7 @@ namespace tr {
     CommandConfig Configuration::getCommandConfig(const std::string& command) {
         auto it = this->commandsConfigs.find(command);
         if (it == this->commandsConfigs.end()) {
-            tr::logger().warn("Can nod find getConfig info of [{}],it will not be registered",
+            tr::logger().warn("Can nod find config info of [{}],it will not be registered",
                               command);
             return {false, 2};
         }

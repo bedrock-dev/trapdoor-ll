@@ -1,11 +1,29 @@
 cmake_minimum_required(VERSION 3.16)
 project(Trapdoor)
-
 set(CMAKE_CXX_STANDARD 17)
-#add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=1)
-set(CMAKE_EXPORT_COMPILE_COMMANDS)
-set(CMAKE_BUILD_TYPE Release)
-#set(CMAKE_VERBOSE_MAKEFILE ON)
+
+set(MOD_NAME trapdoor)
+set(TRAPDOOR_VERSION 0.11)
+set(GAME_VERSION 1.18.33.04)
+set(BETA OFF)
+set(DEV ON)
+set(TEST_NUMBER 1)
+add_definitions(-DTD_VERSION="${TRAPDOOR_VERSION}")
+add_definitions(-DMC_VERSION="${GAME_VERSION}")
+
+if (${DEV} STREQUAL "ON")
+    add_definitions(-DCONFIG_DIR="C:/Users/xhy/dev/trapdoor-ll/src/base/")
+    add_definitions(-DDEV)
+    set(TARGET_NAME ${MOD_NAME})
+else ()
+    add_definitions(-DCONFIG_DIR ="plugins/trapdoor/")
+    if (${BETA} STREQUAL "ON")
+        set(TARGET_NAME ${MOD_NAME}-${TRAPDOOR_VERSION}-${GAME_VERSION}-test-${TEST_NUMBER})
+    else ()
+        set(TARGET_NAME ${MOD_NAME}-${TRAPDOOR_VERSION}-${GAME_VERSION})
+    endif ()
+endif ()
+
 file(GLOB_RECURSE SRC_FILES_DIR
         ${PROJECT_SOURCE_DIR}/SDK/Header/*.cpp
         ${PROJECT_SOURCE_DIR}/SDK/Header/*.hpp
@@ -47,12 +65,11 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/functions/InfoDisplay.cpp
         src/functions/Shortcuts.cpp
         src/functions/HsaHelper.cpp
+        src/functions/Events.cpp
         src/functions/HopperCounter.cpp
         src/functions/HUDHelper.cpp
         src/functions/SimPlayerManager.cpp
         src/functions/BlockRotateHelper.cpp
-        src/events/ItemUseOnEvent.cpp
-        src/events/PlayerAttackEvent.cpp
         )
 
 include_directories(SDK/Header)
@@ -76,9 +93,9 @@ add_link_options(
         /MANIFESTUAC:NO /OPT:ICF /ERRORREPORT:PROMPT /NOLOGO /TLBID:1
 )
 
-add_library(trapdoor SHARED ${SRC_FILES_DIR} src/functions/Events.cpp)
+add_library(${TARGET_NAME} SHARED ${SRC_FILES_DIR})
 
-add_custom_command(TARGET trapdoor PRE_BUILD
+add_custom_command(TARGET ${TARGET_NAME} PRE_BUILD
         COMMAND cmd /c ${PROJECT_SOURCE_DIR}/prepareLib.cmd ${PROJECT_SOURCE_DIR}
         COMMENT "Preparing Library"
         )

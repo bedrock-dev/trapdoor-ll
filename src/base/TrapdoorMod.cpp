@@ -48,9 +48,14 @@ namespace tr {
     }
 
     void TrapdoorMod::init() {
-        // logger().consoleLevel = 8;
-        // this->config.init(R"(C:\Users\xhy\dev\trapdoor-ll\src\base\config.json)");
-        this->config.init(R"(config.json)");
+#ifdef DEV
+        logger().consoleLevel = 8;
+#endif
+        std::string path;
+#ifdef CONFIG_DIR
+        path = CONFIG_DIR;
+#endif
+        this->config.init(path + "config.json");
         tr::SubscribeEvents();
         setupCommands();
     }

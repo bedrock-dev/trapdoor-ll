@@ -44,19 +44,7 @@
       "enable": true,
       "permission-level": 0
     },
-    "o": {
-      "enable": true,
-      "permission-level": 0
-    },
     "data": {
-      "enable": true,
-      "permission-level": 0
-    },
-    "s": {
-      "enable": true,
-      "permission-level": 0
-    },
-    "c": {
       "enable": true,
       "permission-level": 0
     }
