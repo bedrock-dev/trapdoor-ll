@@ -76,7 +76,7 @@ add_link_options(
         /MANIFESTUAC:NO /OPT:ICF /ERRORREPORT:PROMPT /NOLOGO /TLBID:1
 )
 
-add_library(trapdoor SHARED ${SRC_FILES_DIR})
+add_library(trapdoor SHARED ${SRC_FILES_DIR} src/functions/Events.cpp)
 
 add_custom_command(TARGET trapdoor PRE_BUILD
         COMMAND cmd /c ${PROJECT_SOURCE_DIR}/prepareLib.cmd ${PROJECT_SOURCE_DIR}

@@ -37,7 +37,8 @@ namespace tr {
 
     ActionResult ErrorMsg(const std::string &msg);
 
-    void registerShortcutCommand(const std::string &shortcut, const std::string &action);
+    void registerShortcutCommand(const std::string &shortcut,
+                                 const std::vector<std::string> &actions);
     void setup_tickCommand(int);
     void setup_profCommand(int);
     void setup_villageCommand(int);

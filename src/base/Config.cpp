@@ -48,34 +48,42 @@ namespace tr {
 
     bool Configuration::readShortcutConfigs() {
         auto cc = this->config["shortcuts"];
-        Shortcut sh;
         try {
             for (const auto& i : cc.items()) {
-                const auto& value = i.value();
+                Shortcut sh;
 
+                const auto& value = i.value();
                 auto type = value["type"].get<std::string>();
-                if (type == "use") {
-                    sh.type = ShortcutType::USE;
-                    sh.item = value["item"].get<std::string>();
-                    sh.action = value["action"].get<std::string>();
-                } else if (type == "use-on") {
-                    sh.type = ShortcutType::USEON;
-                    sh.item = value["item"].get<std::string>();
-                    sh.block = value["block"].get<std::string>();
-                    sh.action = value["action"].get<std::string>();
-                } else if (type == "command") {
-                    sh.type = ShortcutType::CMD;
-                    sh.command = value["command"].get<std::string>();
-                    sh.action = value["action"].get<std::string>();
-                    registerShortcutCommand(sh.command, sh.action);
-                } else {
-                    tr::logger().warn("unknown shortcut type: {}", type);
+                auto actions = value["actions"];
+                for (const auto& act : actions) {
+                    sh.actions.push_back(act.get<std::string>());
+                }
+
+                if (sh.actions.empty()) {
+                    tr::logger().error("Shortcut {} has no action", i.key());
                     continue;
                 }
-                if (sh.type != CMD) {
-                    this->shortcutsConfigs.insert(sh);
+
+                if (type == "use") {
+                    sh.type = ShortcutType::USE;
+                    sh.setItem(value["item"].get<std::string>());
+                    sh.prevent = value["prevent"].get<bool>();
+                    this->shortcuts.push_back(sh);
+                    tr::logger().debug("Shortcut: {}", sh.getDescription());
+                } else if (type == "use-on") {
+                    sh.type = ShortcutType::USE_ON;
+                    sh.setItem(value["item"].get<std::string>());
+                    sh.setBlock(value["block"].get<std::string>());
+                    sh.prevent = value["prevent"].get<bool>();
+                    this->shortcuts.push_back(sh);
+                    tr::logger().debug("Shortcut: {}", sh.getDescription());
+                } else if (type == "command") {
+                    auto command = value["command"].get<std::string>();
+                    registerShortcutCommand(command, actions);
+                    continue;
+                } else {
+                    tr::logger().error("unknown shortcut type: {}", type);
                 }
-                tr::logger().debug("Read shortcut: {}", sh.getDescription());
             }
         } catch (const std::exception& e) {
             tr::logger().error("error read shortcut getConfig: {}", e.what());

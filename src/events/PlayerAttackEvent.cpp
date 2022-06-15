@@ -11,28 +11,28 @@
 
 namespace tr {
 
-    namespace {
-
-        // std::map<std::string, std::function<bool(const std::string,
-        // Actor*)>>& attackEventdsMap() {
-
-        // }
-
-    }  // namespace
-
-    void SubscribePlayerAttackActorEvent() {
-        // Event::PlayerAttackEvent::subscribe(
-        //     [](const Event::PlayerAttackEvent& ev) {
-        //         tr::logger().debug("player {} attack {}",
-        //                            ev.mPlayer->getRealName(),
-        //                            ev.mTarget->getTypeName());
-        //         if (ev.mTarget->getTypeName() == "minecraft:villager_v2") {
-        //             return tr::mod().getVillageHelper().ShowVillageInfo(
-        //                 ev.mPlayer, ev.mTarget);
-        //         }
-
-        //         return tr::displayEntityInfo(ev.mPlayer, ev.mTarget);
-        //         ;
-        //     });
-    }
+    //    namespace {
+    //
+    //        // std::map<std::string, std::function<bool(const std::string,
+    //        // Actor*)>>& attackEventdsMap() {
+    //
+    //        // }
+    //
+    //    }  // namespace
+    //
+    //    void SubscribePlayerAttackActorEvent() {
+    //        // Event::PlayerAttackEvent::subscribe(
+    //        //     [](const Event::PlayerAttackEvent& ev) {
+    //        //         tr::logger().debug("player {} attack {}",
+    //        //                            ev.mPlayer->getRealName(),
+    //        //                            ev.mTarget->getTypeName());
+    //        //         if (ev.mTarget->getTypeName() == "minecraft:villager_v2") {
+    //        //             return tr::mod().getVillageHelper().ShowVillageInfo(
+    //        //                 ev.mPlayer, ev.mTarget);
+    //        //         }
+    //
+    //        //         return tr::displayEntityInfo(ev.mPlayer, ev.mTarget);
+    //        //         ;
+    //        //     });
+    //    }
 }  // namespace tr

@@ -62,23 +62,42 @@
     {
       "type": "use",
       "item": "cactus",
-      "action": "say hello"
+      "prevent": false,
+      "actions": [
+        "say hello",
+        "say hi"
+      ]
     },
     {
       "type": "use-on",
       "item": "cactus",
-      "block": "concrete",
-      "action": "counter print"
+      "block": "stone",
+      "prevent": false,
+      "actions": [
+        "setblock {bx} {by} {bz} diamond_block",
+        "give @s {iname}"
+      ]
     },
     {
       "type": "command",
       "command": "s",
-      "action": "gamemode survival"
+      "actions": [
+        "gamemode survival"
+      ]
     },
     {
       "type": "command",
       "command": "c",
-      "action": "gamemode creative"
+      "actions": [
+        "gamemode creative"
+      ]
+    },
+    {
+      "type": "command",
+      "command": "here",
+      "actions": [
+        "/say Position: [{px} , {py} , {pz}]"
+      ]
     }
   ]
 }

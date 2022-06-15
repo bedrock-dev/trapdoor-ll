@@ -23,7 +23,7 @@ namespace tr {
     class Configuration {
        public:
         CommandConfig getCommandConfig(const std::string& command);
-        inline std::set<Shortcut>& getShortcuts() { return this->shortcutsConfigs; }
+        inline std::vector<Shortcut>& getShortcuts() { return this->shortcuts; }
         bool init(const std::string& fileName);
 
        private:
@@ -34,7 +34,7 @@ namespace tr {
         bool readShortcutConfigs();
 
         std::unordered_map<std::string, CommandConfig> commandsConfigs;
-        std::set<Shortcut> shortcutsConfigs;
+        std::vector<Shortcut> shortcuts;
         nlohmann::json config;
     };
 

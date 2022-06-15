@@ -2,13 +2,14 @@
 #define TRAPDOOR_EVENT_H
 
 namespace tr {
-    void SubscribeItemUseOnEvent();
-    void SubscribePlayerAttackActorEvent();
+    void subscribeItemUseOnEvent();
+    void subscribeItemUseEvent();
 
     inline void SubscribeEvents() {
-        SubscribePlayerAttackActorEvent();
-        SubscribeItemUseOnEvent();
+        subscribeItemUseOnEvent();
+        subscribeItemUseEvent();
     }
+
 }  // namespace tr
 
 #endif

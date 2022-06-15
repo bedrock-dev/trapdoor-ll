@@ -1,5 +1,5 @@
-#ifndef TRAPDOOR_HOPPER_COUNTRT_H
-#define TRAPDOOR_HOPPER_COUNTRT_H
+#ifndef TRAPDOOR_HOPPER_COUNTER_H
+#define TRAPDOOR_HOPPER_COUNTER_H
 
 // clang-format off
 #include "Global.h"

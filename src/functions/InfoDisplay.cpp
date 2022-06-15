@@ -71,7 +71,7 @@ namespace tr {
         if (!p) return true;
         auto &b = p->getRegion().getBlock(pos);
         if (b.getTypeName() == "minecraft:air") {
-            p->sendText("get block failure");
+            p->sendText("get blockName failure");
         }
 
         tr::TextBuilder builder;
@@ -133,7 +133,7 @@ namespace tr {
 
         auto &block = p->getRegion().getBlock(pos);
         auto &mobs = p->getRegion().getBiome(pos).getMobs();
-        // block.getMobToSpawn("");
+        // blockName.getMobToSpawn("");
         return false;
     }
 }  // namespace tr
