@@ -48,6 +48,10 @@
       "enable": true,
       "permission-level": 0
     },
+    "data": {
+      "enable": true,
+      "permission-level": 0
+    },
     "s": {
       "enable": true,
       "permission-level": 0
@@ -60,22 +64,12 @@
   "self": {},
   "shortcuts": [
     {
-      "type": "use",
-      "item": "cactus",
-      "prevent": false,
-      "actions": [
-        "say hello",
-        "say hi"
-      ]
-    },
-    {
       "type": "use-on",
       "item": "cactus",
-      "block": "stone",
+      "block": "concrete",
       "prevent": false,
       "actions": [
-        "setblock {bx} {by} {bz} diamond_block",
-        "give @s {iname}"
+        "counter print {baux}"
       ]
     },
     {

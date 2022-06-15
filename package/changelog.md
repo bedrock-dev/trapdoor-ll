@@ -1,5 +1,7 @@
 ### trapdoor-ll-1.18.33-beta-8
+
 - 修复部分拼写错误
+- 添加自定义修改快捷键功能(use-on command use)
 
 ### trapdoor-ll-1.18.33-beta-7
 
