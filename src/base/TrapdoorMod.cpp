@@ -30,7 +30,6 @@ namespace tr {
             REG_COMMAND(player)
             REG_COMMAND(hud)
         }
-
     }  // namespace
 
     void TrapdoorMod::heavyTick() {
