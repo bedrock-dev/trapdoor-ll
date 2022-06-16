@@ -8,7 +8,9 @@
 // clang-format on
 
 namespace tr {
+    void initRotateBlockHelper();
+
     void rotateBlock(BlockSource &bs, const BlockPos &pos);
-}
+}  // namespace tr
 
 #endif

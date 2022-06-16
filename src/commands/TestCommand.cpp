@@ -2,6 +2,11 @@
 // Created by xhy on 2022/5/17.
 //
 
+#include <MC/BlockSource.hpp>
+#include <MC/ChunkSource.hpp>
+#include <MC/Dimension.hpp>
+#include <MC/Level.hpp>
+#include <MC/LevelChunk.hpp>
 #include <string>
 
 #include "CommandHelper.h"
@@ -9,15 +14,14 @@
 #include "MCTick.h"
 #include "Particle.h"
 #include "ScheduleAPI.h"
-
 namespace tr {
 
-    void test_particle() {
-        Schedule::repeat(
-            []() {
-                tr::drawLine({0, 80, 0}, TFACING::POS_X, 120, PCOLOR::GREEN, 0);
-            },
-            20);
+    void test_particle(Player *p) {
+        //        Schedule::repeat(
+        //            []() {
+        //                tr::drawLine({0, 80, 0}, TFACING::POS_X, 120, PCOLOR::GREEN, 0);
+        //            },
+        //            20);
     }
 
     void setup_testCommand(int level) {
@@ -36,7 +40,7 @@ namespace tr {
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
             switch (do_hash(results["test"].getRaw<std::string>().c_str())) {
                 case do_hash("particle"):
-                    test_particle();
+                    test_particle(origin.getPlayer());
                     break;
                 default:
                     break;

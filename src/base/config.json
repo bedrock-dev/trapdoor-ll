@@ -47,6 +47,10 @@
     "data": {
       "enable": true,
       "permission-level": 0
+    },
+    "test": {
+      "enable": true,
+      "permission-level": 0
     }
   },
   "self": {},

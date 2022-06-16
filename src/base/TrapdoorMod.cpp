@@ -2,6 +2,7 @@
 
 #include <MC/MapItem.hpp>
 
+#include "BlockRotateHelper.h"
 #include "CommandHelper.h"
 #include "Events.h"
 #include "LoggerAPI.h"
@@ -57,7 +58,8 @@ namespace tr {
 #endif
         this->config.init(path + "config.json");
         tr::SubscribeEvents();
-        setupCommands();
+        tr::initRotateBlockHelper();
+        tr::setupCommands();
     }
 
     TrapdoorMod &mod() {
