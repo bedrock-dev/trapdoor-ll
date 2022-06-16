@@ -93,6 +93,8 @@ namespace tr {
         bool isSlimeChunk() const;
 
         bool operator<(const TBlockPos2 &rhs) const;
+
+        bool operator==(const TBlockPos2 &rhs) const;
     };
 
     // typedef TBlockPos2 ChunkPos;

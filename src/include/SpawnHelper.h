@@ -28,13 +28,10 @@ namespace tr {
     static_assert(offsetof(TSpawnConditions, pos) == 20);
 #pragma pack(pop)
 
-    ActionResult printCap();
-
+    ActionResult printCap(const ActorDefinitionIdentifier *id);
     ActionResult countActors(Player *p, const std::string &type);
 
     ActionResult printSpawnProbability(Player *player, const BlockPos &pos);
-
-    ActionResult spawnMobCluster(Player *p, const BlockPos &pos);
 
     ActionResult forceSpawn(Player *p, const ActorDefinitionIdentifier *id, const BlockPos &pos);
 

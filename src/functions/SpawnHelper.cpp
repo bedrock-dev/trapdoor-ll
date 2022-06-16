@@ -1,23 +1,31 @@
 #include "SpawnHelper.h"
 
+#include <MC/ActorSpawnRuleGroup.hpp>
 #include <MC/Biome.hpp>
 #include <MC/Block.hpp>
 #include <MC/BlockSource.hpp>
 #include <MC/Brightness.hpp>
 #include <MC/Dimension.hpp>
+#include <MC/Level.hpp>
 #include <MC/Material.hpp>
 #include <MC/Spawner.hpp>
+#include <unordered_map>
 
 #include "CommandHelper.h"
 #include "DataConverter.h"
 #include "HookAPI.h"
 #include "Msg.h"
-
+#include "Utils.h"
 enum SpawnBlockRequirements;
 class SpawnConditions;
 namespace tr {
-
     namespace {
+
+        ActorSpawnRuleGroup *getSpawnRuleGroup() {
+            return SymCall("?getSpawnRules@Level@@UEBAPEBVActorSpawnRuleGroup@@XZ",
+                           ActorSpawnRuleGroup *, Level *)(Global<Level>);
+        }
+
         bool isSpawnConditionsOK(Spawner *sp, const TMobSpawnRules *rule, BlockSource &bs,
                                  const BlockPos &pos) {
             return SymCall(
@@ -47,13 +55,42 @@ namespace tr {
         }
     }  // namespace
 
-    ActionResult printCap() {
-        auto &sp = Global<Level>->getSpawner();
-        return {"", true};
+    ActionResult printCap(const ActorDefinitionIdentifier *id) {
+        auto *g = getSpawnRuleGroup();
+        if (!g) {
+            return {"Error get spawn rule group", false};
+        }
+        int pool = g->getActorSpawnPool(*id);
+        return {id->getFullName() + " ==> " + std::to_string(pool), true};
     }
-    ActionResult spawnMobCluster(Player *player, const BlockPos &pos) { return {"~", true}; }
 
-    ActionResult countActors(Player *player, const std::string &type) { return {"", true}; }
+    ActionResult countActors(Player *player, const std::string &type) {
+        auto chPos = fromBlockPos(player->getPos().toBlockPos()).toChunkPos();
+        auto entities = Level::getAllEntities();
+        std::unordered_map<std::string, size_t> chunkList, allList, densityList;
+        for (auto actor : entities) {
+            if (!actor || actor->getDimensionId() != player->getDimensionId()) continue;
+            auto actorCh = fromBlockPos(actor->getPos().toBlockPos()).toChunkPos();
+            auto name = actor->getTypeName();
+            allList[name]++;
+            if (actorCh == chPos) {
+                chunkList[name]++;
+            }
+            if (abs(actorCh.x - chPos.x) <= 4 && abs(actorCh.z - chPos.z) <= 4) {
+                densityList[name]++;
+            }
+        }
+        auto &res = allList;
+        if (type == "chunk") res = chunkList;
+        if (type == "density") res = densityList;
+        TextBuilder builder;
+        for (auto &i : res) {
+            builder.textF(" - %s", tr::rmmc(i.first).c_str())
+                .sTextF(TextBuilder::GREEN, "  %zu\n", i.second);
+        }
+        return {builder.get(), true};
+    }
+
     ActionResult forceSpawn(Player *player, const ActorDefinitionIdentifier *id,
                             const BlockPos &pos) {
         auto targetPos = pos;
@@ -130,7 +167,6 @@ namespace tr {
             totalCount += mob.second.first;
         }
 
-        // auto biome = player->getRegion().getBiome()`
         TextBuilder builder;
         builder
             .sTextF(TextBuilder::BOLD | TextBuilder::WHITE, "-- [%d %d %d] --\n", pos.x, pos.y,

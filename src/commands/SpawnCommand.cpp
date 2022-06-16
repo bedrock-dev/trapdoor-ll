@@ -19,7 +19,6 @@ namespace tr {
         auto &optCount = command->setEnum("Countcmd", {"count"});
         auto &prob = command->setEnum("probilitycmd", {"prob"});
         auto &forcesp = command->setEnum("forcecmd", {"forcesp"});
-
         auto &optCountType = command->setEnum("counter options", {"chunk", "all", "density"});
 
         // mandatory/options就是给enum增加后置参数类型的,mandatory就是必填,optional是选填
@@ -56,7 +55,6 @@ namespace tr {
                                     results["countType"].getRaw<std::string>())
                         .sendTo(output);
                     break;
-
                 case do_hash("forcesp"):
                     tr::forceSpawn(reinterpret_cast<Player *>(origin.getPlayer()),
                                    results["actorType"].get<const ActorDefinitionIdentifier *>(),
