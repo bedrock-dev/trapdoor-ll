@@ -87,12 +87,14 @@ namespace tr {
         int z = 0;
 
         TBlockPos2(int _x, int _z) : x(_x), z(_z) {}
-
+        TBlockPos2() : TBlockPos2(0, 0) {}
         std::string toString() const;
 
         bool isSlimeChunk() const;
 
         bool operator<(const TBlockPos2 &rhs) const;
+
+        TBlockPos2 &operator=(const TBlockPos2 &rhs);
 
         bool operator==(const TBlockPos2 &rhs) const;
     };

@@ -58,6 +58,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/base/Utils.cpp
         src/pch.cpp
         src/Plugin.cpp
+        src/functions/SpawnAnalyzer.cpp
         src/functions/SimpleProfiler.cpp
         src/functions/MCTick.cpp
         src/functions/VillageHelper.cpp

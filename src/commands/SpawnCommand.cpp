@@ -4,10 +4,11 @@
 #include <string>
 
 #include "CommandHelper.h"
+#include "DataConverter.h"
 #include "DynamicCommandAPI.h"
 #include "SpawnHelper.h"
 #include "TBlockPos.h"
-
+#include "TrapdoorMod.h"
 namespace tr {
     void setup_spawnCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
@@ -20,6 +21,9 @@ namespace tr {
         auto &prob = command->setEnum("probilitycmd", {"prob"});
         auto &forcesp = command->setEnum("forcecmd", {"forcesp"});
         auto &optCountType = command->setEnum("counter options", {"chunk", "all", "density"});
+
+        auto &analyzeOpt = command->setEnum("analyze", {"analyze"});
+        auto &analyzeSubOpt = command->setEnum("analyze options", {"start", "stop", "print"});
 
         // mandatory/options就是给enum增加后置参数类型的,mandatory就是必填,optional是选填
         command->mandatory("spawn", ParamType::Enum, optCount,
@@ -34,6 +38,12 @@ namespace tr {
         command->mandatory("countType", ParamType::Enum, optCountType,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
+        command->mandatory("spawn", ParamType::Enum, analyzeOpt,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+
+        command->mandatory("analyzeSub", ParamType::Enum, analyzeSubOpt,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+
         command->mandatory("actorType", ParamType::ActorType);
 
         command->optional("blockPos", ParamType::BlockPos);
@@ -45,10 +55,14 @@ namespace tr {
         // overload就是增加一些子命令，子命令需要Enum；并设定后面需要接什么类型的参数
         command->addOverload({optCount, "countType"});
 
+        command->addOverload({analyzeOpt, "analyzeSub"});
+
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
             auto countParam = std::string();
+            auto subOpt =
+                results["analyzeSub"].isSet ? results["analyzeSub"].getRaw<std::string>() : "";
             switch (do_hash(results["spawn"].getRaw<std::string>().c_str())) {
                 case do_hash("count"):
                     tr::countActors(reinterpret_cast<Player *>(origin.getPlayer()),
@@ -61,6 +75,20 @@ namespace tr {
                                    results["blockPos"].isSet ? results["blockPos"].get<BlockPos>()
                                                              : tr::INVALID_POS)
                         .sendTo(output);
+                    break;
+                case do_hash("analyze"):
+                    if (subOpt == "start") {
+                        tr::mod()
+                            .getSpawnAnalyzer()
+                            .start(origin.getDimension()->getDimensionId(),
+                                   fromBlockPos(origin.getBlockPosition()).toChunkPos())
+                            .sendTo(output);
+                    } else if (subOpt == "stop") {
+                        tr::mod().getSpawnAnalyzer().stop().sendTo(output);
+                    } else if (subOpt == "print") {
+                        tr::mod().getSpawnAnalyzer().printResult().sendTo(output);
+                    }
+
                     break;
                 case do_hash("prob"):
                     if (results["blockPos"].isSet) {
@@ -76,6 +104,7 @@ namespace tr {
                     }
             }
         };
+
         command->setCallback(cb);
         DynamicCommand::setup(std::move(command));
     }

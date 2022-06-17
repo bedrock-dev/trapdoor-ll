@@ -7,6 +7,7 @@
 #include "HsaHelper.h"
 #include "LoggerAPI.h"
 #include "SimPlayerHelper.h"
+#include "SpawnAnalyzer.h"
 #include "VillageHelper.h"
 
 namespace tr {
@@ -33,6 +34,8 @@ namespace tr {
 
         inline SimPlayerManager &getSimPlayerManager() { return this->simPlayerManager; }
 
+        inline SpawnAnalyzer &getSpawnAnalyzer() { return this->spawnAnalyzer; }
+
        private:
         VillageHelper villageHelper;
         HsaManager hsaManager;
@@ -40,6 +43,7 @@ namespace tr {
         HopperChannelManager hopperChannelManager;
         HUDHelper HUDHelper;
         SimPlayerManager simPlayerManager;
+        SpawnAnalyzer spawnAnalyzer;
     };
 
     Logger &logger();

@@ -91,6 +91,7 @@ namespace tr {
         return "[" + std::to_string(x) + "," + std::to_string(z) + "]";
     }
     bool TBlockPos2::operator==(const TBlockPos2 &rhs) const { return x == rhs.x && z == rhs.z; }
+    TBlockPos2 &TBlockPos2::operator=(const TBlockPos2 &rhs) = default;
 
     std::string facingToString(TFACING facing) {
         switch (facing) {
