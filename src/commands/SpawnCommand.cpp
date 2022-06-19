@@ -23,7 +23,8 @@ namespace tr {
         auto &optCountType = command->setEnum("counter options", {"chunk", "all", "density"});
 
         auto &analyzeOpt = command->setEnum("analyze", {"analyze"});
-        auto &analyzeSubOpt = command->setEnum("analyze options", {"start", "stop", "print"});
+        auto &analyzeSubOpt =
+            command->setEnum("analyze options", {"start", "stop", "print", "clear"});
 
         // mandatory/options就是给enum增加后置参数类型的,mandatory就是必填,optional是选填
         command->mandatory("spawn", ParamType::Enum, optCount,
@@ -87,8 +88,9 @@ namespace tr {
                         tr::mod().getSpawnAnalyzer().stop().sendTo(output);
                     } else if (subOpt == "print") {
                         tr::mod().getSpawnAnalyzer().printResult().sendTo(output);
+                    } else if (subOpt == "clear") {
+                        tr::mod().getSpawnAnalyzer().clear().sendTo(output);
                     }
-
                     break;
                 case do_hash("prob"):
                     if (results["blockPos"].isSet) {

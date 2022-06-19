@@ -68,21 +68,23 @@ namespace tr {
 
     ActionResult SpawnAnalyzer::printResult() const {
         TextBuilder b;
-        b.textF("Total %d gt\n", this->tick_count).text("-- Surface mobs --\n");
-
+        b.textF("Total %d gt\n", this->tick_count)
+            .text("-- Surface mobs --\n")
+            .text("Spawn count\n");
         for (auto &p : this->surfaceMobs) {
-            b.textF("- %s: %d\n", p.first.c_str(), p.second);
+            b.textF(" - %s: %d\n", p.first.c_str(), p.second);
         }
-
+        b.text("Density info\n");
         for (auto &p : this->surfaceMobsPerTick) {
-            b.textF("- %s: %d\n", p.first.c_str(), p.second / this->tick_count);
+            b.textF(" - %s: %d\n", p.first.c_str(), p.second / this->tick_count);
         }
 
-        b.text("-- Cave mobs --\n");
+        b.text("-- Cave mobs --\n").text("Spawn count\n");
         for (auto &p : this->caveMobs) {
             b.textF("- %s: %d\n", p.first.c_str(), p.second);
         }
 
+        b.text("Density info\n");
         for (auto &p : this->caveMobs) {
             b.textF("- %s: %d\n", p.first.c_str(), p.second / this->tick_count);
         }
