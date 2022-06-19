@@ -15,6 +15,7 @@ namespace tr {
         SpawnAnalyzer() = default;
         void AddMob(Mob* mob, const std::string& name, bool surface);
         void tick();
+        void clear();
         ActionResult start(int id, const TBlockPos2& pos);
         ActionResult stop();
         ActionResult printResult() const;
@@ -27,6 +28,9 @@ namespace tr {
         size_t tick_count = 0;
         std::unordered_map<std::string, size_t> surfaceMobs;
         std::unordered_map<std::string, size_t> caveMobs;
+
+        std::unordered_map<std::string, size_t> surfaceMobsPerTick;
+        std::unordered_map<std::string, size_t> caveMobsPerTick;
     };
 
 }  // namespace tr

@@ -6,7 +6,9 @@
 
 #include <MC/ActorDefinitionIdentifier.hpp>
 #include <MC/BlockSource.hpp>
+#include <MC/LevelChunk.hpp>
 
+#include "DataConverter.h"
 #include "HookAPI.h"
 #include "Msg.h"
 #include "TrapdoorMod.h"
@@ -29,7 +31,7 @@ namespace tr {
         this->inAnalyzing = true;
         this->dimensionID = id;
         this->centerChunkPos = pos;
-        return {"Start analyzing", true};
+        return {"Start analyzing,This may produce higher MSPT", true};
     }
     ActionResult SpawnAnalyzer::stop() {
         if (!this->inAnalyzing) {
@@ -38,7 +40,25 @@ namespace tr {
         this->inAnalyzing = false;
         return {"Stop analyzing", true};
     }
-    void SpawnAnalyzer::collectDensityInfo() {}
+
+    void SpawnAnalyzer::collectDensityInfo() {
+        if (!this->inAnalyzing) return;
+        auto entities = Level::getAllEntities();
+        for (auto actor : entities) {
+            if (!actor || actor->getDimensionId() != this->dimensionID) continue;
+            auto actorCh = fromBlockPos(actor->getPos().toBlockPos()).toChunkPos();
+            auto name = actor->getTypeName();
+            if (abs(actorCh.x - this->centerChunkPos.x) <= 4 &&
+                abs(actorCh.z - this->centerChunkPos.z) <= 4) {
+                if (actor->isSurfaceMob()) {
+                    this->surfaceMobsPerTick[name]++;
+                } else {
+                    this->caveMobsPerTick[name]++;
+                }
+            }
+        }
+    }
+
     void SpawnAnalyzer::tick() {
         ++tick_count;
         if (tick_count % 20 == 0) {
@@ -49,15 +69,31 @@ namespace tr {
     ActionResult SpawnAnalyzer::printResult() const {
         TextBuilder b;
         b.textF("Total %d gt\n", this->tick_count).text("-- Surface mobs --\n");
+
         for (auto &p : this->surfaceMobs) {
             b.textF("- %s: %d\n", p.first.c_str(), p.second);
         }
+
+        for (auto &p : this->surfaceMobsPerTick) {
+            b.textF("- %s: %d\n", p.first.c_str(), p.second / this->tick_count);
+        }
+
         b.text("-- Cave mobs --\n");
         for (auto &p : this->caveMobs) {
             b.textF("- %s: %d\n", p.first.c_str(), p.second);
         }
 
+        for (auto &p : this->caveMobs) {
+            b.textF("- %s: %d\n", p.first.c_str(), p.second / this->tick_count);
+        }
         return {b.get(), true};
+    }
+    void SpawnAnalyzer::clear() {
+        this->tick_count = 0;
+        this->surfaceMobs.clear();
+        this->caveMobs.clear();
+        this->surfaceMobsPerTick.clear();
+        this->caveMobsPerTick.clear();
     }
 }  // namespace tr
 
