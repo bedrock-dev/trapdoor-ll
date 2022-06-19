@@ -16,7 +16,7 @@ namespace tr {
         auto command = DynamicCommand::createCommand("data", "print some game data",
                                                      static_cast<CommandPermissionLevel>(level));
 
-        auto &blockSubCommandEnum = command->setEnum("blockSubCommand", {"blockName"});
+        auto &blockSubCommandEnum = command->setEnum("blockSubCommand", {"block"});
         auto &entitySubCommand = command->setEnum("entitySubCommand", {"entity"});
         auto &redstoneSubCommand = command->setEnum("redstoneSubCommand", {"redstone"});
 
@@ -40,8 +40,7 @@ namespace tr {
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
             switch (do_hash(results["data"].getRaw<std::string>().c_str())) {
-                case do_hash("blockName"):
-
+                case do_hash("block"):
                     if (results["blockPos"].isSet) {
                         tr::displayBlockInfo(origin.getPlayer(),
                                              results["blockPos"].get<BlockPos>());

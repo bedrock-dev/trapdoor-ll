@@ -41,6 +41,7 @@ namespace tr {
     void TrapdoorMod::lightTick() {
         villageHelper.lightTick();
         hopperChannelManager.tick();
+        this->spawnAnalyzer.tick();
     }
 
     Logger &logger() {
