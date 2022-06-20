@@ -20,6 +20,8 @@ namespace tr {
         auto &entitySubCommand = command->setEnum("entitySubCommand", {"entity"});
         auto &redstoneSubCommand = command->setEnum("redstoneSubCommand", {"redstone"});
 
+        auto nbtEnum = command->setEnum("nbt", {"nbt"});
+
         // 给根命令+enum提示信息
         command->mandatory("data", ParamType::Enum, blockSubCommandEnum,
                            CommandParameterOption::EnumAutocompleteExpansion);
@@ -31,26 +33,27 @@ namespace tr {
         // 设置每个enum后面需要的参数类型
         command->optional("blockPos", ParamType::BlockPos);
 
+        command->optional("nbt", ParamType::Enum, nbtEnum,
+                          CommandParameterOption::EnumAutocompleteExpansion);
+        command->optional("path", ParamType::String);
+
         // 添加子命令并进行类型绑定
-        command->addOverload({blockSubCommandEnum, "blockPos"});
-        command->addOverload({entitySubCommand});
+        command->addOverload({blockSubCommandEnum, "blockPos", "nbt", "path"});
+        command->addOverload({entitySubCommand, "nbt", "path"});
         command->addOverload({redstoneSubCommand, "blockPos"});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
+            bool displayNBT = results["nbt"].isSet;
+            auto nbtPath = results["path"].getRaw<std::string>();
+            auto blockPos =
+                results["blockPos"].isSet ? results["blockPos"].get<BlockPos>() : tr::INVALID_POS;
+
             switch (do_hash(results["data"].getRaw<std::string>().c_str())) {
                 case do_hash("block"):
-                    if (results["blockPos"].isSet) {
-                        tr::displayBlockInfo(origin.getPlayer(),
-                                             results["blockPos"].get<BlockPos>());
-                    } else {
-                        tr::displayBlockInfo(origin.getPlayer(),
-                                             reinterpret_cast<Actor *>(origin.getPlayer())
-                                                 ->getBlockFromViewVector()
-                                                 .getPosition());
-                    }
-
+                    tr::displayBlockInfo(origin.getPlayer(), blockPos, displayNBT, nbtPath)
+                        .sendTo(output);
                     break;
                 case do_hash("entity"):
                     tr::displayEntityInfo(

@@ -1,3 +1,11 @@
+### trapdoor-ll-1.18.33-beta
+
+- 添加spawn analyze命令，分析刷怪生成
+- 添加spawn count命令以统计实体个数
+- HUD 添加`add redstone`子命令，用于显示红石原件的强度
+- HUD 取消了指向方块名称的显示，添加了所在群系名字的显示
+- `data`命令能正常打印方块数据了
+
 ### trapdoor-ll-1.18.33-beta-8
 
 - 修复部分拼写错误

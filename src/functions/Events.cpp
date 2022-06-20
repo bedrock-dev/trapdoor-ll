@@ -75,11 +75,11 @@ namespace tr {
                 return true;
             }
             auto* block = bi->getBlock();
-            if (ev.mItemStack->getName() == "Cactus" &&
-                antiShake(ev.mPlayer->getName(), bi->getPosition())) {
-                tr::rotateBlock(ev.mPlayer->getRegion(), bi->getPosition());
-                return true;
-            }
+            //            if (ev.mItemStack->getName() == "Cactus" &&
+            //                antiShake(ev.mPlayer->getName(), bi->getPosition())) {
+            //                tr::rotateBlock(ev.mPlayer->getRegion(), bi->getPosition());
+            //                return true;
+            //            }
 
             auto& shortcuts = tr::mod().getConfig().getShortcuts();
             if (shortcuts.empty()) {
