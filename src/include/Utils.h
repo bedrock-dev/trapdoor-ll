@@ -4,10 +4,8 @@
 #include <string>
 namespace tr {
 
-    CompoundTag *getCompoundFromPath(CompoundTag *tag, const std::string &path);
-
-    std::unique_ptr<CompoundTag> getTagFromPath(const std::unique_ptr<CompoundTag> &tag,
-                                                const std::string &path);
+    std::string getNBTInfoFromPath(const std::unique_ptr<CompoundTag> &tag, const std::string &path,
+                                   bool &success);
 
     std::string rmmc(const std::string &s);
 }  // namespace tr

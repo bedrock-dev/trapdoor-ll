@@ -58,7 +58,9 @@ namespace tr {
                 case do_hash("entity"):
                     tr::displayEntityInfo(
                         origin.getPlayer(),
-                        reinterpret_cast<Actor *>(origin.getPlayer())->getActorFromViewVector(10));
+                        reinterpret_cast<Actor *>(origin.getPlayer())->getActorFromViewVector(10),
+                        displayNBT, nbtPath)
+                        .sendTo(output);
                     break;
                 case do_hash("redstone"):
                     if (results["blockPos"].isSet) {

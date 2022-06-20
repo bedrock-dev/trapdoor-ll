@@ -12,7 +12,8 @@
 
 namespace tr {
 
-    bool displayEntityInfo(Player *player, Actor *target);
+    ActionResult displayEntityInfo(Player *player, Actor *target,bool nbt,
+                                   const std::string &path);
 
     ActionResult displayBlockInfo(Player *p, const BlockPos &pos, bool nbt,
                                   const std::string &path);

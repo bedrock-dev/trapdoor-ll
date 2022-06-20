@@ -18,39 +18,59 @@
 #include "CommandHelper.h"
 #include "DataConverter.h"
 #include "GlobalServiceAPI.h"
+#include "MC/PrettySnbtFormat.hpp"
 #include "Msg.h"
 #include "TrAPI.h"
 #include "TrapdoorMod.h"
 #include "Utils.h"
 namespace tr {
 
-    namespace {}  // namespace
+    namespace {
 
-    bool displayEntityInfo(Player *player, Actor *a) {
-        if (!player) return true;
+        struct ActorNBTFormat : PrettySnbtFormat {
+            ActorNBTFormat() {
+                this->switchToPlayerFormat();
+                this->mMaxLevel = 1;
+            }
+        };
+
+        std::string printableNBT(const std::unique_ptr<CompoundTag> &nbt) {
+            return nbt->toPrettySNBT(true);
+        }
+        ActionResult getNBTString(const std::unique_ptr<CompoundTag> &nbt,
+                                  const std::string &path) {
+            if (path.empty()) {
+                return {printableNBT(nbt), true};
+            } else {
+                bool success = false;
+                auto str = getNBTInfoFromPath(nbt, path, success);
+                return {str, success};
+            }
+        }
+    }  // namespace
+    ActionResult displayEntityInfo(Player *player, Actor *a, bool nbt, const std::string &path) {
+        if (!player) return {"Unsupported command origin", false};
         if (!a) {
-            player->sendText("No actor");
-            return true;
+            return {"No actor", false};
         }
         TextBuilder builder;
-        builder
-            .sText(TextBuilder::AQUA, "Base: \n")
+        if (nbt) {
+            return getNBTString(a->getNbt(), path);
+        }
 
+        builder.sText(TextBuilder::AQUA, "Base: \n")
             .text(" - type / UID: ")
             .sTextF(TextBuilder::GREEN, "%s    %llx\n", a->getTypeName().c_str(),
                     a->getUniqueID().get())
-
-            .text(" - Pos/DeltaPos   AABB: ")
+            .text(" - Pos/DeltaPos: ")
             .sTextF(TextBuilder::GREEN, "%s / %s|%s", fromVec3(a->getPos()).toString().c_str(),
-                    fromVec3(a->getPosDelta()).toString().c_str(),
-                    fromAABB(a->getAABB()).ToString().c_str())
+                    fromVec3(a->getPosDelta()).toString().c_str())
+            .text(" - AABB: ")
+            .sTextF(TextBuilder::GREEN, "%s", fromAABB(a->getAABB()).ToString().c_str())
             .text("\n")
             .text(" - Surface: ")
             .sTextF(TextBuilder::GREEN, "%d\n", a->isSurfaceMob());
-        builder.sText(tr::TextBuilder::AQUA, "NBT:\n")
-            .textF("  %s", a->getNbt()->toPrettySNBT(true).c_str());
-        player->sendText(builder.get());
-        return false;
+        return {builder.get(), true};
     }
 
     ActionResult displayBlockInfo(Player *p, const BlockPos &position, bool nbt,
@@ -69,12 +89,7 @@ namespace tr {
             if (b.hasBlockEntity()) {
                 auto be = p->getRegion().getBlockEntity(pos);
                 if (be) {
-                    auto sNbt = be->getNbt()->toSNBT();
-                    if (sNbt.size() > 2256) {
-                        return {sNbt, true};
-                    } else {
-                        return {be->getNbt()->toPrettySNBT(true), true};
-                    }
+                    return getNBTString(be->getNbt(), path);
                 }
             } else {
                 return {"No NBT data", false};
