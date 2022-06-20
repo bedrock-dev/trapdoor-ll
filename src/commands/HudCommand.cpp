@@ -23,7 +23,7 @@ namespace tr {
                            CommandParameterOption::EnumAutocompleteExpansion);
 
         auto &showItemsOpt =
-            command->setEnum("showItems", {"base", "mspt", "hoppercounter", "village"});
+            command->setEnum("showItems", {"base", "mspt", "hoppercounter", "village", "redstone"});
 
         command->mandatory("itemType", ParamType::Enum, showItemsOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);

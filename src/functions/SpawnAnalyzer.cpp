@@ -74,7 +74,7 @@ namespace tr {
         }
         b.text("Density info\n");
         for (auto &p : this->surfaceMobsPerTick) {
-            b.textF(" - %s: %.1f\n", p.first.c_str(), p.second * 1.0 / this->tick_count);
+            b.textF(" - %s: %.1f\n", p.first.c_str(), (double)p.second * 1.0 / this->tick_count);
         }
 
         b.text("-- Cave mobs --\n").text("Spawn count\n");
@@ -84,7 +84,7 @@ namespace tr {
 
         b.text("Density info\n");
         for (auto &p : this->caveMobs) {
-            b.textF("- %s: %d.1f\n", p.first.c_str(), p.second * 1.0 / this->tick_count);
+            b.textF("- %s: %.1f\n", p.first.c_str(), (double)p.second * 1.0 / this->tick_count);
         }
         return {b.get(), true};
     }

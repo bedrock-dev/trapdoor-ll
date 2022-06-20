@@ -3,6 +3,7 @@
 
 #include <MC/BlockInstance.hpp>
 #include <MC/BlockPos.hpp>
+#include <MC/CircuitSceneGraph.hpp>
 #include <MC/Dimension.hpp>
 #include <MC/ServerPlayer.hpp>
 
@@ -17,6 +18,7 @@ namespace tr {
 
     bool displayRedstoneCompInfo(Player *p, const BlockPos &pos);
 
+    CircuitSceneGraph &getCircuitSceneGraph(CircuitSystem *system);
 }  // namespace tr
 
 #endif

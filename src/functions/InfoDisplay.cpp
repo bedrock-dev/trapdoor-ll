@@ -22,21 +22,18 @@
 
 namespace tr {
 
-    namespace {
+    CircuitSceneGraph &getCircuitSceneGraph(CircuitSystem *system) {
+        // !CircuitSystem::updateDependencies
+        return dAccess<CircuitSceneGraph, 8>(system);
+    }
 
-        CircuitSceneGraph &getCircuitSceneGraph(CircuitSystem *system) {
-            // !CircuitSystem::updateDependencies
-            return dAccess<CircuitSceneGraph, 8>(system);
-        }
-
-        std::string getDbgString(Actor *actor) {
-            std::vector<std::string> dbgs;
-            actor->getDebugText(dbgs);
-            std::string res;
-            for (auto &s : dbgs) res += s;
-            return res;
-        }
-    }  // namespace
+    std::string getDbgString(Actor *actor) {
+        std::vector<std::string> dbgs;
+        actor->getDebugText(dbgs);
+        std::string res;
+        for (auto &s : dbgs) res += s;
+        return res;
+    }
 
     bool displayEntityInfo(Player *player, Actor *a) {
         if (!player) return true;
@@ -121,7 +118,6 @@ namespace tr {
     bool displayEnvInfo() { return true; }
 
     bool displayRedstoneCompInfo(Player *p, const BlockPos &pos) {
-        tr::logger().debug("test");
         auto &cs = p->getDimension().getCircuitSystem();
         auto &graph = getCircuitSceneGraph(&cs);
         auto comp = graph.getBaseComponent(pos);
@@ -130,9 +126,6 @@ namespace tr {
             return false;
         }
         p->sendText("Strength =>  " + std::to_string(comp->getStrength()));
-
-        auto &block = p->getRegion().getBlock(pos);
-        auto &mobs = p->getRegion().getBiome(pos).getMobs();
         // blockName.getMobToSpawn("");
         return false;
     }

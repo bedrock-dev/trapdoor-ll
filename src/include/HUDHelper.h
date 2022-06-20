@@ -10,8 +10,9 @@ namespace tr {
         Base = 0,
         Mspt = 1,
         Vill = 2,
-        Counter = 3,
-        Unknown = 4,
+        Redstone = 3,
+        Counter = 4,
+        Unknown = 5,
     };
 
     struct PlayerHudInfo {
