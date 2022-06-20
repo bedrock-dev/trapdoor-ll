@@ -18,7 +18,6 @@ namespace tr {
 
     bool displayRedstoneCompInfo(Player *p, const BlockPos &pos);
 
-    CircuitSceneGraph &getCircuitSceneGraph(CircuitSystem *system);
 }  // namespace tr
 
 #endif

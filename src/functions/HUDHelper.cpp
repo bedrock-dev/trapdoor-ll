@@ -12,10 +12,10 @@
 #include "CommandHelper.h"
 #include "DataConverter.h"
 #include "HopperCounter.h"
-#include "InfoDisplay.h"
 #include "MCTick.h"
 #include "Msg.h"
 #include "PlayerInfoAPI.h"
+#include "TrAPI.h"
 #include "Utils.h"
 
 namespace tr {
@@ -51,11 +51,11 @@ namespace tr {
 
         std::string buildBaseHud(Player* player) {
             TextBuilder b;
-            b.textF("Tick: %zu\n", Global<Level>->getCurrentServerTick().t);
+            b.textF("Tick: %zu  Time:\n", Global<Level>->getCurrentServerTick().t);
             auto pos = player->getPos();
             b.textF("X/Y/Z:  %.3f %.3f %.3f\n", pos.x, pos.y, pos.z);
             auto view = player->getViewVector(1.0);
-            b.textF("View:  %.3f %.3f %.3f\n", view.x, view.y, view.z);
+            b.textF("View:   %.3f %.3f %.3f\n", view.x, view.y, view.z);
             TBlockPos p = fromVec3(pos).toBlockPos();
             auto cp = p.toChunkPos();
             auto coff = p.InChunkOffset();
@@ -63,26 +63,19 @@ namespace tr {
             auto& bs = player->getRegion();
             auto pointBlock = reinterpret_cast<Actor*>(player)->getBlockFromViewVector();
             auto pointPos = pointBlock.getPosition();
-            auto block = pointBlock.getBlock();
-            std::string name = "air";
-            if (block) {
-                name = tr::rmmc(block->getTypeName());
-            }
-            if (name.size() >= 12) {
-                name = name.substr(0, 11) + "\n" + name.substr(11);
-            }
-            if (!pointBlock.isNull()) {
-                b.textF("PointTo: %d %d %d  %s\n", pointPos.x, pointPos.y, pointPos.z,
-                        name.c_str());
-            } else {
-                b.text("PointTo: Null\n");
-            }
+
             auto rb = bs.getRawBrightness(pointPos + BlockPos(0, 1, 0), true, true);
             auto bright = (uint32_t) * reinterpret_cast<unsigned char*>(&rb);
-            b.textF("Light: %u ", bright);
-            b.textF(" Biome: %d\n", bs.getBiome(pointPos).getBiomeType());
+            if (!pointBlock.isNull()) {
+                b.textF("Block: %d %d %d  Light: %u\n", pointPos.x, pointPos.y, pointPos.z, bright);
+            } else {
+                b.text("Block: -\n");
+            }
+            auto& biome = bs.getBiome(pos);
+            b.textF("Biome: %s (%d)\n", getBiomeName(&biome).c_str(), biome.getBiomeType());
             return b.get();
         }
+
         std::string buildMsptHud() {
             TextBuilder builder;
             auto mspt = tr::getMeanMSPT();

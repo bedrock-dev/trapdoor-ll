@@ -18,14 +18,9 @@
 #include "DataConverter.h"
 #include "GlobalServiceAPI.h"
 #include "Msg.h"
+#include "TrAPI.h"
 #include "TrapdoorMod.h"
-
 namespace tr {
-
-    CircuitSceneGraph &getCircuitSceneGraph(CircuitSystem *system) {
-        // !CircuitSystem::updateDependencies
-        return dAccess<CircuitSceneGraph, 8>(system);
-    }
 
     std::string getDbgString(Actor *actor) {
         std::vector<std::string> dbgs;

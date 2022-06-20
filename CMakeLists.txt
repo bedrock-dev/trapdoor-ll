@@ -56,6 +56,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/base/Msg.cpp
         src/base/Particle.cpp
         src/base/Utils.cpp
+        src/base/TrAPI.cpp
         src/pch.cpp
         src/Plugin.cpp
         src/functions/SpawnAnalyzer.cpp
