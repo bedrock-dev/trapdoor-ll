@@ -57,6 +57,7 @@ namespace tr {
 #ifdef CONFIG_DIR
         path = CONFIG_DIR;
 #endif
+        path = "";
         this->config.init(path + "config.json");
         tr::SubscribeEvents();
         tr::initRotateBlockHelper();
