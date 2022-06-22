@@ -14,15 +14,15 @@ namespace tr {
         auto spawnOpt = command->setEnum("spawnOpt", {"spawn", "despawn"});
         auto behOpt = command->setEnum("behOpt", {"lookat", "moveto"});
         auto intOpt = command->setEnum("intOpt", {"interact"});
-        auto destroyopt = command->setEnum("destroy", {"destroy"});
-        auto attackopt = command->setEnum("attack", {"attack"});
-        auto jumpopt = command->setEnum("jump", {"jump"});
+        auto destroyOpt = command->setEnum("destroy", {"destroy"});
+        auto attackOpt = command->setEnum("attack", {"attack"});
+        auto jumpOpt = command->setEnum("jump", {"jump"});
         auto repeatOpt = command->setEnum("repeatOpt", {"repeat"});
         auto useOpt = command->setEnum("useOpt", {"use"});
         auto useOnOpt = command->setEnum("useOnOpt", {"useon"});
         auto backpackOpt = command->setEnum("backpackOpt", {"backpack"});
         auto stopOpt = command->setEnum("stopOpt", {"stop", "cancel"});
-        auto listOpt = command->setEnum("listOpt", {"list"});
+        auto setOpt = command->setEnum("setOpt", {"set"});
 
         command->mandatory("player", ParamType::Enum, spawnOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
@@ -30,12 +30,12 @@ namespace tr {
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("player", ParamType::Enum, intOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
-        command->mandatory("player", ParamType::Enum, destroyopt,
+        command->mandatory("player", ParamType::Enum, destroyOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
-        command->mandatory("player", ParamType::Enum, attackopt,
+        command->mandatory("player", ParamType::Enum, attackOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
-        command->mandatory("player", ParamType::Enum, jumpopt,
+        command->mandatory("player", ParamType::Enum, jumpOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
         command->mandatory("player", ParamType::Enum, useOnOpt,
@@ -47,50 +47,61 @@ namespace tr {
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("player", ParamType::Enum, stopOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
-        command->mandatory("player", ParamType::Enum, listOpt,
+
+        command->mandatory("player", ParamType::Enum, setOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
-        command->mandatory("playerName", ParamType::String);
+        command->mandatory("name", ParamType::String);
         command->mandatory("itemId", ParamType::Item);
         command->optional("vec3", ParamType::Vec3);
-        command->optional("blockpos", ParamType::BlockPos);
+        command->optional("blockPos", ParamType::BlockPos);
 
         command->optional("repeatType", ParamType::Enum, repeatOpt,
                           CommandParameterOption::EnumAutocompleteExpansion);
         command->optional("interval", ParamType::Int);
         command->optional("times", ParamType::Int);
 
-        command->optional("backpackslot", ParamType::Int);
+        command->optional("slot", ParamType::Int);
 
         // clang-format off
         //  cancel task and stop action
-        command->addOverload({"playerName", stopOpt});
+        command->addOverload({"name", stopOpt});
         // check inv
-        command->addOverload({"playerName", backpackOpt, "backpackslot"});
+        command->addOverload({"name", backpackOpt, "slot"});
         // spawn despawn
-        command->addOverload({"playerName", spawnOpt});
+        command->addOverload({"name", setOpt, "itemId"});
+
+        command->addOverload({"name", spawnOpt});
         // move and loopat
-        command->addOverload({"playerName", behOpt, "vec3"});
+        command->addOverload({"name", behOpt, "vec3"});
         //和方块/实体交互
-        command->addOverload({"playerName", intOpt, "repeatType", "interval","times"}); 
+        command->addOverload({"name", intOpt, "repeatType", "interval","times"});
         // destroy
-        command->addOverload({"playerName", destroyopt, "blockpos", "repeatType", "interval", "times"});
+        command->addOverload({"name", destroyOpt, "blockPos", "repeatType", "interval", "times"});
         // useitem
-        command->addOverload({"playerName", useOnOpt, "itemId", "blockpos", "repeatType", "interval", "times"});
+        command->addOverload({"name", useOnOpt, "itemId", "blockPos", "repeatType", "interval", "times"});
         //use item on
-        command->addOverload({"playerName", useOpt, "itemId", "repeatType", "interval", "times"});
+        command->addOverload({"name", useOpt, "itemId", "repeatType", "interval", "times"});
         //attack
-        command->addOverload({"playerName", attackopt, "repeatType", "interval", "times"});
-        
+        command->addOverload({"name", attackOpt, "repeatType", "interval", "times"});
         //jump
-        command->addOverload({"playerName", jumpopt, "repeatType", "interval", "times"});
+        command->addOverload({"name", jumpOpt, "repeatType", "interval", "times"});
+
+
+
+        command->addOverload(std::vector<std::string>());
+
         // clang-format on
-        command->addOverload({listOpt});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
-            auto name = results["playerName"].get<std::string>();
+            auto name = results["name"].isSet ? results["name"].get<std::string>() : std::string();
+            if (name.empty()) {
+                tr::mod().getSimPlayerManager().listAll().sendTo(output);
+                return;
+            }
+
             // 默认1gt一次
             int interval = results["interval"].isSet ? results["interval"].get<int>() : 1;
             // 默认无限次
@@ -98,6 +109,7 @@ namespace tr {
             int rep = results["repeatType"].isSet ? 1 : 0;
             int itemId =
                 results["itemId"].isSet ? results["itemId"].getRaw<CommandItem>().getId() : 0;
+            int slot = results["slot"].isSet ? results["slot"].get<int>() : -1;
 
             switch (do_hash(results["player"].getRaw<std::string>().c_str())) {
                 case do_hash("spawn"):
@@ -118,7 +130,9 @@ namespace tr {
                                                         : getLookAtVec3(origin.getPlayer()))
                         .sendTo(output);
                     break;
-
+                case do_hash("set"):
+                    tr::mod().getSimPlayerManager().setItem(name, itemId).sendTo(output);
+                    break;
                 case do_hash("moveto"):
                     tr::mod()
                         .getSimPlayerManager()
@@ -150,11 +164,10 @@ namespace tr {
                     break;
 
                 case do_hash("destroy"):
-                    tr::logger().debug("QAQ");
-                    if (results["blockpos"].isSet) {
+                    if (results["blockPos"].isSet) {
                         tr::mod()
                             .getSimPlayerManager()
-                            .destroySchedule(name, results["blockpos"].get<BlockPos>(), nullptr,
+                            .destroySchedule(name, results["blockPos"].get<BlockPos>(), nullptr,
                                              rep, interval, times)
                             .sendTo(output);
                     } else {
@@ -178,10 +191,10 @@ namespace tr {
                         .sendTo(output);
                     break;
                 case do_hash("useon"):
-                    if (results["blockpos"].isSet) {
+                    if (results["blockPos"].isSet) {
                         tr::mod()
                             .getSimPlayerManager()
-                            .useOnBlockSchedule(name, itemId, results["blockpos"].get<BlockPos>(),
+                            .useOnBlockSchedule(name, itemId, results["blockPos"].get<BlockPos>(),
                                                 nullptr, rep, interval, times)
                             .sendTo(output);
                     } else {
@@ -198,8 +211,7 @@ namespace tr {
                     break;
                 case do_hash("stop"):
                     tr::mod().getSimPlayerManager().stopAction(name);
-                case do_hash("list"):
-                    tr::mod().getSimPlayerManager();
+                    break;
             }
         };
 

@@ -109,5 +109,6 @@ namespace tr {
         std::vector<std::string> messageBuffer;
     };
 
+    typedef TextBuilder TB;
 }  // namespace tr
 #endif  // TRAPDOOR_MSGBUILDER_H

@@ -6,15 +6,26 @@
 #include "ScheduleAPI.h"
 #include "SimPlayerHelper.h"
 #include "TrapdoorMod.h"
-
 namespace tr {
-
     namespace {
 
 #define GET_FREE_PLAYER(sim)                                       \
     auto*(sim) = this->tryFetchSimPlayer(name, true);              \
     if (!(sim)) {                                                  \
         return {"Player dost not exists or in scheduling", false}; \
+    }
+
+#define ADD_TASK                                            \
+    task();                                                 \
+    if (repType != 0) {                                     \
+        auto sch = Schedule::repeat(task, interval, times); \
+        this->simPlayers[name].task = sch;                  \
+    }
+
+#define CHECK_SURVIVAL                \
+    if (!this->checkSurvival(name)) { \
+        this->cancel(name);           \
+        return;                       \
     }
 
         BlockPos getTargetPos(Player* p, BlockPos pos) {
@@ -26,7 +37,7 @@ namespace tr {
             } else {
                 return tr::INVALID_POS;
             }
-        }
+        }  // namespace
 
         ItemStack* getItemInInv(SimulatedPlayer* sim, int itemID) {
             if (!sim) return nullptr;
@@ -52,7 +63,9 @@ namespace tr {
     void SimPlayerManager::cancel(const std::string& name) {
         tr::logger().debug("cancel task of:{}", name);
         auto it = this->simPlayers.find(name);
-        this->simPlayers.erase(it);
+        if (it != this->simPlayers.end()) {
+            it->second.task.cancel();
+        }
     }
 
     void SimPlayerManager::stopAction(const std::string& name) {
@@ -81,17 +94,16 @@ namespace tr {
     }
 
     ActionResult SimPlayerManager::getBackpack(const std::string& name, int slot) {
-        auto sim = this->tryFetchSimPlayer(name, false);
-        if (!sim) {
-            return {"Player does not exist", false};
-        }
+        GET_FREE_PLAYER(sim)
         TextBuilder builder;
         auto& inv = sim->getInventory();
         for (int i = 0; i < inv.getSize(); i++) {
             auto* itemStack = inv.getSlot(i);
             if (itemStack && itemStack->getCount() != 0) {
-                builder.textF("[%d] => %s * %d\n", i, itemStack->getName().c_str(),
-                              itemStack->getCount());
+                builder.textF("- [%d] ", i)
+                    .sTextF(TB::GREEN, " %s ", itemStack->getName().c_str())
+                    .text(" * ")
+                    .sTextF(TB::BOLD | TB::WHITE, "%d\n", itemStack->getCount());
             }
         }
         return {builder.get(), true};
@@ -109,27 +121,15 @@ namespace tr {
                 pos = ins.getPosition();
             }
         }
-
         auto task = [name, this, sim, pos]() {
-            printf("Schedule: %p\n", sim);
-            if (!this->checkSurvival(name)) {
-                this->cancel(name);
-                return;
-            }
-
+            CHECK_SURVIVAL
             if (pos == INVALID_POS) {
                 sim->simulateDestory();
             } else {
                 sim->simulateDestroyBlock(pos, static_cast<ScriptFacing>(1));
             }
         };
-
-        if (repType == 0) {
-            task();
-        } else {
-            auto sch = Schedule::repeat(task, interval, times);
-            this->simPlayers[name].task = sch;
-        }
+        ADD_TASK
         return {"", true};
     }
 
@@ -142,7 +142,7 @@ namespace tr {
         auto ins = playerActor->getBlockFromViewVector();
         auto pos = ins.isNull() ? tr::INVALID_POS : ins.getPosition();
         auto task = [this, sim, name, pos, target]() {
-            if (!this->checkSurvival(name)) this->cancel(name);
+            CHECK_SURVIVAL
             if (target) {
                 sim->simulateInteract(*target);
             } else {
@@ -153,12 +153,7 @@ namespace tr {
                 }
             }
         };
-        task();
-        if (repType != 0) {
-            auto sch = Schedule::repeat(task, interval, times);
-            this->simPlayers[name].task = sch;
-        }
-
+        ADD_TASK
         return {"", true};
     }
 
@@ -176,7 +171,7 @@ namespace tr {
         }
 
         auto task = [this, name, sim, uid]() {
-            if (!this->checkSurvival(name)) this->cancel(name);
+            CHECK_SURVIVAL
             auto t = Global<Level>->fetchEntity(uid, true);
             if (t) {
                 sim->simulateAttack(t);
@@ -184,12 +179,7 @@ namespace tr {
                 sim->simulateAttack();
             }
         };
-
-        task();
-        if (repType != 0) {
-            auto sch = Schedule::repeat(task, interval, times);
-            this->simPlayers[name].task = sch;
-        }
+        ADD_TASK
         return {"", true};
     }
 
@@ -197,19 +187,17 @@ namespace tr {
                                                int interval, int times) {
         GET_FREE_PLAYER(sim)
         auto task = [this, name, sim, itemId]() {
-            if (!this->checkSurvival(name)) this->cancel(name);
+            CHECK_SURVIVAL
             auto* item = getItemInInv(sim, itemId);
+            this->stopAction(name);
             if (item) {
+                sim->simulateSetItem(*item, true, 0);
                 sim->simulateUseItem(*item);
             } else {
                 sim->simulateUseItem();
             }
         };
-        task();
-        if (repType != 0) {
-            auto sch = Schedule::repeat(task, interval, times);
-            this->simPlayers[name].task = sch;
-        }
+        ADD_TASK
         return {"", true};
     }
 
@@ -220,15 +208,10 @@ namespace tr {
             return {"No player or player is in scheduling", false};
         }
         auto task = [this, name, sim]() {
-            if (!this->checkSurvival(name)) this->cancel(name);
+            CHECK_SURVIVAL
             sim->simulateJump();
         };
-        task();
-        if (repType != 0) {
-            auto sch = Schedule::repeat(task, interval, times);
-            this->simPlayers[name].task = sch;
-        }
-
+        ADD_TASK
         return {"", true};
     }
 
@@ -238,7 +221,7 @@ namespace tr {
         GET_FREE_PLAYER(sim)
         auto pos = getTargetPos(ori, p);
         auto task = [this, name, pos, itemId, sim]() {
-            if (!this->checkSurvival(name)) this->cancel(name);
+            CHECK_SURVIVAL
             auto face = static_cast<ScriptFacing>(1);
             auto v = Vec3(0.5, 1.0, 0.5);
             auto* item = getItemInInv(sim, itemId);
@@ -246,12 +229,15 @@ namespace tr {
                 sim->simulateUseItemOnBlock(*item, pos, face, v);
             }
         };
-        task();
-        if (repType != 0) {
-            auto sch = Schedule::repeat(task, interval, times);
-            this->simPlayers[name].task = sch;
+        ADD_TASK
+        return {"", true};
+    }
+    ActionResult SimPlayerManager::setItem(const string& name, int itemId) {
+        GET_FREE_PLAYER(sim)
+        auto* item = getItemInInv(sim, itemId);
+        if (item) {
+            sim->simulateSetItem(*item, true, 0);
         }
-
         return {"", true};
     }
 
@@ -285,7 +271,7 @@ namespace tr {
                                              int dimID) {
         auto iter = this->simPlayers.find(name);
         if (iter != simPlayers.end() && iter->second.simPlayer) {
-            return {"player has already existed", false};
+            return {"Player has already existed", false};
         }
         if (iter != simPlayers.end()) {
             iter->second.task.cancel();
@@ -300,9 +286,32 @@ namespace tr {
 
     // 定时做垃圾回收，解决数据不同步问题
     void SimPlayerManager::tick() {}
-    ActionResult SimPlayerManager::listAll() { return {"todo", true}; }
+    ActionResult SimPlayerManager::listAll() {
+        if (this->simPlayers.empty()) {
+            return {"No player exists", true};
+        }
+        TextBuilder builder;
+        for (const auto& i : this->simPlayers) {
+            builder.text(" - ").textF("%s   ", i.first.c_str());
+            if (!i.second.simPlayer) {
+                builder.sText(TB::RED | TB::BOLD, "Not exist\n");
+            } else {
+                if (i.second.task.isFinished()) {
+                    builder.sText(TB::GREEN | TB::BOLD, "Free      ");
+                } else {
+                    builder.sText(TB::YELLOW | TB::BOLD, "Working   ");
+                }
+                auto pos = i.second.simPlayer->getPosition().toBlockPos();
+                auto dim = i.second.simPlayer->getDimensionId();
+                builder.textF("  %d @ [%d %d %d]\n", static_cast<int>(dim), pos.x, pos.y, pos.z);
+            }
+        }
+
+        return {builder.get(), true};
+    }
     void SimPlayerManager::processDieEvent(const string& name) {
         tr::logger().debug("try disconnect {}", name);
         this->removePlayer(name);
     }
+
 }  // namespace tr

@@ -33,7 +33,7 @@ namespace tr {
         }
 
         inline SimPlayerManager &getSimPlayerManager() { return this->simPlayerManager; }
-
+        
         inline SpawnAnalyzer &getSpawnAnalyzer() { return this->spawnAnalyzer; }
 
        private:
