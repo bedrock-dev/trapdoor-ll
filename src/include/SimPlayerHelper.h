@@ -20,7 +20,9 @@ namespace tr {
        public:
         void tick();
 
-        SimulatedPlayer* tryFetchFreeSimPlayer(const std::string& name);
+        void processDieEvent(const std::string& name);
+
+        SimulatedPlayer* tryFetchSimPlayer(const std::string& name, bool needFree);
 
         ActionResult listAll();
 
@@ -56,8 +58,8 @@ namespace tr {
         bool checkSurvival(const std::string& name);
 
        private:
-        std::unordered_map<std::string, SimulatedPlayer*> players;
-        std::unordered_map<std::string, ScheduleTask> taskList;
+        //        std::unordered_map<std::string, SimulatedPlayer*> players;
+        //        std::unordered_map<std::string, ScheduleTask> taskList;
         std::unordered_map<std::string, SimInfo> simPlayers;
     };
 }  // namespace tr

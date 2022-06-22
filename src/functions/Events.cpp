@@ -102,4 +102,11 @@ namespace tr {
             return true;
         });
     }
+
+    void subscribePlayerDieEvent() {
+        Event::PlayerDieEvent::subscribe([&](const Event::PlayerDieEvent& ev) {
+            tr::mod().getSimPlayerManager().processDieEvent(ev.mPlayer->getRealName());
+            return true;
+        });
+    }
 }  // namespace tr

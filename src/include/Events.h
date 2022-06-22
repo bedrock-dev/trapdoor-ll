@@ -4,10 +4,12 @@
 namespace tr {
     void subscribeItemUseOnEvent();
     void subscribeItemUseEvent();
+    void subscribePlayerDieEvent();
 
     inline void SubscribeEvents() {
         subscribeItemUseOnEvent();
         subscribeItemUseEvent();
+        subscribePlayerDieEvent();
     }
 
 }  // namespace tr
