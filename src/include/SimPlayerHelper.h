@@ -10,11 +10,19 @@
 
 namespace tr {
 
-    enum SimTaskType { Ineract, Destroy, UseOn, Use, Attack, Jump };
-
     class SimPlayerManager {
+        struct SimInfo {
+            std::string name;
+            SimulatedPlayer* simPlayer;
+            ScheduleTask task;
+        };
+
        public:
-        SimulatedPlayer* tryFetchSimPlayer(const std::string& name);
+        void tick();
+
+        SimulatedPlayer* tryFetchFreeSimPlayer(const std::string& name);
+
+        ActionResult listAll();
 
         ActionResult getBackpack(const std::string& name, int slot);
 
@@ -23,9 +31,6 @@ namespace tr {
         ActionResult addPlayer(const std::string& name, const BlockPos& p, int dimID);
 
         ActionResult removePlayer(const std::string& name);
-
-        //        ActionResult actionPlayer(const std::string& name, const std::string& action,
-        //                                  const std::string& type, int extraAgrs);
 
         ActionResult interactSchedule(const std::string& name, Player* origin, int repType,
                                       int interval, int times);
@@ -53,6 +58,7 @@ namespace tr {
        private:
         std::unordered_map<std::string, SimulatedPlayer*> players;
         std::unordered_map<std::string, ScheduleTask> taskList;
+        std::unordered_map<std::string, SimInfo> simPlayers;
     };
 }  // namespace tr
 

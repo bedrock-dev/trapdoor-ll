@@ -8,7 +8,7 @@ namespace tr {
     void setup_playerCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand("player", "sapwn sim player",
+        auto command = DynamicCommand::createCommand("player", "sapwn simPlayer player",
                                                      static_cast<CommandPermissionLevel>(level));
 
         auto spawnOpt = command->setEnum("spawnOpt", {"spawn", "despawn"});
@@ -20,8 +20,9 @@ namespace tr {
         auto repeatOpt = command->setEnum("repeatOpt", {"repeat"});
         auto useOpt = command->setEnum("useOpt", {"use"});
         auto useOnOpt = command->setEnum("useOnOpt", {"useon"});
-        auto bagpackOpt = command->setEnum("backpackOpt", {"bagpack"});
+        auto backpackOpt = command->setEnum("backpackOpt", {"backpack"});
         auto stopOpt = command->setEnum("stopOpt", {"stop", "cancel"});
+        auto listOpt = command->setEnum("listOpt", {"list"});
 
         command->mandatory("player", ParamType::Enum, spawnOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
@@ -42,9 +43,11 @@ namespace tr {
         command->mandatory("player", ParamType::Enum, useOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
-        command->mandatory("player", ParamType::Enum, bagpackOpt,
+        command->mandatory("player", ParamType::Enum, backpackOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("player", ParamType::Enum, stopOpt,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+        command->mandatory("player", ParamType::Enum, listOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
         command->mandatory("playerName", ParamType::String);
@@ -63,7 +66,7 @@ namespace tr {
         //  cancel task and stop action
         command->addOverload({"playerName", stopOpt});
         // check inv
-        command->addOverload({"playerName", bagpackOpt, "backpackslot"});
+        command->addOverload({"playerName", backpackOpt, "backpackslot"});
         // spawn despawn
         command->addOverload({"playerName", spawnOpt});
         // move and loopat
@@ -82,6 +85,7 @@ namespace tr {
         //jump
         command->addOverload({"playerName", jumpopt, "repeatType", "interval", "times"});
         // clang-format on
+        command->addOverload({listOpt});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
@@ -162,7 +166,7 @@ namespace tr {
                     }
                     break;
 
-                case do_hash("bagpack"):
+                case do_hash("backpack"):
                     tr::mod().getSimPlayerManager().getBackpack(name, 0).sendTo(output);
                     break;
 
@@ -194,6 +198,8 @@ namespace tr {
                     break;
                 case do_hash("stop"):
                     tr::mod().getSimPlayerManager().stopAction(name);
+                case do_hash("list"):
+                    tr::mod().getSimPlayerManager();
             }
         };
 

@@ -52,8 +52,8 @@ namespace tr {
        // 对外使用tr自己的vec3，调api时使用自己的
     void spawnParticle(const TVec3& pos, const std::string& type, int dimID) {
         Vec3 p(pos.x, pos.y, pos.z);
-        Level::spawnParticleEffect(
-            type, p, Level::getDimension(static_cast<AutomaticID<Dimension, int> >(dimID)));
+        Global<Level>->spawnParticleEffect(
+            type, p, Global<Level>->getDimension(static_cast<AutomaticID<Dimension, int> >(dimID)));
     }
 
     std::string buildLienParticleType(int length, TFACING direction, PCOLOR color,
