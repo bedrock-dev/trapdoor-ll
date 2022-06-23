@@ -73,6 +73,12 @@ namespace tr {
             this->sText(style, tr::format(format, args...));
             return *this;
         }
+        template <typename... Args>
+        TextBuilder &boldF(const std::string &format, Args... args) {
+            this->sText(TextBuilder::BOLD, tr::format(format, args...));
+            return *this;
+        }
+
         TextBuilder &sText(uint8_t style, const std::string &s);
 
         TextBuilder &pos(const TBlockPos &pos);
@@ -82,11 +88,11 @@ namespace tr {
             if (std::is_arithmetic<T>()) {
                 if (std::is_floating_point<T>()) {
                     char buffer[32];
-                    sprintf(buffer, "%.3f", (double)x);
+                    sprintf(buffer, "%.1f", (double)x);
                     std::string s(buffer);
-                    sText(DARK_GREEN | BOLD, s);
+                    sText(WHITE | BOLD, s);
                 } else {
-                    sText(DARK_GREEN | BOLD, std::to_string(x));
+                    sText(WHITE | BOLD, std::to_string(x));
                 }
             }
             return *this;

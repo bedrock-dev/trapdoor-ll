@@ -86,10 +86,10 @@ namespace tr {
         TextBuilder builder;
         for (auto &i : res) {
             builder.sText(TB::GRAY, " - ")
-                .sTextF(TB::WHITE, "%s:", tr::i18ActorName(i.first).c_str())
-                .sTextF(TB::GRAY | TB::BOLD, "  %zu\n", i.second);
+                .textF("%s: ", tr::i18ActorName(i.first).c_str())
+                .num(i.second)
+                .text("\n");
         }
-
         return {builder.get(), true};
     }
 
@@ -184,10 +184,11 @@ namespace tr {
             auto ok = mob.second.second;
             auto color = ok ? TB::DARK_GREEN : TB::DARK_RED;
             builder.sText(TB::GRAY, " - ")
-                .sTextF(color, "%s:", tr::i18ActorName(mob.first).c_str())
-                .sTextF(color, " %.2f%%\n", mob.second.first * 100.0 / totalCount);
+                .textF("%s:  ", tr::i18ActorName(mob.first).c_str())
+                .num(mob.second.first * 100.0 / totalCount)
+                .text("%%, Can: ")
+                .sTextF(color | TB::BOLD, "%d\n", ok);
         }
-
         return {builder.get(), true};
     }
 }  // namespace tr

@@ -80,20 +80,20 @@ namespace tr {
         tr::TextBuilder builder;
 
         if (!simple) {
-            builder.sTextF(TB::BOLD | TB::WHITE, "  Channel [%d]    \n", channel);
-            builder.textF("%zu items in %d gt (%.3f min)\n", n, gameTick,
-                          static_cast<float>(gameTick) / 1200.0f);
+            builder.text("Channel: ").sTextF(TB::BOLD | TB::WHITE, "%d \n", channel);
+            builder.text("Total ").num(n).text(" in ").num(gameTick).text(" gt (")
+                .num(static_cast<float>(gameTick) / 72000.0f)
+                .text(" h)\n");
         } else {
-            builder.textF("%d (%.1f min(s))\n", n, static_cast<float>(gameTick) / 1200.0f);
+            builder.textF("%d (%.1f h))\n", n, static_cast<float>(gameTick) / 72000.0f);
         }
 
         for (const auto &i : counterList) {
             builder.sText(TB::GRAY, " - ");
             builder.textF("%s:   ", i.first.c_str())
-                .sTextF(TextBuilder::GREEN, "%d", i.second)
+                .num(i.second)
                 .text(" (")
-                .sTextF(TextBuilder::GREEN, "%.3f",
-                        static_cast<float>(i.second) * 1.0f / static_cast<float>(gameTick) * 72000)
+                .num(static_cast<float>(i.second) * 1.0f / static_cast<float>(gameTick) * 72000)
                 .text("/h)\n");
         }
 

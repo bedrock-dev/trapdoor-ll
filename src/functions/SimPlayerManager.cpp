@@ -99,11 +99,14 @@ namespace tr {
         auto& inv = sim->getInventory();
         for (int i = 0; i < inv.getSize(); i++) {
             auto* itemStack = inv.getSlot(i);
-            if (itemStack) {
-                builder.textF("- [%d] ", i)
-                    .sTextF(TB::GREEN, " %s ", itemStack->getName().c_str())
+            if (itemStack && (!itemStack->getName().empty())) {
+                auto c = itemStack->getColor();
+                builder.sText(TB::GRAY, " - ")
+                    .textF("[%d] ", i)
+                    .textF(" %s  ", itemStack->getName().c_str())
                     .text(" x ")
-                    .sTextF(TB::BOLD | TB::WHITE, "%d\n", itemStack->getCount());
+                    .num(itemStack->getCount())
+                    .text("\n");
             }
         }
         return {builder.get(), true};
