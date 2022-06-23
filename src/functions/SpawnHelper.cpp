@@ -85,9 +85,11 @@ namespace tr {
         if (type == "density") res = densityList;
         TextBuilder builder;
         for (auto &i : res) {
-            builder.textF(" - %s", tr::rmmc(i.first).c_str())
-                .sTextF(TextBuilder::GREEN, "  %zu\n", i.second);
+            builder.sText(TB::GRAY, " - ")
+                .sTextF(TB::WHITE, "%s:", tr::i18ActorName(i.first).c_str())
+                .sTextF(TB::GRAY | TB::BOLD, "  %zu\n", i.second);
         }
+
         return {builder.get(), true};
     }
 
@@ -180,9 +182,10 @@ namespace tr {
 
         for (const auto &mob : spawnMap) {
             auto ok = mob.second.second;
-            auto color = ok ? TextBuilder::DARK_GREEN : TextBuilder::DARK_RED;
-            builder.textF("- %s: ", mob.first.c_str())
-                .sTextF(color, "%.2f%%\n", mob.second.first * 100.0 / totalCount);
+            auto color = ok ? TB::DARK_GREEN : TB::DARK_RED;
+            builder.sText(TB::GRAY, " - ")
+                .sTextF(color, "%s:", tr::i18ActorName(mob.first).c_str())
+                .sTextF(color, " %.2f%%\n", mob.second.first * 100.0 / totalCount);
         }
 
         return {builder.get(), true};
