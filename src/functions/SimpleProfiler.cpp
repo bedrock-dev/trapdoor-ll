@@ -4,6 +4,7 @@
 
 #include "SimpleProfiler.h"
 
+#include <MC/I18n.hpp>
 #include <algorithm>
 #include <numeric>
 
@@ -129,7 +130,7 @@ namespace tr {
                     auto time =
                         micro_to_mill(std::accumulate(kv.second.begin(), kv.second.end(), 0ull)) /
                         static_cast<double>(kv.second.size());
-                    v.push_back({kv.first, time});
+                    v.emplace_back(kv.first, time);
                 }
 
                 auto sort_count = std::min(v.size(), static_cast<size_t>(5));
@@ -212,7 +213,7 @@ namespace tr {
                 std::vector<std::pair<std::string, EntityInfo>> v;
                 for (auto &kv : actor_data) {
                     assert(!kv.second.empty());
-                    v.push_back(kv);
+                    v.emplace_back(kv);
                 }
 
                 auto sort_count = std::min(v.size(), static_cast<size_t>(5));
@@ -222,12 +223,13 @@ namespace tr {
                               return p1.second.time > p2.second.time;
                           });
 
-                for (auto &i : v) {
+                for (auto &item : v) {
                     builder.text(" - ")
-                        .sTextF(TextBuilder::GREEN, "%s   ", tr::rmmc(i.first).c_str())
-                        .textF("%.3f ms (%d)\n",
-                               micro_to_mill(i.second.time) / static_cast<double>(this->totalRound),
-                               i.second.count / totalRound);
+                        .sTextF(TextBuilder::GREEN, "%s   ", tr::i18ActorName(item.first).c_str())
+                        .textF(
+                            "%.3f ms (%d)\n",
+                            micro_to_mill(item.second.time) / static_cast<double>(this->totalRound),
+                            item.second.count / totalRound);
                 }
             }
         }

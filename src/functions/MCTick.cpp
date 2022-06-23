@@ -395,6 +395,7 @@ THook(void, "?tick@Actor@@QEAA_NAEAVBlockSource@@@Z", Actor *actor, void *bs) {
         TIMER_START
         original(actor, bs);
         TIMER_END
+
         prof.actorInfo[static_cast<int>(actor->getDimensionId())][actor->getTypeName()].time +=
             timeResult;
         prof.actorInfo[static_cast<int>(actor->getDimensionId())][actor->getTypeName()].count++;

@@ -115,7 +115,7 @@ namespace tr {
                 case do_hash("spawn"):
                     tr::mod()
                         .getSimPlayerManager()
-                        .addPlayer(name, origin.getBlockPosition(), 0)
+                        .addPlayer(name, origin.getBlockPosition(), 0,origin.getPlayer())
                         .sendTo(output);
                     break;
                 case do_hash("despawn"):

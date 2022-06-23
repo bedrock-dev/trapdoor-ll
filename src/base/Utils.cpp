@@ -1,5 +1,6 @@
 #include "Utils.h"
 
+#include <MC/I18n.hpp>
 #include <MC/ListTag.hpp>
 #include <algorithm>
 
@@ -71,5 +72,8 @@ namespace tr {
 
         success = true;
         return cur->toJson(4);
+    }
+    std::string i18ActorName(const string& name) {
+        return I18n::get("entity." + rmmc(name) + ".name");
     }
 }  // namespace tr

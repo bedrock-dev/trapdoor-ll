@@ -99,10 +99,10 @@ namespace tr {
         auto& inv = sim->getInventory();
         for (int i = 0; i < inv.getSize(); i++) {
             auto* itemStack = inv.getSlot(i);
-            if (itemStack && itemStack->getCount() != 0) {
+            if (itemStack) {
                 builder.textF("- [%d] ", i)
                     .sTextF(TB::GREEN, " %s ", itemStack->getName().c_str())
-                    .text(" * ")
+                    .text(" x ")
                     .sTextF(TB::BOLD | TB::WHITE, "%d\n", itemStack->getCount());
             }
         }
@@ -267,8 +267,8 @@ namespace tr {
         return {"", true};
     }
 
-    ActionResult SimPlayerManager::addPlayer(const std::string& name, const BlockPos& p,
-                                             int dimID) {
+    ActionResult SimPlayerManager::addPlayer(const std::string& name, const BlockPos& p, int dimID,
+                                             Player* origin) {
         auto iter = this->simPlayers.find(name);
         if (iter != simPlayers.end() && iter->second.simPlayer) {
             return {"Player has already existed", false};
@@ -280,6 +280,9 @@ namespace tr {
         if (!sim) {
             return {"Spawn player failure", false};
         }
+        //        if (origin) {
+        //            sim->simulateSetBodyRotation(12);
+        //        }
         this->simPlayers[name] = {name, sim, ScheduleTask()};
         return {"", true};
     }

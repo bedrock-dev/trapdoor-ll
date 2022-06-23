@@ -30,7 +30,8 @@ namespace tr {
 
         ActionResult behavior(const std::string& name, const std::string& behType, const Vec3& vec);
 
-        ActionResult addPlayer(const std::string& name, const BlockPos& p, int dimID);
+        ActionResult addPlayer(const std::string& name, const BlockPos& p, int dimID,
+                               Player* origin);
 
         ActionResult removePlayer(const std::string& name);
 
@@ -60,8 +61,6 @@ namespace tr {
         bool checkSurvival(const std::string& name);
 
        private:
-        //        std::unordered_map<std::string, SimulatedPlayer*> players;
-        //        std::unordered_map<std::string, ScheduleTask> taskList;
         std::unordered_map<std::string, SimInfo> simPlayers;
     };
 }  // namespace tr

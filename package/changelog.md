@@ -1,7 +1,16 @@
+### trapdoor-ll-1.19.1.01-beta-11
+
+- 修复`player`的大量bug，包括数据不匹配，崩服，部分指令无效等等
+- 给`player`添加`set`子命令，用于设置手中物品(会在背包中查询)
+- 现在假人死亡后会自动离开游戏
+
 ### trapdoor-ll-1.19.1.01-beta-10
+
 - 支持1.19.1.01
 - 现在配置文件需要放到`plugins/trapdoor/`目录下
+
 ### trapdoor-ll-1.18.33-beta-9
+
 - 添加spawn analyze命令，分析刷怪生成
 - 添加spawn count命令以统计实体个数
 - HUD 添加`add redstone`子命令，用于显示红石原件的强度

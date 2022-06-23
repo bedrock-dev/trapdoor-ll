@@ -22,7 +22,7 @@ namespace tr {
 
         ActionResult reset();
 
-        std::string info();
+        std::string info(bool simple = false);
 
         void add(const std::string &itemName, size_t num);
 

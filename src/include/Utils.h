@@ -8,6 +8,9 @@ namespace tr {
                                    bool &success);
 
     std::string rmmc(const std::string &s);
+
+    std::string i18ActorName(const std::string &name);
+
 }  // namespace tr
 
 #endif

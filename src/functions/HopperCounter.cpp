@@ -3,6 +3,8 @@
 #include <MC/Block.hpp>
 #include <MC/BlockActor.hpp>
 #include <MC/BlockSource.hpp>
+#include <MC/I18n.hpp>
+#include <MC/Item.hpp>
 #include <MC/ItemStackBase.hpp>
 #include <stdexcept>
 
@@ -61,31 +63,38 @@ namespace tr {
     ActionResult CounterChannel::reset() {
         gameTick = 0;
         counterList.clear();
-        return {"channel cleaned", true};
+        return {"Channel cleaned", true};
     }
 
-    std::string CounterChannel::info() {
+    std::string CounterChannel::info(bool simple) {
         size_t n = 0;
         for (const auto &i : this->counterList) {
             n += i.second;
         }
 
         if (this->gameTick == 0 || n == 0) {
-            return "no data in this channel";
+            return "No data in this channel";
         }
 
         std::string stringBuilder;
         tr::TextBuilder builder;
-        builder.textF("Channel [%d]: %zu items %d gt (%.3f min(s))\n", channel, n, gameTick,
-                      gameTick / 1200.0f);
+
+        if (!simple) {
+            builder.sTextF(TB::BOLD | TB::WHITE, "  Channel [%d]    \n", channel);
+            builder.textF("%zu items in %d gt (%.3f min)\n", n, gameTick,
+                          static_cast<float>(gameTick) / 1200.0f);
+        } else {
+            builder.textF("%d (%.1f min(s))\n", n, static_cast<float>(gameTick) / 1200.0f);
+        }
 
         for (const auto &i : counterList) {
-            //   auto itemName = GetItemLocalName(i.first);
-            builder.textF(" - %s:   ", i.first.c_str())
+            builder.sText(TB::GRAY, " - ");
+            builder.textF("%s:   ", i.first.c_str())
                 .sTextF(TextBuilder::GREEN, "%d", i.second)
-                .text("(")
-                .sTextF(TextBuilder::GREEN, "%.3f", i.second * 1.0f / gameTick * 72000)
-                .text("/hour)\n");
+                .text(" (")
+                .sTextF(TextBuilder::GREEN, "%.3f",
+                        static_cast<float>(i.second) * 1.0f / static_cast<float>(gameTick) * 72000)
+                .text("/h)\n");
         }
 
         return builder.get();
@@ -148,7 +157,6 @@ THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self, un
         return;
     }
 
-    tr::logger().debug("channel = {}", ch);
     tr::mod().getHopperChannelManager().getChannel(ch).add(itemStack->getName(),
                                                            itemStack->getCount());
 }
