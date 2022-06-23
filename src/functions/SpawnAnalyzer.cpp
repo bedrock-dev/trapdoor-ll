@@ -12,6 +12,7 @@
 #include "HookAPI.h"
 #include "Msg.h"
 #include "TrapdoorMod.h"
+#include "Utils.h"
 namespace tr {
 
     void SpawnAnalyzer::AddMob(Mob *mob, const string &name, bool surface) {
@@ -28,10 +29,11 @@ namespace tr {
         if (this->inAnalyzing) {
             return {"Already in analyzing", false};
         }
+        this->clear();
         this->inAnalyzing = true;
         this->dimensionID = id;
         this->centerChunkPos = pos;
-        return {"Start analyzing,This may produce higher MSPT", true};
+        return {"Start analyzing,This may bring higher MSPT", true};
     }
     ActionResult SpawnAnalyzer::stop() {
         if (!this->inAnalyzing) {
@@ -66,25 +68,42 @@ namespace tr {
 
     ActionResult SpawnAnalyzer::printResult() const {
         TextBuilder b;
-        b.textF("Total %d gt\n", this->tick_count)
-            .text("-- Surface mobs --\n")
-            .text("Spawn count\n");
-        for (auto &p : this->surfaceMobs) {
-            b.textF(" - %s: %d\n", p.first.c_str(), p.second);
-        }
-        b.text("Density info\n");
+        // b.textF("Total %d gt\n", this->tick_count)
+        const float hour = static_cast<float>(tick_count) / 72000.0f;
+        b.text("Total ").num(tick_count).text("gt (").num(hour).text("h)\n");
+        b.sText(TB::GREEN | TB::BOLD, "Surface:\n");
         for (auto &p : this->surfaceMobsPerTick) {
-            b.textF(" - %s: %.1f\n", p.first.c_str(), (double)p.second * 1.0 / this->tick_count);
+            auto type = tr::rmmc(p.first);
+            if (type == "player") continue;
+            b.sText(TB::GRAY, " - ").textF("%s:  ", tr::i18ActorName(type).c_str());
+            b.text("Density: ").num(static_cast<float>(p.second) / static_cast<float>(tick_count));
+            auto iter = this->surfaceMobs.find(type);
+            if (iter == this->surfaceMobs.end()) {
+                b.text("\n");
+            } else {
+                b.text(" Spawn: ")
+                    .num(iter->second)
+                    .text(", ")
+                    .num(static_cast<float>(iter->second) / hour)
+                    .text("/h\n");
+            }
         }
-
-        b.text("-- Cave mobs --\n").text("Spawn count\n");
-        for (auto &p : this->caveMobs) {
-            b.textF("- %s: %d\n", p.first.c_str(), p.second);
-        }
-
-        b.text("Density info\n");
-        for (auto &p : this->caveMobs) {
-            b.textF("- %s: %.1f\n", p.first.c_str(), (double)p.second * 1.0 / this->tick_count);
+        b.sText(TB::RED | TB::BOLD, "Underground:\n");
+        for (auto &p : this->caveMobsPerTick) {
+            auto type = tr::rmmc(p.first);
+            if (type == "player") continue;
+            b.sText(TB::GRAY, " - ").textF("%s:  ", tr::i18ActorName(type).c_str());
+            b.text("Density: ").num(static_cast<float>(p.second) / static_cast<float>(tick_count));
+            auto iter = this->caveMobs.find(type);
+            if (iter == this->caveMobs.end()) {
+                b.text("\n");
+            } else {
+                b.text(" Spawn: ")
+                    .num(iter->second)
+                    .text(", ")
+                    .num(static_cast<float>(iter->second) / hour)
+                    .text("/h\n");
+            }
         }
         return {b.get(), true};
     }
