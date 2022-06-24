@@ -125,9 +125,9 @@ namespace tr {
             auto basicCfg = tr::mod().getConfig().getBasicConfig();
 
             spawnParticle(points.first, particleType, dimType);
-            if (basicCfg.particleLevel > 1) {
+            if (basicCfg.particleLevel > 0) {
                 spawnParticle(points.first, backParticleType, dimType);
-                if (basicCfg.particleLevel > 2) {
+                if (basicCfg.particleLevel > 0) {
                     spawnParticle(points.first, particleTypeInv, dimType);
                     spawnParticle(points.first, backParticleTypeInv, dimType);
                 }

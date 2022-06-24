@@ -30,6 +30,7 @@ namespace tr {
             REG_COMMAND(log)
             REG_COMMAND(player)
             REG_COMMAND(hud)
+            REG_COMMAND(hsa)
         }
     }  // namespace
 
