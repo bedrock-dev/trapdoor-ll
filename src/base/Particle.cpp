@@ -1,18 +1,19 @@
 #include "Particle.h"
 
+#include <MC/Dimension.hpp>
 #include <MC/Level.hpp>
 #include <MC/Vec3.hpp>
 #include <array>
 #include <map>
 
+#include "Config.h"
 #include "TBlockPos.h"
 #include "TVec3.h"
-
 namespace tr {
 
     namespace {
 
-        const std::string PARTICLE_BASE_NAME = "traodoor::line";
+        const std::string PARTICLE_BASE_NAME = "trapdoor::line";
 
         std::array<std::string, 6>& lineParticleFacing() {
             static std::array<std::string, 6> facing{"Yp", "Ym", "Zp", "Zm", "Xp", "Xm"};
@@ -41,7 +42,7 @@ namespace tr {
                 if (length >= defaultLength) {
                     length -= defaultLength;
                     auto point = static_cast<float>(0.5 * defaultLength + start);
-                    start += defaultLength;
+                    start += static_cast<float>(defaultLength);
                     lengthMap.insert({point, defaultLength});
                 }
             }
@@ -52,6 +53,10 @@ namespace tr {
        // 对外使用tr自己的vec3，调api时使用自己的
     void spawnParticle(const TVec3& pos, const std::string& type, int dimID) {
         Vec3 p(pos.x, pos.y, pos.z);
+
+        auto* d = Global<Level>->getDimension(dimID);
+        auto pvd = tr::mod().getConfig().getBasicConfig().particleViewDistance;
+        if (d->distanceToNearestPlayerSqr2D(p) > pvd) return;
         Global<Level>->spawnParticleEffect(
             type, p, Global<Level>->getDimension(static_cast<AutomaticID<Dimension, int> >(dimID)));
     }
@@ -117,10 +122,16 @@ namespace tr {
             auto backParticleTypeInv =
                 buildLienParticleType(points.second, invFacing(direction), color, true);
 
+            auto basicCfg = tr::mod().getConfig().getBasicConfig();
+
             spawnParticle(points.first, particleType, dimType);
-            spawnParticle(points.first, backParticleType, dimType);
-            spawnParticle(points.first, particleTypeInv, dimType);
-            spawnParticle(points.first, backParticleTypeInv, dimType);
+            if (basicCfg.particleLevel > 1) {
+                spawnParticle(points.first, backParticleType, dimType);
+                if (basicCfg.particleLevel > 2) {
+                    spawnParticle(points.first, particleTypeInv, dimType);
+                    spawnParticle(points.first, backParticleTypeInv, dimType);
+                }
+            }
         }
     }
 

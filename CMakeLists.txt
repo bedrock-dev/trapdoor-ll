@@ -10,6 +10,7 @@ add_definitions(-DTD_VERSION="${TRAPDOOR_VERSION}")
 add_definitions(-DMC_VERSION="${GAME_VERSION}")
 
 if (${DEV} STREQUAL "ON")
+    add_definitions(-DDEV)
     message("Build a developer version")
     set(CMAKE_BUILD_TYPE "Debug")
     set(TARGET_NAME trapdoor-dev)

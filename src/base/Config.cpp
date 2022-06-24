@@ -12,6 +12,7 @@ namespace tr {
     bool Configuration::init(const std::string& fileName) {
         if (!readConfigFile(fileName)) return false;
         if (!readCommandConfigs()) return false;
+        if (!readBasicConfigs()) return false;
         if (!readShortcutConfigs()) return false;
         return true;
     }
@@ -45,10 +46,33 @@ namespace tr {
         }
         return true;
     }
-
-    bool Configuration::readShortcutConfigs() {
-        auto cc = this->config["shortcuts"];
+    bool Configuration::readBasicConfigs() {
         try {
+            auto bc = this->config["basic-config"];
+            auto pl = bc["particle-performance-level"].get<int>();
+            auto pv = bc["particle-view-distance"].get<int>();
+            if (pl != 1 && pl != 2 && pl != 3) {
+                pl = 3;
+                tr::logger().warn("Invalid particle-performance-level, set to default 3");
+            }
+            this->basicConfig.particleLevel = pl;
+            tr::logger().debug("Set particle performance level to {}", pl);
+
+            if (pv <= 0 || pv >= 2048) {
+                pv = 128;
+                tr::logger().warn("Invalid particle-view-distance, set to default 128");
+            }
+            tr::logger().debug("Set particle view distance to {}", pv);
+
+        } catch (const std::exception& e) {
+            tr::logger().error("error read  basic config: {}", e.what());
+            return false;
+        }
+        return true;
+    }
+    bool Configuration::readShortcutConfigs() {
+        try {
+            auto cc = this->config["shortcuts"];
             for (const auto& i : cc.items()) {
                 Shortcut sh;
 

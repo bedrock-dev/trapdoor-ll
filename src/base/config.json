@@ -53,7 +53,10 @@
       "permission-level": 0
     }
   },
-  "self": {},
+  "basic-config": {
+    "particle-performance-level": 12,
+    "particle-view-distance": -1
+  },
   "shortcuts": [
     {
       "type": "use-on",
@@ -62,27 +65,6 @@
       "prevent": false,
       "actions": [
         "counter print {baux}"
-      ]
-    },
-    {
-      "type": "command",
-      "command": "s",
-      "actions": [
-        "gamemode survival"
-      ]
-    },
-    {
-      "type": "command",
-      "command": "c",
-      "actions": [
-        "gamemode creative"
-      ]
-    },
-    {
-      "type": "command",
-      "command": "here",
-      "actions": [
-        "/say Position: [{px} , {py} , {pz}]"
       ]
     }
   ]
