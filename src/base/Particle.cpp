@@ -56,7 +56,7 @@ namespace tr {
 
         auto* d = Global<Level>->getDimension(dimID);
         auto pvd = tr::mod().getConfig().getBasicConfig().particleViewDistance;
-        if (d->distanceToNearestPlayerSqr2D(p) > pvd) return;
+        if (d->distanceToNearestPlayerSqr2D(p) > pvd * pvd) return;
         Global<Level>->spawnParticleEffect(
             type, p, Global<Level>->getDimension(static_cast<AutomaticID<Dimension, int> >(dimID)));
     }
@@ -125,9 +125,9 @@ namespace tr {
             auto basicCfg = tr::mod().getConfig().getBasicConfig();
 
             spawnParticle(points.first, particleType, dimType);
-            if (basicCfg.particleLevel > 0) {
+            if (basicCfg.particleLevel > 1) {
                 spawnParticle(points.first, backParticleType, dimType);
-                if (basicCfg.particleLevel > 0) {
+                if (basicCfg.particleLevel > 2) {
                     spawnParticle(points.first, particleTypeInv, dimType);
                     spawnParticle(points.first, backParticleTypeInv, dimType);
                 }
