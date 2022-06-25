@@ -55,7 +55,8 @@
   },
   "basic-config": {
     "particle-performance-level": 12,
-    "particle-view-distance": -1
+    "particle-view-distance": -1,
+    "hud-refresh-freq": 20
   },
   "shortcuts": [
     {

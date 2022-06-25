@@ -51,6 +51,8 @@ namespace tr {
             auto bc = this->config["basic-config"];
             auto pl = bc["particle-performance-level"].get<int>();
             auto pv = bc["particle-view-distance"].get<int>();
+            auto hudFreq = bc["hud-refresh-freq"].get<int>();
+
             if (pl != 1 && pl != 2 && pl != 3) {
                 pl = 3;
                 tr::logger().warn("Invalid particle-performance-level, set to default 3");
@@ -62,7 +64,15 @@ namespace tr {
                 pv = 128;
                 tr::logger().warn("Invalid particle-view-distance, set to default 128");
             }
+            this->basicConfig.particleViewDistance = pv;
             tr::logger().debug("Set particle view distance to {}", pv);
+
+            if (hudFreq <= 0) {
+                hudFreq = 20;
+                tr::logger().warn("Invalid hud refresh frequency, set to default 20");
+            }
+            this->basicConfig.hudRefreshFreq = hudFreq;
+            tr::logger().debug("Set HUD show freq to {}", hudFreq);
 
         } catch (const std::exception& e) {
             tr::logger().error("error read  basic config: {}", e.what());

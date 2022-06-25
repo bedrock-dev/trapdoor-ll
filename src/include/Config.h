@@ -21,8 +21,9 @@ namespace tr {
         int permissionLevel = 1;
     };
     struct BasicConfig {
-        int particleLevel = 3;
+        int particleLevel = 2;
         int particleViewDistance = 128;
+        int hudRefreshFreq = 20;
     };
 
     class Configuration {

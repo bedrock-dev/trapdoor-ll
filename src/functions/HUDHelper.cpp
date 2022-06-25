@@ -10,6 +10,7 @@
 #include <MC/Player.hpp>
 
 #include "CommandHelper.h"
+#include "Config.h"
 #include "DataConverter.h"
 #include "HopperCounter.h"
 #include "MCTick.h"
@@ -51,7 +52,7 @@ namespace tr {
 
         std::string buildBaseHud(Player* player) {
             TextBuilder b;
-            b.textF("Tick: %zu  Time:\n", Global<Level>->getCurrentServerTick().t);
+            b.textF("Tick: %zu\n", Global<Level>->getCurrentServerTick().t);
             auto pos = player->getPos();
             b.textF("X/Y/Z:  %.3f %.3f %.3f\n", pos.x, pos.y, pos.z);
             auto view = player->getViewVector(1.0);
@@ -102,7 +103,7 @@ namespace tr {
     }  // namespace
     void HUDHelper::tick() {
         static int refresh_time = 0;
-        refresh_time = (refresh_time + 1) % 10;
+        refresh_time = (refresh_time + 1) % tr::mod().getConfig().getBasicConfig().hudRefreshFreq;
         if (refresh_time != 1) return;
         for (auto& info : this->playerInfos) {
             auto* p = Global<Level>->getPlayer(info.first);

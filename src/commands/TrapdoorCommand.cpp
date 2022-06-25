@@ -32,6 +32,16 @@ namespace tr {
             tr::mod().getConfig().getBasicConfig().particleViewDistance = level;
             return {"Success", true};
         }
+
+        ActionResult setHUDFreq(int freq) {
+            if (freq <= 0) {
+                return {"Invalid value, it should be with 0,+inf", false};
+            }
+            tr::mod().getConfig().getBasicConfig().hudRefreshFreq = freq;
+
+            return {"Set freq to " + std::to_string(freq), true};
+        }
+
     }  // namespace
 
     void setup_trapdoorCommand(int level) {
@@ -42,16 +52,24 @@ namespace tr {
         auto &particleShowLevelEnum = command->setEnum("particleShowLevelEnum", {"pm"});
         auto &particleShowLevelOpt = command->setEnum("level", {"low", "medium", "high"});
         auto &particleDistanceEnum = command->setEnum("particleDistanceEnum", {"pvd"});
+        auto &hudRefreshFreqEnum = command->setEnum("hudRefreshFreq", {"hudfreq"});
 
         command->mandatory("trapdoor", ParamType::Enum, particleShowLevelEnum,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("trapdoor", ParamType::Enum, particleDistanceEnum,
                            CommandParameterOption::EnumAutocompleteExpansion);
+        command->mandatory("trapdoor", ParamType::Enum, hudRefreshFreqEnum,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+
         command->mandatory("particleLevelOpt", ParamType::Enum, particleShowLevelOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
+
         command->mandatory("maxDistance", ParamType::Int);
+        command->mandatory("frequency", ParamType::Int);
+
         command->addOverload({particleShowLevelEnum, "particleLevelOpt"});
         command->addOverload({particleDistanceEnum, "maxDistance"});
+        command->addOverload({hudRefreshFreqEnum, "frequency"});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
@@ -63,6 +81,9 @@ namespace tr {
                     break;
                 case do_hash("pvd"):
                     setParticleViewDistance(results["maxDistance"].get<int>()).sendTo(output);
+                    break;
+                case do_hash("hudfreq"):
+                    setHUDFreq(results["frequency"].get<int>()).sendTo(output);
                     break;
             }
         };
