@@ -120,17 +120,13 @@ namespace tr {
         if (pos == INVALID_POS) {
             pos = tr::getLookAtPos(origin);
         }
-        tr::logger().debug("destroy schedule {}", pos.toString());
         auto task = [name, this, sim, pos]() {
             CHECK_SURVIVAL
             if (pos == INVALID_POS) {
-                tr::logger().debug("Invalid position");
                 auto bi = sim->getBlockFromViewVector();
                 if (bi.isNull()) {
-                    tr::logger().debug("Block Instance is NULL");
                     sim->simulateDestory();
                 } else {
-                    tr::logger().debug("sim lookat {}", bi.getPosition().toString());
                     sim->simulateDestroyBlock(bi.getPosition(), static_cast<ScriptFacing>(1));
                 }
             } else {
@@ -291,14 +287,9 @@ namespace tr {
         }
         if (origin) {
             // 是玩家召唤的
-            sim->teleport(origin->getPos(), dimID);
-            sim->setRot({1.0, 2.0});
+            sim->teleport(origin->getPos() - Vec3(0.0f, -1.0f, 0.0f), dimID);
+            sim->setRot({0.5, 0.5});
         }
-
-        //        if (origin) {
-        //            sim->simulateSetBodyRotation(12);
-        //        }
-
         this->simPlayers[name] = {name, sim, ScheduleTask()};
         return {"", true};
     }
