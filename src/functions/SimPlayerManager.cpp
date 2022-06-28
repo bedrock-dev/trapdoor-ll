@@ -244,7 +244,15 @@ namespace tr {
         }
         return {"", true};
     }
-
+    ActionResult SimPlayerManager::dropItem(const string& name, int itemId) {
+        //        GET_FREE_PLAYER(sim)
+        //        auto* item = getItemInInv(sim, itemId);
+        //        if (item) {
+        //            sim->_drop(*item, true);
+        //        }
+        //        return {"", true};
+        return {"Developing", false};
+    }
     ActionResult SimPlayerManager::behavior(const std::string& name, const std::string& behType,
                                             const Vec3& vec) {
         auto sim = this->tryFetchSimPlayer(name, false);

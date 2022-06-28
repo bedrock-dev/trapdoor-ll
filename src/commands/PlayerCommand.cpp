@@ -24,7 +24,7 @@ namespace tr {
         auto useOnOpt = command->setEnum("useOnOpt", {"useon"});
         auto backpackOpt = command->setEnum("backpackOpt", {"backpack"});
         auto stopOpt = command->setEnum("stopOpt", {"stop", "cancel"});
-        auto setOpt = command->setEnum("setOpt", {"set"});
+        auto setOpt = command->setEnum("setOpt", {"set", "drop"});
 
         command->mandatory("player", ParamType::Enum, spawnOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
@@ -138,6 +138,9 @@ namespace tr {
                 case do_hash("set"):
                     tr::mod().getSimPlayerManager().setItem(name, itemId).sendTo(output);
                     break;
+                case do_hash("drop"):
+                    tr::mod().getSimPlayerManager().dropItem(name, itemId).sendTo(output);
+                    break;
                 case do_hash("moveto"):
                     tr::mod()
                         .getSimPlayerManager()
@@ -171,25 +174,8 @@ namespace tr {
                 case do_hash("destroy"):
                     tr::mod()
                         .getSimPlayerManager()
-                        .destroySchedule(name, blockPos, origin.getPlayer(), rep, interval,
-                                         times)
+                        .destroySchedule(name, blockPos, origin.getPlayer(), rep, interval, times)
                         .sendTo(output);
-
-                    //                    if (results["blockPos"].isSet) {
-                    //                        tr::mod()
-                    //                            .getSimPlayerManager()
-                    //                            .destroySchedule(name,
-                    //                            results["blockPos"].get<BlockPos>(), nullptr,
-                    //                                             rep, interval, times)
-                    //                            .sendTo(output);
-                    //                    } else {
-                    //                        tr::mod()
-                    //                            .getSimPlayerManager()
-                    //                            .destroySchedule(name, tr::INVALID_POS,
-                    //                            origin.getPlayer(), rep,
-                    //                                             interval, times)
-                    //                            .sendTo(output);
-                    //                    }
                     break;
 
                 case do_hash("backpack"):
