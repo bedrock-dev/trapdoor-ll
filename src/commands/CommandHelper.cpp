@@ -37,6 +37,8 @@ namespace tr {
         if (!player) {
             return tr::INVALID_POS;
         }
-        return reinterpret_cast<Actor *>(player)->getBlockFromViewVector().getPosition();
+
+        auto b = reinterpret_cast<Actor *>(player)->getBlockFromViewVector();
+        return b.isNull() ? tr::INVALID_POS : b.getPosition();
     }
 }  // namespace tr

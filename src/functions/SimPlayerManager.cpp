@@ -117,13 +117,10 @@ namespace tr {
                                                    int times) {
         GET_FREE_PLAYER(sim)
         auto pos = p;
-        if (origin) {
-            auto* a = reinterpret_cast<Actor*>(origin);
-            auto ins = a->getBlockFromViewVector();
-            if (!ins.isNull()) {
-                pos = ins.getPosition();
-            }
+        if (pos == INVALID_POS) {
+            pos = tr::getLookAtPos(origin);
         }
+        tr::logger().debug("destroy schedule {}", pos.toString());
         auto task = [name, this, sim, pos]() {
             CHECK_SURVIVAL
             if (pos == INVALID_POS) {
@@ -288,12 +285,20 @@ namespace tr {
             iter->second.task.cancel();
         }
         auto* sim = SimulatedPlayer::create(name, p, dimID);
+
         if (!sim) {
             return {"Spawn player failure", false};
         }
+        if (origin) {
+            // 是玩家召唤的
+            sim->teleport(origin->getPos(), dimID);
+            sim->setRot({1.0, 2.0});
+        }
+
         //        if (origin) {
         //            sim->simulateSetBodyRotation(12);
         //        }
+
         this->simPlayers[name] = {name, sim, ScheduleTask()};
         return {"", true};
     }

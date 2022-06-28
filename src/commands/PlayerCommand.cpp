@@ -1,3 +1,5 @@
+#include <MC/Dimension.hpp>
+
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"
 #include "SimPlayerHelper.h"
@@ -110,12 +112,15 @@ namespace tr {
             int itemId =
                 results["itemId"].isSet ? results["itemId"].getRaw<CommandItem>().getId() : 0;
             int slot = results["slot"].isSet ? results["slot"].get<int>() : -1;
+            auto blockPos =
+                results["blockPos"].isSet ? results["blockPos"].get<BlockPos>() : tr::INVALID_POS;
 
             switch (do_hash(results["player"].getRaw<std::string>().c_str())) {
                 case do_hash("spawn"):
                     tr::mod()
                         .getSimPlayerManager()
-                        .addPlayer(name, origin.getBlockPosition(), 0,origin.getPlayer())
+                        .addPlayer(name, origin.getBlockPosition(),
+                                   origin.getDimension()->getDimensionId(), origin.getPlayer())
                         .sendTo(output);
                     break;
                 case do_hash("despawn"):
@@ -164,19 +169,27 @@ namespace tr {
                     break;
 
                 case do_hash("destroy"):
-                    if (results["blockPos"].isSet) {
-                        tr::mod()
-                            .getSimPlayerManager()
-                            .destroySchedule(name, results["blockPos"].get<BlockPos>(), nullptr,
-                                             rep, interval, times)
-                            .sendTo(output);
-                    } else {
-                        tr::mod()
-                            .getSimPlayerManager()
-                            .destroySchedule(name, BlockPos(0, 0, 0), origin.getPlayer(), rep,
-                                             interval, times)
-                            .sendTo(output);
-                    }
+                    tr::mod()
+                        .getSimPlayerManager()
+                        .destroySchedule(name, blockPos, origin.getPlayer(), rep, interval,
+                                         times)
+                        .sendTo(output);
+
+                    //                    if (results["blockPos"].isSet) {
+                    //                        tr::mod()
+                    //                            .getSimPlayerManager()
+                    //                            .destroySchedule(name,
+                    //                            results["blockPos"].get<BlockPos>(), nullptr,
+                    //                                             rep, interval, times)
+                    //                            .sendTo(output);
+                    //                    } else {
+                    //                        tr::mod()
+                    //                            .getSimPlayerManager()
+                    //                            .destroySchedule(name, tr::INVALID_POS,
+                    //                            origin.getPlayer(), rep,
+                    //                                             interval, times)
+                    //                            .sendTo(output);
+                    //                    }
                     break;
 
                 case do_hash("backpack"):
