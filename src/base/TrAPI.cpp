@@ -9,7 +9,8 @@ namespace tr {
     //! TODO
     std::string getBiomeName(Biome* biome) {
         if (!biome) return "";
-        return dAccess<std::string, 8>(biome);
+        // return dAccess<std::string, 8>(biome);
+        return biome->getName();
     }
 
     // !CircuitSystem::updateDependencies

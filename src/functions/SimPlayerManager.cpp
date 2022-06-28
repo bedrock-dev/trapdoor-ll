@@ -127,7 +127,15 @@ namespace tr {
         auto task = [name, this, sim, pos]() {
             CHECK_SURVIVAL
             if (pos == INVALID_POS) {
-                sim->simulateDestory();
+                tr::logger().debug("Invalid position");
+                auto bi = sim->getBlockFromViewVector();
+                if (bi.isNull()) {
+                    tr::logger().debug("Block Instance is NULL");
+                    sim->simulateDestory();
+                } else {
+                    tr::logger().debug("sim lookat {}", bi.getPosition().toString());
+                    sim->simulateDestroyBlock(bi.getPosition(), static_cast<ScriptFacing>(1));
+                }
             } else {
                 sim->simulateDestroyBlock(pos, static_cast<ScriptFacing>(1));
             }
