@@ -34,6 +34,9 @@ namespace tr {
 
     struct TweakConfig {
         int forcePlaceLevel = 0;
+        bool forceOpenContainer = false;
+        bool dropperNoCost = false;
+
     };
 
     class Configuration {

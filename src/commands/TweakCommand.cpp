@@ -14,6 +14,14 @@ namespace tr {
         tr::mod().getConfig().getTweakConfig().forcePlaceLevel = level;
         return {"Success", true};
     }
+    ActionResult setForceOpenContainer(bool able) {
+        tr::mod().getConfig().getTweakConfig().forceOpenContainer = able;
+        return {"Success", true};
+    }
+    ActionResult setDropperNoCost(bool able) {
+        tr::mod().getConfig().getTweakConfig().dropperNoCost = able;
+        return {"Success", true};
+    }
 
     void setup_tweakCommand(int level) {
         // create a dynamic command
@@ -24,9 +32,15 @@ namespace tr {
 
         auto &forcePlaceOpt = command->setEnum("place", {"fcplace"});
         auto &forceOpenContainer = command->setEnum("open", {"fcopen"});
+
+        auto &dropperNoCost = command->setEnum("cost", {"nocost"});
+
         command->mandatory("tweak", ParamType::Enum, forcePlaceOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("tweak", ParamType::Enum, forceOpenContainer,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+
+        command->mandatory("tweak", ParamType::Enum, dropperNoCost,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
         command->mandatory("level", ParamType::Int);
@@ -34,13 +48,20 @@ namespace tr {
 
         command->addOverload({forcePlaceOpt, "level"});
         command->addOverload({forceOpenContainer, "onoroff"});
+        command->addOverload({dropperNoCost, "onoroff"});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
             switch (do_hash(results["tweak"].getRaw<std::string>().c_str())) {
                 case do_hash("fcplace"):
-                    setForcePlaceBlock(results["level"].get<int>());
+                    setForcePlaceBlock(results["level"].get<int>()).sendTo(output);
+                    break;
+                case do_hash("fcopen"):
+                    setForceOpenContainer(results["onoroff"].get<bool>()).sendTo(output);
+                    break;
+                case do_hash("nocost"):
+                    setDropperNoCost(results["onoroff"].get<bool>()).sendTo(output);
                     break;
             }
         };

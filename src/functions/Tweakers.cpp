@@ -14,3 +14,16 @@ THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_
     if (level == 2) return true;
     return original(bs, block, p, face, placer, ignoreEntity);
 }
+THook(bool, "?canOpen@ChestBlockActor@@QEBA_NAEAVBlockSource@@@Z", void *container, void *bs) {
+    if (tr::mod().getConfig().getTweakConfig().forceOpenContainer) {
+        return true;
+    } else {
+        return original(container, bs);
+    }
+}
+
+THook(void, "?removeItem@Container@@UEAAXHH@Z", void *container, int slot, int count) {
+    if (!tr::mod().getConfig().getTweakConfig().dropperNoCost) {
+        original(container, slot, count);
+    }
+}
