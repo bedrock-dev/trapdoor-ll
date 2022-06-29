@@ -7,6 +7,7 @@
 #include <MC/ItemStack.hpp>
 #include <MC/Level.hpp>
 
+#include "AutomaticTool.h"
 #include "BlockRotateHelper.h"
 #include "EventAPI.h"
 #include "Global.h"
@@ -109,4 +110,13 @@ namespace tr {
             return true;
         });
     }
+
+    void subscribePlayerStartDestroyBlockEvent() {
+        Event::PlayerStartDestroyBlockEvent::subscribe(
+            [&](const Event::PlayerStartDestroyBlockEvent& ev) {
+                return onStartDestroyBlock(ev.mPlayer, ev.mBlockInstance);
+            });
+    }
+
+    void subscribePlayerDestroyBlockEvent() {}
 }  // namespace tr

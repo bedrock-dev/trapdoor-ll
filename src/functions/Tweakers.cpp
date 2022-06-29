@@ -4,6 +4,8 @@
 
 #include "Tweakers.h"
 
+#include <MC/PistonBlockActor.hpp>
+
 #include "Config.h"
 #include "HookAPI.h"
 #include "TrapdoorMod.h"
