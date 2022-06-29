@@ -295,8 +295,8 @@ namespace tr {
         }
         if (origin) {
             // 是玩家召唤的
-            sim->teleport(origin->getPos() - Vec3(0.0f, -1.0f, 0.0f), dimID);
-            sim->setRot({0.5, 0.5});
+            auto rot = origin->getRotation();
+            sim->teleport(origin->getPos() - Vec3(0.0f, 1.62f, 0.0f), dimID, rot.x, rot.y);
         }
         this->simPlayers[name] = {name, sim, ScheduleTask()};
         return {"", true};
