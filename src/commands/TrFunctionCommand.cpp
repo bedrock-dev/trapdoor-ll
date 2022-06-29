@@ -20,9 +20,14 @@ namespace tr {
         command->mandatory("func", ParamType::Enum, blockrotateOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
+        auto &hudOpt = command->setEnum("hud", {"hud"});
+        command->mandatory("func", ParamType::Enum, hudOpt,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+
         command->optional("onoroff", ParamType::Bool);
         command->addOverload({hoppercounterOpt, "onoroff"});
         command->addOverload({blockrotateOpt, "onoroff"});
+        command->addOverload({hudOpt, "onoroff"});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
@@ -34,6 +39,9 @@ namespace tr {
                         .getHopperChannelManager()
                         .setAble(results["onoroff"].get<bool>())
                         .sendTo(output);
+                    break;
+                case do_hash("hud"):
+                    tr::mod().getHUDHelper().setAble(results["onoroff"].get<bool>()).sendTo(output);
                     break;
             }
         };

@@ -23,6 +23,11 @@ namespace tr {
 
     class HUDHelper {
        public:
+        inline ActionResult setAble(bool able) {
+            this->enable = able;
+            return {"Success", true};
+        }
+
         void tick();
 
         ActionResult modifyPlayerInfo(const std::string& playerName, const std::string& item,
@@ -31,7 +36,7 @@ namespace tr {
         ActionResult setAblePlayer(const std::string& playerName, bool able);
 
        private:
-        bool enable = true;
+        bool enable = false;
         std::unordered_map<std::string, PlayerHudInfo> playerInfos;
     };
 

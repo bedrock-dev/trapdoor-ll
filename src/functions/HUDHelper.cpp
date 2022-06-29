@@ -102,6 +102,7 @@ namespace tr {
 
     }  // namespace
     void HUDHelper::tick() {
+        if (!this->enable) return;
         static int refresh_time = 0;
         refresh_time = (refresh_time + 1) % tr::mod().getConfig().getBasicConfig().hudRefreshFreq;
         if (refresh_time != 1) return;
@@ -141,6 +142,9 @@ namespace tr {
     }
 
     ActionResult HUDHelper::setAblePlayer(const std::string& playerName, bool able) {
+        if (!this->enable) {
+            return {"This function is disabled by Operator", false};
+        }
         this->playerInfos[playerName].enable = able;
         return {"Success", true};
     }

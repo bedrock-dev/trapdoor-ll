@@ -14,6 +14,7 @@ namespace tr {
         if (!readCommandConfigs()) return false;
         if (!readBasicConfigs()) return false;
         if (!readShortcutConfigs()) return false;
+        if (!this->readDefaultEnableFunctions()) return false;
         return true;
     }
 
@@ -134,6 +135,25 @@ namespace tr {
             return {false, 2};
         }
         return it->second;
+    }
+    bool Configuration::readDefaultEnableFunctions() {
+        try {
+            auto def = this->config["default-enable-functions"];
+            auto& mod = tr::mod();
+            auto hc = def["hopper-counter"].get<bool>();
+            // auto br = def["block-rotate"].get<bool>();
+            auto hud = def["hud"].get<bool>();
+            mod.getHopperChannelManager().setAble(hc);
+            mod.getHUDHelper().setAble(hud);
+            tr::logger().warn("Set hopper counter to {}", hc);
+            tr::logger().warn("Set HUD to {}", hud);
+            // tr::logger().warn("Set block rotate to {}", br);
+        } catch (const std::exception& e) {
+            tr::logger().error("error read shortcut getConfig: {}", e.what());
+            return false;
+        }
+
+        return true;
     }
 
 }  // namespace tr

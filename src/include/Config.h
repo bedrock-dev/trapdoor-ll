@@ -26,6 +26,12 @@ namespace tr {
         int hudRefreshFreq = 20;
     };
 
+    struct DefaultEnableFunctions {
+        bool blockRotate = false;
+        bool hopperCounter = false;
+        bool hud = false;
+    };
+
     class Configuration {
        public:
         CommandConfig getCommandConfig(const std::string& command);
@@ -41,6 +47,8 @@ namespace tr {
         bool readCommandConfigs();
 
         bool readShortcutConfigs();
+
+        bool readDefaultEnableFunctions();
 
         BasicConfig basicConfig;
         std::unordered_map<std::string, CommandConfig> commandsConfigs;
