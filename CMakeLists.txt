@@ -75,6 +75,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/functions/HUDHelper.cpp
         src/functions/SimPlayerManager.cpp
         src/functions/BlockRotateHelper.cpp
+        src/functions/Tweakers.cpp
         )
 
 include_directories(SDK/Header)

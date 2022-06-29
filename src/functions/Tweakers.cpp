@@ -1,0 +1,16 @@
+//
+// Created by xhy on 2022/6/29.
+//
+
+#include "Tweakers.h"
+
+#include "Config.h"
+#include "HookAPI.h"
+#include "TrapdoorMod.h"
+THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_N@Z", void *bs,
+      void *block, void *p, unsigned char face, void *placer, bool ignoreEntity) {
+    auto level = tr::mod().getConfig().getTweakConfig().forcePlaceLevel;
+    if (level == 1) return original(bs, block, p, face, placer, true);
+    if (level == 2) return true;
+    return original(bs, block, p, face, placer, ignoreEntity);
+}

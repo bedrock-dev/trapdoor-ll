@@ -32,11 +32,17 @@ namespace tr {
         bool hud = false;
     };
 
+    struct TweakConfig {
+        int forcePlaceLevel = 0;
+    };
+
     class Configuration {
        public:
         CommandConfig getCommandConfig(const std::string& command);
         inline std::vector<Shortcut>& getShortcuts() { return this->shortcuts; }
         inline BasicConfig& getBasicConfig() { return this->basicConfig; }
+        inline TweakConfig& getTweakConfig() { return this->tweakConfig; }
+
         bool init(const std::string& fileName);
 
        private:
@@ -51,6 +57,7 @@ namespace tr {
         bool readDefaultEnableFunctions();
 
         BasicConfig basicConfig;
+        TweakConfig tweakConfig;
         std::unordered_map<std::string, CommandConfig> commandsConfigs;
         std::vector<Shortcut> shortcuts;
         nlohmann::json config;
