@@ -22,8 +22,6 @@ namespace tr {
 
     const BlockPos INVALID_POS = BlockPos(0, 512, 0);
 
-
-
     struct ActionResult {
         std::string msg;
         bool success;
@@ -54,11 +52,7 @@ namespace tr {
     void setup_funcCommand(int);
     void setup_playerCommand(int);
     void setup_hudCommand(int);
-
-    //    void setup_oCommand(int);
-    //    void setup_sCommand(int);
-    //    void setup_cCommand(int);
-
+    void setup_tweakCommand(int);
 }  // namespace tr
 
 #endif  // TRAPDOOR_COMMANDHELPER_H

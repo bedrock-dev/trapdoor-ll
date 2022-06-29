@@ -31,6 +31,7 @@ namespace tr {
             REG_COMMAND(player)
             REG_COMMAND(hud)
             REG_COMMAND(hsa)
+            REG_COMMAND(tweak)
         }
     }  // namespace
 

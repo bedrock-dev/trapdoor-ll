@@ -51,6 +51,10 @@
     "test": {
       "enable": true,
       "permission-level": 0
+    },
+    "tweak": {
+      "enable": true,
+      "permission-level": 0
     }
   },
   "basic-config": {
@@ -63,7 +67,7 @@
     "hopper-counter": false
   },
   "tweak": {
-    "default-place-level": 0,
+    "force-place-level": 0,
     "dropper-no-cost": false,
     "force-open-container": false,
     "explosion-no-destroy": false

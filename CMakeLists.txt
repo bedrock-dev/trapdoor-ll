@@ -47,6 +47,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/commands/ShortcutCommand.cpp
         src/commands/CommandHelper.cpp
         src/commands/TrapdoorCommand.cpp
+        src/commands/TweakCommand.cpp
         src/data/TVec3.cpp
         src/data/TBlockPos.cpp
         src/data/TAABB.cpp
