@@ -3,9 +3,10 @@ project(Trapdoor)
 set(CMAKE_CXX_STANDARD 17)
 
 set(TRAPDOOR_VERSION 0.11)
+set(TEST_NUMBER 12)
 set(GAME_VERSION 1.19.1.01)
-option(DEV "Build as developer version" ON)
-option(BETA "Build as beta version" OFF)
+option(DEV "Build as developer version" OFF)
+option(BETA "Build as beta version" ON)
 add_definitions(-DTD_VERSION="${TRAPDOOR_VERSION}")
 add_definitions(-DMC_VERSION="${GAME_VERSION}")
 
@@ -76,7 +77,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/functions/SimPlayerManager.cpp
         src/functions/BlockRotateHelper.cpp
         src/functions/Tweakers.cpp
-        src/functions/AutomaticTool.cpp
+        src/functions/InventoryTool.cpp
         )
 
 include_directories(SDK/Header)

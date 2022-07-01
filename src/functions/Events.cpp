@@ -7,10 +7,10 @@
 #include <MC/ItemStack.hpp>
 #include <MC/Level.hpp>
 
-#include "AutomaticTool.h"
 #include "BlockRotateHelper.h"
 #include "EventAPI.h"
 #include "Global.h"
+#include "InventoryTool.h"
 #include "Shortcuts.h"
 #include "TrapdoorMod.h"
 #include "Utils.h"
@@ -114,7 +114,8 @@ namespace tr {
     void subscribePlayerStartDestroyBlockEvent() {
         Event::PlayerStartDestroyBlockEvent::subscribe(
             [&](const Event::PlayerStartDestroyBlockEvent& ev) {
-                return onStartDestroyBlock(ev.mPlayer, ev.mBlockInstance);
+                onStartDestroyBlock(ev.mPlayer, ev.mBlockInstance);
+                return true;
             });
     }
 

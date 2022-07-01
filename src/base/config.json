@@ -58,26 +58,13 @@
     }
   },
   "basic-config": {
-    "particle-performance-level": 12,
-    "particle-view-distance": -1,
+    "particle-performance-level": 2,
+    "particle-view-distance": 128,
     "hud-refresh-freq": 20
   },
   "default-enable-functions": {
     "hud": true,
     "hopper-counter": false
-  },
-  "tweak": {
-    "force-place-level": 0,
-    "dropper-no-cost": false,
-    "force-open-container": false,
-    "explosion-no-destroy": false
-  },
-  "experimental-feature": {
-    "faster-piston": false,
-    "tnt-dup": false,
-    "max-pending-tick-size": 100,
-    "normal-random": 1,
-    "gaussian-random": 1
   },
   "shortcuts": [
     {

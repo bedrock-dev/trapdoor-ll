@@ -9,7 +9,7 @@ Trapdoor is a minecraft bedrock server-side mod(or plugin) inspired by the java 
 - Provide a powerful fake player
 - ...
 
-What's more, this mod **completely follows features of vanilla game**. This means it will **NOT** change any features without notifying users and will **NOT** affect the game level, so it is suitable for using this mod in vanilla survival BDS.
+What's more, this mod **completely follows features of vanilla game**. This means it will **NOT** change any features without notifying users and will **NOT** affect the game quality, so it is suitable for using this mod in vanilla survival BDS.
 
 ## Quick Start
 

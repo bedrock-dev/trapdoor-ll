@@ -36,7 +36,7 @@ namespace tr {
         int forcePlaceLevel = 0;
         bool forceOpenContainer = false;
         bool dropperNoCost = false;
-
+        bool autoSelectTool = false;
     };
 
     class Configuration {
