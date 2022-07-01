@@ -5,12 +5,17 @@
 #ifndef TRAPDOOR_INVENTORYTOOL_H
 #define TRAPDOOR_INVENTORYTOOL_H
 #include <MC/BlockInstance.hpp>
+#include <MC/Inventory.hpp>
 #include <MC/Player.hpp>
 namespace tr {
 
-    void onStartDestroyBlock(Player *player, const BlockInstance &instance);
+    bool onStartDestroyBlock(Player *player, const BlockInstance &instance);
 
-    void onDestroyBlock();
+
+    void swapItemInContainer(Container &cont, int s1, int s2);
+
+
+
 
 }  // namespace tr
 

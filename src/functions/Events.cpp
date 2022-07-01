@@ -46,6 +46,11 @@ namespace tr {
             return true;
         }
 
+        std::unordered_map<std::string, bool> getDisableDestroyMap() {
+            static std::unordered_map<std::string, bool> cache;
+            return cache;
+        }
+
     }  // namespace
 
     void subscribeItemUseEvent() {
@@ -114,10 +119,15 @@ namespace tr {
     void subscribePlayerStartDestroyBlockEvent() {
         Event::PlayerStartDestroyBlockEvent::subscribe(
             [&](const Event::PlayerStartDestroyBlockEvent& ev) {
-                onStartDestroyBlock(ev.mPlayer, ev.mBlockInstance);
-                return true;
+                return onStartDestroyBlock(ev.mPlayer, ev.mBlockInstance);
             });
     }
 
-    void subscribePlayerDestroyBlockEvent() {}
+    void subscribePlayerDestroyBlockEvent() {
+
+        Event::PlayerDestroyBlockEvent::subscribe([&](const Event::PlayerDestroyBlockEvent& ev) {
+            // 没耐久了阻止方块挖掘
+            return true;
+        });
+    }
 }  // namespace tr
