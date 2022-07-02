@@ -11,11 +11,8 @@ namespace tr {
 
     bool onStartDestroyBlock(Player *player, const BlockInstance &instance);
 
-
+    void afterUseItem(Player *player, int itemId);
     void swapItemInContainer(Container &cont, int s1, int s2);
-
-
-
 
 }  // namespace tr
 

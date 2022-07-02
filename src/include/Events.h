@@ -6,14 +6,14 @@ namespace tr {
     void subscribeItemUseEvent();
     void subscribePlayerDieEvent();
     void subscribePlayerStartDestroyBlockEvent();
-    void subscribePlayerDestroyBlockEvent();
+    void subscribePlayerPlaceBlockEvent();
 
     inline void SubscribeEvents() {
         subscribeItemUseOnEvent();
         subscribeItemUseEvent();
         subscribePlayerDieEvent();
         subscribePlayerStartDestroyBlockEvent();
-        subscribePlayerDestroyBlockEvent();
+        subscribePlayerPlaceBlockEvent();
     }
 
 }  // namespace tr

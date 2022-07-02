@@ -4,6 +4,7 @@
 #include "Events.h"
 
 #include <MC/Block.hpp>
+#include <MC/Item.hpp>
 #include <MC/ItemStack.hpp>
 #include <MC/Level.hpp>
 
@@ -123,11 +124,16 @@ namespace tr {
             });
     }
 
-    void subscribePlayerDestroyBlockEvent() {
-
-        Event::PlayerDestroyBlockEvent::subscribe([&](const Event::PlayerDestroyBlockEvent& ev) {
-            // 没耐久了阻止方块挖掘
-            return true;
-        });
-    }
+    void subscribePlayerPlaceBlockEvent() {}
 }  // namespace tr
+
+// TInstanceHook(bool,
+// "?_useOn@BlockItem@@MEBA_NAEAVItemStack@@AEAVActor@@VBlockPos@@EAEBVVec3@@@Z",
+//               Item, ItemStack* a2, Actor* ac, BlockPos* a4, unsigned __int8 a5, class Vec3* a6) {
+//     auto id = a2 ? a2->getId() : -1024;
+//     auto res = original(this, a2, ac, a4, a5, a6);
+//     if (ac && ac->isPlayer()) {
+//         tr::afterUseItem((Player*)(ac), static_cast<int>(id));
+//     }
+//     return res;
+// }
