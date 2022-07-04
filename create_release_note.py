@@ -13,4 +13,5 @@ if __name__ == "__main__":
             if index == 2:
                 break
             content += x + '\n'
-    print(content)
+    with open('release_note', "w", encoding="utf-8") as f:
+        f.write(content)
