@@ -16,8 +16,8 @@ namespace tr {
             command->setEnum("optSwitch", {"bound", "spawn", "center", "poi", "head"});
         command->mandatory("village", ParamType::Enum, optSwitch,
                            CommandParameterOption::EnumAutocompleteExpansion);
-        command->mandatory("onOroff", ParamType::Bool);
-        command->addOverload({optSwitch, "onOroff"});
+        command->mandatory("onoroff", ParamType::Bool);
+        command->addOverload({optSwitch, "onoroff"});
 
         auto &optList = command->setEnum("optList", {"list"});
         command->mandatory("village", ParamType::Enum, optList,
@@ -34,47 +34,31 @@ namespace tr {
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
+            auto show = results["onoroff"].getRaw<bool>();
             switch (do_hash(results["village"].getRaw<std::string>().c_str())) {
                 case do_hash("list"):
                     tr::mod().getVillageHelper().listTickingVillages(true).sendTo(output);
                     break;
 
                 case do_hash("bound"):
-                    tr::mod()
-                        .getVillageHelper()
-                        .setShowBounds(results["onOroff"].getRaw<bool>())
-                        .sendTo(output);
+                    tr::mod().getVillageHelper().setShowBounds(show).sendTo(output);
                     break;
 
                 case do_hash("spawn"):
-                    tr::mod()
-                        .getVillageHelper()
-                        .setShowIronSpawnArea(results["onOroff"].getRaw<bool>())
-                        .sendTo(output);
+                    tr::mod().getVillageHelper().setShowIronSpawnArea(show).sendTo(output);
                     break;
 
                 case do_hash("center"):
-                    tr::mod()
-                        .getVillageHelper()
-                        .setShowCenter(results["onOroff"].getRaw<bool>())
-                        .sendTo(output);
+                    tr::mod().getVillageHelper().setShowCenter(show).sendTo(output);
                     break;
 
                 case do_hash("poi"):
-                    tr::mod()
-                        .getVillageHelper()
-                        .setShowPoiQuery(results["onOroff"].getRaw<bool>())
-                        .sendTo(output);
+                    tr::mod().getVillageHelper().setShowPoiQuery(show).sendTo(output);
                     break;
 
                 case do_hash("head"):
-                    tr::mod()
-                        .getVillageHelper()
-                        .setShowVillagerHeadInfo(results["onOroff"].getRaw<bool>())
-                        .sendTo(output);
-
+                    tr::mod().getVillageHelper().setShowVillagerHeadInfo(show).sendTo(output);
                     break;
-
                 case do_hash("info"):
                     if (results["villageID"].isSet) {
                         tr::mod()
