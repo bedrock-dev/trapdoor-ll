@@ -36,7 +36,7 @@ namespace tr {
         bool ShowVillageInfo(Player* p, Actor* actor);
 
        private:
-        std::unordered_map<int, Village*> vs_;
+        std::map<int, Village*> vs_;
         bool showCenter = false;
         bool showIronSpawn = false;
         bool showBounds = false;
