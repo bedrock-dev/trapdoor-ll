@@ -1,0 +1,66 @@
+name: GitHub Actions Demo
+on: [ push ]
+jobs:
+  Build:
+    runs-on: windows-latest
+    steps:
+
+      - name: checkout code
+        uses: actions/checkout@v3
+
+      - name: Pull submodule
+        run: FetchSDK.cmd
+        shell: cmd
+
+      - name: Download Server
+        run: |
+          mkdir D:/BDS
+          ServerLink=$(cat 'LINK.txt')
+          curl -L -o D:/BDS/server.zip "$ServerLink"
+          unzip D:/BDS/server.zip -d D:/BDS > /dev/null
+        shell: bash
+
+      - name: Build Bedrock Library
+        run: |
+          cd SDK/Tools
+          LibraryBuilder.exe -o ..\Lib D:\BDS
+        shell: cmd
+
+      - name: Configure CMake
+        run: cmake -B ${{github.workspace}}/build -DBETA=PFF -DDEV=OFF
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build
+
+      - name: Create Artifact
+        run: |
+          mkdir out
+          mkdir out/plugins
+          mkdir out/plugins/trapdoor
+          cp ./build/Debug/trapdoor*.dll ./out/plugins/
+          cp ./src/base/config.json ./out/plugins/trapdoor/
+          cp ./changelog.md ./out/
+          cp ./README.md ./out
+        shell: bash
+
+      - name: Upload Actions File
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: release
+          path: ${{github.workspace}}/out
+
+      #create release
+      - name: Prepare Release
+        run: |
+          7z a release.zip ${{github.workspace}}/out
+          python create_release_node.py > release_note
+
+      - name: Publish Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          body_path: ${{ github.workspace }}/release_note
+          files: |
+            release.zip
+        env:
+          GITHUB_REPOSITORY: hhhxiao/trapdoor-ll
