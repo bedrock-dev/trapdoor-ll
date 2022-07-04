@@ -1,3 +1,5 @@
+#include <DynamicCommandAPI.h>
+
 #include <MC/ItemStack.hpp>
 #include <MC/SimpleContainer.hpp>
 #include <MC/SimulatedPlayer.hpp>
@@ -276,6 +278,7 @@ namespace tr {
         it->second.task.cancel();
         if (it->second.simPlayer) it->second.simPlayer->simulateDisconnect();
         simPlayers.erase(name);
+        this->refreshCommandSoftEnum();
         return {"", true};
     }
 
@@ -299,6 +302,7 @@ namespace tr {
             sim->teleport(origin->getPos() - Vec3(0.0f, 1.62f, 0.0f), dimID, rot.x, rot.y);
         }
         this->simPlayers[name] = {name, sim, ScheduleTask()};
+        this->refreshCommandSoftEnum();
         return {"", true};
     }
 
@@ -331,5 +335,12 @@ namespace tr {
         tr::logger().debug("try disconnect {}", name);
         this->removePlayer(name);
     }
-
+    void SimPlayerManager::refreshCommandSoftEnum() {
+        if (!this->cmdInstance) return;
+        std::vector<std::string> names;
+        for (auto& sp : this->simPlayers) {
+            names.push_back(sp.first);
+        }
+        cmdInstance->setSoftEnum("name", names);
+    }
 }  // namespace tr

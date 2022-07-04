@@ -18,6 +18,9 @@ namespace tr {
         };
 
        public:
+        inline void setupCommandInstance(const DynamicCommandInstance* instance) {
+            this->cmdInstance = instance;
+        }
         void tick();
 
         void processDieEvent(const std::string& name);
@@ -63,7 +66,10 @@ namespace tr {
         bool checkSurvival(const std::string& name);
 
        private:
+        void refreshCommandSoftEnum();
+
         std::unordered_map<std::string, SimInfo> simPlayers;
+        const DynamicCommandInstance* cmdInstance = nullptr;
     };
 }  // namespace tr
 

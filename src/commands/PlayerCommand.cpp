@@ -53,7 +53,10 @@ namespace tr {
         command->mandatory("player", ParamType::Enum, setOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
-        command->mandatory("name", ParamType::String);
+        //      command->mandatory("name", ParamType::String);
+        //        command->addSoftEnumValues("name", {});
+        command->mandatory("name", ParamType::SoftEnum, command->setSoftEnum("name", {}));
+
         command->mandatory("itemId", ParamType::Item);
         command->optional("vec3", ParamType::Vec3);
         command->optional("blockPos", ParamType::BlockPos);
@@ -88,7 +91,6 @@ namespace tr {
         command->addOverload({"name", attackOpt, "repeatType", "interval", "times"});
         //jump
         command->addOverload({"name", jumpOpt, "repeatType", "interval", "times"});
-
 
 
         command->addOverload(std::vector<std::string>());
@@ -215,6 +217,7 @@ namespace tr {
         };
 
         command->setCallback(cb);
-        DynamicCommand::setup(std::move(command));
+        auto cmd = DynamicCommand::setup(std::move(command));
+        tr::mod().getSimPlayerManager().setupCommandInstance(cmd);
     }
 }  // namespace tr
