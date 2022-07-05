@@ -60,18 +60,23 @@ THook(void,
     original(spawner, bs, blockPos, hsa, spawnConditions);
     auto &hsaManager = tr::mod().getHsaManager();
     tr::HsaInfo info;
+    info.dimensionID = bs.getDimensionId();
     info.bb = hsa;
-    auto biome = bs.tryGetBiome(blockPos);
-    auto type = static_cast<int>(biome->getBiomeType());
-    if (type == 5 || type == 18) {
-        info.type = tr::StructureType::NetherFortress;
-        info.dimensionID = 1;
-    } else if (type == 10) {
-        info.type = tr::StructureType::OceanMonument;
-    } else if (type == 15) {
-        info.type = tr::StructureType::SwampHut;
+    if (info.dimensionID == 1) {
+        info.type = tr::NetherFortress;
     } else {
-        info.type = tr::StructureType::PillagerOutpost;
+        auto biome = bs.tryGetBiome(blockPos);
+        if (biome) {
+            auto type = static_cast<int>(biome->getBiomeType());
+            if (type == 10) {
+                info.type = tr::OceanMonument;
+            } else if (type == 15) {
+                info.type = tr::SwampHut;
+            } else {
+                info.type = tr::PillagerOutpost;
+            }
+        }
     }
+
     hsaManager.insert(info);
 }

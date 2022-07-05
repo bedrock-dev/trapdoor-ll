@@ -1,12 +1,12 @@
 #include "Particle.h"
 
 #include <MC/Dimension.hpp>
-#include <MC/Level.hpp>
 #include <MC/Vec3.hpp>
 #include <array>
 #include <map>
 
 #include "Config.h"
+#include "GlobalServiceAPI.h"
 #include "TBlockPos.h"
 #include "TVec3.h"
 namespace tr {
@@ -53,12 +53,11 @@ namespace tr {
        // 对外使用tr自己的vec3，调api时使用自己的
     void spawnParticle(const TVec3& pos, const std::string& type, int dimID) {
         Vec3 p(pos.x, pos.y, pos.z);
+        //        auto* d = Global<Level>->getDimension(dimID);
+        //        auto pvd = tr::mod().getConfig().getBasicConfig().particleViewDistance;
+        //        if (d->distanceToNearestPlayerSqr2D(p) > pvd * pvd) return;
 
-        auto* d = Global<Level>->getDimension(dimID);
-        auto pvd = tr::mod().getConfig().getBasicConfig().particleViewDistance;
-        if (d->distanceToNearestPlayerSqr2D(p) > pvd * pvd) return;
-        Global<Level>->spawnParticleEffect(
-            type, p, Global<Level>->getDimension(static_cast<AutomaticID<Dimension, int> >(dimID)));
+        Global<Level>->spawnParticleEffect(type, p, Global<Level>->getDimension(dimID));
     }
 
     std::string buildLienParticleType(int length, TFACING direction, PCOLOR color,

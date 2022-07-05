@@ -8,12 +8,7 @@
 
 namespace tr {
 
-    enum StructureType {
-        SwampHut,
-        OceanMonument,
-        PillagerOutpost,
-        NetherFortress
-    };
+    enum StructureType { SwampHut, OceanMonument, PillagerOutpost, NetherFortress };
 
     struct HsaInfo {
         StructureType type = PillagerOutpost;
