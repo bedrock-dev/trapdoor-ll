@@ -23,10 +23,10 @@ namespace tr {
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("hsa", ParamType::Enum, placeEnum,
                            CommandParameterOption::EnumAutocompleteExpansion);
-        command->mandatory("onOroff", ParamType::Bool);
+        command->mandatory("onoroff", ParamType::Bool);
         command->mandatory("blockName", ParamType::Block);
 
-        command->addOverload({showEnum, "onOroff"});
+        command->addOverload({showEnum, "onoroff"});
         command->addOverload({cleanEnum});
         command->addOverload({placeEnum, "blockName"});
 
@@ -37,7 +37,7 @@ namespace tr {
                 case do_hash("show"):
                     tr::mod()
                         .getHsaManager()
-                        .ShowHsa(results["onOroff"].getRaw<bool>())
+                        .ShowHsa(results["onoroff"].getRaw<bool>())
                         .sendTo(output);
                     break;
                 case do_hash("clear"):

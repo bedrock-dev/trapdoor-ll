@@ -12,14 +12,14 @@
 
 namespace tr {
 
-    ActionResult displayEntityInfo(Player *player, Actor *target,bool nbt,
+    ActionResult displayEntityInfo(Player *player, Actor *target, bool nbt,
                                    const std::string &path);
 
     ActionResult displayBlockInfo(Player *p, const BlockPos &pos, bool nbt,
                                   const std::string &path);
     bool displayEnvInfo();
 
-    bool displayRedstoneCompInfo(Player *p, const BlockPos &pos);
+    ActionResult displayRedstoneCompInfo(Dimension *d, const BlockPos &pos);
 
 }  // namespace tr
 

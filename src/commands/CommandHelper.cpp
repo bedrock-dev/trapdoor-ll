@@ -20,21 +20,21 @@ namespace tr {
 
     Vec3 getLookAtVec3(Player *player) {
         if (!player) {
-            return tr::INVALID_VEC3;
+            return Vec3::MAX;
         }
         auto *a = reinterpret_cast<Actor *>(player);
         auto *target = a->getActorFromViewVector(5.25);
         if (target) return target->getPos();
         auto ins = a->getBlockFromViewVector();
-        return ins.isNull() ? INVALID_VEC3 : ins.getPosition().toVec3();
+        return ins.isNull() ? Vec3::MAX : ins.getPosition().toVec3();
     }
 
     BlockPos getLookAtPos(Player *player) {
         if (!player) {
-            return tr::INVALID_POS;
+            return Vec3::MAX;
         }
 
         auto b = reinterpret_cast<Actor *>(player)->getBlockFromViewVector();
-        return b.isNull() ? tr::INVALID_POS : b.getPosition();
+        return b.isNull() ? Vec3::MAX : b.getPosition();
     }
 }  // namespace tr

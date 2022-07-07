@@ -34,6 +34,12 @@ namespace tr {
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
+            // player needed
+            if (!origin.getPlayer()) {
+                ErrorPlayerNeed().sendTo(output);
+                return;
+            }
+
             switch (do_hash(results["hud"].getRaw<std::string>().c_str())) {
                 case do_hash("add"):
                     tr::mod()

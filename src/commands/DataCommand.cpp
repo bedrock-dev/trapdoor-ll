@@ -48,7 +48,7 @@ namespace tr {
             bool displayNBT = results["nbt"].isSet;
             auto nbtPath = results["path"].getRaw<std::string>();
             auto blockPos =
-                results["blockPos"].isSet ? results["blockPos"].get<BlockPos>() : tr::INVALID_POS;
+                results["blockPos"].isSet ? results["blockPos"].get<BlockPos>() : BlockPos::MAX;
 
             switch (do_hash(results["data"].getRaw<std::string>().c_str())) {
                 case do_hash("block"):
@@ -64,13 +64,16 @@ namespace tr {
                     break;
                 case do_hash("redstone"):
                     if (results["blockPos"].isSet) {
-                        tr::displayRedstoneCompInfo(origin.getPlayer(),
+                        tr::displayRedstoneCompInfo(origin.getDimension(),
                                                     results["blockPos"].get<BlockPos>());
+
                     } else {
-                        tr::displayRedstoneCompInfo(origin.getPlayer(),
-                                                    reinterpret_cast<Actor *>(origin.getPlayer())
-                                                        ->getBlockFromViewVector()
-                                                        .getPosition());
+                        if (!origin.getPlayer()) {
+                            ErrorPlayerNeed().sendTo(output);
+                        } else {
+                            tr::displayRedstoneCompInfo(origin.getDimension(),
+                                                        getLookAtPos(origin.getPlayer()));
+                        }
                     }
                     break;
             }

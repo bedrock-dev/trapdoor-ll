@@ -37,7 +37,7 @@ namespace tr {
             if (!ins.isNull()) {
                 return ins.getPosition();
             } else {
-                return tr::INVALID_POS;
+                return BlockPos::MAX;
             }
         }  // namespace
 
@@ -119,12 +119,12 @@ namespace tr {
                                                    int times) {
         GET_FREE_PLAYER(sim)
         auto pos = p;
-        if (pos == INVALID_POS) {
+        if (pos == BlockPos::MAX) {
             pos = tr::getLookAtPos(origin);
         }
         auto task = [name, this, sim, pos]() {
             CHECK_SURVIVAL
-            if (pos == INVALID_POS) {
+            if (pos == BlockPos::MAX) {
                 auto bi = sim->getBlockFromViewVector();
                 if (bi.isNull()) {
                     sim->simulateDestory();
@@ -146,13 +146,13 @@ namespace tr {
         auto* playerActor = reinterpret_cast<Actor*>(origin);
         auto* target = playerActor->getActorFromViewVector(5.25);
         auto ins = playerActor->getBlockFromViewVector();
-        auto pos = ins.isNull() ? tr::INVALID_POS : ins.getPosition();
+        auto pos = ins.isNull() ? BlockPos::MAX : ins.getPosition();
         auto task = [this, sim, name, pos, target]() {
             CHECK_SURVIVAL
             if (target) {
                 sim->simulateInteract(*target);
             } else {
-                if (pos == INVALID_POS) {
+                if (pos == BlockPos::MAX) {
                     sim->simulateInteract();
                 } else {
                     sim->simulateInteract(pos, static_cast<ScriptFacing>(1));

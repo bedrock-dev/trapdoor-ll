@@ -20,10 +20,6 @@
 class CommandOutput;
 namespace tr {
 
-    const BlockPos INVALID_POS = BlockPos(0, 512, 0);
-
-    const Vec3 INVALID_VEC3 = Vec3(0.0f, 512.0f, 0.0f);
-
     struct ActionResult {
         std::string msg;
         bool success;
@@ -40,6 +36,14 @@ namespace tr {
     ActionResult ErrorMsg(const std::string &msg);
 
     inline ActionResult ErrorPlayerNeed() { return {"This command a player as executor", false}; }
+
+    inline ActionResult ErrorDimension() {
+        return {"Can not get a dimension instance,try run this command in game", false};
+    }
+
+    inline ActionResult ErrorRange(const std::string &name, int begin, int end) {
+        return {fmt::format("Error value {}, it should within [{},{}] ", name, begin, end), false};
+    }
 
     void registerShortcutCommand(const std::string &shortcut,
                                  const std::vector<std::string> &actions);

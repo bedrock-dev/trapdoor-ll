@@ -115,7 +115,7 @@ namespace tr {
                 results["itemId"].isSet ? results["itemId"].getRaw<CommandItem>().getId() : 0;
             int slot = results["slot"].isSet ? results["slot"].get<int>() : -1;
             auto blockPos =
-                results["blockPos"].isSet ? results["blockPos"].get<BlockPos>() : tr::INVALID_POS;
+                results["blockPos"].isSet ? results["blockPos"].get<BlockPos>() : BlockPos::MAX;
 
             switch (do_hash(results["player"].getRaw<std::string>().c_str())) {
                 case do_hash("spawn"):

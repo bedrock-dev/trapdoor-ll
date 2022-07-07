@@ -49,7 +49,7 @@ namespace tr {
         }
     }  // namespace
     ActionResult displayEntityInfo(Player *player, Actor *a, bool nbt, const std::string &path) {
-        if (!player) return {"Unsupported command origin", false};
+        if (!player) return ErrorPlayerNeed();
         if (!a) {
             return {"No actor", false};
         }
@@ -75,12 +75,13 @@ namespace tr {
 
     ActionResult displayBlockInfo(Player *p, const BlockPos &position, bool nbt,
                                   const std::string &path) {
-        if (!p) return {"Invalid Command Origin", false};
+        if (!p) return ErrorPlayerNeed();
         auto pos = position;
-        if (pos == tr::INVALID_POS) {
+        if (pos == BlockPos::MAX) {
             pos = tr::getLookAtPos(p);
         }
-        if (pos == tr::INVALID_POS) {
+
+        if (pos == BlockPos::MAX) {
             return {"Get blockName failure", false};
         }
         auto &b = p->getRegion().getBlock(pos);
@@ -127,16 +128,14 @@ namespace tr {
 
     bool displayEnvInfo() { return true; }
 
-    bool displayRedstoneCompInfo(Player *p, const BlockPos &pos) {
-        auto &cs = p->getDimension().getCircuitSystem();
+    ActionResult displayRedstoneCompInfo(Dimension *d, const BlockPos &pos) {
+        if (!d) return ErrorDimension();
+        auto &cs = d->getCircuitSystem();
         auto &graph = getCircuitSceneGraph(&cs);
         auto comp = graph.getBaseComponent(pos);
         if (!comp) {
-            p->sendText("Not an redstone component");
-            return false;
+            return {"Not an redstone component", false};
         }
-        p->sendText("Strength =>  " + std::to_string(comp->getStrength()));
-        // blockName.getMobToSpawn("");
-        return false;
+        return {"Strength =>  " + std::to_string(comp->getStrength()), true};
     }
 }  // namespace tr

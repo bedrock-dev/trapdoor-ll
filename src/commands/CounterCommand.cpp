@@ -11,7 +11,7 @@ namespace tr {
     void setup_counterCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand("counter", "hopper counter command",
+        auto command = DynamicCommand::createCommand("counter", "Print Hopper counter info",
                                                      static_cast<CommandPermissionLevel>(level));
 
         auto &printOpt = command->setEnum("printCmd", {"print"});
@@ -38,15 +38,10 @@ namespace tr {
                             .modifyChannel(results["channel"].getRaw<int>(), 0)
                             .sendTo(output);
                     } else {
-
-
                         tr::mod()
                             .getHopperChannelManager()
-                            .quickModifyChannel(reinterpret_cast<Player *>(origin.getPlayer()),
-                                                reinterpret_cast<Actor *>(origin.getPlayer())
-                                                    ->getBlockFromViewVector()
-                                                    .getPosition(),
-                                                0)
+                            .quickModifyChannel(origin.getPlayer(),
+                                                getLookAtPos(origin.getPlayer()), 0)
                             .sendTo(output);
                     }
 
@@ -60,14 +55,10 @@ namespace tr {
                     } else {
                         tr::mod()
                             .getHopperChannelManager()
-                            .quickModifyChannel(reinterpret_cast<Player *>(origin.getPlayer()),
-                                                reinterpret_cast<Actor *>(origin.getPlayer())
-                                                    ->getBlockFromViewVector()
-                                                    .getPosition(),
-                                                1)
+                            .quickModifyChannel(origin.getPlayer(),
+                                                getLookAtPos(origin.getPlayer()), 1)
                             .sendTo(output);
                     }
-
                     break;
             }
         };

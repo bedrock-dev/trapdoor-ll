@@ -39,6 +39,7 @@ namespace tr {
 
     ActionResult HopperChannelManager::quickModifyChannel(Player *player, const BlockPos &pos,
                                                           int opt) {
+        if (!player) return ErrorPlayerNeed();
         auto &bs = player->getRegion();
         auto &b = bs.getBlock(pos);
         if (b.getId() != HOPPER_COUNTER_BLOCK) {

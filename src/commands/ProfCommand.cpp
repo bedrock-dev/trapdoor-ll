@@ -6,6 +6,7 @@
 #include "MCTick.h"
 #include "Msg.h"
 #include "SimpleProfiler.h"
+#include "TrapdoorMod.h"
 
 namespace tr {
     void setup_profCommand(int level) {
@@ -19,10 +20,18 @@ namespace tr {
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->optional("numberOfTick", ParamType::Int);
         command->addOverload({optContinue, "numberOfTick"});
+        command->addOverload(std::vector<std::string>());
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
+            if (!results["prof"].isSet) {
+                tr::logger().debug("you run prof");
+                tr::startProfiler(20, SimpleProfiler::Normal).sendTo(output);
+                return;
+            }
+
+
             auto tickTime =
                 results["numberOfTick"].isSet ? results["numberOfTick"].getRaw<int>() : 20;
             switch (do_hash(results["prof"].getRaw<std::string>().c_str())) {
