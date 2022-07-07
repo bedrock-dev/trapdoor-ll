@@ -38,6 +38,8 @@ namespace tr {
                             .modifyChannel(results["channel"].getRaw<int>(), 0)
                             .sendTo(output);
                     } else {
+
+
                         tr::mod()
                             .getHopperChannelManager()
                             .quickModifyChannel(reinterpret_cast<Player *>(origin.getPlayer()),

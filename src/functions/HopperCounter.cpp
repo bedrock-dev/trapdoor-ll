@@ -81,7 +81,11 @@ namespace tr {
 
         if (!simple) {
             builder.text("Channel: ").sTextF(TB::BOLD | TB::WHITE, "%d \n", channel);
-            builder.text("Total ").num(n).text(" in ").num(gameTick).text(" gt (")
+            builder.text("Total ")
+                .num(n)
+                .text(" in ")
+                .num(gameTick)
+                .text(" gt (")
                 .num(static_cast<float>(gameTick) / 72000.0f)
                 .text(" h)\n");
         } else {

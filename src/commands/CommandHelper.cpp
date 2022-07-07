@@ -20,17 +20,13 @@ namespace tr {
 
     Vec3 getLookAtVec3(Player *player) {
         if (!player) {
-            return {0, 0, 0};
+            return tr::INVALID_VEC3;
         }
         auto *a = reinterpret_cast<Actor *>(player);
         auto *target = a->getActorFromViewVector(5.25);
         if (target) return target->getPos();
         auto ins = a->getBlockFromViewVector();
-        if (ins.isNull()) {
-            return player->getPos();
-        } else {
-            return ins.getPosition().toVec3();
-        }
+        return ins.isNull() ? INVALID_VEC3 : ins.getPosition().toVec3();
     }
 
     BlockPos getLookAtPos(Player *player) {
