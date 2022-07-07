@@ -96,10 +96,10 @@ namespace tr {
     ActionResult forceSpawn(Player *player, const ActorDefinitionIdentifier *id,
                             const BlockPos &pos) {
         auto targetPos = pos;
-        if (targetPos == tr::INVALID_POS) {
+        if (targetPos == BlockPos::MAX) {
             targetPos = tr::getLookAtPos(player);
         }
-        if (targetPos == tr::INVALID_POS) {
+        if (targetPos == BlockPos::MAX) {
             return {"Invalid pos", false};
         }
 

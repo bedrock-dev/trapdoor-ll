@@ -74,7 +74,7 @@ namespace tr {
                     tr::forceSpawn(reinterpret_cast<Player *>(origin.getPlayer()),
                                    results["actorType"].get<const ActorDefinitionIdentifier *>(),
                                    results["blockPos"].isSet ? results["blockPos"].get<BlockPos>()
-                                                             : tr::INVALID_POS)
+                                                             : BlockPos::MAX)
                         .sendTo(output);
                     break;
                 case do_hash("analyze"):
