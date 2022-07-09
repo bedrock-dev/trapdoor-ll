@@ -7,6 +7,7 @@ namespace tr {
     void subscribePlayerDieEvent();
     void subscribePlayerStartDestroyBlockEvent();
     void subscribePlayerPlaceBlockEvent();
+    void subscribePlayerInventoryChangeEvent();
 
     inline void SubscribeEvents() {
         subscribeItemUseOnEvent();
@@ -14,6 +15,7 @@ namespace tr {
         subscribePlayerDieEvent();
         subscribePlayerStartDestroyBlockEvent();
         subscribePlayerPlaceBlockEvent();
+        subscribePlayerInventoryChangeEvent();
     }
 
 }  // namespace tr

@@ -125,6 +125,13 @@ namespace tr {
     }
 
     void subscribePlayerPlaceBlockEvent() {}
+    void subscribePlayerInventoryChangeEvent() {
+        Event::PlayerInventoryChangeEvent::subscribe(
+            [&](const Event::PlayerInventoryChangeEvent& ev) {
+                tr::mod().getSimPlayerManager().tryRefreshInv(ev.mPlayer);
+                return true;
+            });
+    }
 }  // namespace tr
 
 // TInstanceHook(bool,

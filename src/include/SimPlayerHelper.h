@@ -25,6 +25,8 @@ namespace tr {
 
         void processDieEvent(const std::string& name);
 
+        void tryRefreshInv(Player* player);
+
         SimulatedPlayer* tryFetchSimPlayer(const std::string& name, bool needFree);
 
         ActionResult listAll();

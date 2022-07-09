@@ -1,5 +1,6 @@
 #include <DynamicCommandAPI.h>
 
+#include <MC/Container.hpp>
 #include <MC/ItemStack.hpp>
 #include <MC/SimpleContainer.hpp>
 #include <MC/SimulatedPlayer.hpp>
@@ -54,6 +55,15 @@ namespace tr {
             return nullptr;
         }
 
+        void writeInvToFile(Container& cont, const std::string& file_name) {
+            const std::string path = "./plugins/trapdoor/sim/" + file_name;
+            // TODO 序列化背包内容到文件
+        }
+
+        void tryReadInvFromFile(Container& cont, const std::string& file_name) {
+            const std::string path = "./plugins/trapdoor/sim/" + file_name;
+            // TODO 从文件读取内容到背包
+        }
     }  // namespace
 
     bool SimPlayerManager::checkSurvival(const std::string& name) {
@@ -141,8 +151,10 @@ namespace tr {
 
     ActionResult SimPlayerManager::interactSchedule(const std::string& name, Player* origin,
                                                     int repType, int interval, int times) {
+        if (!origin) {
+            return ErrorPlayerNeed();
+        }
         GET_FREE_PLAYER(sim)
-        // 这边有个潜在的空指针bug
         auto* playerActor = reinterpret_cast<Actor*>(origin);
         auto* target = playerActor->getActorFromViewVector(5.25);
         auto ins = playerActor->getBlockFromViewVector();
@@ -302,6 +314,7 @@ namespace tr {
             sim->teleport(origin->getPos() - Vec3(0.0f, 1.62f, 0.0f), dimID, rot.x, rot.y);
         }
         this->simPlayers[name] = {name, sim, ScheduleTask()};
+        tryReadInvFromFile(sim->getInventory(), name);
         this->refreshCommandSoftEnum();
         return {"", true};
     }
@@ -342,5 +355,13 @@ namespace tr {
             names.push_back(sp.first);
         }
         cmdInstance->setSoftEnum("name", names);
+    }
+    void SimPlayerManager::tryRefreshInv(Player* player) {
+        if (!player) return;
+        auto name = player->getRealName();
+        auto iter = this->simPlayers.find(name);
+        if (iter == this->simPlayers.end()) return;
+        // todo 序列化背包物品到文件
+        writeInvToFile(player->getInventory(), name);
     }
 }  // namespace tr
