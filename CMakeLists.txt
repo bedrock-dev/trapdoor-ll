@@ -61,6 +61,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/base/TrAPI.cpp
         src/pch.cpp
         src/Plugin.cpp
+        src/functions/OSInfoHelper.cpp
         src/functions/SpawnAnalyzer.cpp
         src/functions/SimpleProfiler.cpp
         src/functions/MCTick.cpp
