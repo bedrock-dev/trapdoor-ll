@@ -6,6 +6,7 @@
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"
 #include "MCTick.h"
+#include "SysInfoHelper.h"
 
 namespace tr {
 
@@ -15,7 +16,7 @@ namespace tr {
         auto command = DynamicCommand::createCommand("log", "print some world info",
                                                      static_cast<CommandPermissionLevel>(level));
 
-        auto &optMain = command->setEnum("main", {"mspt", "tps"});
+        auto &optMain = command->setEnum("main", {"mspt", "os"});
         command->mandatory("log", ParamType::Enum, optMain,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->addOverload({optMain});
@@ -26,6 +27,9 @@ namespace tr {
             switch (do_hash(results["log"].getRaw<std::string>().c_str())) {
                 case do_hash("mspt"):
                     tr::printMSPT().sendTo(output);
+                    break;
+                case do_hash("os"):
+                    tr::printSysInfo().sendTo(output);
                     break;
                 default:
                     break;

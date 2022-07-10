@@ -6,7 +6,7 @@
 #include "CommandHelper.h"
 #include "Events.h"
 #include "LoggerAPI.h"
-
+#include "SysInfoHelper.h"
 #define REG_COMMAND(c)                                   \
     auto cfg_##c = cmdCfg.getCommandConfig(#c);          \
     if (cfg_##c.enable) {                                \
@@ -60,6 +60,7 @@ namespace tr {
         //  std::string path = "./plugins/trapdoor/";
         logger().debug("Config path: {}", path);
         this->config.init(path + "config.json");
+        tr::initCPU();
         tr::SubscribeEvents();
         tr::initRotateBlockHelper();
         tr::setupCommands();

@@ -61,7 +61,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/base/TrAPI.cpp
         src/pch.cpp
         src/Plugin.cpp
-        src/functions/OSInfoHelper.cpp
+        src/functions/SysInfoHelper.cpp
         src/functions/SpawnAnalyzer.cpp
         src/functions/SimpleProfiler.cpp
         src/functions/MCTick.cpp
@@ -100,6 +100,8 @@ add_link_options(
 )
 
 add_library(${TARGET_NAME} SHARED ${SRC_FILES_DIR})
+
+target_link_libraries(${TARGET_NAME} Pdh)
 
 add_custom_command(TARGET ${TARGET_NAME} PRE_BUILD
         COMMAND cmd /c ${PROJECT_SOURCE_DIR}/prepareLib.cmd ${PROJECT_SOURCE_DIR}
