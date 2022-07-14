@@ -7,8 +7,7 @@
 #include "CommandHelper.h"
 #include "Shortcuts.h"
 #include "TrapdoorMod.h"
-namespace tr {
-
+namespace trapdoor {
     bool Configuration::init(const std::string& fileName) {
         if (!readConfigFile(fileName)) return false;
         if (!readCommandConfigs()) return false;
@@ -23,10 +22,10 @@ namespace tr {
             this->config.clear();
             std::ifstream i(path);
             i >> this->config;
-            tr::logger().info("read getConfig file {} successfully", path);
+            trapdoor::logger().info("read getConfig file {} successfully", path);
             return true;
         } catch (std::exception&) {
-            tr::logger().error("can not read getConfig file {}", path);
+            trapdoor::logger().error("can not read getConfig file {}", path);
             return false;
         }
     }
@@ -42,7 +41,7 @@ namespace tr {
                 this->commandsConfigs.insert({i.key(), tempConfig});
             }
         } catch (const std::exception& e) {
-            tr::logger().error("error read command getConfig: {}", e.what());
+            trapdoor::logger().error("error read command getConfig: {}", e.what());
             return false;
         }
         return true;
@@ -56,27 +55,27 @@ namespace tr {
 
             if (pl != 1 && pl != 2 && pl != 3) {
                 pl = 3;
-                tr::logger().warn("Invalid particle-performance-level, set to default 3");
+                trapdoor::logger().warn("Invalid particle-performance-level, set to default 3");
             }
             this->basicConfig.particleLevel = pl;
-            tr::logger().debug("Set particle performance level to {}", pl);
+            trapdoor::logger().debug("Set particle performance level to {}", pl);
 
             if (pv <= 0 || pv >= 2048) {
                 pv = 128;
-                tr::logger().warn("Invalid particle-view-distance, set to default 128");
+                trapdoor::logger().warn("Invalid particle-view-distance, set to default 128");
             }
             this->basicConfig.particleViewDistance = pv;
-            tr::logger().debug("Set particle view distance to {}", pv);
+            trapdoor::logger().debug("Set particle view distance to {}", pv);
 
             if (hudFreq <= 0) {
                 hudFreq = 20;
-                tr::logger().warn("Invalid hud refresh frequency, set to default 20");
+                trapdoor::logger().warn("Invalid hud refresh frequency, set to default 20");
             }
             this->basicConfig.hudRefreshFreq = hudFreq;
-            tr::logger().debug("Set HUD show freq to {}", hudFreq);
+            trapdoor::logger().debug("Set HUD show freq to {}", hudFreq);
 
         } catch (const std::exception& e) {
-            tr::logger().error("error read  basic config: {}", e.what());
+            trapdoor::logger().error("error read  basic config: {}", e.what());
             return false;
         }
         return true;
@@ -95,7 +94,7 @@ namespace tr {
                 }
 
                 if (sh.actions.empty()) {
-                    tr::logger().error("Shortcut {} has no action", i.key());
+                    trapdoor::logger().error("Shortcut {} has no action", i.key());
                     continue;
                 }
 
@@ -104,24 +103,24 @@ namespace tr {
                     sh.setItem(value["item"].get<std::string>());
                     sh.prevent = value["prevent"].get<bool>();
                     this->shortcuts.push_back(sh);
-                    tr::logger().debug("Shortcut: {}", sh.getDescription());
+                    trapdoor::logger().debug("Shortcut: {}", sh.getDescription());
                 } else if (type == "use-on") {
                     sh.type = ShortcutType::USE_ON;
                     sh.setItem(value["item"].get<std::string>());
                     sh.setBlock(value["block"].get<std::string>());
                     sh.prevent = value["prevent"].get<bool>();
                     this->shortcuts.push_back(sh);
-                    tr::logger().debug("Shortcut: {}", sh.getDescription());
+                    trapdoor::logger().debug("Shortcut: {}", sh.getDescription());
                 } else if (type == "command") {
                     auto command = value["command"].get<std::string>();
                     registerShortcutCommand(command, actions);
                     continue;
                 } else {
-                    tr::logger().error("unknown shortcut type: {}", type);
+                    trapdoor::logger().error("unknown shortcut type: {}", type);
                 }
             }
         } catch (const std::exception& e) {
-            tr::logger().error("error read shortcut getConfig: {}", e.what());
+            trapdoor::logger().error("error read shortcut getConfig: {}", e.what());
             return false;
         }
         return true;
@@ -130,8 +129,8 @@ namespace tr {
     CommandConfig Configuration::getCommandConfig(const std::string& command) {
         auto it = this->commandsConfigs.find(command);
         if (it == this->commandsConfigs.end()) {
-            tr::logger().warn("Can nod find config info of [{}],it will not be registered",
-                              command);
+            trapdoor::logger().warn("Can nod find config info of [{}],it will not be registered",
+                                    command);
             return {false, 2};
         }
         return it->second;
@@ -139,21 +138,21 @@ namespace tr {
     bool Configuration::readDefaultEnableFunctions() {
         try {
             auto def = this->config["default-enable-functions"];
-            auto& mod = tr::mod();
+            auto& mod = trapdoor::mod();
             auto hc = def["hopper-counter"].get<bool>();
             // auto br = def["block-rotate"].get<bool>();
             auto hud = def["hud"].get<bool>();
             mod.getHopperChannelManager().setAble(hc);
             mod.getHUDHelper().setAble(hud);
-            tr::logger().warn("Set hopper counter to {}", hc);
-            tr::logger().warn("Set HUD to {}", hud);
-            // tr::logger().warn("Set block rotate to {}", br);
+            trapdoor::logger().warn("Set hopper counter to {}", hc);
+            trapdoor::logger().warn("Set HUD to {}", hud);
+            // trapdoor::logger().warn("Set block rotate to {}", br);
         } catch (const std::exception& e) {
-            tr::logger().error("error read shortcut getConfig: {}", e.what());
+            trapdoor::logger().error("error read shortcut getConfig: {}", e.what());
             return false;
         }
 
         return true;
     }
 
-}  // namespace tr
+}  // namespace trapdoor

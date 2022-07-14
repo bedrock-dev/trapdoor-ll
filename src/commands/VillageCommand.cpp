@@ -5,7 +5,7 @@
 #include "TrapdoorMod.h"
 #include "VillageHelper.h"
 
-namespace tr {
+namespace trapdoor {
     void setup_villageCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
@@ -37,36 +37,36 @@ namespace tr {
             auto show = results["onoroff"].getRaw<bool>();
             switch (do_hash(results["village"].getRaw<std::string>().c_str())) {
                 case do_hash("list"):
-                    tr::mod().getVillageHelper().listTickingVillages(true).sendTo(output);
+                    trapdoor::mod().getVillageHelper().listTickingVillages(true).sendTo(output);
                     break;
 
                 case do_hash("bound"):
-                    tr::mod().getVillageHelper().setShowBounds(show).sendTo(output);
+                    trapdoor::mod().getVillageHelper().setShowBounds(show).sendTo(output);
                     break;
 
                 case do_hash("spawn"):
-                    tr::mod().getVillageHelper().setShowIronSpawnArea(show).sendTo(output);
+                    trapdoor::mod().getVillageHelper().setShowIronSpawnArea(show).sendTo(output);
                     break;
 
                 case do_hash("center"):
-                    tr::mod().getVillageHelper().setShowCenter(show).sendTo(output);
+                    trapdoor::mod().getVillageHelper().setShowCenter(show).sendTo(output);
                     break;
 
                 case do_hash("poi"):
-                    tr::mod().getVillageHelper().setShowPoiQuery(show).sendTo(output);
+                    trapdoor::mod().getVillageHelper().setShowPoiQuery(show).sendTo(output);
                     break;
 
                 case do_hash("head"):
-                    tr::mod().getVillageHelper().setShowVillagerHeadInfo(show).sendTo(output);
+                    trapdoor::mod().getVillageHelper().setShowVillagerHeadInfo(show).sendTo(output);
                     break;
                 case do_hash("info"):
                     if (results["villageID"].isSet) {
-                        tr::mod()
+                        trapdoor::mod()
                             .getVillageHelper()
                             .printDetails(results["villageID"].getRaw<int>(), Vec3::ZERO)
                             .sendTo(output);
                     } else {
-                        tr::mod()
+                        trapdoor::mod()
                             .getVillageHelper()
                             .printDetails(-1, origin.getPlayer()->getPos())
                             .sendTo(output);
@@ -78,4 +78,4 @@ namespace tr {
         DynamicCommand::setup(std::move(command));
     }
 
-}  // namespace tr
+}  // namespace trapdoor

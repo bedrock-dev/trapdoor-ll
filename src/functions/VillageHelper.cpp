@@ -22,8 +22,7 @@
 #include "TBlockPos.h"
 #include "TrapdoorMod.h"
 
-namespace tr {
-
+namespace trapdoor {
     namespace {
         enum DwellerType { Villager = 0, IronGolem = 1, Cat = 2, XXX = 3 };
 
@@ -32,8 +31,8 @@ namespace tr {
         // Village::_getDwellerMap
         constexpr size_t DWELLER_TICK_MAP_OFFSET = 160;
 
-        typedef std::array<std::unordered_map<ActorUniqueID, tr::TDwellerData, TActorUniqueIDHash>,
-                           4>
+        typedef std::array<
+            std::unordered_map<ActorUniqueID, trapdoor::TDwellerData, TActorUniqueIDHash>, 4>
             DwellerTickMapType;
 
         // 村庄的POI分配表
@@ -128,18 +127,19 @@ namespace tr {
         for (auto kv : this->vs_) {
             auto v = kv.second;
             if (this->showBounds) {
-                tr::drawAABB(fromAABB(v->getBounds()), tr::PCOLOR::RED, false, 0);
+                trapdoor::drawAABB(fromAABB(v->getBounds()), trapdoor::PCOLOR::RED, false, 0);
             }
             if (this->showIronSpawn) {
-                tr::drawAABB(getIronSpawnArea(v->getCenter()), tr::PCOLOR::BLUE, false, 0);
+                trapdoor::drawAABB(getIronSpawnArea(v->getCenter()), trapdoor::PCOLOR::BLUE, false,
+                                   0);
             }
             if (this->showCenter) {
-                tr::spawnParticle(fromVec3(v->getCenter()) + TVec3(0.5f, 0.9f, 0.5f),
-                                  "minecraft:heart_particle", 0);
+                trapdoor::spawnParticle(fromVec3(v->getCenter()) + TVec3(0.5f, 0.9f, 0.5f),
+                                        "minecraft:heart_particle", 0);
             }
             if (this->showPoiQuery) {
-                tr::drawAABB(getPOIQueryRange(fromAABB(v->getBounds())), tr::PCOLOR::BLUE, false,
-                             0);
+                trapdoor::drawAABB(getPOIQueryRange(fromAABB(v->getBounds())),
+                                   trapdoor::PCOLOR::BLUE, false, 0);
             }
         }
     }
@@ -152,7 +152,7 @@ namespace tr {
         }
     }
 
-    void VillageHelper::insertVillage(Village *village) {
+    void VillageHelper::insertVillage(Village * village) {
         if (!village) return;
         auto uid = village->getUniqueID().asString();
         auto vid = getVIDFormPool(uid);
@@ -169,7 +169,7 @@ namespace tr {
             return {"no village in ticking", true};
         }
 
-        tr::TextBuilder builder;
+        trapdoor::TextBuilder builder;
         for (auto kv : this->vs_) {
             if (kv.second) {
                 auto v = kv.second;
@@ -177,7 +177,7 @@ namespace tr {
                 auto dc_map = Village_getDwellerCount(v);
                 builder.text(" - ")
                     .sTextF(TextBuilder::GREEN, "[%d] ", kv.first)
-                    .pos(tr::fromVec3(v->getCenter()).toBlockPos())
+                    .pos(trapdoor::fromVec3(v->getCenter()).toBlockPos())
                     .text(" r:")
                     .num(v->getApproximateRadius())
                     .text(" p:")
@@ -299,7 +299,7 @@ namespace tr {
         return {"", true};
     }
 
-    bool VillageHelper::ShowVillageInfo(Player *p, Actor *actor) {
+    bool VillageHelper::ShowVillageInfo(Player * p, Actor * actor) {
         if (!actor || !p) {
             return true;
         }
@@ -321,8 +321,8 @@ namespace tr {
                                       poi->getPosition().z, poi->getOwnerCount(),
                                       poi->getOwnerCapacity(), poi->getRadius(), poi->getWeight());
 
-                        tr::shortHighlightBlock(fromBlockPos(poi->getPosition()), PCOLOR::YELLOW,
-                                                0);
+                        trapdoor::shortHighlightBlock(fromBlockPos(poi->getPosition()),
+                                                      PCOLOR::YELLOW, 0);
                     }
                 }
                 p->sendText(builder.get());
@@ -331,10 +331,10 @@ namespace tr {
 
         return false;
     }
-}  // namespace tr
+}  // namespace trapdoor
 
 THook(void, "?tick@Village@@QEAAXUTick@@AEAVBlockSource@@@Z", Village *village, void *tick,
       void *bs) {
-    tr::mod().getVillageHelper().insertVillage(village);
+    trapdoor::mod().getVillageHelper().insertVillage(village);
     original(village, tick, bs);
 }

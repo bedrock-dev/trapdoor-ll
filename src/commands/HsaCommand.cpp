@@ -8,7 +8,7 @@
 #include "HsaHelper.h"
 #include "TrapdoorMod.h"
 
-namespace tr {
+namespace trapdoor {
     void setup_hsaCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         auto command = DynamicCommand::createCommand("hsa", "show hardcoded spawn area",
@@ -35,13 +35,13 @@ namespace tr {
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
             switch (do_hash(results["hsa"].getRaw<std::string>().c_str())) {
                 case do_hash("show"):
-                    tr::mod()
+                    trapdoor::mod()
                         .getHsaManager()
                         .ShowHsa(results["onoroff"].getRaw<bool>())
                         .sendTo(output);
                     break;
                 case do_hash("clear"):
-                    tr::mod().getHsaManager().clear().sendTo(output);
+                    trapdoor::mod().getHsaManager().clear().sendTo(output);
                     break;
                 case do_hash("place"):
                     // results["blockName"].get<Block>();
@@ -53,4 +53,4 @@ namespace tr {
         DynamicCommand::setup(std::move(command));
     }
 
-}  // namespace tr
+}  // namespace trapdoor

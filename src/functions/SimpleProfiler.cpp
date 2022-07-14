@@ -12,8 +12,7 @@
 #include "TrapdoorMod.h"
 #include "Utils.h"
 
-namespace tr {
-
+namespace trapdoor {
     int64_t MSPTInfo::mean() const {
         return this->values.empty() ? 0
                                     : std::accumulate(values.begin(), values.end(), 0ll) /
@@ -83,7 +82,7 @@ namespace tr {
     }
 
     void SimpleProfiler::start(size_t round, SimpleProfiler::Type t) {
-        tr::logger().debug("Begin profiling with total round {}", round);
+        trapdoor::logger().debug("Begin profiling with total round {}", round);
         this->reset(t);
         this->profiling = true;
         this->currentRound = 0;
@@ -91,7 +90,7 @@ namespace tr {
     }
 
     void SimpleProfiler::stop() {
-        tr::logger().debug("stop profiling");
+        trapdoor::logger().debug("stop profiling");
         this->profiling = false;
         this->print();
         this->reset(Normal);
@@ -123,7 +122,7 @@ namespace tr {
                 builder.sTextF(TextBuilder::AQUA | TextBuilder::BOLD, "-- %s --\n",
                                dims[i].c_str());
 
-                std::vector<std::pair<tr::TBlockPos2, double>> v;
+                std::vector<std::pair<trapdoor::TBlockPos2, double>> v;
 
                 for (auto &kv : dim_data) {
                     assert(!kv.second.empty());
@@ -135,8 +134,8 @@ namespace tr {
 
                 auto sort_count = std::min(v.size(), static_cast<size_t>(5));
                 std::partial_sort(v.begin(), v.begin() + sort_count, v.end(),
-                                  [](const std::pair<tr::TBlockPos2, double> &p1,
-                                     const std::pair<tr::TBlockPos2, double> &p2) {
+                                  [](const std::pair<trapdoor::TBlockPos2, double> &p1,
+                                     const std::pair<trapdoor::TBlockPos2, double> &p2) {
                                       return p1.second > p2.second;
                                   });
 
@@ -149,7 +148,7 @@ namespace tr {
             }
         }
 
-        tr::BroadcastMessage(builder.get());
+        trapdoor::BroadcastMessage(builder.get());
     }
     void SimpleProfiler::printPendingTicks() const {}
     void SimpleProfiler::printBasics() const {
@@ -170,7 +169,7 @@ namespace tr {
     */
 
         const double divide = 1000.0 * static_cast<double>(totalRound);
-        tr::logger().debug("divide = {}", divide);
+        trapdoor::logger().debug("divide = {}", divide);
         auto cf = [divide](microsecond_t time) { return time * 1.0f / divide; };
         auto mspt = cf(serverLevelTickTime);
         int tps = mspt <= 50 ? 20 : static_cast<int>(1000.0 / mspt);
@@ -199,7 +198,7 @@ namespace tr {
             /*chunks*/
             cf(chunkInfo.totalTickTime), cf(chunkInfo.blockEntitiesTickTime),
             cf(chunkInfo.randomTickTime), cf(chunkInfo.pendingTickTime));
-        tr::BroadcastMessage(res);
+        trapdoor::BroadcastMessage(res);
     }
 
     void SimpleProfiler::printActor() const {
@@ -225,7 +224,8 @@ namespace tr {
 
                 for (auto &item : v) {
                     builder.text(" - ")
-                        .sTextF(TextBuilder::GREEN, "%s   ", tr::i18ActorName(item.first).c_str())
+                        .sTextF(TextBuilder::GREEN, "%s   ",
+                                trapdoor::i18ActorName(item.first).c_str())
                         .textF(
                             "%.3f ms (%d)\n",
                             micro_to_mill(item.second.time) / static_cast<double>(this->totalRound),
@@ -233,6 +233,6 @@ namespace tr {
                 }
             }
         }
-        tr::BroadcastMessage(builder.get());
-    }  // namespace tr
-}  // namespace tr
+        trapdoor::BroadcastMessage(builder.get());
+    }  // namespace trapdoor
+}  // namespace trapdoor

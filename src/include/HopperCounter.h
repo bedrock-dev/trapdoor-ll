@@ -11,8 +11,7 @@
 // clang-format on
 #include "CommandHelper.h"
 
-namespace tr {
-
+namespace trapdoor {
     class CounterChannel {
         const size_t channel;                       // 频道号
         std::map<std::string, size_t> counterList;  // 数据
@@ -65,6 +64,6 @@ namespace tr {
         void quickPrintData(const BlockPos &pos);
     };
 
-}  // namespace tr
+}  // namespace trapdoor
 
 #endif

@@ -7,8 +7,7 @@
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"
 #include "MCTick.h"
-namespace tr {
-
+namespace trapdoor {
     void setup_tickCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
@@ -42,25 +41,25 @@ namespace tr {
 
             switch (do_hash(results["tick"].getRaw<std::string>().c_str())) {
                 case do_hash("acc"):
-                    tr::accWorld(results["times"].getRaw<int>()).sendTo(output);
+                    trapdoor::accWorld(results["times"].getRaw<int>()).sendTo(output);
                     break;
                 case do_hash("slow"):
-                    tr::slowDownWorld(results["times"].getRaw<int>()).sendTo(output);
+                    trapdoor::slowDownWorld(results["times"].getRaw<int>()).sendTo(output);
                     break;
                 case do_hash("forward"):
-                    tr::forwardWorld(results["tickNumber"].getRaw<int>()).sendTo(output);
+                    trapdoor::forwardWorld(results["tickNumber"].getRaw<int>()).sendTo(output);
                     break;
                 case do_hash("warp"):
-                    tr::warpWorld(results["tickNumber"].getRaw<int>()).sendTo(output);
+                    trapdoor::warpWorld(results["tickNumber"].getRaw<int>()).sendTo(output);
                     break;
                 case do_hash("freeze"):
-                    tr::freezeWorld().sendTo(output);
+                    trapdoor::freezeWorld().sendTo(output);
                     break;
                 case do_hash("reset"):
-                    tr::resetWorld().sendTo(output);
+                    trapdoor::resetWorld().sendTo(output);
                     break;
                 case do_hash("query"):
-                    tr::queryWorld().sendTo(output);
+                    trapdoor::queryWorld().sendTo(output);
                 default:
                     break;
             }
@@ -70,4 +69,4 @@ namespace tr {
         DynamicCommand::setup(std::move(command));
     }
 
-}  // namespace tr
+}  // namespace trapdoor

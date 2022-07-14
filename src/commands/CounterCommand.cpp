@@ -6,8 +6,7 @@
 #include "DynamicCommandAPI.h"
 #include "SpawnHelper.h"
 #include "TrapdoorMod.h"
-namespace tr {
-
+namespace trapdoor {
     void setup_counterCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
@@ -33,12 +32,12 @@ namespace tr {
             switch (do_hash(results["counter"].getRaw<std::string>().c_str())) {
                 case do_hash("print"):
                     if (results["channel"].isSet) {
-                        tr::mod()
+                        trapdoor::mod()
                             .getHopperChannelManager()
                             .modifyChannel(results["channel"].getRaw<int>(), 0)
                             .sendTo(output);
                     } else {
-                        tr::mod()
+                        trapdoor::mod()
                             .getHopperChannelManager()
                             .quickModifyChannel(origin.getPlayer(),
                                                 getLookAtPos(origin.getPlayer()), 0)
@@ -48,12 +47,12 @@ namespace tr {
                     break;
                 case do_hash("reset"):
                     if (results["channel"].isSet) {
-                        tr::mod()
+                        trapdoor::mod()
                             .getHopperChannelManager()
                             .modifyChannel(results["channel"].getRaw<int>(), 1)
                             .sendTo(output);
                     } else {
-                        tr::mod()
+                        trapdoor::mod()
                             .getHopperChannelManager()
                             .quickModifyChannel(origin.getPlayer(),
                                                 getLookAtPos(origin.getPlayer()), 1)
@@ -65,4 +64,4 @@ namespace tr {
         command->setCallback(cb);
         DynamicCommand::setup(std::move(command));
     }
-}  // namespace tr
+}  // namespace trapdoor

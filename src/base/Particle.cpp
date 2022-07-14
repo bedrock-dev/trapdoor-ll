@@ -9,8 +9,8 @@
 #include "Config.h"
 #include "TBlockPos.h"
 #include "TVec3.h"
-namespace tr {
 
+namespace trapdoor {
     namespace {
 
         const std::string PARTICLE_BASE_NAME = "trapdoor::line";
@@ -54,7 +54,7 @@ namespace tr {
     void spawnParticle(const TVec3& pos, const std::string& type, int dimID) {
         Vec3 p(pos.x, pos.y, pos.z);
         //        auto* d = Global<Level>->getDimension(dimID);
-        //        auto pvd = tr::mod().getConfig().getBasicConfig().particleViewDistance;
+        //        auto pvd = trapdoor::mod().getConfig().getBasicConfig().particleViewDistance;
         //        if (d->distanceToNearestPlayerSqr2D(p) > pvd * pvd) return;
 
         Global<Level>->spawnParticleEffect(type, p, Global<Level>->getDimension(dimID));
@@ -121,7 +121,7 @@ namespace tr {
             auto backParticleTypeInv =
                 buildLienParticleType(points.second, invFacing(direction), color, true);
 
-            auto basicCfg = tr::mod().getConfig().getBasicConfig();
+            auto basicCfg = trapdoor::mod().getConfig().getBasicConfig();
 
             spawnParticle(points.first, particleType, dimType);
             if (basicCfg.particleLevel > 1) {
@@ -167,4 +167,4 @@ namespace tr {
         auto aabb = TAABB(p1, p1 + TVec3(1, 1, 1));
         drawAABB(aabb, color, false, dimType);
     }
-}  // namespace tr
+}  // namespace trapdoor

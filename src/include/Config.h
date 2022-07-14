@@ -15,7 +15,7 @@
 #include "Nlohmann/json.hpp"
 #include "Shortcuts.h"
 
-namespace tr {
+namespace trapdoor {
     struct CommandConfig {
         bool enable = true;
         int permissionLevel = 1;
@@ -66,6 +66,6 @@ namespace tr {
         nlohmann::json config;
     };
 
-}  // namespace tr
+}  // namespace trapdoor
 
 #endif  // TRAPDOOR_SETTINGS_H

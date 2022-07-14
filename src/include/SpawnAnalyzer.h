@@ -9,7 +9,7 @@
 
 #include "CommandHelper.h"
 #include "TBlockPos.h"
-namespace tr {
+namespace trapdoor {
     class SpawnAnalyzer {
        public:
         static const int SAMPLING_RARE = 10;
@@ -34,6 +34,6 @@ namespace tr {
         std::unordered_map<std::string, size_t> caveMobsPerTick;
     };
 
-}  // namespace tr
+}  // namespace trapdoor
 
 #endif  // TRAPDOOR_SPAWNANALYZER_H

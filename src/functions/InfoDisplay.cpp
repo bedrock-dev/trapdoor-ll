@@ -23,8 +23,7 @@
 #include "TrAPI.h"
 #include "TrapdoorMod.h"
 #include "Utils.h"
-namespace tr {
-
+namespace trapdoor {
     namespace {
 
         struct ActorNBTFormat : PrettySnbtFormat {
@@ -48,7 +47,7 @@ namespace tr {
             }
         }
     }  // namespace
-    ActionResult displayEntityInfo(Player *player, Actor *a, bool nbt, const std::string &path) {
+    ActionResult displayEntityInfo(Player * player, Actor * a, bool nbt, const std::string &path) {
         if (!player) return ErrorPlayerNeed();
         if (!a) {
             return {"No actor", false};
@@ -73,19 +72,19 @@ namespace tr {
         return {builder.get(), true};
     }
 
-    ActionResult displayBlockInfo(Player *p, const BlockPos &position, bool nbt,
+    ActionResult displayBlockInfo(Player * p, const BlockPos &position, bool nbt,
                                   const std::string &path) {
         if (!p) return ErrorPlayerNeed();
         auto pos = position;
         if (pos == BlockPos::MAX) {
-            pos = tr::getLookAtPos(p);
+            pos = trapdoor::getLookAtPos(p);
         }
 
         if (pos == BlockPos::MAX) {
             return {"Get blockName failure", false};
         }
         auto &b = p->getRegion().getBlock(pos);
-        tr::TextBuilder builder;
+        trapdoor::TextBuilder builder;
         if (nbt) {
             if (b.hasBlockEntity()) {
                 auto be = p->getRegion().getBlockEntity(pos);
@@ -97,38 +96,38 @@ namespace tr {
             }
         }
 
-        builder.sText(tr::TextBuilder::AQUA, "Base:\n")
+        builder.sText(trapdoor::TextBuilder::AQUA, "Base:\n")
             .text(" - Name / Type: ")
-            .sTextF(tr::TextBuilder::GREEN, "%s / %s\n", b.getName().c_str(),
+            .sTextF(trapdoor::TextBuilder::GREEN, "%s / %s\n", b.getName().c_str(),
                     b.getTypeName().c_str())
             .text(" - ID / RTID: ")
-            .sTextF(tr::TextBuilder::GREEN, "%d / %d\n", b.getId(), b.getRuntimeId())
+            .sTextF(trapdoor::TextBuilder::GREEN, "%d / %d\n", b.getId(), b.getRuntimeId())
             .text(" - Variant: ")
-            .sTextF(tr::TextBuilder::GREEN, "%d\n", b.getVariant())
+            .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", b.getVariant())
             .text(" - CanInstatick: ")
-            .sTextF(tr::TextBuilder::GREEN, "%d\n", b.canInstatick())
+            .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", b.canInstatick())
             .text(" - BlockEntity: ")
-            .sTextF(tr::TextBuilder::GREEN, "%d\n", b.hasBlockEntity())
+            .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", b.hasBlockEntity())
             .text(" - IsSolid: ")
-            .sTextF(tr::TextBuilder::GREEN, "%d\n", b.isSolid());
+            .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", b.isSolid());
         auto &m = b.getMaterial();
-        builder.sText(tr::TextBuilder::AQUA, "Material:\n")
+        builder.sText(trapdoor::TextBuilder::AQUA, "Material:\n")
             .text(" - Motion: ")
-            .sTextF(tr::TextBuilder::GREEN, "%d\n", m.getBlocksMotion())
+            .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", m.getBlocksMotion())
             .text(" - TopSolid: ")
-            .sTextF(tr::TextBuilder::GREEN, "%d\n", m.isTopSolid(false, false))
+            .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", m.isTopSolid(false, false))
             .text(" - IsSolid: ")
-            .sTextF(tr::TextBuilder::GREEN, "%d\n", m.isSolid())
+            .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", m.isSolid())
             .text(" - IsSolidBlocking: ")
-            .sTextF(tr::TextBuilder::GREEN, "%d\n", m.isSolidBlocking())
+            .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", m.isSolidBlocking())
             .text(" - Translucency: ")
-            .sTextF(tr::TextBuilder::GREEN, "%.3f\n", m.getTranslucency());
+            .sTextF(trapdoor::TextBuilder::GREEN, "%.3f\n", m.getTranslucency());
         return {builder.get(), true};
     }
 
     bool displayEnvInfo() { return true; }
 
-    ActionResult displayRedstoneCompInfo(Dimension *d, const BlockPos &pos) {
+    ActionResult displayRedstoneCompInfo(Dimension * d, const BlockPos &pos) {
         if (!d) return ErrorDimension();
         auto &cs = d->getCircuitSystem();
         auto &graph = getCircuitSceneGraph(&cs);
@@ -138,4 +137,4 @@ namespace tr {
         }
         return {"Strength =>  " + std::to_string(comp->getStrength()), true};
     }
-}  // namespace tr
+}  // namespace trapdoor

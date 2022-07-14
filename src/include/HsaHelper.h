@@ -6,8 +6,7 @@
 #include "CommandHelper.h"
 #include "TBlockPos.h"
 
-namespace tr {
-
+namespace trapdoor {
     enum StructureType { SwampHut, OceanMonument, PillagerOutpost, NetherFortress };
 
     struct HsaInfo {
@@ -40,6 +39,6 @@ namespace tr {
             return {"~", true};
         }
     };
-}  // namespace tr
+}  // namespace trapdoor
 
 #endif

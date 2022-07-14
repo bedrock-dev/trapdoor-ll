@@ -8,8 +8,7 @@
 #include "TBlockPos.h"
 #include "TVec3.h"
 
-namespace tr {
-
+namespace trapdoor {
     void BroadcastMessage(const std::string &msg, int level) {
         if (level == 0) {
             Level::broadcastText(msg, TextType::RAW);
@@ -38,10 +37,9 @@ namespace tr {
     const uint8_t TextBuilder::RESET = 0x30;
 
     const std::map<uint8_t, std::string> TextBuilder::STYLE_MAP = {
-        {BLACK, "§0"}, {DARK_GREEN, "§2"},   {DARK_RED, "§4"}, {GOLD, "§6"},
-        {GRAY, "§7"},  {BLUE, "§9"},         {GREEN, "§a"},    {AQUA, "§b"},
-        {RED, "§c"},   {LIGHT_PURPLE, "§d"}, {YELLOW, "§e"},   {WHITE, "§f"},
-        {BOLD, "§l"},  {ITALIC, "§o"},       {RESET, "§r"}};
+        {BLACK, "§0"},  {DARK_GREEN, "§2"}, {DARK_RED, "§4"}, {GOLD, "§6"},   {GRAY, "§7"},
+        {BLUE, "§9"},   {GREEN, "§a"},      {AQUA, "§b"},     {RED, "§c"},    {LIGHT_PURPLE, "§d"},
+        {YELLOW, "§e"}, {WHITE, "§f"},      {BOLD, "§l"},     {ITALIC, "§o"}, {RESET, "§r"}};
 
     TextBuilder &TextBuilder::text(const std::string &s) {
         messageBuffer.emplace_back(s);
@@ -75,13 +73,12 @@ namespace tr {
         auto iter = STYLE_MAP.find(fontColor);
         if (iter != STYLE_MAP.end()) messageBuffer.push_back(iter->second);
         iter = STYLE_MAP.find(fontStyle);
-        if (iter != STYLE_MAP.end() && fontStyle != 0x0)
-            messageBuffer.push_back(iter->second);
+        if (iter != STYLE_MAP.end() && fontStyle != 0x0) messageBuffer.push_back(iter->second);
         messageBuffer.push_back(s);
         messageBuffer.push_back(STYLE_MAP.at(RESET));
         return *this;
     }
 
-    void TextBuilder::broadcast() { tr::BroadcastMessage(this->get()); }
+    void TextBuilder::broadcast() { trapdoor::BroadcastMessage(this->get()); }
 
-}  // namespace tr
+}  // namespace trapdoor

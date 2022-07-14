@@ -1,8 +1,7 @@
 #ifndef TRAPDOOR_GAME_TICK_H
 #define TRAPDOOR_GAME_TICK_H
 #include "SimpleProfiler.h"
-namespace tr {
-
+namespace trapdoor {
     struct ActionResult;
 
     enum class TickingStatus { Normal, Forwarding, SlowDown, Frozen, Acc, Warp };
@@ -41,5 +40,5 @@ namespace tr {
 
     ActionResult startProfiler(int rounds, SimpleProfiler::Type type);
 
-}  // namespace tr
+}  // namespace trapdoor
 #endif

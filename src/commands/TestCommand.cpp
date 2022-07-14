@@ -14,12 +14,11 @@
 #include "MCTick.h"
 #include "Particle.h"
 #include "ScheduleAPI.h"
-namespace tr {
-
-    void test_particle(Player *p) {
+namespace trapdoor {
+    void test_particle(Player * p) {
         //        Schedule::repeat(
         //            []() {
-        //                tr::drawLine({0, 80, 0}, TFACING::POS_X, 120, PCOLOR::GREEN, 0);
+        //                trapdoor::drawLine({0, 80, 0}, TFACING::POS_X, 120, PCOLOR::GREEN, 0);
         //            },
         //            20);
     }
@@ -50,4 +49,4 @@ namespace tr {
         DynamicCommand::setup(std::move(command));
     }
 
-}  // namespace tr
+}  // namespace trapdoor

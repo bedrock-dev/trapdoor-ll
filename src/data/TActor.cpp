@@ -1,3 +1,3 @@
 #include "TActor.h"
 
-namespace tr {}  // namespace tr
+namespace trapdoor {}  // namespace trapdoor

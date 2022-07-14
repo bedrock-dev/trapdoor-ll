@@ -26,7 +26,7 @@
 #define PH_NUM "§2{}§r"
 #define PH_POS "§a{},{},{}§r"
 
-namespace tr {
+namespace trapdoor {
     void BroadcastMessage(const std::string &msg, int level = 0);
 
     template <typename... Args>
@@ -64,18 +64,18 @@ namespace tr {
 
         template <typename... Args>
         TextBuilder &textF(const std::string &format, Args... args) {
-            this->text(tr::format(format, args...));
+            this->text(trapdoor::format(format, args...));
             return *this;
         }
 
         template <typename... Args>
         TextBuilder &sTextF(uint8_t style, const std::string &format, Args... args) {
-            this->sText(style, tr::format(format, args...));
+            this->sText(style, trapdoor::format(format, args...));
             return *this;
         }
         template <typename... Args>
         TextBuilder &boldF(const std::string &format, Args... args) {
-            this->sText(TextBuilder::BOLD, tr::format(format, args...));
+            this->sText(TextBuilder::BOLD, trapdoor::format(format, args...));
             return *this;
         }
 
@@ -116,5 +116,5 @@ namespace tr {
     };
 
     typedef TextBuilder TB;
-}  // namespace tr
+}  // namespace trapdoor
 #endif  // TRAPDOOR_MSGBUILDER_H

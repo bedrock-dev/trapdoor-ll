@@ -14,8 +14,7 @@
 #include "Msg.h"
 #include "TrapdoorMod.h"
 #include "Utils.h"
-namespace tr {
-
+namespace trapdoor {
     namespace {
 
         struct ToolInfo {
@@ -45,7 +44,7 @@ namespace tr {
         }
     }  // namespace
 
-    void swapItemInContainer(Container &cont, int s1, int s2) {
+    void swapItemInContainer(Container & cont, int s1, int s2) {
         auto i1 = cont.getItem(s1).clone();
         auto i2 = cont.getItem(s2).clone();
         cont.removeItem(s1, 64);
@@ -53,8 +52,8 @@ namespace tr {
         cont.setItem(s1, i2);
         cont.setItem(s2, i1);
     }
-    bool onStartDestroyBlock(Player *player, const BlockInstance &instance) {
-        if (!tr::mod().getConfig().getTweakConfig().autoSelectTool) {
+    bool onStartDestroyBlock(Player * player, const BlockInstance &instance) {
+        if (!trapdoor::mod().getConfig().getTweakConfig().autoSelectTool) {
             return true;
         }
         auto *ins = const_cast<BlockInstance *>(&instance);
@@ -82,5 +81,4 @@ namespace tr {
         return true;
     }
 
-
-}  // namespace tr
+}  // namespace trapdoor

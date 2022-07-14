@@ -13,8 +13,7 @@
 #include "Msg.h"
 #include "TrapdoorMod.h"
 
-namespace tr {
-
+namespace trapdoor {
     const size_t HopperChannelManager::HOPPER_COUNTER_BLOCK = 236;
     void HopperChannelManager::tick() {
         if (this->enable) {
@@ -37,7 +36,7 @@ namespace tr {
         }
     }
 
-    ActionResult HopperChannelManager::quickModifyChannel(Player *player, const BlockPos &pos,
+    ActionResult HopperChannelManager::quickModifyChannel(Player * player, const BlockPos &pos,
                                                           int opt) {
         if (!player) return ErrorPlayerNeed();
         auto &bs = player->getRegion();
@@ -78,7 +77,7 @@ namespace tr {
         }
 
         std::string stringBuilder;
-        tr::TextBuilder builder;
+        trapdoor::TextBuilder builder;
 
         if (!simple) {
             builder.text("Channel: ").sTextF(TB::BOLD | TB::WHITE, "%d \n", channel);
@@ -105,7 +104,7 @@ namespace tr {
         return builder.get();
     }
 
-}  // namespace tr
+}  // namespace trapdoor
 
 /*
 ?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z
@@ -113,7 +112,7 @@ namespace tr {
 
 THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self, unsigned int index,
       ItemStackBase *itemStack) {
-    auto &hcm = tr::mod().getHopperChannelManager();
+    auto &hcm = trapdoor::mod().getHopperChannelManager();
     if (!hcm.isEnable()) {
         original(self, index, itemStack);
         return;
@@ -135,7 +134,7 @@ THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self, un
         Global<Level>->forEachPlayer([&](Player &player) {
             auto &b = player.getRegion().getBlock(pos);
             if (&b == block) {
-                tr::logger().debug("find {}", player.getRealName());
+                trapdoor::logger().debug("find {}", player.getRealName());
                 nearest = &player;
                 throw std::logic_error("");
             }
@@ -148,7 +147,7 @@ THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self, un
         return;
     }
 
-    auto dir = tr::facingToBlockPos(static_cast<tr::TFACING>(block->getVariant()));
+    auto dir = trapdoor::facingToBlockPos(static_cast<trapdoor::TFACING>(block->getVariant()));
     auto pointPos = BlockPos(pos.x + dir.x, pos.y + dir.y, pos.z + dir.z);
     auto &pointBlock = nearest->getRegion().getBlock(pointPos);
     if (pointBlock.getId() != 236) {  // 混凝土
@@ -162,6 +161,6 @@ THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self, un
         return;
     }
 
-    tr::mod().getHopperChannelManager().getChannel(ch).add(itemStack->getName(),
-                                                           itemStack->getCount());
+    trapdoor::mod().getHopperChannelManager().getChannel(ch).add(itemStack->getName(),
+                                                                 itemStack->getCount());
 }

@@ -11,8 +11,7 @@
 // clang-format on
 
 class AABB;
-namespace tr {
-
+namespace trapdoor {
     // struct TVec3;
     // struct TAABB;
     // TVec3 fromVec3(const Vec3& vec3);
@@ -25,5 +24,5 @@ namespace tr {
         return {fromVec3(aabb.pointA), fromVec3(aabb.pointB)};
     }
 
-}  // namespace tr
+}  // namespace trapdoor
 #endif

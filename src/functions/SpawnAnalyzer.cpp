@@ -13,9 +13,8 @@
 #include "Msg.h"
 #include "TrapdoorMod.h"
 #include "Utils.h"
-namespace tr {
-
-    void SpawnAnalyzer::AddMob(Mob *mob, const string &name, bool surface) {
+namespace trapdoor {
+    void SpawnAnalyzer::AddMob(Mob * mob, const string &name, bool surface) {
         if (!inAnalyzing || !mob) return;
         auto dimension = mob->getDimensionId();
         if (dimension != dimensionID) return;
@@ -73,9 +72,9 @@ namespace tr {
         b.text("Total ").num(tick_count).text("gt (").num(hour).text("h)\n");
         b.sText(TB::GREEN | TB::BOLD, "Surface:\n");
         for (auto &p : this->surfaceMobsPerTick) {
-            auto type = tr::rmmc(p.first);
+            auto type = trapdoor::rmmc(p.first);
             if (type == "player") continue;
-            b.sText(TB::GRAY, " - ").textF("%s:  ", tr::i18ActorName(type).c_str());
+            b.sText(TB::GRAY, " - ").textF("%s:  ", trapdoor::i18ActorName(type).c_str());
             b.text("Density: ").num(static_cast<float>(p.second) / static_cast<float>(tick_count));
             auto iter = this->surfaceMobs.find(type);
             if (iter == this->surfaceMobs.end()) {
@@ -90,9 +89,9 @@ namespace tr {
         }
         b.sText(TB::RED | TB::BOLD, "Underground:\n");
         for (auto &p : this->caveMobsPerTick) {
-            auto type = tr::rmmc(p.first);
+            auto type = trapdoor::rmmc(p.first);
             if (type == "player") continue;
-            b.sText(TB::GRAY, " - ").textF("%s:  ", tr::i18ActorName(type).c_str());
+            b.sText(TB::GRAY, " - ").textF("%s:  ", trapdoor::i18ActorName(type).c_str());
             b.text("Density: ").num(static_cast<float>(p.second) / static_cast<float>(tick_count));
             auto iter = this->caveMobs.find(type);
             if (iter == this->caveMobs.end()) {
@@ -115,7 +114,7 @@ namespace tr {
         this->caveMobsPerTick.clear();
         return {"Cleared", true};
     }
-}  // namespace tr
+}  // namespace trapdoor
 
 THook(Mob *,
       "?spawnMob@Spawner@@QEAAPEAVMob@@AEAVBlockSource@@AEBUActorDefinitionIdentifier@@PEAVActor@@"
@@ -124,7 +123,7 @@ THook(Mob *,
       class Vec3 const &pos, bool natural, bool surface, bool fromSpawner) {
     auto res = original(s, bs, id, actor, pos, natural, surface, fromSpawner);
     if (res) {
-        tr::mod().getSpawnAnalyzer().AddMob(res, id.getIdentifier(), surface);
+        trapdoor::mod().getSpawnAnalyzer().AddMob(res, id.getIdentifier(), surface);
     }
 
     return res;

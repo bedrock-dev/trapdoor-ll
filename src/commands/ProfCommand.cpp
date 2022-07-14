@@ -8,7 +8,7 @@
 #include "SimpleProfiler.h"
 #include "TrapdoorMod.h"
 
-namespace tr {
+namespace trapdoor {
     void setup_profCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
@@ -26,23 +26,22 @@ namespace tr {
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
             if (!results["prof"].isSet) {
-                tr::logger().debug("you run prof");
-                tr::startProfiler(20, SimpleProfiler::Normal).sendTo(output);
+                trapdoor::logger().debug("you run prof");
+                trapdoor::startProfiler(20, SimpleProfiler::Normal).sendTo(output);
                 return;
             }
-
 
             auto tickTime =
                 results["numberOfTick"].isSet ? results["numberOfTick"].getRaw<int>() : 20;
             switch (do_hash(results["prof"].getRaw<std::string>().c_str())) {
                 case do_hash("normal"):
-                    tr::startProfiler(tickTime, SimpleProfiler::Normal).sendTo(output);
+                    trapdoor::startProfiler(tickTime, SimpleProfiler::Normal).sendTo(output);
                     break;
                 case do_hash("chunk"):
-                    tr::startProfiler(tickTime, SimpleProfiler::Chunk).sendTo(output);
+                    trapdoor::startProfiler(tickTime, SimpleProfiler::Chunk).sendTo(output);
                     break;
                 case do_hash("entity"):
-                    tr::startProfiler(tickTime, SimpleProfiler::Entity).sendTo(output);
+                    trapdoor::startProfiler(tickTime, SimpleProfiler::Entity).sendTo(output);
                     break;
                 case do_hash("pt"):
                     ErrorMsg("Function is developing by developer").sendTo(output);
@@ -53,4 +52,4 @@ namespace tr {
         DynamicCommand::setup(std::move(command));
     }
 
-}  // namespace tr
+}  // namespace trapdoor

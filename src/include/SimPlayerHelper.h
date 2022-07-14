@@ -8,8 +8,7 @@
 #include "CommandHelper.h"
 #include "ScheduleAPI.h"
 
-namespace tr {
-
+namespace trapdoor {
     class SimPlayerManager {
         struct SimInfo {
             std::string name;
@@ -73,6 +72,6 @@ namespace tr {
         std::unordered_map<std::string, SimInfo> simPlayers;
         const DynamicCommandInstance* cmdInstance = nullptr;
     };
-}  // namespace tr
+}  // namespace trapdoor
 
 #endif

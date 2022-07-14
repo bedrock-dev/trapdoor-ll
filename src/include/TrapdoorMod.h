@@ -10,8 +10,7 @@
 #include "SpawnAnalyzer.h"
 #include "VillageHelper.h"
 
-namespace tr {
-
+namespace trapdoor {
     class TrapdoorMod {
        public:
         void init();
@@ -33,7 +32,7 @@ namespace tr {
         }
 
         inline SimPlayerManager &getSimPlayerManager() { return this->simPlayerManager; }
-        
+
         inline SpawnAnalyzer &getSpawnAnalyzer() { return this->spawnAnalyzer; }
 
        private:
@@ -49,6 +48,6 @@ namespace tr {
     Logger &logger();
 
     TrapdoorMod &mod();
-}  // namespace tr
+}  // namespace trapdoor
 
 #endif

@@ -5,8 +5,7 @@
 #include <algorithm>
 
 #include "TrapdoorMod.h"
-namespace tr {
-
+namespace trapdoor {
     namespace {
 
         struct NBTPath {
@@ -76,4 +75,4 @@ namespace tr {
     std::string i18ActorName(const string& name) {
         return I18n::get("entity." + rmmc(name) + ".name");
     }
-}  // namespace tr
+}  // namespace trapdoor

@@ -6,8 +6,7 @@
 
 #include "CommandHelper.h"
 
-namespace tr {
-
+namespace trapdoor {
     class VillageHelper {
        private:
         void setVillagerHeadInfo();
@@ -44,6 +43,6 @@ namespace tr {
         bool showHeadInfo = false;
     };
 
-}  // namespace tr
+}  // namespace trapdoor
 
 #endif

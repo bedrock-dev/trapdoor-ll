@@ -5,7 +5,7 @@
 #include "DynamicCommandAPI.h"
 #include "SpawnHelper.h"
 #include "TrapdoorMod.h"
-namespace tr {
+namespace trapdoor {
     void setup_funcCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
@@ -35,17 +35,20 @@ namespace tr {
             auto countParam = std::string();
             switch (do_hash(results["func"].getRaw<std::string>().c_str())) {
                 case do_hash("hoppercounter"):
-                    tr::mod()
+                    trapdoor::mod()
                         .getHopperChannelManager()
                         .setAble(results["onoroff"].get<bool>())
                         .sendTo(output);
                     break;
                 case do_hash("hud"):
-                    tr::mod().getHUDHelper().setAble(results["onoroff"].get<bool>()).sendTo(output);
+                    trapdoor::mod()
+                        .getHUDHelper()
+                        .setAble(results["onoroff"].get<bool>())
+                        .sendTo(output);
                     break;
             }
         };
         command->setCallback(cb);
         DynamicCommand::setup(std::move(command));
     }
-}  // namespace tr
+}  // namespace trapdoor

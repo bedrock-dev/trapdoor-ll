@@ -7,11 +7,10 @@
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"
 #include "TrapdoorMod.h"
-namespace tr {
-
+namespace trapdoor {
     namespace {
         ActionResult setParticlePerformanceLevel(const std::string &level) {
-            auto &cfg = tr::mod().getConfig().getBasicConfig();
+            auto &cfg = trapdoor::mod().getConfig().getBasicConfig();
             if (level == "low") {
                 cfg.particleLevel = 1;
                 return {"Success", true};
@@ -29,7 +28,7 @@ namespace tr {
             if (level <= 0 || level > 4096) {
                 return {"Invalid value,it should be within 1 to 4096", false};
             }
-            tr::mod().getConfig().getBasicConfig().particleViewDistance = level;
+            trapdoor::mod().getConfig().getBasicConfig().particleViewDistance = level;
             return {"Success", true};
         }
 
@@ -37,7 +36,7 @@ namespace tr {
             if (freq <= 0) {
                 return {"Invalid value, it should be with 0,+inf", false};
             }
-            tr::mod().getConfig().getBasicConfig().hudRefreshFreq = freq;
+            trapdoor::mod().getConfig().getBasicConfig().hudRefreshFreq = freq;
 
             return {"Set freq to " + std::to_string(freq), true};
         }
@@ -90,4 +89,4 @@ namespace tr {
         command->setCallback(cb);
         DynamicCommand::setup(std::move(command));
     }
-}  // namespace tr
+}  // namespace trapdoor

@@ -6,8 +6,7 @@
 #include <MC/ItemStack.hpp>
 
 #include "TrapdoorMod.h"
-namespace tr {
-
+namespace trapdoor {
     namespace {
 
         void parsePattern(const std::string& str, std::string& name, int& aux) {
@@ -82,17 +81,17 @@ namespace tr {
                    patternMatch(blockName, blockAux, shortcut.blockName, shortcut.blockAux);
         }
     }
-    void Shortcut::runUse(Player* player, ItemStack* item) {
+    void Shortcut::runUse(Player * player, ItemStack * item) {
         auto pos = player->getPos().toBlockPos();
         for (auto& act : actions) {
             auto cmd = fmt::format(act, fmt::arg("px", pos.x), fmt::arg("py", pos.y),
                                    fmt::arg("pz", pos.z), fmt::arg("iname", item->getName()),
                                    fmt::arg("iaux", item->getAux()));
-            tr::logger().debug("cmd is {}", cmd);
+            trapdoor::logger().debug("cmd is {}", cmd);
             player->runcmd(cmd);
         }
     }
-    void Shortcut::runUseOn(Player* player, ItemStack* item, Block* block, const BlockPos& p) {
+    void Shortcut::runUseOn(Player * player, ItemStack * item, Block * block, const BlockPos& p) {
         auto pos = player->getPos().toBlockPos();
 
         for (auto& act : actions) {
@@ -102,8 +101,8 @@ namespace tr {
                             fmt::arg("baux", block->getVariant()), fmt::arg("bx", p.x),
                             fmt::arg("by", p.y), fmt::arg("bz", p.z),
                             fmt::arg("iname", item->getName()), fmt::arg("iaux", item->getAux()));
-            tr::logger().debug("cmd is {}", cmd);
+            trapdoor::logger().debug("cmd is {}", cmd);
             player->runcmd(cmd);
         }
     }
-}  // namespace tr
+}  // namespace trapdoor

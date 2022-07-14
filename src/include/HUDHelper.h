@@ -5,7 +5,7 @@
 
 #include "CommandHelper.h"
 
-namespace tr {
+namespace trapdoor {
     enum HUDInfoType {
         Base = 0,
         Mspt = 1,
@@ -40,6 +40,6 @@ namespace tr {
         std::unordered_map<std::string, PlayerHudInfo> playerInfos;
     };
 
-}  // namespace tr
+}  // namespace trapdoor
 
 #endif

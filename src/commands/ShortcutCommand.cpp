@@ -8,12 +8,12 @@
 #include "DynamicCommandAPI.h"
 #include "Msg.h"
 #include "TrapdoorMod.h"
-namespace tr {
+namespace trapdoor {
     void registerShortcutCommand(const std::string &shortcut,
                                  const std::vector<std::string> &actions) {
-        tr::logger().debug("registerShortcutCommand: {} => ", shortcut);
+        trapdoor::logger().debug("registerShortcutCommand: {} => ", shortcut);
         for (auto &action : actions) {
-            tr::logger().debug("        - {}", action);
+            trapdoor::logger().debug("        - {}", action);
         }
 
         using ParamType = DynamicCommand::ParameterType;
@@ -36,4 +36,4 @@ namespace tr {
         command->setCallback(cb);
         DynamicCommand::setup(std::move(command));
     }
-}  // namespace tr
+}  // namespace trapdoor

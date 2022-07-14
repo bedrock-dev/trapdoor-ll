@@ -9,7 +9,7 @@
 #include "ScheduleAPI.h"
 #include "SimPlayerHelper.h"
 #include "TrapdoorMod.h"
-namespace tr {
+namespace trapdoor {
     namespace {
 
 #define GET_FREE_PLAYER(sim)                                       \
@@ -73,7 +73,7 @@ namespace tr {
     }
 
     void SimPlayerManager::cancel(const std::string& name) {
-        tr::logger().debug("cancel task of:{}", name);
+        trapdoor::logger().debug("cancel task of:{}", name);
         auto it = this->simPlayers.find(name);
         if (it != this->simPlayers.end()) {
             it->second.task.cancel();
@@ -130,7 +130,7 @@ namespace tr {
         GET_FREE_PLAYER(sim)
         auto pos = p;
         if (pos == BlockPos::MAX) {
-            pos = tr::getLookAtPos(origin);
+            pos = trapdoor::getLookAtPos(origin);
         }
         auto task = [name, this, sim, pos]() {
             CHECK_SURVIVAL
@@ -345,7 +345,7 @@ namespace tr {
         return {builder.get(), true};
     }
     void SimPlayerManager::processDieEvent(const string& name) {
-        tr::logger().debug("try disconnect {}", name);
+        trapdoor::logger().debug("try disconnect {}", name);
         this->removePlayer(name);
     }
     void SimPlayerManager::refreshCommandSoftEnum() {
@@ -356,7 +356,7 @@ namespace tr {
         }
         cmdInstance->setSoftEnum("name", names);
     }
-    void SimPlayerManager::tryRefreshInv(Player* player) {
+    void SimPlayerManager::tryRefreshInv(Player * player) {
         if (!player) return;
         auto name = player->getRealName();
         auto iter = this->simPlayers.find(name);
@@ -364,4 +364,4 @@ namespace tr {
         // todo 序列化背包物品到文件
         writeInvToFile(player->getInventory(), name);
     }
-}  // namespace tr
+}  // namespace trapdoor

@@ -7,8 +7,7 @@
 #include "SysInfoHelper.h"
 
 #include "Msg.h"
-namespace tr {
-
+namespace trapdoor {
     MemInfo getMemInfo() {
         MEMORYSTATUSEX info;
         info.dwLength = sizeof(MEMORYSTATUSEX);
@@ -93,7 +92,7 @@ namespace tr {
         return {getTotalCPUUsage(), getCurrentCPUsage(), numProcessors};
     }
     ActionResult printSysInfo() {
-        tr::TextBuilder builder;
+        trapdoor::TextBuilder builder;
         auto mem = getMemInfo();
         auto cpu = getCPUInfo();
 
@@ -119,4 +118,4 @@ namespace tr {
         return {builder.get(), true};
     }
     void initCPU() { auto _ = getCPUInfo(); }
-}  // namespace tr
+}  // namespace trapdoor

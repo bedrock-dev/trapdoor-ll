@@ -6,8 +6,7 @@
 #include "HookAPI.h"
 #include "Particle.h"
 
-namespace tr {
-
+namespace trapdoor {
     namespace {
         TAABB getSpawnAreaFromHSA(const TBoundingBox &aabb) {
             int x = (aabb.maxPos.x - aabb.minPos.x + 1) / 2 + aabb.minPos.x;
@@ -44,36 +43,36 @@ namespace tr {
                     default:
                         break;
                 }
-                tr::drawAABB(getSpawnAreaFromHSA(hsa.bb), color, true, hsa.dimensionID);
+                trapdoor::drawAABB(getSpawnAreaFromHSA(hsa.bb), color, true, hsa.dimensionID);
             }
         }
         gt = (gt + 1) % 80;
     }
 
-}  // namespace tr
+}  // namespace trapdoor
 
 THook(void,
       "?_spawnStructureMob@Spawner@@AEAAXAEAVBlockSource@@AEBVBlockPos@@"
       "AEBUHardcodedSpawningArea@LevelChunk@@AEBVSpawnConditions@@@Z",
-      void *spawner, const BlockSource &bs, const BlockPos &blockPos, const tr::TBoundingBox &hsa,
-      void *spawnConditions) {
+      void *spawner, const BlockSource &bs, const BlockPos &blockPos,
+      const trapdoor::TBoundingBox &hsa, void *spawnConditions) {
     original(spawner, bs, blockPos, hsa, spawnConditions);
-    auto &hsaManager = tr::mod().getHsaManager();
-    tr::HsaInfo info;
+    auto &hsaManager = trapdoor::mod().getHsaManager();
+    trapdoor::HsaInfo info;
     info.dimensionID = bs.getDimensionId();
     info.bb = hsa;
     if (info.dimensionID == 1) {
-        info.type = tr::NetherFortress;
+        info.type = trapdoor::NetherFortress;
     } else {
         auto biome = bs.tryGetBiome(blockPos);
         if (biome) {
             auto type = static_cast<int>(biome->getBiomeType());
             if (type == 10) {
-                info.type = tr::OceanMonument;
+                info.type = trapdoor::OceanMonument;
             } else if (type == 15) {
-                info.type = tr::SwampHut;
+                info.type = trapdoor::SwampHut;
             } else {
-                info.type = tr::PillagerOutpost;
+                info.type = trapdoor::PillagerOutpost;
             }
         }
     }

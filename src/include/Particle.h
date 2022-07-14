@@ -5,8 +5,7 @@
 #include "TBlockPos.h"
 #include "TVec3.h"
 
-namespace tr {
-
+namespace trapdoor {
     enum class PCOLOR { WHITE = 0, RED = 1, YELLOW = 2, BLUE = 3, GREEN = 4 };
     void spawnParticle(const TVec3& pos, const std::string& type, int dimID);
 
@@ -16,6 +15,6 @@ namespace tr {
     void drawAABB(const TAABB& aabb, PCOLOR color, bool mark, int dimType);
 
     void shortHighlightBlock(const TBlockPos& pos, PCOLOR color, int dimType);
-}  // namespace tr
+}  // namespace trapdoor
 
 #endif

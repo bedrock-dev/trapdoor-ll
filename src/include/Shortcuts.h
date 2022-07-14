@@ -3,7 +3,7 @@
 #include <MC/Player.hpp>
 #include <string>
 #include <vector>
-namespace tr {
+namespace trapdoor {
     enum ShortcutType { USE = 0, USE_ON = 1, CMD };
     struct Shortcut {
         ShortcutType type;     // 类型
@@ -26,5 +26,5 @@ namespace tr {
         bool match(const Shortcut& shortcut) const;
     };
 
-}  // namespace tr
+}  // namespace trapdoor
 #endif

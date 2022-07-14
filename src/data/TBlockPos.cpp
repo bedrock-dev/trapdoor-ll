@@ -9,8 +9,7 @@
 
 #include "TVec3.h"
 
-namespace tr {
-
+namespace trapdoor {
     bool TBlockPos::operator==(const TBlockPos &v) const {
         return x == v.x && y == v.y && z == v.z;
     }
@@ -182,4 +181,4 @@ namespace tr {
         }
     }
 
-}  // namespace tr
+}  // namespace trapdoor

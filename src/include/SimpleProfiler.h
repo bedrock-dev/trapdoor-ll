@@ -19,8 +19,7 @@ typedef int64_t microsecond_t;
     auto elapsed = timer_clock::now() - start; \
     long long timeResult = std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count();
 
-namespace tr {
-
+namespace trapdoor {
     using std::chrono::microseconds;
 
     double micro_to_mill(uint64_t v);
@@ -40,7 +39,7 @@ namespace tr {
     };
 
     struct ChunkProfileInfo {
-        std::array<std::map<tr::TBlockPos2, std::vector<microsecond_t>>, 3> chunk_counter{};
+        std::array<std::map<trapdoor::TBlockPos2, std::vector<microsecond_t>>, 3> chunk_counter{};
         microsecond_t blockEntitiesTickTime = 0;
         microsecond_t randomTickTime = 0;
         microsecond_t pendingTickTime = 0;
@@ -134,6 +133,6 @@ namespace tr {
         void stop();
     };
 
-}  // namespace tr
+}  // namespace trapdoor
 
 #endif  // TRAPDOOR_SIMPLE_PROFILER_H

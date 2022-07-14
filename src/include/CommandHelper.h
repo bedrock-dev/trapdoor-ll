@@ -18,8 +18,7 @@
 //clang-format on
 
 class CommandOutput;
-namespace tr {
-
+namespace trapdoor {
     struct ActionResult {
         std::string msg;
         bool success;
@@ -29,9 +28,9 @@ namespace tr {
         void sendTo(CommandOutput &output) const;
     };
 
-    Vec3 getLookAtVec3(Player *player);
+    Vec3 getLookAtVec3(Player * player);
 
-    BlockPos getLookAtPos(Player *player);
+    BlockPos getLookAtPos(Player * player);
 
     ActionResult ErrorMsg(const std::string &msg);
 
@@ -61,6 +60,6 @@ namespace tr {
     void setup_playerCommand(int);
     void setup_hudCommand(int);
     void setup_tweakCommand(int);
-}  // namespace tr
+}  // namespace trapdoor
 
 #endif  // TRAPDOOR_COMMANDHELPER_H

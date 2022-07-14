@@ -5,8 +5,7 @@
 #include "SimPlayerHelper.h"
 #include "TrapdoorMod.h"
 
-namespace tr {
-
+namespace trapdoor {
     void setup_playerCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
@@ -102,7 +101,7 @@ namespace tr {
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
             auto name = results["name"].isSet ? results["name"].get<std::string>() : std::string();
             if (name.empty()) {
-                tr::mod().getSimPlayerManager().listAll().sendTo(output);
+                trapdoor::mod().getSimPlayerManager().listAll().sendTo(output);
                 return;
             }
 
@@ -119,18 +118,18 @@ namespace tr {
 
             switch (do_hash(results["player"].getRaw<std::string>().c_str())) {
                 case do_hash("spawn"):
-                    tr::mod()
+                    trapdoor::mod()
                         .getSimPlayerManager()
                         .addPlayer(name, origin.getBlockPosition(),
                                    origin.getDimension()->getDimensionId(), origin.getPlayer())
                         .sendTo(output);
                     break;
                 case do_hash("despawn"):
-                    tr::mod().getSimPlayerManager().removePlayer(name).sendTo(output);
+                    trapdoor::mod().getSimPlayerManager().removePlayer(name).sendTo(output);
                     break;
 
                 case do_hash("lookat"):
-                    tr::mod()
+                    trapdoor::mod()
                         .getSimPlayerManager()
                         .behavior(name, "lookat",
                                   results["vec3"].isSet ? results["vec3"].get<Vec3>()
@@ -138,13 +137,13 @@ namespace tr {
                         .sendTo(output);
                     break;
                 case do_hash("set"):
-                    tr::mod().getSimPlayerManager().setItem(name, itemId).sendTo(output);
+                    trapdoor::mod().getSimPlayerManager().setItem(name, itemId).sendTo(output);
                     break;
                 case do_hash("drop"):
-                    tr::mod().getSimPlayerManager().dropItem(name, itemId).sendTo(output);
+                    trapdoor::mod().getSimPlayerManager().dropItem(name, itemId).sendTo(output);
                     break;
                 case do_hash("moveto"):
-                    tr::mod()
+                    trapdoor::mod()
                         .getSimPlayerManager()
                         .behavior(name, "moveto",
                                   results["vec3"].isSet ? results["vec3"].get<Vec3>()
@@ -153,53 +152,53 @@ namespace tr {
                     break;
 
                 case do_hash("interact"):
-                    tr::mod()
+                    trapdoor::mod()
                         .getSimPlayerManager()
                         .interactSchedule(name, origin.getPlayer(), rep, interval, times)
                         .sendTo(output);
                     break;
 
                 case do_hash("attack"):
-                    tr::mod()
+                    trapdoor::mod()
                         .getSimPlayerManager()
                         .attackSchedule(name, origin.getPlayer(), rep, interval, times)
                         .sendTo(output);
                     break;
 
                 case do_hash("jump"):
-                    tr::mod()
+                    trapdoor::mod()
                         .getSimPlayerManager()
                         .jumpSchedule(name, rep, interval, times)
                         .sendTo(output);
                     break;
 
                 case do_hash("destroy"):
-                    tr::mod()
+                    trapdoor::mod()
                         .getSimPlayerManager()
                         .destroySchedule(name, blockPos, origin.getPlayer(), rep, interval, times)
                         .sendTo(output);
                     break;
 
                 case do_hash("backpack"):
-                    tr::mod().getSimPlayerManager().getBackpack(name, 0).sendTo(output);
+                    trapdoor::mod().getSimPlayerManager().getBackpack(name, 0).sendTo(output);
                     break;
 
                 // use
                 case do_hash("use"):
-                    tr::mod()
+                    trapdoor::mod()
                         .getSimPlayerManager()
                         .useSchedule(name, itemId, rep, interval, times)
                         .sendTo(output);
                     break;
                 case do_hash("useon"):
                     if (results["blockPos"].isSet) {
-                        tr::mod()
+                        trapdoor::mod()
                             .getSimPlayerManager()
                             .useOnBlockSchedule(name, itemId, results["blockPos"].get<BlockPos>(),
                                                 nullptr, rep, interval, times)
                             .sendTo(output);
                     } else {
-                        tr::mod()
+                        trapdoor::mod()
                             .getSimPlayerManager()
                             .useOnBlockSchedule(name, itemId, BlockPos(0, 0, 0), origin.getPlayer(),
                                                 rep, interval, times)
@@ -208,16 +207,16 @@ namespace tr {
 
                     break;
                 case do_hash("cancel"):
-                    tr::mod().getSimPlayerManager().cancel(name);
+                    trapdoor::mod().getSimPlayerManager().cancel(name);
                     break;
                 case do_hash("stop"):
-                    tr::mod().getSimPlayerManager().stopAction(name);
+                    trapdoor::mod().getSimPlayerManager().stopAction(name);
                     break;
             }
         };
 
         command->setCallback(cb);
         auto cmd = DynamicCommand::setup(std::move(command));
-        tr::mod().getSimPlayerManager().setupCommandInstance(cmd);
+        trapdoor::mod().getSimPlayerManager().setupCommandInstance(cmd);
     }
-}  // namespace tr
+}  // namespace trapdoor

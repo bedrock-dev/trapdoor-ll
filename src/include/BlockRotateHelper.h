@@ -7,10 +7,10 @@
 #include <MC/BlockSource.hpp>
 // clang-format on
 
-namespace tr {
+namespace trapdoor {
     void initRotateBlockHelper();
 
-    void rotateBlock(BlockSource &bs, const BlockPos &pos);
-}  // namespace tr
+    void rotateBlock(BlockSource & bs, const BlockPos &pos);
+}  // namespace trapdoor
 
 #endif

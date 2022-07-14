@@ -10,8 +10,7 @@
 // from
 // https://stackoverflow.com/questions/63166/how-to-determine-cpu-and-memory-consumption-from-inside-a-process
 
-namespace tr {
-
+namespace trapdoor {
     struct MemInfo {
         size_t totalPys = 0;
         size_t curTotalUsed = 0;
@@ -30,6 +29,6 @@ namespace tr {
     void initCPU();
 
     ActionResult printSysInfo();
-}  // namespace tr
+}  // namespace trapdoor
 
 #endif  // TRAPDOOR_SYSINFOHELPER_H

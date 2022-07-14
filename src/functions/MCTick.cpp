@@ -13,7 +13,7 @@
 #include "SimpleProfiler.h"
 #include "TrapdoorMod.h"
 
-namespace tr {
+namespace trapdoor {
     namespace {
 
         // In-file varilable;
@@ -84,7 +84,7 @@ namespace tr {
             info.forwardTickNum = gt;
             info.status = TickingStatus::Forwarding;
             if (gt >= 1200) {
-                tr::BroadcastMessage("The world begins to forward");
+                trapdoor::BroadcastMessage("The world begins to forward");
                 return {"Forward start", true};
             } else {
                 return {"", true};
@@ -112,7 +112,8 @@ namespace tr {
             }
             info.status = TickingStatus::SlowDown;
             info.slowDownTime = times;
-            tr::BroadcastMessage(fmt::format("The world will run {} times slower", times), -1);
+            trapdoor::BroadcastMessage(fmt::format("The world will run {} times slower", times),
+                                       -1);
             return {"", true};
         } else {
             return {"Slow can only be used on normal mode", false};
@@ -127,7 +128,8 @@ namespace tr {
             }
             info.accTime = times;
             info.status = TickingStatus::Acc;
-            tr::BroadcastMessage(fmt::format("The world will run {} times faster", times), -1);
+            trapdoor::BroadcastMessage(fmt::format("The world will run {} times faster", times),
+                                       -1);
             return {"", true};
         } else {
             return {"Acc can only be used on normal mode", false};
@@ -155,30 +157,30 @@ namespace tr {
         auto mspt = getMSPTinfo().mean();
         auto max = getMSPTinfo().max();
         auto min = getMSPTinfo().min();
-        auto tps = 1000.0 / tr::micro_to_mill(mspt);
+        auto tps = 1000.0 / trapdoor::micro_to_mill(mspt);
         tps = tps > 20.0 ? 20.0 : tps;
 
-        tr::TextBuilder builder;
+        trapdoor::TextBuilder builder;
         builder.text(" - MSPT / TPS: ")
-            .sTextF(TextBuilder::DARK_GREEN, "%.3f / %.1f\n", tr::micro_to_mill(mspt), tps)
+            .sTextF(TextBuilder::DARK_GREEN, "%.3f / %.1f\n", trapdoor::micro_to_mill(mspt), tps)
             .text(" - MIN / MAX: ")
-            .sTextF(TextBuilder::DARK_GREEN, "%.3f / %.3f \n", tr::micro_to_mill(min),
-                    tr::micro_to_mill(max))
+            .sTextF(TextBuilder::DARK_GREEN, "%.3f / %.3f \n", trapdoor::micro_to_mill(min),
+                    trapdoor::micro_to_mill(max))
             .text(" - Normal / Redstone: ");
         auto pair = getMSPTinfo().pairs();
-        builder.sTextF(TextBuilder::DARK_GREEN, "%.3f / %.3f \n", tr::micro_to_mill(pair.first),
-                       tr::micro_to_mill(pair.second));
+        builder.sTextF(TextBuilder::DARK_GREEN, "%.3f / %.3f \n",
+                       trapdoor::micro_to_mill(pair.first), trapdoor::micro_to_mill(pair.second));
         return {builder.get(), true};
     }
 
-    double getMeanMSPT() { return tr::micro_to_mill(getMSPTinfo().mean()); }
+    double getMeanMSPT() { return trapdoor::micro_to_mill(getMSPTinfo().mean()); }
 
     double getMeanTPS() {
-        auto tps = 1000.0 / tr::getMeanMSPT();
+        auto tps = 1000.0 / trapdoor::getMeanMSPT();
         return tps > 20.0 ? 20.0 : tps;
     }
 
-}  // namespace tr
+}  // namespace trapdoor
 
 /*
 ServerLevel::tick
@@ -197,16 +199,16 @@ ServerLevel::tick
 */
 
 THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
-    auto &info = tr::getTickingInfo();
-    auto &mod = tr::mod();
-    if (info.status == tr::TickingStatus::Normal) {
+    auto &info = trapdoor::getTickingInfo();
+    auto &mod = trapdoor::mod();
+    if (info.status == trapdoor::TickingStatus::Normal) {
         TIMER_START
         original(level);
         mod.lightTick();
         mod.heavyTick();
         TIMER_END
-        tr::getMSPTinfo().push(timeResult);
-        auto &prof = tr::normalProfiler();
+        trapdoor::getMSPTinfo().push(timeResult);
+        auto &prof = trapdoor::normalProfiler();
         if (prof.profiling) {
             prof.serverLevelTickTime += timeResult;
             prof.currentRound++;
@@ -216,8 +218,8 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
         }
         return;
         // Warp
-    } else if (info.status == tr::TickingStatus::Warp) {
-        auto mean_mspt = tr::micro_to_mill(tr::getMSPTinfo().mean());
+    } else if (info.status == trapdoor::TickingStatus::Warp) {
+        auto mean_mspt = trapdoor::micro_to_mill(trapdoor::getMSPTinfo().mean());
         int max_wrap_time = static_cast<int>(45.0 / mean_mspt);
         // 最快10倍速
         max_wrap_time = std::min(max_wrap_time, 10);
@@ -230,13 +232,13 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
         }
         mod.heavyTick();
         if (info.remainWarpTick <= 0) {
-            tr::BroadcastMessage("Warp finished", -1);
+            trapdoor::BroadcastMessage("Warp finished", -1);
             info.status = info.oldStatus;
         }
     }
 
     switch (info.status) {
-        case tr::TickingStatus::SlowDown:
+        case trapdoor::TickingStatus::SlowDown:
             if (info.slowDownCounter % info.slowDownTime == 0) {
                 original(level);
                 mod.lightTick();
@@ -246,18 +248,18 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
             info.slowDownCounter = (info.slowDownCounter + 1) % info.slowDownTime;
             break;
 
-        case tr::TickingStatus::Forwarding:
+        case trapdoor::TickingStatus::Forwarding:
             while (info.forwardTickNum > 0) {
                 original(level);
                 mod.lightTick();
                 --info.forwardTickNum;
             }
 
-            tr::BroadcastMessage("Froward finished", -1);
+            trapdoor::BroadcastMessage("Froward finished", -1);
             info.status = info.oldStatus;
             mod.heavyTick();
             break;
-        case tr::TickingStatus::Acc:
+        case trapdoor::TickingStatus::Acc:
             for (int i = 0; i < info.accTime; i++) {
                 mod.lightTick();
                 original(level);
@@ -271,7 +273,7 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
 
 THook(void, "?tick@LevelChunk@@QEAAXAEAVBlockSource@@AEBUTick@@@Z", LevelChunk *chunk, void *bs,
       void *tick) {
-    auto &prof = tr::normalProfiler();
+    auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
         TIMER_START
         original(chunk, bs, tick);
@@ -279,7 +281,7 @@ THook(void, "?tick@LevelChunk@@QEAAXAEAVBlockSource@@AEBUTick@@@Z", LevelChunk *
         prof.chunkInfo.totalTickTime += timeResult;
         auto dim_id = chunk->getDimension().getDimensionId();
         auto &cp = chunk->getPosition();
-        auto tpos = tr::TBlockPos2(cp.x, cp.z);
+        auto tpos = trapdoor::TBlockPos2(cp.x, cp.z);
         prof.chunkInfo.chunk_counter[static_cast<int>(dim_id)][tpos].push_back(timeResult);
     } else {
         original(chunk, bs, tick);
@@ -287,7 +289,7 @@ THook(void, "?tick@LevelChunk@@QEAAXAEAVBlockSource@@AEBUTick@@@Z", LevelChunk *
 }
 
 THook(void, "?tickBlocks@LevelChunk@@QEAAXAEAVBlockSource@@@Z", LevelChunk *chunk, void *bs) {
-    auto &prof = tr::normalProfiler();
+    auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
         TIMER_START
         original(chunk, bs);
@@ -299,7 +301,7 @@ THook(void, "?tickBlocks@LevelChunk@@QEAAXAEAVBlockSource@@@Z", LevelChunk *chun
 }
 
 THook(void, "?tickBlockEntities@LevelChunk@@QEAAXAEAVBlockSource@@@Z", void *chunk, void *bs) {
-    auto &prof = tr::normalProfiler();
+    auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
         TIMER_START
         original(chunk, bs);
@@ -314,7 +316,7 @@ THook(bool,
       "?tickPendingTicks@BlockTickingQueue@@QEAA_NAEAVBlockSource@@AEBUTick@@H_"
       "N@Z",
       void *queue, void *bs, uint64_t until, int max, bool instalTick) {
-    auto &prof = tr::normalProfiler();
+    auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
         TIMER_START
         return original(queue, bs, until, max, instalTick);
@@ -326,7 +328,7 @@ THook(bool,
 }
 
 THook(void, "?tick@Dimension@@UEAAXXZ", void *dim) {
-    auto &prof = tr::normalProfiler();
+    auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
         TIMER_START
         original(dim);
@@ -338,7 +340,7 @@ THook(void, "?tick@Dimension@@UEAAXXZ", void *dim) {
 }
 
 THook(void, "?tick@EntitySystems@@QEAAXAEAVEntityRegistry@@@Z", void *es, void *arg) {
-    auto &prof = tr::normalProfiler();
+    auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
         TIMER_START
         original(es, arg);
@@ -352,7 +354,7 @@ THook(void, "?tick@EntitySystems@@QEAAXAEAVEntityRegistry@@@Z", void *es, void *
 
 // signal update
 THook(void, "?tickRedstone@Dimension@@UEAAXXZ", void *dim) {
-    auto &prof = tr::normalProfiler();
+    auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
         TIMER_START
         original(dim);
@@ -365,7 +367,7 @@ THook(void, "?tickRedstone@Dimension@@UEAAXXZ", void *dim) {
 
 // pending update
 THook(void, "?processPendingAdds@CircuitSceneGraph@@AEAAXXZ", void *c) {
-    auto &prof = tr::normalProfiler();
+    auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
         TIMER_START
         original(c);
@@ -378,7 +380,7 @@ THook(void, "?processPendingAdds@CircuitSceneGraph@@AEAAXXZ", void *c) {
 
 // pemding remove
 THook(void, "?removeComponent@CircuitSceneGraph@@AEAAXAEBVBlockPos@@@Z", void *c, void *pos) {
-    auto &prof = tr::normalProfiler();
+    auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
         TIMER_START
         original(c, pos);
@@ -390,7 +392,7 @@ THook(void, "?removeComponent@CircuitSceneGraph@@AEAAXAEBVBlockPos@@@Z", void *c
 }
 
 THook(void, "?tick@Actor@@QEAA_NAEAVBlockSource@@@Z", Actor *actor, void *bs) {
-    auto &prof = tr::normalProfiler();
+    auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
         TIMER_START
         original(actor, bs);

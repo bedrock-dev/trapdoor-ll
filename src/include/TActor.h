@@ -5,8 +5,7 @@
 
 #include "TBlockPos.h"
 
-namespace tr {
-
+namespace trapdoor {
     struct TActorUniqueIDHash {
         static uint64_t mceHaseAccLong(uint64_t a1, uint64_t a2) {
             return ((a1 >> 2) + (a1 << 6) + a2 + 2654435769u) ^ a1;
@@ -27,5 +26,5 @@ namespace tr {
         TBlockPos pos;
     };
 
-}  // namespace tr
+}  // namespace trapdoor
 #endif

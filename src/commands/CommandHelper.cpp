@@ -9,16 +9,15 @@
 #include "DynamicCommandAPI.h"
 #include "TBlockPos.h"
 
-namespace tr {
-
+namespace trapdoor {
     ActionResult::ActionResult(std::string m, bool su) : msg(std::move(m)), success(su) {}
-    void ActionResult::sendTo(CommandOutput &output) const {
+    void ActionResult::sendTo(CommandOutput & output) const {
         success ? output.success(msg) : output.error(msg);
     }
 
     ActionResult ErrorMsg(const std::string &msg) { return {msg, false}; }
 
-    Vec3 getLookAtVec3(Player *player) {
+    Vec3 getLookAtVec3(Player * player) {
         if (!player) {
             return Vec3::MAX;
         }
@@ -29,7 +28,7 @@ namespace tr {
         return ins.isNull() ? Vec3::MAX : ins.getPosition().toVec3();
     }
 
-    BlockPos getLookAtPos(Player *player) {
+    BlockPos getLookAtPos(Player * player) {
         if (!player) {
             return Vec3::MAX;
         }
@@ -37,4 +36,4 @@ namespace tr {
         auto b = reinterpret_cast<Actor *>(player)->getBlockFromViewVector();
         return b.isNull() ? Vec3::MAX : b.getPosition();
     }
-}  // namespace tr
+}  // namespace trapdoor

@@ -9,7 +9,7 @@
 #include "DynamicCommandAPI.h"
 #include "InfoDisplay.h"
 
-namespace tr {
+namespace trapdoor {
     void setup_dataCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
@@ -52,11 +52,11 @@ namespace tr {
 
             switch (do_hash(results["data"].getRaw<std::string>().c_str())) {
                 case do_hash("block"):
-                    tr::displayBlockInfo(origin.getPlayer(), blockPos, displayNBT, nbtPath)
+                    trapdoor::displayBlockInfo(origin.getPlayer(), blockPos, displayNBT, nbtPath)
                         .sendTo(output);
                     break;
                 case do_hash("entity"):
-                    tr::displayEntityInfo(
+                    trapdoor::displayEntityInfo(
                         origin.getPlayer(),
                         reinterpret_cast<Actor *>(origin.getPlayer())->getActorFromViewVector(10),
                         displayNBT, nbtPath)
@@ -64,15 +64,15 @@ namespace tr {
                     break;
                 case do_hash("redstone"):
                     if (results["blockPos"].isSet) {
-                        tr::displayRedstoneCompInfo(origin.getDimension(),
-                                                    results["blockPos"].get<BlockPos>());
+                        trapdoor::displayRedstoneCompInfo(origin.getDimension(),
+                                                          results["blockPos"].get<BlockPos>());
 
                     } else {
                         if (!origin.getPlayer()) {
                             ErrorPlayerNeed().sendTo(output);
                         } else {
-                            tr::displayRedstoneCompInfo(origin.getDimension(),
-                                                        getLookAtPos(origin.getPlayer()));
+                            trapdoor::displayRedstoneCompInfo(origin.getDimension(),
+                                                              getLookAtPos(origin.getPlayer()));
                         }
                     }
                     break;
@@ -81,4 +81,4 @@ namespace tr {
         command->setCallback(cb);
         DynamicCommand::setup(std::move(command));
     }
-}  // namespace tr
+}  // namespace trapdoor

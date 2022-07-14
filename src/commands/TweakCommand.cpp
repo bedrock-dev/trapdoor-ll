@@ -5,25 +5,24 @@
 #include "Config.h"
 #include "DynamicCommandAPI.h"
 #include "TrapdoorMod.h"
-namespace tr {
-
+namespace trapdoor {
     ActionResult setForcePlaceBlock(int level) {
         if (level < 0 || level > 2) {
             return {"Level should within [0,2]", false};
         }
-        tr::mod().getConfig().getTweakConfig().forcePlaceLevel = level;
+        trapdoor::mod().getConfig().getTweakConfig().forcePlaceLevel = level;
         return {"Success", true};
     }
     ActionResult setForceOpenContainer(bool able) {
-        tr::mod().getConfig().getTweakConfig().forceOpenContainer = able;
+        trapdoor::mod().getConfig().getTweakConfig().forceOpenContainer = able;
         return {"Success", true};
     }
     ActionResult setDropperNoCost(bool able) {
-        tr::mod().getConfig().getTweakConfig().dropperNoCost = able;
+        trapdoor::mod().getConfig().getTweakConfig().dropperNoCost = able;
         return {"Success", true};
     }
     ActionResult setAutoTools(bool able) {
-        tr::mod().getConfig().getTweakConfig().autoSelectTool = able;
+        trapdoor::mod().getConfig().getTweakConfig().autoSelectTool = able;
         return {"Success", true};
     }
 
@@ -79,4 +78,4 @@ namespace tr {
         command->setCallback(cb);
         DynamicCommand::setup(std::move(command));
     }
-}  // namespace tr
+}  // namespace trapdoor

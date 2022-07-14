@@ -18,7 +18,7 @@
 #include "Utils.h"
 enum SpawnBlockRequirements;
 class SpawnConditions;
-namespace tr {
+namespace trapdoor {
     namespace {
 
         ActorSpawnRuleGroup *getSpawnRuleGroup() {
@@ -64,7 +64,7 @@ namespace tr {
         return {id->getFullName() + " ==> " + std::to_string(pool), true};
     }
 
-    ActionResult countActors(Player *player, const std::string &type) {
+    ActionResult countActors(Player * player, const std::string &type) {
         auto chPos = fromBlockPos(player->getPos().toBlockPos()).toChunkPos();
         auto entities = Level::getAllEntities();
         std::unordered_map<std::string, size_t> chunkList, allList, densityList;
@@ -86,18 +86,18 @@ namespace tr {
         TextBuilder builder;
         for (auto &i : res) {
             builder.sText(TB::GRAY, " - ")
-                .textF("%s: ", tr::i18ActorName(i.first).c_str())
+                .textF("%s: ", trapdoor::i18ActorName(i.first).c_str())
                 .num(i.second)
                 .text("\n");
         }
         return {builder.get(), true};
     }
 
-    ActionResult forceSpawn(Player *player, const ActorDefinitionIdentifier *id,
+    ActionResult forceSpawn(Player * player, const ActorDefinitionIdentifier *id,
                             const BlockPos &pos) {
         auto targetPos = pos;
         if (targetPos == BlockPos::MAX) {
-            targetPos = tr::getLookAtPos(player);
+            targetPos = trapdoor::getLookAtPos(player);
         }
         if (targetPos == BlockPos::MAX) {
             return {"Invalid pos", false};
@@ -114,7 +114,7 @@ namespace tr {
         }
     }
 
-    ActionResult printSpawnProbability(Player *player, const BlockPos &pos) {
+    ActionResult printSpawnProbability(Player * player, const BlockPos &pos) {
         BlockPos topPos = {pos.x, 320, pos.z};
         bool isSurface = true;
         bool hasFound = false;
@@ -140,8 +140,9 @@ namespace tr {
 
         auto cond = buildSpawnConditions(topPos, player->getRegion(), isSurface);
 
-        tr::logger().debug("surf/under:{}/{} water/lava:{}/{}  bright:{}", cond.isOnSurface,
-                           cond.isUnderground, cond.isInWater, cond.isInLava, cond.rawBrightness);
+        trapdoor::logger().debug("surf/under:{}/{} water/lava:{}/{}  bright:{}", cond.isOnSurface,
+                                 cond.isUnderground, cond.isInWater, cond.isInLava,
+                                 cond.rawBrightness);
         auto &block = player->getRegion().getBlock(topPos);
         std::map<std::string, std::pair<int, bool>> spawnMap;
         for (int i = 0; i < 1000; i++) {
@@ -184,11 +185,11 @@ namespace tr {
             auto ok = mob.second.second;
             auto color = ok ? TB::DARK_GREEN : TB::DARK_RED;
             builder.sText(TB::GRAY, " - ")
-                .textF("%s:  ", tr::i18ActorName(mob.first).c_str())
+                .textF("%s:  ", trapdoor::i18ActorName(mob.first).c_str())
                 .num(mob.second.first * 100.0 / totalCount)
                 .text("%%, Can: ")
                 .sTextF(color | TB::BOLD, "%d\n", ok);
         }
         return {builder.get(), true};
     }
-}  // namespace tr
+}  // namespace trapdoor

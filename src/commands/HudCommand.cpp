@@ -6,7 +6,7 @@
 #include "HsaHelper.h"
 #include "TrapdoorMod.h"
 
-namespace tr {
+namespace trapdoor {
     void setup_hudCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
@@ -42,7 +42,7 @@ namespace tr {
 
             switch (do_hash(results["hud"].getRaw<std::string>().c_str())) {
                 case do_hash("add"):
-                    tr::mod()
+                    trapdoor::mod()
                         .getHUDHelper()
                         .modifyPlayerInfo(
                             reinterpret_cast<Player *>(origin.getPlayer())->getRealName(),
@@ -50,7 +50,7 @@ namespace tr {
                         .sendTo(output);
                     break;
                 case do_hash("remove"):
-                    tr::mod()
+                    trapdoor::mod()
                         .getHUDHelper()
                         .modifyPlayerInfo(
                             reinterpret_cast<Player *>(origin.getPlayer())->getRealName(),
@@ -58,7 +58,7 @@ namespace tr {
                         .sendTo(output);
                     break;
                 case do_hash("show"):
-                    tr::mod()
+                    trapdoor::mod()
                         .getHUDHelper()
                         .setAblePlayer(
                             reinterpret_cast<Player *>(origin.getPlayer())->getRealName(),
@@ -71,4 +71,4 @@ namespace tr {
         DynamicCommand::setup(std::move(command));
     }
 
-}  // namespace tr
+}  // namespace trapdoor

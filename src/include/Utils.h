@@ -2,8 +2,7 @@
 #define TRAPDOOR_UTILS_H
 #include <MC/CompoundTag.hpp>
 #include <string>
-namespace tr {
-
+namespace trapdoor {
     std::string getNBTInfoFromPath(const std::unique_ptr<CompoundTag> &tag, const std::string &path,
                                    bool &success);
 
@@ -11,6 +10,6 @@ namespace tr {
 
     std::string i18ActorName(const std::string &name);
 
-}  // namespace tr
+}  // namespace trapdoor
 
 #endif

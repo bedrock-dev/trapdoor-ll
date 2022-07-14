@@ -8,8 +8,7 @@
 #include "MCTick.h"
 #include "SysInfoHelper.h"
 
-namespace tr {
-
+namespace trapdoor {
     void setup_logCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
@@ -26,10 +25,10 @@ namespace tr {
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
             switch (do_hash(results["log"].getRaw<std::string>().c_str())) {
                 case do_hash("mspt"):
-                    tr::printMSPT().sendTo(output);
+                    trapdoor::printMSPT().sendTo(output);
                     break;
                 case do_hash("os"):
-                    tr::printSysInfo().sendTo(output);
+                    trapdoor::printSysInfo().sendTo(output);
                     break;
                 default:
                     break;
@@ -39,4 +38,4 @@ namespace tr {
 
         DynamicCommand::setup(std::move(command));
     }
-}  // namespace tr
+}  // namespace trapdoor

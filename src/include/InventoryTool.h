@@ -7,12 +7,11 @@
 #include <MC/BlockInstance.hpp>
 #include <MC/Inventory.hpp>
 #include <MC/Player.hpp>
-namespace tr {
+namespace trapdoor {
+    bool onStartDestroyBlock(Player * player, const BlockInstance &instance);
 
-    bool onStartDestroyBlock(Player *player, const BlockInstance &instance);
+    void swapItemInContainer(Container & cont, int s1, int s2);
 
-    void swapItemInContainer(Container &cont, int s1, int s2);
-
-}  // namespace tr
+}  // namespace trapdoor
 
 #endif  // TRAPDOOR_INVENTORYTOOL_H

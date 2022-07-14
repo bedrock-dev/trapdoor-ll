@@ -1,7 +1,7 @@
 #ifndef TRAPDOOR_EVENT_H
 #define TRAPDOOR_EVENT_H
 
-namespace tr {
+namespace trapdoor {
     void subscribeItemUseOnEvent();
     void subscribeItemUseEvent();
     void subscribePlayerDieEvent();
@@ -18,6 +18,6 @@ namespace tr {
         subscribePlayerInventoryChangeEvent();
     }
 
-}  // namespace tr
+}  // namespace trapdoor
 
 #endif

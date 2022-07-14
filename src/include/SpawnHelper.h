@@ -5,7 +5,7 @@
 
 #include "CommandHelper.h"
 
-namespace tr {
+namespace trapdoor {
     //! 这个结构的代码不要动，顺序也别动
 
     struct TMobSpawnRules {};
@@ -29,11 +29,11 @@ namespace tr {
 #pragma pack(pop)
 
     ActionResult printCap(const ActorDefinitionIdentifier *id);
-    ActionResult countActors(Player *p, const std::string &type);
+    ActionResult countActors(Player * p, const std::string &type);
 
-    ActionResult printSpawnProbability(Player *player, const BlockPos &pos);
+    ActionResult printSpawnProbability(Player * player, const BlockPos &pos);
 
-    ActionResult forceSpawn(Player *p, const ActorDefinitionIdentifier *id, const BlockPos &pos);
+    ActionResult forceSpawn(Player * p, const ActorDefinitionIdentifier *id, const BlockPos &pos);
 
     class SpawnHelper {
         std::vector<BlockPos> verticalSpawnPositions;
@@ -53,5 +53,5 @@ namespace tr {
         void updateVerticalSpawnPositions(const BlockPos &pos, Player *player);
     };
 
-}  // namespace tr
+}  // namespace trapdoor
 #endif

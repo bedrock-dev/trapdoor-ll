@@ -7,7 +7,7 @@
 
 #include <string>
 
-namespace tr {
+namespace trapdoor {
     struct TBlockPos;
 
     struct TVec3 {
@@ -43,6 +43,6 @@ namespace tr {
 
         TBlockPos toBlockPos() const;
     };
-}  // namespace tr
+}  // namespace trapdoor
 
 #endif  // TRAPDOOR_VEC3_H

@@ -6,7 +6,7 @@
 #include "TVec3.h"
 #include "TrapdoorMod.h"
 
-namespace tr {
+namespace trapdoor {
     struct TAABB {
         TVec3 p1{};
         TVec3 p2{};
@@ -17,6 +17,6 @@ namespace tr {
         }
     };
 
-}  // namespace tr
+}  // namespace trapdoor
 
 #endif

@@ -20,5 +20,5 @@ void PluginInit() {
         ;
     printf("%s", s);
     prepare();
-    tr::mod().init();
+    trapdoor::mod().init();
 }

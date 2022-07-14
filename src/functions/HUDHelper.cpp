@@ -19,8 +19,7 @@
 #include "TrAPI.h"
 #include "Utils.h"
 
-namespace tr {
-
+namespace trapdoor {
     namespace {
 
         std::string buildRedstoneInfo(Player* player) {
@@ -37,14 +36,14 @@ namespace tr {
         }
 
         std::string buildHopperCounter(Player* player) {
-            auto& hcm = tr::mod().getHopperChannelManager();
+            auto& hcm = trapdoor::mod().getHopperChannelManager();
             if (!hcm.isEnable()) return "";
             TextBuilder b;
             auto pointBlock = reinterpret_cast<Actor*>(player)->getBlockFromViewVector();
             if (pointBlock.isNull()) return "";
             auto* block = pointBlock.getBlock();
             if (block->getId() == HopperChannelManager::HOPPER_COUNTER_BLOCK) {
-                return tr::mod().getHopperChannelManager().getHUDData(block->getVariant());
+                return trapdoor::mod().getHopperChannelManager().getHUDData(block->getVariant());
             }
 
             return "";
@@ -79,7 +78,7 @@ namespace tr {
 
         std::string buildMsptHud() {
             TextBuilder builder;
-            auto mspt = tr::getMeanMSPT();
+            auto mspt = trapdoor::getMeanMSPT();
             auto tps = 1000.0 / mspt;
             if (tps > 20.0) tps = 20.0;
             auto color = mspt <= 50 ? TextBuilder::GREEN : TextBuilder::RED;
@@ -104,7 +103,8 @@ namespace tr {
     void HUDHelper::tick() {
         if (!this->enable) return;
         static int refresh_time = 0;
-        refresh_time = (refresh_time + 1) % tr::mod().getConfig().getBasicConfig().hudRefreshFreq;
+        refresh_time =
+            (refresh_time + 1) % trapdoor::mod().getConfig().getBasicConfig().hudRefreshFreq;
         if (refresh_time != 1) return;
         for (auto& info : this->playerInfos) {
             auto* p = Global<Level>->getPlayer(info.first);
@@ -148,4 +148,4 @@ namespace tr {
         this->playerInfos[playerName].enable = able;
         return {"Success", true};
     }
-}  // namespace tr
+}  // namespace trapdoor

@@ -7,17 +7,17 @@
 #include "Events.h"
 #include "LoggerAPI.h"
 #include "SysInfoHelper.h"
-#define REG_COMMAND(c)                                   \
-    auto cfg_##c = cmdCfg.getCommandConfig(#c);          \
-    if (cfg_##c.enable) {                                \
-        tr::setup_##c##Command(cfg_##c.permissionLevel); \
-        tr::logger().debug("register command " #c);      \
+#define REG_COMMAND(c)                                         \
+    auto cfg_##c = cmdCfg.getCommandConfig(#c);                \
+    if (cfg_##c.enable) {                                      \
+        trapdoor::setup_##c##Command(cfg_##c.permissionLevel); \
+        trapdoor::logger().debug("register command " #c);      \
     }
 
-namespace tr {
+namespace trapdoor {
     namespace {
         void setupCommands() {
-            auto &cmdCfg = tr::mod().getConfig();
+            auto &cmdCfg = trapdoor::mod().getConfig();
             REG_COMMAND(spawn)
             REG_COMMAND(data)
             REG_COMMAND(trapdoor)
@@ -60,14 +60,14 @@ namespace tr {
         //  std::string path = "./plugins/trapdoor/";
         logger().debug("Config path: {}", path);
         this->config.init(path + "config.json");
-        tr::initCPU();
-        tr::SubscribeEvents();
-        tr::initRotateBlockHelper();
-        tr::setupCommands();
+        trapdoor::initCPU();
+        trapdoor::SubscribeEvents();
+        trapdoor::initRotateBlockHelper();
+        trapdoor::setupCommands();
     }
 
     TrapdoorMod &mod() {
         static TrapdoorMod mod;
         return mod;
     }
-}  // namespace tr
+}  // namespace trapdoor

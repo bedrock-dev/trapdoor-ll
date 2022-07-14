@@ -9,10 +9,10 @@
 #include <MC/CircuitSceneGraph.hpp>
 #include <MC/CircuitSystem.hpp>
 #include <string>
-namespace tr {
-    std::string getBiomeName(Biome *biome);
+namespace trapdoor {
+    std::string getBiomeName(Biome * biome);
 
-    CircuitSceneGraph &getCircuitSceneGraph(CircuitSystem *system);
-}  // namespace tr
+    CircuitSceneGraph &getCircuitSceneGraph(CircuitSystem * system);
+}  // namespace trapdoor
 
 #endif  // TRAPDOOR_TRAPI_H

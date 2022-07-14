@@ -16,8 +16,7 @@
 #include "TrapdoorMod.h"
 #include "Utils.h"
 
-namespace tr {
-
+namespace trapdoor {
     namespace {
         // 右键消除抖动
         struct UseOnAction {
@@ -56,14 +55,14 @@ namespace tr {
 
     void subscribeItemUseEvent() {
         Event::PlayerUseItemEvent::subscribe([&](const Event::PlayerUseItemEvent& ev) {
-            auto& shortcuts = tr::mod().getConfig().getShortcuts();
+            auto& shortcuts = trapdoor::mod().getConfig().getShortcuts();
             if (shortcuts.empty()) {
                 return true;
             }
             Shortcut shortcut;
             shortcut.type = USE;
             shortcut.itemAux = ev.mItemStack->getAux();
-            shortcut.itemName = tr::rmmc(ev.mItemStack->getTypeName());
+            shortcut.itemName = trapdoor::rmmc(ev.mItemStack->getTypeName());
             for (auto& sh : shortcuts) {
                 if (sh.match(shortcut)) {
                     sh.runUse(ev.mPlayer, ev.mItemStack);
@@ -84,20 +83,20 @@ namespace tr {
             auto* block = bi->getBlock();
             //            if (ev.mItemStack->getName() == "Cactus" &&
             //                antiShake(ev.mPlayer->getName(), bi->getPosition())) {
-            //                tr::rotateBlock(ev.mPlayer->getRegion(), bi->getPosition());
+            //                trapdoor::rotateBlock(ev.mPlayer->getRegion(), bi->getPosition());
             //                return true;
             //            }
 
-            auto& shortcuts = tr::mod().getConfig().getShortcuts();
+            auto& shortcuts = trapdoor::mod().getConfig().getShortcuts();
             if (shortcuts.empty()) {
                 return true;
             }
             Shortcut shortcut;
             shortcut.type = USE_ON;
             shortcut.itemAux = ev.mItemStack->getAux();
-            shortcut.itemName = tr::rmmc(ev.mItemStack->getTypeName());
+            shortcut.itemName = trapdoor::rmmc(ev.mItemStack->getTypeName());
             shortcut.blockAux = block->getVariant();
-            shortcut.blockName = tr::rmmc(block->getName().getString());
+            shortcut.blockName = trapdoor::rmmc(block->getName().getString());
             for (auto sh : shortcuts) {
                 if (sh.match(shortcut)) {
                     if (antiShake(ev.mPlayer->getRealName(), bi->getPosition())) {
@@ -112,7 +111,7 @@ namespace tr {
 
     void subscribePlayerDieEvent() {
         Event::PlayerDieEvent::subscribe([&](const Event::PlayerDieEvent& ev) {
-            tr::mod().getSimPlayerManager().processDieEvent(ev.mPlayer->getRealName());
+            trapdoor::mod().getSimPlayerManager().processDieEvent(ev.mPlayer->getRealName());
             return true;
         });
     }
@@ -128,11 +127,11 @@ namespace tr {
     void subscribePlayerInventoryChangeEvent() {
         Event::PlayerInventoryChangeEvent::subscribe(
             [&](const Event::PlayerInventoryChangeEvent& ev) {
-                tr::mod().getSimPlayerManager().tryRefreshInv(ev.mPlayer);
+                trapdoor::mod().getSimPlayerManager().tryRefreshInv(ev.mPlayer);
                 return true;
             });
     }
-}  // namespace tr
+}  // namespace trapdoor
 
 // TInstanceHook(bool,
 // "?_useOn@BlockItem@@MEBA_NAEAVItemStack@@AEAVActor@@VBlockPos@@EAEBVVec3@@@Z",
@@ -140,7 +139,7 @@ namespace tr {
 //     auto id = a2 ? a2->getId() : -1024;
 //     auto res = original(this, a2, ac, a4, a5, a6);
 //     if (ac && ac->isPlayer()) {
-//         tr::afterUseItem((Player*)(ac), static_cast<int>(id));
+//         trapdoor::afterUseItem((Player*)(ac), static_cast<int>(id));
 //     }
 //     return res;
 // }

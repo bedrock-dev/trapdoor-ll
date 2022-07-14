@@ -9,7 +9,7 @@
 #include "SpawnHelper.h"
 #include "TBlockPos.h"
 #include "TrapdoorMod.h"
-namespace tr {
+namespace trapdoor {
     void setup_spawnCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
@@ -66,42 +66,45 @@ namespace tr {
                 results["analyzeSub"].isSet ? results["analyzeSub"].getRaw<std::string>() : "";
             switch (do_hash(results["spawn"].getRaw<std::string>().c_str())) {
                 case do_hash("count"):
-                    tr::countActors(reinterpret_cast<Player *>(origin.getPlayer()),
-                                    results["countType"].getRaw<std::string>())
+                    trapdoor::countActors(reinterpret_cast<Player *>(origin.getPlayer()),
+                                          results["countType"].getRaw<std::string>())
                         .sendTo(output);
                     break;
                 case do_hash("forcesp"):
-                    tr::forceSpawn(reinterpret_cast<Player *>(origin.getPlayer()),
-                                   results["actorType"].get<const ActorDefinitionIdentifier *>(),
-                                   results["blockPos"].isSet ? results["blockPos"].get<BlockPos>()
-                                                             : BlockPos::MAX)
+                    trapdoor::forceSpawn(
+                        reinterpret_cast<Player *>(origin.getPlayer()),
+                        results["actorType"].get<const ActorDefinitionIdentifier *>(),
+                        results["blockPos"].isSet ? results["blockPos"].get<BlockPos>()
+                                                  : BlockPos::MAX)
                         .sendTo(output);
                     break;
                 case do_hash("analyze"):
                     if (subOpt == "start") {
-                        tr::mod()
+                        trapdoor::mod()
                             .getSpawnAnalyzer()
                             .start(origin.getDimension()->getDimensionId(),
                                    fromBlockPos(origin.getBlockPosition()).toChunkPos())
                             .sendTo(output);
                     } else if (subOpt == "stop") {
-                        tr::mod().getSpawnAnalyzer().stop().sendTo(output);
+                        trapdoor::mod().getSpawnAnalyzer().stop().sendTo(output);
                     } else if (subOpt == "print") {
-                        tr::mod().getSpawnAnalyzer().printResult().sendTo(output);
+                        trapdoor::mod().getSpawnAnalyzer().printResult().sendTo(output);
                     } else if (subOpt == "clear") {
-                        tr::mod().getSpawnAnalyzer().clear().sendTo(output);
+                        trapdoor::mod().getSpawnAnalyzer().clear().sendTo(output);
                     }
                     break;
                 case do_hash("prob"):
                     if (results["blockPos"].isSet) {
-                        tr::printSpawnProbability(reinterpret_cast<Player *>(origin.getPlayer()),
-                                                  results["blockPos"].get<BlockPos>())
+                        trapdoor::printSpawnProbability(
+                            reinterpret_cast<Player *>(origin.getPlayer()),
+                            results["blockPos"].get<BlockPos>())
                             .sendTo(output);
                     } else {
-                        tr::printSpawnProbability(reinterpret_cast<Player *>(origin.getPlayer()),
-                                                  reinterpret_cast<Actor *>(origin.getPlayer())
-                                                      ->getBlockFromViewVector()
-                                                      .getPosition())
+                        trapdoor::printSpawnProbability(
+                            reinterpret_cast<Player *>(origin.getPlayer()),
+                            reinterpret_cast<Actor *>(origin.getPlayer())
+                                ->getBlockFromViewVector()
+                                .getPosition())
                             .sendTo(output);
                     }
             }
@@ -110,4 +113,4 @@ namespace tr {
         command->setCallback(cb);
         DynamicCommand::setup(std::move(command));
     }
-}  // namespace tr
+}  // namespace trapdoor

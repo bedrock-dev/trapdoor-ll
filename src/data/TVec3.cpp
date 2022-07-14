@@ -2,13 +2,13 @@
 // Created by xhy on 2022/5/17.
 //
 
+#include "TVec3.h"
+
 #include <cmath>
 
 #include "TBlockPos.h"
-#include "TVec3.h"
 
-
-namespace tr {
+namespace trapdoor {
     TVec3::TVec3(int _x) : TVec3(_x, _x, _x) {}
 
     TVec3::TVec3(float _x) : TVec3(_x, _x, _x) {}
@@ -25,13 +25,9 @@ namespace tr {
         return std::string(buffer);
     }
 
-    bool TVec3::operator!=(const TVec3 &v) const {
-        return x != v.x || y != v.y || z != v.z;
-    }
+    bool TVec3::operator!=(const TVec3 &v) const { return x != v.x || y != v.y || z != v.z; }
 
-    bool TVec3::operator==(const TVec3 &v) const {
-        return x == v.x && y == v.y && z == v.z;
-    }
+    bool TVec3::operator==(const TVec3 &v) const { return x == v.x && y == v.y && z == v.z; }
 
     TBlockPos TVec3::toBlockPos() const {
         auto cx = x < 0 ? x - 1 : x;
@@ -56,8 +52,6 @@ namespace tr {
         return {this->x - v.x, this->y - v.y, this->z - v.z};
     }
 
-    TVec3 TVec3::operator*(float times) const {
-        return {x * times, y * times, z * times};
-    }
+    TVec3 TVec3::operator*(float times) const { return {x * times, y * times, z * times}; }
 
-}  // namespace tr
+}  // namespace trapdoor
