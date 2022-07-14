@@ -13,7 +13,8 @@ namespace trapdoor {
         if (!readCommandConfigs()) return false;
         if (!readBasicConfigs()) return false;
         if (!readShortcutConfigs()) return false;
-        if (!this->readDefaultEnableFunctions()) return false;
+        if (!readDefaultEnableFunctions()) return false;
+        if (!readTweakConfigs()) return false;
         return true;
     }
 
@@ -148,7 +149,35 @@ namespace trapdoor {
             trapdoor::logger().warn("Set HUD to {}", hud);
             // trapdoor::logger().warn("Set block rotate to {}", br);
         } catch (const std::exception& e) {
-            trapdoor::logger().error("error read shortcut getConfig: {}", e.what());
+            trapdoor::logger().error("error read default functions config: {}", e.what());
+            return false;
+        }
+
+        return true;
+    }
+    bool Configuration::readTweakConfigs() {
+        try {
+            /*
+                 "force-open-container": false,
+                 "dropper-no-cost": false,
+                 "auto-select-tool": false
+              */
+            auto det = this->config["default-enable-tweaks"];
+            auto& mod = trapdoor::mod();
+            auto fpl = det["force-place-level"].get<int>();
+            auto forceOpenContainer = det["force-open-container"].get<bool>();
+            auto dropperNoCost = det["dropper-no-cost"].get<bool>();
+            auto autoSelectTool = det["auto-select-tool"].get<bool>();
+            this->tweakConfig.autoSelectTool = autoSelectTool;
+            this->tweakConfig.dropperNoCost = dropperNoCost;
+            this->tweakConfig.forceOpenContainer = forceOpenContainer;
+            this->tweakConfig.forcePlaceLevel = fpl >= 0 && fpl <= 2 ? fpl : 0;
+            trapdoor::logger().warn("Set ForcePlaceLevel to {}", fpl);
+            trapdoor::logger().warn("Set ForceOpenContainer to {}", forceOpenContainer);
+            trapdoor::logger().warn("Set DropperNoCost to {}", dropperNoCost);
+            trapdoor::logger().warn("Set AutoSelectTool to {}", autoSelectTool);
+        } catch (const std::exception& e) {
+            trapdoor::logger().error("error read tweak config: {}", e.what());
             return false;
         }
 

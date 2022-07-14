@@ -53,6 +53,8 @@ namespace trapdoor {
 
         bool readBasicConfigs();
 
+        bool readTweakConfigs();
+
         bool readCommandConfigs();
 
         bool readShortcutConfigs();
