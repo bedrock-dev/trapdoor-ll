@@ -1,4 +1,4 @@
-name: GitHub Actions Demo
+name: Trapdoor Build
 on: [ push ]
 jobs:
   Build:
@@ -38,6 +38,7 @@ jobs:
           mkdir out/plugins
           mkdir out/plugins/trapdoor
           cp ./build/Debug/trapdoor*.dll ./out/plugins/
+          cp ./build/Debug/trapdoor*.pdb ./out/plugins/
           cp ./src/base/config.json ./out/plugins/trapdoor/
           cp ./changelog.md ./out/
           cp ./README.md ./out
