@@ -1,3 +1,4 @@
+#include "GlobalServiceAPI.h"
 #include "Particle.h"
 
 #include <MC/Dimension.hpp>
@@ -6,7 +7,6 @@
 #include <map>
 
 #include "Config.h"
-#include "GlobalServiceAPI.h"
 #include "TBlockPos.h"
 #include "TVec3.h"
 namespace tr {
