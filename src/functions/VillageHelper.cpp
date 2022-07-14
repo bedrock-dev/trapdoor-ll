@@ -1,5 +1,5 @@
 // clang-format off
-//#include "GlobalServiceAPI.h"
+//#include "Global.h"
 #include "Global.h"
 // clang-format on
 
@@ -152,7 +152,7 @@ namespace trapdoor {
         }
     }
 
-    void VillageHelper::insertVillage(Village * village) {
+    void VillageHelper::insertVillage(Village *village) {
         if (!village) return;
         auto uid = village->getUniqueID().asString();
         auto vid = getVIDFormPool(uid);
@@ -220,8 +220,8 @@ namespace trapdoor {
 
         TextBuilder builder;
         auto center = vill->getCenter().toBlockPos();
-        auto minPos = vill->getBounds().pointA.toBlockPos();
-        auto maxPos = vill->getBounds().pointB.toBlockPos();
+        auto minPos = vill->getBounds().min.toBlockPos();
+        auto maxPos = vill->getBounds().max.toBlockPos();
         auto dc_map = Village_getDwellerCount(vill);
         builder
             .textF("VID: %d          UUID: %s", it->first, vill->getUniqueID().asString().c_str())
@@ -299,7 +299,7 @@ namespace trapdoor {
         return {"", true};
     }
 
-    bool VillageHelper::ShowVillageInfo(Player * p, Actor * actor) {
+    bool VillageHelper::ShowVillageInfo(Player *p, Actor *actor) {
         if (!actor || !p) {
             return true;
         }

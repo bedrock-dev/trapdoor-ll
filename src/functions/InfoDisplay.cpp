@@ -17,7 +17,7 @@
 
 #include "CommandHelper.h"
 #include "DataConverter.h"
-#include "GlobalServiceAPI.h"
+#include "Global.h"
 #include "MC/PrettySnbtFormat.hpp"
 #include "Msg.h"
 #include "TrAPI.h"
@@ -47,7 +47,7 @@ namespace trapdoor {
             }
         }
     }  // namespace
-    ActionResult displayEntityInfo(Player * player, Actor * a, bool nbt, const std::string &path) {
+    ActionResult displayEntityInfo(Player *player, Actor *a, bool nbt, const std::string &path) {
         if (!player) return ErrorPlayerNeed();
         if (!a) {
             return {"No actor", false};
@@ -72,7 +72,7 @@ namespace trapdoor {
         return {builder.get(), true};
     }
 
-    ActionResult displayBlockInfo(Player * p, const BlockPos &position, bool nbt,
+    ActionResult displayBlockInfo(Player *p, const BlockPos &position, bool nbt,
                                   const std::string &path) {
         if (!p) return ErrorPlayerNeed();
         auto pos = position;
@@ -127,7 +127,7 @@ namespace trapdoor {
 
     bool displayEnvInfo() { return true; }
 
-    ActionResult displayRedstoneCompInfo(Dimension * d, const BlockPos &pos) {
+    ActionResult displayRedstoneCompInfo(Dimension *d, const BlockPos &pos) {
         if (!d) return ErrorDimension();
         auto &cs = d->getCircuitSystem();
         auto &graph = getCircuitSceneGraph(&cs);

@@ -1,4 +1,3 @@
-#include "GlobalServiceAPI.h"
 #include "Particle.h"
 
 #include <MC/Dimension.hpp>
@@ -7,8 +6,10 @@
 #include <map>
 
 #include "Config.h"
+#include "Global.h"
 #include "TBlockPos.h"
 #include "TVec3.h"
+
 
 namespace trapdoor {
     namespace {

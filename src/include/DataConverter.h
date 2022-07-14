@@ -20,9 +20,7 @@ namespace trapdoor {
 
     inline TBlockPos fromBlockPos(const BlockPos& v) { return {v.x, v.y, v.z}; }
 
-    inline TAABB fromAABB(const AABB& aabb) {
-        return {fromVec3(aabb.pointA), fromVec3(aabb.pointB)};
-    }
+    inline TAABB fromAABB(const AABB& aabb) { return {fromVec3(aabb.min), fromVec3(aabb.max)}; }
 
 }  // namespace trapdoor
 #endif

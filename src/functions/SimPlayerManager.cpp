@@ -64,6 +64,8 @@ namespace trapdoor {
             const std::string path = "./plugins/trapdoor/sim/" + file_name;
             // TODO 从文件读取内容到背包
         }
+
+        constexpr auto DEFAULT_FACING = static_cast<ScriptModuleMinecraft::ScriptFacing>(1);
     }  // namespace
 
     bool SimPlayerManager::checkSurvival(const std::string& name) {
@@ -139,10 +141,10 @@ namespace trapdoor {
                 if (bi.isNull()) {
                     sim->simulateDestory();
                 } else {
-                    sim->simulateDestroyBlock(bi.getPosition(), static_cast<ScriptFacing>(1));
+                    sim->simulateDestroyBlock(bi.getPosition(), DEFAULT_FACING);
                 }
             } else {
-                sim->simulateDestroyBlock(pos, static_cast<ScriptFacing>(1));
+                sim->simulateDestroyBlock(pos, DEFAULT_FACING);
             }
         };
         ADD_TASK
@@ -167,7 +169,7 @@ namespace trapdoor {
                 if (pos == BlockPos::MAX) {
                     sim->simulateInteract();
                 } else {
-                    sim->simulateInteract(pos, static_cast<ScriptFacing>(1));
+                    sim->simulateInteract(pos, DEFAULT_FACING);
                 }
             }
         };
@@ -240,11 +242,10 @@ namespace trapdoor {
         auto pos = getTargetPos(ori, p);
         auto task = [this, name, pos, itemId, sim]() {
             CHECK_SURVIVAL
-            auto face = static_cast<ScriptFacing>(1);
             auto v = Vec3(0.5, 1.0, 0.5);
             auto* item = getItemInInv(sim, itemId);
             if (item) {
-                sim->simulateUseItemOnBlock(*item, pos, face, v);
+                sim->simulateUseItemOnBlock(*item, pos, DEFAULT_FACING, v);
             }
         };
         ADD_TASK
@@ -356,7 +357,7 @@ namespace trapdoor {
         }
         cmdInstance->setSoftEnum("name", names);
     }
-    void SimPlayerManager::tryRefreshInv(Player * player) {
+    void SimPlayerManager::tryRefreshInv(Player* player) {
         if (!player) return;
         auto name = player->getRealName();
         auto iter = this->simPlayers.find(name);

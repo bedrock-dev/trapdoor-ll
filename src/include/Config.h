@@ -8,7 +8,7 @@
 #include <map>
 #include <unordered_map>
 
-#include "GlobalServiceAPI.h"
+#include "Global.h"
 #include "MC/Command.hpp"
 #include "MC/Level.hpp"
 #include "MC/ServerPlayer.hpp"
