@@ -137,13 +137,6 @@ namespace trapdoor {
         auto task = [name, this, sim, pos]() {
             CHECK_SURVIVAL
             if (pos != BlockPos::MAX) {
-                //                auto bi = sim->getBlockFromViewVector();
-                //                if (bi.isNull()) {
-                //                    sim->simulateDestory();
-                //                } else {
-                //                    sim->simulateDestroyBlock(bi.getPosition(), DEFAULT_FACING);
-                //                }
-                //            } else {
                 sim->simulateDestroyBlock(pos, DEFAULT_FACING);
             }
         };

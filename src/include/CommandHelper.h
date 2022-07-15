@@ -28,9 +28,9 @@ namespace trapdoor {
         void sendTo(CommandOutput &output) const;
     };
 
-    Vec3 getLookAtVec3(Player * player);
+    Vec3 getLookAtVec3(Player *player);
 
-    BlockPos getLookAtPos(Player * player);
+    BlockPos getLookAtPos(Player *player);
 
     ActionResult ErrorMsg(const std::string &msg);
 
@@ -60,6 +60,9 @@ namespace trapdoor {
     void setup_playerCommand(int);
     void setup_hudCommand(int);
     void setup_tweakCommand(int);
+    void setup_CalCommand(int);
+    void setup_DistanceCommand(int);
+
 }  // namespace trapdoor
 
 #endif  // TRAPDOOR_COMMANDHELPER_H
