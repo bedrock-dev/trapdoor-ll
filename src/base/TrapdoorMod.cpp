@@ -63,7 +63,6 @@ namespace trapdoor {
         this->config.init(path + "config.json");
         trapdoor::initCPU();
         trapdoor::SubscribeEvents();
-        trapdoor::initRotateBlockHelper();
         trapdoor::setupCommands();
     }
 

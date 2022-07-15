@@ -5,12 +5,13 @@
 #include "Global.h"
 #include <MC/BlockPos.hpp>
 #include <MC/BlockSource.hpp>
+#include <MC/BlockInstance.hpp>
+#include <MC/Vec3.hpp>
 // clang-format on
 
 namespace trapdoor {
-    void initRotateBlockHelper();
+    void rotateBlock(BlockSource& bs, BlockInstance* bi, const Vec3& clickPos, unsigned char face);
 
-    void rotateBlock(BlockSource & bs, const BlockPos &pos);
 }  // namespace trapdoor
 
 #endif
