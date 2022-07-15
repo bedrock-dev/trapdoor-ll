@@ -45,8 +45,10 @@ namespace trapdoor {
         ActionResult attackSchedule(const std::string& name, Player* origin, int repType,
                                     int interval, int times);
 
-        ActionResult destroySchedule(const std::string& name, const BlockPos& p, Player* origin,
-                                     int repType, int interval, int times);
+        ActionResult destroyOnSchedule(const std::string& name, const BlockPos& p, Player* origin,
+                                       int repType, int interval, int times);
+
+        ActionResult destroySchedule(const std::string& name, int repType, int interval, int times);
 
         ActionResult jumpSchedule(const std::string& name, int repType, int interval, int times);
 

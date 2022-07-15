@@ -15,7 +15,9 @@ namespace trapdoor {
         auto spawnOpt = command->setEnum("spawnOpt", {"spawn", "despawn"});
         auto behOpt = command->setEnum("behOpt", {"lookat", "moveto"});
         auto intOpt = command->setEnum("intOpt", {"interact"});
-        auto destroyOpt = command->setEnum("destroy", {"destroy"});
+        auto destroyOpt = command->setEnum("destroyOpt", {"destroy"});
+        auto destroyOnOpt = command->setEnum("destroyonOpt", {"destroyon"});
+
         auto attackOpt = command->setEnum("attack", {"attack"});
         auto jumpOpt = command->setEnum("jump", {"jump"});
         auto repeatOpt = command->setEnum("repeatOpt", {"repeat"});
@@ -31,7 +33,10 @@ namespace trapdoor {
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("player", ParamType::Enum, intOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
+
         command->mandatory("player", ParamType::Enum, destroyOpt,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+        command->mandatory("player", ParamType::Enum, destroyOnOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
         command->mandatory("player", ParamType::Enum, attackOpt,
@@ -81,7 +86,10 @@ namespace trapdoor {
         //和方块/实体交互
         command->addOverload({"name", intOpt, "repeatType", "interval","times"});
         // destroy
-        command->addOverload({"name", destroyOpt, "blockPos", "repeatType", "interval", "times"});
+        command->addOverload({"name", destroyOnOpt, "blockPos", "repeatType", "interval", "times"});
+
+        command->addOverload({"name", destroyOpt, "repeatType", "interval", "times"});
+
         // useitem
         command->addOverload({"name", useOnOpt, "itemId", "blockPos", "repeatType", "interval", "times"});
         //use item on
@@ -172,12 +180,17 @@ namespace trapdoor {
                         .sendTo(output);
                     break;
 
+                case do_hash("destroyon"):
+                    trapdoor::mod()
+                        .getSimPlayerManager()
+                        .destroyOnSchedule(name, blockPos, origin.getPlayer(), rep, interval, times)
+                        .sendTo(output);
+                    break;
                 case do_hash("destroy"):
                     trapdoor::mod()
                         .getSimPlayerManager()
-                        .destroySchedule(name, blockPos, origin.getPlayer(), rep, interval, times)
+                        .destroySchedule(name, rep, interval, times)
                         .sendTo(output);
-                    break;
 
                 case do_hash("backpack"):
                     trapdoor::mod().getSimPlayerManager().getBackpack(name, 0).sendTo(output);

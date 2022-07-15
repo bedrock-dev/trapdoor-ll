@@ -126,9 +126,9 @@ namespace trapdoor {
         return {builder.get(), true};
     }
 
-    ActionResult SimPlayerManager::destroySchedule(const std::string& name, const BlockPos& p,
-                                                   Player* origin, int repType, int interval,
-                                                   int times) {
+    ActionResult SimPlayerManager::destroyOnSchedule(const std::string& name, const BlockPos& p,
+                                                     Player* origin, int repType, int interval,
+                                                     int times) {
         GET_FREE_PLAYER(sim)
         auto pos = p;
         if (pos == BlockPos::MAX) {
@@ -136,15 +136,31 @@ namespace trapdoor {
         }
         auto task = [name, this, sim, pos]() {
             CHECK_SURVIVAL
-            if (pos == BlockPos::MAX) {
-                auto bi = sim->getBlockFromViewVector();
-                if (bi.isNull()) {
-                    sim->simulateDestory();
-                } else {
-                    sim->simulateDestroyBlock(bi.getPosition(), DEFAULT_FACING);
-                }
-            } else {
+            if (pos != BlockPos::MAX) {
+                //                auto bi = sim->getBlockFromViewVector();
+                //                if (bi.isNull()) {
+                //                    sim->simulateDestory();
+                //                } else {
+                //                    sim->simulateDestroyBlock(bi.getPosition(), DEFAULT_FACING);
+                //                }
+                //            } else {
                 sim->simulateDestroyBlock(pos, DEFAULT_FACING);
+            }
+        };
+        ADD_TASK
+        return {"", true};
+    }
+
+    ActionResult SimPlayerManager::destroySchedule(const std::string& name, int repType,
+                                                   int interval, int times) {
+        GET_FREE_PLAYER(sim)
+        auto task = [name, this, sim]() {
+            CHECK_SURVIVAL
+            auto bi = sim->getBlockFromViewVector();
+            if (bi.isNull()) {
+                sim->simulateDestory();
+            } else {
+                sim->simulateDestroyBlock(bi.getPosition(), DEFAULT_FACING);
             }
         };
         ADD_TASK
