@@ -32,6 +32,7 @@ namespace trapdoor {
             REG_COMMAND(hud)
             REG_COMMAND(hsa)
             REG_COMMAND(tweak)
+            REG_COMMAND(seed)
         }
     }  // namespace
 

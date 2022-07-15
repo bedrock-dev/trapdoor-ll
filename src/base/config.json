@@ -55,6 +55,10 @@
     "tweak": {
       "enable": true,
       "permission-level": 0
+    },
+    "seed": {
+      "enable": true,
+      "permission-level": 1
     }
   },
   "basic-config": {

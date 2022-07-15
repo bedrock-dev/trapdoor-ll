@@ -62,7 +62,7 @@ namespace trapdoor {
     void setup_tweakCommand(int);
     void setup_CalCommand(int);
     void setup_DistanceCommand(int);
-
+    void setup_seedCommand(int);
 }  // namespace trapdoor
 
 #endif  // TRAPDOOR_COMMANDHELPER_H
