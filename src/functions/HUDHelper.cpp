@@ -15,6 +15,7 @@
 #include "HopperCounter.h"
 #include "MCTick.h"
 #include "Msg.h"
+#include "Particle.h"
 #include "PlayerInfoAPI.h"
 #include "TrAPI.h"
 #include "Utils.h"
@@ -69,7 +70,7 @@ namespace trapdoor {
             if (!pointBlock.isNull()) {
                 b.textF("Block: %d %d %d  Light: %u\n", pointPos.x, pointPos.y, pointPos.z, bright);
             } else {
-                b.text("Block: -\n");
+                b.text("Block: None\n");
             }
             auto& biome = bs.getBiome(pos);
             b.textF("Biome: %s (%d)\n", getBiomeName(&biome).c_str(), biome.getBiomeType());
@@ -92,16 +93,31 @@ namespace trapdoor {
 
         HUDInfoType getTypeFromString(const std::string& str) {
             if (str == "base") return HUDInfoType::Base;
-            if (str == "hoppercounter") return HUDInfoType::Counter;
+            if (str == "hopper") return HUDInfoType::Counter;
             if (str == "village") return HUDInfoType::Vill;
             if (str == "redstone") return HUDInfoType::Redstone;
             if (str == "mspt") return HUDInfoType::Mspt;
+            if (str == "chunk") return HUDInfoType::Chunk;
             return HUDInfoType::Unknown;
         }
 
     }  // namespace
+    void HUDHelper::tickChunk() {
+        static int refresh_time = 0;
+        refresh_time = (refresh_time + 1) % 15;
+        if (refresh_time != 1) return;
+        for (auto& info : this->playerInfos) {
+            auto* p = Global<Level>->getPlayer(info.first);
+            if (p && info.second.enable && info.second.config[HUDInfoType::Chunk]) {
+                auto pos = p->getPos().toBlockPos();
+                trapdoor::drawChunkSurface(fromBlockPos(pos).toChunkPos(),
+                                           (int)p->getDimension().getDimensionId());
+            }
+        }
+    }
     void HUDHelper::tick() {
         if (!this->enable) return;
+        this->tickChunk();
         static int refresh_time = 0;
         refresh_time =
             (refresh_time + 1) % trapdoor::mod().getConfig().getBasicConfig().hudRefreshFreq;
@@ -148,4 +164,5 @@ namespace trapdoor {
         this->playerInfos[playerName].enable = able;
         return {"Success", true};
     }
+
 }  // namespace trapdoor

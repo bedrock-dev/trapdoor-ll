@@ -22,8 +22,8 @@ namespace trapdoor {
         command->mandatory("hud", ParamType::Enum, showOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
-        auto &showItemsOpt =
-            command->setEnum("showItems", {"base", "mspt", "hoppercounter", "village", "redstone"});
+        auto &showItemsOpt = command->setEnum(
+            "showItems", {"base", "mspt", "hopper", "village", "redstone", "chunk"});
 
         command->mandatory("itemType", ParamType::Enum, showItemsOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);

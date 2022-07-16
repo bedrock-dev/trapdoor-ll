@@ -12,13 +12,14 @@ namespace trapdoor {
         Vill = 2,
         Redstone = 3,
         Counter = 4,
-        Unknown = 5,
+        Chunk = 5,
+        Unknown = 6,
     };
 
     struct PlayerHudInfo {
         std::string realName;
         bool enable;
-        std::array<int, 4> config{};
+        std::array<int, 7> config{};
     };
 
     class HUDHelper {
@@ -36,6 +37,8 @@ namespace trapdoor {
         ActionResult setAblePlayer(const std::string& playerName, bool able);
 
        private:
+        void tickChunk();
+
         bool enable = false;
         std::unordered_map<std::string, PlayerHudInfo> playerInfos;
     };
