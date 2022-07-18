@@ -96,7 +96,7 @@ namespace trapdoor {
                     auto* it = ItemStack::create(CompoundTag::fromSNBT(item["nbt"]));
                     cont.setItem(slot, *it);
                 }
-            } catch (const std::exception& e) {
+            } catch (const std::exception&) {
             }
         }
 

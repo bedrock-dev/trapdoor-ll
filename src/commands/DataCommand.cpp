@@ -65,14 +65,16 @@ namespace trapdoor {
                 case do_hash("redstone"):
                     if (results["blockPos"].isSet) {
                         trapdoor::displayRedstoneCompInfo(origin.getDimension(),
-                                                          results["blockPos"].get<BlockPos>());
+                                                          results["blockPos"].get<BlockPos>())
+                            .sendTo(output);
 
                     } else {
                         if (!origin.getPlayer()) {
                             ErrorPlayerNeed().sendTo(output);
                         } else {
                             trapdoor::displayRedstoneCompInfo(origin.getDimension(),
-                                                              getLookAtPos(origin.getPlayer()));
+                                                              getLookAtPos(origin.getPlayer()))
+                                .sendTo(output);
                         }
                     }
                     break;
