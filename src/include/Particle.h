@@ -15,6 +15,10 @@ namespace trapdoor {
     void drawAABB(const TAABB& aabb, PCOLOR color, bool mark, int dimType);
 
     void shortHighlightBlock(const TBlockPos& pos, PCOLOR color, int dimType);
+
+    void drawChunkSurface(const TBlockPos2&, int dimType);
+
+
 }  // namespace trapdoor
 
 #endif

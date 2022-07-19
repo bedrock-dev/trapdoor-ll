@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 3.16)
 project(Trapdoor)
 set(CMAKE_CXX_STANDARD 17)
 
-set(TRAPDOOR_VERSION 0.13)
+set(TRAPDOOR_VERSION 0.14)
 set(TEST_NUMBER 12)
 set(GAME_VERSION 1.19.10.03)
 option(DEV "Build as developer version" ON)
-option(BDTA "Build as beta version" OFF)
+option(BETA "Build as beta version" OFF)
 add_definitions(-DTD_VERSION="${TRAPDOOR_VERSION}")
 add_definitions(-DMC_VERSION="${GAME_VERSION}")
 

@@ -57,12 +57,47 @@ namespace trapdoor {
 
         void writeInvToFile(Container& cont, const std::string& file_name) {
             const std::string path = "./plugins/trapdoor/sim/" + file_name;
+            //  trapdoor::logger().debug("save data to {}", path);
             // TODO 序列化背包内容到文件
+            nlohmann::json obj;
+            auto array = nlohmann::json::array();
+            for (auto i = 0; i < cont.getSize(); i++) {
+                auto* item = cont.getSlot(i);
+                std::string sNbt;
+                if (item) {
+                    sNbt = item->getNbt()->toSNBT();
+                }
+                json j = {{"slot", i}, {"nbt", sNbt}};
+                array.push_back(j);
+            }
+            obj["inventory"] = array;
+            std::ofstream f(path);
+            if (!f.is_open()) {
+                trapdoor::logger().error("can not write file");
+            }
+            f << obj;
+            f.close();
         }
 
         void tryReadInvFromFile(Container& cont, const std::string& file_name) {
             const std::string path = "./plugins/trapdoor/sim/" + file_name;
             // TODO 从文件读取内容到背包
+            std::ifstream f(path);
+            if (!f.is_open()) {
+                //  trapdoor::logger().warn("can not read file {}", file_name);
+                return;
+            }
+            nlohmann::json obj;
+            f >> obj;
+            try {
+                auto invInfo = obj["inventory"];
+                for (auto& item : invInfo) {
+                    auto slot = item["slot"].get<int>();
+                    auto* it = ItemStack::create(CompoundTag::fromSNBT(item["nbt"]));
+                    cont.setItem(slot, *it);
+                }
+            } catch (const std::exception&) {
+            }
         }
 
         constexpr auto DEFAULT_FACING = static_cast<ScriptModuleMinecraft::ScriptFacing>(1);
@@ -151,7 +186,7 @@ namespace trapdoor {
             CHECK_SURVIVAL
             auto bi = sim->getBlockFromViewVector();
             if (bi.isNull()) {
-                sim->simulateDestory();
+                sim->simulateDestroy();
             } else {
                 sim->simulateDestroyBlock(bi.getPosition(), DEFAULT_FACING);
             }

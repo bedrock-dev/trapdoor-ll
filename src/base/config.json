@@ -62,7 +62,7 @@
     }
   },
   "basic-config": {
-    "particle-performance-level": 2,
+    "particle-performance-level": 3,
     "particle-view-distance": 128,
     "hud-refresh-freq": 20
   },
@@ -71,7 +71,7 @@
     "hopper-counter": false
   },
   "default-enable-tweaks": {
-    "force-place-level": 1,
+    "force-place-level": 0,
     "force-open-container": false,
     "dropper-no-cost": false,
     "auto-select-tool": false

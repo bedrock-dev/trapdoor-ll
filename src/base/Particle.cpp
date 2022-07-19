@@ -10,7 +10,6 @@
 #include "TBlockPos.h"
 #include "TVec3.h"
 
-
 namespace trapdoor {
     namespace {
 
@@ -167,5 +166,23 @@ namespace trapdoor {
         auto p1 = pos.toVec3();
         auto aabb = TAABB(p1, p1 + TVec3(1, 1, 1));
         drawAABB(aabb, color, false, dimType);
+    }
+    void drawChunkSurface(const TBlockPos2& p, int dimType) {
+        //        bool isSlime = p.isSlimeChunk();
+        //        std::string pName2 = isSlime ? "trapdoor:chunkslimep" : "trapdoor:chunkp";
+        //        std::string pName1 = isSlime ? "trapdoor:chunkslimem" : "trapdoor:chunkm";
+        std::string pName2 = "trapdoor:chunkp";
+        std::string pName1 = "trapdoor:chunkm";
+
+        auto x = static_cast<float>(p.x) * 16.0f;
+        auto z = static_cast<float>(p.z) * 16.0f;
+        TVec3 p1{x + 0.01f, 128.0f, z + 8.0f};
+        TVec3 p2{x + 15.99f, 128.0f, z + 8.0f};
+        TVec3 p3{x + 8.0f, 128.0f, z + 0.01f};
+        TVec3 p4{x + 8.0f, 128.0f, z + 15.99f};
+        spawnParticle(p1, pName1, dimType);
+        spawnParticle(p2, pName1, dimType);
+        spawnParticle(p3, pName2, dimType);
+        spawnParticle(p4, pName2, dimType);
     }
 }  // namespace trapdoor
