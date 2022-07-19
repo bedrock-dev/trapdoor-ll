@@ -154,7 +154,7 @@ namespace trapdoor {
                 bs->setBlock(pos, *Block::create(blockNbt.get()), 3, nullptr, nullptr);
             } else {
                 trapdoor::logger().debug("rotateBlock: no rule for {}", typeName);
-                return false;
+                return true;
             }
             return true;
         }
