@@ -10,8 +10,8 @@
 // clang-format on
 
 namespace trapdoor {
-    void rotateBlock(BlockSource& bs, BlockInstance* bi, const Vec3& clickPos, unsigned char face);
-
+    bool rotateBlock(BlockSource* bs, BlockInstance* bi, const Vec3& clickPos, unsigned char face);
+    void initRotateBlockHelper();
 }  // namespace trapdoor
 
 #endif

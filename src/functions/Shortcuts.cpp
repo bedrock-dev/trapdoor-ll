@@ -80,6 +80,7 @@ namespace trapdoor {
             return patternMatch(itemName, itemAux, shortcut.itemName, shortcut.itemAux) &&
                    patternMatch(blockName, blockAux, shortcut.blockName, shortcut.blockAux);
         }
+        return false;
     }
     void Shortcut::runUse(Player * player, ItemStack * item) {
         auto pos = player->getPos().toBlockPos();
