@@ -35,7 +35,6 @@ namespace trapdoor {
         ADD_RULE(_rail, (v % 8 + 1) % 6 + (v / 8) * 8);
         ADD_RULE(lever, (v % 8 + 1) % 6 + (v / 8) * 8);
         ADD_RULE(rot, (v % 8 + 1) % 6 + (v / 8) * 8);
-        ADD_RULE(barrel, (v % 8 + 1) % 6 + (v / 8) * 8);
         ADD_RULE(rail, (v + 1) % 10);
         ADD_RULE(powered, (v % 4 + 1) % 4 + (v / 4) * 4);
         ADD_RULE(anvil, (v % 4 + 1) % 4 + (v / 4) * 4);
@@ -95,11 +94,58 @@ namespace trapdoor {
             } else if (states->find("facing_direction") != states->end()) {
                 auto *tag = statesNbt->operator[]("facing_direction")->asIntTag();
                 auto direction = tag->get();
-                auto mFace = face > 1 ? (face / 2) * 2 + (face + 1) % 2 : face;
-                if (direction == mFace) {
-                    direction = (mFace / 2) * 2 + (mFace + 1) % 2;
+                auto mFace = face;
+                Vec3 mClickPos = (clickPos - pos.toVec3()) - 0.5;
+                if (abs(mClickPos.x) + abs(mClickPos.y) + abs(mClickPos.z) < 0.75) {
+                    mFace = (mFace > 1 && (typeName == "piston" || typeName == "observer" ||
+                                           typeName == "sticky_piston"))
+                                ? (mFace / 2) * 2 + (mFace + 1) % 2
+                                : mFace;
+                    if (direction == mFace) {
+                        direction = (mFace / 2) * 2 + (mFace + 1) % 2;
+                    } else {
+                        direction = mFace;
+                    }
                 } else {
-                    direction = mFace;
+                    switch (face / 2) {
+                        case 0:
+                            if (abs(mClickPos.x) + mClickPos.z <= 0) {
+                                direction = 2;
+                            } else if (abs(mClickPos.x) - mClickPos.z <= 0) {
+                                direction = 3;
+                            } else if (abs(mClickPos.z) + mClickPos.x <= 0) {
+                                direction = 4;
+                            } else if (abs(mClickPos.z) - mClickPos.x <= 0) {
+                                direction = 5;
+                            }
+                            break;
+                        case 1:
+                            if (abs(mClickPos.x) + mClickPos.y <= 0) {
+                                direction = 0;
+                            } else if (abs(mClickPos.x) - mClickPos.y <= 0) {
+                                direction = 1;
+                            } else if (abs(mClickPos.y) + mClickPos.x <= 0) {
+                                direction = 4;
+                            } else if (abs(mClickPos.y) - mClickPos.x <= 0) {
+                                direction = 5;
+                            }
+                            break;
+                        case 2:
+                            if (abs(mClickPos.z) + mClickPos.y <= 0) {
+                                direction = 0;
+                            } else if (abs(mClickPos.z) - mClickPos.y <= 0) {
+                                direction = 1;
+                            } else if (abs(mClickPos.y) + mClickPos.z <= 0) {
+                                direction = 2;
+                            } else if (abs(mClickPos.y) - mClickPos.z <= 0) {
+                                direction = 3;
+                            }
+                            break;
+                    }
+                    direction = (direction > 1 && (typeName == "piston" || typeName == "observer" ||
+                                                   typeName == "sticky_piston"))
+                                    ? (direction / 2) * 2 + (direction + 1) % 2
+                                    : direction;
                 }
                 statesNbt->putInt("facing_direction", direction);
                 hasRule = true;
