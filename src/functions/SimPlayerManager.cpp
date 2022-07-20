@@ -96,7 +96,7 @@ namespace trapdoor {
                     auto* it = ItemStack::create(CompoundTag::fromSNBT(item["nbt"]));
                     cont.setItem(slot, *it);
                 }
-            } catch (const std::exception& e) {
+            } catch (const std::exception&) {
             }
         }
 
@@ -186,7 +186,7 @@ namespace trapdoor {
             CHECK_SURVIVAL
             auto bi = sim->getBlockFromViewVector();
             if (bi.isNull()) {
-                sim->simulateDestory();
+                sim->simulateDestroy();
             } else {
                 sim->simulateDestroyBlock(bi.getPosition(), DEFAULT_FACING);
             }

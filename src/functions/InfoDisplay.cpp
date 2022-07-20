@@ -20,11 +20,23 @@
 #include "Global.h"
 #include "MC/PrettySnbtFormat.hpp"
 #include "Msg.h"
+#include "Particle.h"
 #include "TrAPI.h"
 #include "TrapdoorMod.h"
 #include "Utils.h"
 namespace trapdoor {
     namespace {
+
+        struct ComponentItem {
+            BaseCircuitComponent *mComponent = nullptr;  // 0 * 4 - 1 * 4
+            int mDampening = 0;                          // 2 * 4
+            BlockPos mPos;                               // 3 * 4 - 5 * 4
+            unsigned char facing{};                      // 6 * 4
+            bool mDirectlyPowered = false;               // 6* 4
+            int mData = 0;                               // 7*4
+        };
+
+        static_assert(sizeof(ComponentItem) == 32);
 
         struct ActorNBTFormat : PrettySnbtFormat {
             ActorNBTFormat() {
@@ -135,6 +147,18 @@ namespace trapdoor {
         if (!comp) {
             return {"Not an redstone component", false};
         }
-        return {"Strength =>  " + std::to_string(comp->getStrength()), true};
+
+        TextBuilder builder;
+        builder.text("Signal: ").num(comp->getStrength()).text("\n");
+        auto &list = dAccess<std::vector<ComponentItem>, 8>(comp);
+        for (auto &source : list) {
+            auto p = source.mPos;
+            builder.textF("P: [%s] D: %d S: %d\n", p.toString().c_str(), source.mDampening,
+                          source.mComponent->getStrength());
+            auto color = source.mDirectlyPowered ? PCOLOR::YELLOW : PCOLOR::GREEN;
+            trapdoor::shortHighlightBlock({p.x, p.y, p.z}, color, d->getDimensionId());
+        }
+
+        return {builder.get(), true};
     }
 }  // namespace trapdoor
