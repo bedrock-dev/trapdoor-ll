@@ -40,6 +40,7 @@ namespace trapdoor {
         villageHelper.heavyTick();
         hsaManager.HeavyTick();
         HUDHelper.tick();
+        slimeChunkHelper.HeavyTick();
     }
     void TrapdoorMod::lightTick() {
         villageHelper.lightTick();
