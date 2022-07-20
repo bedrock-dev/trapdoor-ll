@@ -99,7 +99,7 @@ namespace trapdoor {
         bool operator==(const TBlockPos2 &rhs) const;
     };
 
-    // typedef TBlockPos2 ChunkPos;
+    typedef TBlockPos2 ChunkPos;
     class TBoundingBox {
        public:
         TBlockPos minPos{};

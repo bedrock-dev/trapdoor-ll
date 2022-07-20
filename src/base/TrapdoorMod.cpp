@@ -33,6 +33,7 @@ namespace trapdoor {
             REG_COMMAND(hsa)
             REG_COMMAND(tweak)
             REG_COMMAND(seed)
+            REG_COMMAND(slime)
         }
     }  // namespace
 
@@ -40,6 +41,7 @@ namespace trapdoor {
         villageHelper.heavyTick();
         hsaManager.HeavyTick();
         HUDHelper.tick();
+        slimeChunkHelper.HeavyTick();
     }
     void TrapdoorMod::lightTick() {
         villageHelper.lightTick();
