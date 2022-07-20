@@ -17,7 +17,7 @@ namespace trapdoor {
        public:
         inline ActionResult ShowSlime(bool show) {
             this->showSlime = show;
-            return {"~", true};
+            return {"Slime chunk display is set to "+std::to_string(show), true};
         }
 
         void updateChunkPosList();
