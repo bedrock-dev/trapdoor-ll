@@ -94,7 +94,7 @@ namespace trapdoor {
                 bit = 1 - bit;
                 statesNbt->putByte("upside_down_bit", bit);
                 hasRule = true;
-            } else if (states->find("weirdo_direction") != states->end() && face < 2) {
+            } else if (states->find("weirdo_direction") != states->end() && face > 1) {
                 auto *tag = statesNbt->operator[]("weirdo_direction")->asByteTag();
                 auto direction = tag->get();
                 direction = (direction + 1) % 4;
