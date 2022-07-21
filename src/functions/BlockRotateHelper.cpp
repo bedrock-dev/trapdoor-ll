@@ -1,9 +1,11 @@
 #include "BlockRotateHelper.h"
 
+#include <MC/BedrockBlocks.hpp>
 #include <MC/Block.hpp>
 #include <MC/BlockLegacy.hpp>
 #include <MC/BlockSource.hpp>
 #include <MC/ByteTag.hpp>
+#include <MC/CommandUtils.hpp>
 #include <MC/IntTag.hpp>
 #include <MC/StringTag.hpp>
 #include <regex>
@@ -65,7 +67,14 @@ namespace trapdoor {
                          });
         if (it != globalRotateRules().end()) {
             auto newVariant = it->func(variant, clickPos, face);
-            bs->setBlock(pos, *Block::create(rawTypeName, newVariant), 3, nullptr, nullptr);
+            if (!bi->hasContainer()) {
+                CommandUtils::clearBlockEntityContents(*bs, pos);
+                auto *exBlock = &bs->getExtraBlock(pos);
+                bs->setExtraBlock(pos, *BedrockBlocks::mAir, 18);
+                bs->setBlock(pos, *BedrockBlocks::mAir, 2, nullptr, nullptr);
+                bs->setExtraBlock(pos, *exBlock, 18);
+            }
+            bs->setBlock(pos, *Block::create(rawTypeName, newVariant), 2, nullptr, nullptr);
         } else {
             auto blockNbt = block->getNbt();
             auto *statesNbt = blockNbt->operator[]("states")->asCompoundTag();
@@ -84,6 +93,12 @@ namespace trapdoor {
                 auto bit = tag->get();
                 bit = 1 - bit;
                 statesNbt->putByte("upside_down_bit", bit);
+                hasRule = true;
+            } else if (states->find("weirdo_direction") != states->end() && face < 2) {
+                auto *tag = statesNbt->operator[]("weirdo_direction")->asByteTag();
+                auto direction = tag->get();
+                direction = (direction + 1) % 4;
+                statesNbt->putByte("weirdo_direction", direction);
                 hasRule = true;
             } else if (states->find("top_slot_bit") != states->end()) {
                 auto *tag = statesNbt->operator[]("top_slot_bit")->asByteTag();
@@ -151,7 +166,14 @@ namespace trapdoor {
                 hasRule = true;
             }
             if (hasRule) {
-                bs->setBlock(pos, *Block::create(blockNbt.get()), 3, nullptr, nullptr);
+                if (!bi->hasContainer()) {
+                    CommandUtils::clearBlockEntityContents(*bs, pos);
+                    auto *exBlock = &bs->getExtraBlock(pos);
+                    bs->setExtraBlock(pos, *BedrockBlocks::mAir, 18);
+                    bs->setBlock(pos, *BedrockBlocks::mAir, 2, nullptr, nullptr);
+                    bs->setExtraBlock(pos, *exBlock, 18);
+                }
+                bs->setBlock(pos, *Block::create(blockNbt.get()), 2, nullptr, nullptr);
             } else {
                 trapdoor::logger().debug("rotateBlock: no rule for {}", typeName);
                 return true;
