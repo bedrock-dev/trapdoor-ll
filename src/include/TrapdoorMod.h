@@ -9,6 +9,7 @@
 #include "SimPlayerHelper.h"
 #include "SpawnAnalyzer.h"
 #include "VillageHelper.h"
+#include "SlimeChunkHelper.h"
 
 namespace trapdoor {
     class TrapdoorMod {
@@ -35,6 +36,8 @@ namespace trapdoor {
 
         inline SpawnAnalyzer &getSpawnAnalyzer() { return this->spawnAnalyzer; }
 
+        inline SlimeChunkHelper &getSlimeChunkHelper() { return this->slimeChunkHelper; }
+
        private:
         VillageHelper villageHelper;
         HsaManager hsaManager;
@@ -43,6 +46,7 @@ namespace trapdoor {
         HUDHelper HUDHelper;
         SimPlayerManager simPlayerManager;
         SpawnAnalyzer spawnAnalyzer;
+        SlimeChunkHelper slimeChunkHelper;
     };
 
     Logger &logger();

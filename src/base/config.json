@@ -63,6 +63,10 @@
     "dis": {
       "enable": true,
       "permission-level": 1
+    },
+    "slime": {
+      "enable": true,
+      "permission-level": 0
     }
   },
   "basic-config": {

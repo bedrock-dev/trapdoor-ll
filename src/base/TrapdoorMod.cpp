@@ -34,6 +34,7 @@ namespace trapdoor {
             REG_COMMAND(tweak)
             REG_COMMAND(seed)
             REG_COMMAND(dis)
+            REG_COMMAND(slime)
         }
     }  // namespace
 
@@ -41,6 +42,7 @@ namespace trapdoor {
         villageHelper.heavyTick();
         hsaManager.HeavyTick();
         HUDHelper.tick();
+        slimeChunkHelper.HeavyTick();
     }
     void TrapdoorMod::lightTick() {
         villageHelper.lightTick();
@@ -56,7 +58,7 @@ namespace trapdoor {
     void TrapdoorMod::init() {
         auto path = std::string("./plugins/trapdoor/");
 #ifdef DEV
-        path = "C:/Users/xhy/dev/trapdoor-ll/src/base/";
+        // path = "C:/Users/xhy/dev/trapdoor-ll/src/base/";
         logger().consoleLevel = 8;
 #endif
         //  std::string path = "./plugins/trapdoor/";

@@ -63,6 +63,7 @@ namespace trapdoor {
     void setup_CalCommand(int);
     void setup_disCommand(int);
     void setup_seedCommand(int);
+    void setup_slimeCommand(int);
 }  // namespace trapdoor
 
 #endif  // TRAPDOOR_COMMANDHELPER_H

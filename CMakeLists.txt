@@ -50,6 +50,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/commands/CommandHelper.cpp
         src/commands/TrapdoorCommand.cpp
         src/commands/TweakCommand.cpp
+        src/commands/SlimeChunkCommand.cpp
         src/data/TVec3.cpp
         src/data/TBlockPos.cpp
         src/data/TAABB.cpp
@@ -81,6 +82,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/functions/BlockRotateHelper.cpp
         src/functions/Tweakers.cpp
         src/functions/InventoryTool.cpp
+        src/functions/SlimeChunkHelper.cpp
         )
 
 include_directories(SDK/Header)

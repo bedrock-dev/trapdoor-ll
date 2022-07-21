@@ -185,4 +185,22 @@ namespace trapdoor {
         spawnParticle(p3, pName2, dimType);
         spawnParticle(p4, pName2, dimType);
     }
+
+    void spawnSlimeChunkParticle(const ChunkPos &p) {
+        float x = static_cast<float>(p.x) * 16.0f;
+        float z = static_cast<float>(p.z) * 16.0f;
+        TVec3 p1{x + 0.01f, 0.0f, z + 8.0f};
+        TVec3 p2{x + 15.99f, 0.0f, z + 8.0f};
+        TVec3 p3{x + 8.0f, 0.0f, z + 0.01f};
+        TVec3 p4{x + 8.0f, 0.0f, z + 15.99f};
+        TVec3 top{x + 8.0f, 128.0f, z + 8.0f};
+        std::string pName1 = "trapdoor:slime_side1";
+        std::string pName2 = "trapdoor:slime_side2";
+        std::string pName3 = "trapdoor:slime_top";
+        spawnParticle(p1, pName1);
+        spawnParticle(p2, pName1);
+        spawnParticle(p3, pName2);
+        spawnParticle(p4, pName2);
+        spawnParticle(top, pName3);
+    }
 }  // namespace trapdoor

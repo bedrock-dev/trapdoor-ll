@@ -24,7 +24,7 @@ namespace trapdoor {
             BlockPos pos;
             bool operator==(const UseOnAction& rhs) const {
                 if (pos != rhs.pos) return false;
-                return (gameTick - rhs.gameTick) <= 4;
+                return (gameTick - rhs.gameTick) <= 3;
             }
             bool operator!=(const UseOnAction& rhs) const { return !(rhs == *this); }
         };
@@ -39,7 +39,7 @@ namespace trapdoor {
             auto useOnAction = UseOnAction{gt, pos};
             auto lastUseOnAction = getUseOnCache()[playerName];
             if (useOnAction == lastUseOnAction) {
-                getUseOnCache()[playerName] = useOnAction;
+                // getUseOnCache()[playerName] = useOnAction;
                 return false;
             }
             getUseOnCache()[playerName] = useOnAction;
@@ -81,16 +81,18 @@ namespace trapdoor {
                 return true;
             }
             auto* block = bi->getBlock();
-            //            if (ev.mItemStack->getName() == "Cactus" &&
-            //                antiShake(ev.mPlayer->getName(), bi->getPosition())) {
-            //                trapdoor::rotateBlock(ev.mPlayer->getRegion(), bi->getPosition());
-            //                return true;
-            //            }
+            //            trapdoor::logger().debug("name is {} id:{}", ev.mItemStack->getTypeName(),
+            //                                     ev.mItemStack->getId());
+            if (ev.mItemStack->getTypeName() == "minecraft:cactus" &&
+                antiShake(ev.mPlayer->getName(), bi->getPosition())) {
+                return trapdoor::rotateBlock(bi->getBlockSource(), bi, ev.mClickPos, ev.mFace);
+            }
 
             auto& shortcuts = trapdoor::mod().getConfig().getShortcuts();
             if (shortcuts.empty()) {
                 return true;
             }
+
             Shortcut shortcut;
             shortcut.type = USE_ON;
             shortcut.itemAux = ev.mItemStack->getAux();
@@ -105,6 +107,7 @@ namespace trapdoor {
                     }
                 }
             }
+
             return true;
         });
     }
