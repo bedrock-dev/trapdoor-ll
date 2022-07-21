@@ -95,10 +95,10 @@ namespace trapdoor {
                 statesNbt->putByte("upside_down_bit", bit);
                 hasRule = true;
             } else if (states->find("weirdo_direction") != states->end() && face > 1) {
-                auto *tag = statesNbt->operator[]("weirdo_direction")->asByteTag();
+                auto *tag = statesNbt->operator[]("weirdo_direction")->asIntTag();
                 auto direction = tag->get();
                 direction = (direction + 1) % 4;
-                statesNbt->putByte("weirdo_direction", direction);
+                statesNbt->putInt("weirdo_direction", direction);
                 hasRule = true;
             } else if (states->find("top_slot_bit") != states->end()) {
                 auto *tag = statesNbt->operator[]("top_slot_bit")->asByteTag();
