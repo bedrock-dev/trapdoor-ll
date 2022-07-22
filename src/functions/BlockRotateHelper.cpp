@@ -23,6 +23,8 @@ namespace trapdoor {
             static std::vector<RotateRule> rules;
             return rules;
         }
+
+        bool enableRotation = false;
     }  // namespace
 
 #define ADD_RULE(pattern, func)    \
@@ -48,8 +50,8 @@ namespace trapdoor {
     }
 
     bool rotateBlock(BlockSource *bs, BlockInstance *bi, const Vec3 &clickPos, unsigned char face) {
+        if (!enableRotation) return true;
         if (!bi || bi->isNull()) return true;
-
         auto block = bi->getBlock();
         auto variant = dAccess<unsigned short, 8>(block);
         auto rawTypeName = block->getTypeName();
@@ -182,5 +184,9 @@ namespace trapdoor {
         }
 
         return false;
+    }
+    ActionResult setBlockRotationAble(bool able) {
+        enableRotation = able;
+        return {"Success", true};
     }
 }  // namespace trapdoor

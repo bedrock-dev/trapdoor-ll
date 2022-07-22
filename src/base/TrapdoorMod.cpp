@@ -58,10 +58,9 @@ namespace trapdoor {
     void TrapdoorMod::init() {
         auto path = std::string("./plugins/trapdoor/");
 #ifdef DEV
-        // path = "C:/Users/xhy/dev/trapdoor-ll/src/base/";
+        path = "C:/Users/xhy/dev/trapdoor-ll/src/base/";
         logger().consoleLevel = 8;
 #endif
-        //  std::string path = "./plugins/trapdoor/";
         logger().debug("Config path: {}", path);
         this->config.init(path + "config.json");
         trapdoor::initCPU();

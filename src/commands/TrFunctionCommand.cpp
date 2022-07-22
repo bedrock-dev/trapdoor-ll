@@ -1,6 +1,7 @@
 //
 // Created by xhy on 2022/5/17.
 //
+#include "BlockRotateHelper.h"
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"
 #include "SpawnHelper.h"
@@ -46,6 +47,8 @@ namespace trapdoor {
                         .setAble(results["onoroff"].get<bool>())
                         .sendTo(output);
                     break;
+                case do_hash("blockrotate"):
+                    trapdoor::setBlockRotationAble(results["onoroff"].get<bool>()).sendTo(output);
             }
         };
         command->setCallback(cb);

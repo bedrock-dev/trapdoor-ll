@@ -81,11 +81,10 @@ namespace trapdoor {
                 return true;
             }
             auto* block = bi->getBlock();
-            //            trapdoor::logger().debug("name is {} id:{}", ev.mItemStack->getTypeName(),
-            //                                     ev.mItemStack->getId());
             if (ev.mItemStack->getTypeName() == "minecraft:cactus" &&
                 antiShake(ev.mPlayer->getName(), bi->getPosition())) {
-                return trapdoor::rotateBlock(bi->getBlockSource(), bi, ev.mClickPos, ev.mFace);
+                trapdoor::rotateBlock(bi->getBlockSource(), bi, ev.mClickPos, ev.mFace);
+                return true;
             }
 
             auto& shortcuts = trapdoor::mod().getConfig().getShortcuts();

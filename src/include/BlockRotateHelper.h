@@ -7,9 +7,12 @@
 #include <MC/BlockSource.hpp>
 #include <MC/BlockInstance.hpp>
 #include <MC/Vec3.hpp>
+#include "CommandHelper.h"
 // clang-format on
 
 namespace trapdoor {
+
+    ActionResult setBlockRotationAble(bool able);
     bool rotateBlock(BlockSource* bs, BlockInstance* bi, const Vec3& clickPos, unsigned char face);
     void initRotateBlockHelper();
 }  // namespace trapdoor

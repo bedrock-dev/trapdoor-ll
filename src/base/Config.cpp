@@ -4,6 +4,7 @@
 
 #include "Config.h"
 
+#include "BlockRotateHelper.h"
 #include "CommandHelper.h"
 #include "Shortcuts.h"
 #include "TrapdoorMod.h"
@@ -141,12 +142,14 @@ namespace trapdoor {
             auto def = this->config["default-enable-functions"];
             auto& mod = trapdoor::mod();
             auto hc = def["hopper-counter"].get<bool>();
-            // auto br = def["block-rotate"].get<bool>();
+            auto br = def["block-rotate"].get<bool>();
             auto hud = def["hud"].get<bool>();
             mod.getHopperChannelManager().setAble(hc);
             mod.getHUDHelper().setAble(hud);
+            trapdoor::setBlockRotationAble(br);
             trapdoor::logger().warn("Set hopper counter to {}", hc);
             trapdoor::logger().warn("Set HUD to {}", hud);
+            trapdoor::logger().warn("Set BlockRotate to {}", br);
             // trapdoor::logger().warn("Set block rotate to {}", br);
         } catch (const std::exception& e) {
             trapdoor::logger().error("error read default functions config: {}", e.what());

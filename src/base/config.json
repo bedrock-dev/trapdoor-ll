@@ -76,7 +76,8 @@
   },
   "default-enable-functions": {
     "hud": true,
-    "hopper-counter": false
+    "hopper-counter": false,
+    "block-rotate": false
   },
   "default-enable-tweaks": {
     "force-place-level": 0,
