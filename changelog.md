@@ -1,3 +1,16 @@
+### trapdoor-ll-0.15-1.19.10.03
+
+#### 依赖和版本支持
+
+- 需要LiteLoader 2.4.1 或以上版本
+- 理论上支持1.19.10及以上版本
+
+#### 更新日志
+
+- 支持县人装转方块,可使用`trapdoor blockrotate`命令开启,感谢@OEOTYAN的PR
+- 支持史莱姆区块显示，可使用`slime`命令配置，感谢@quizhizhe的PR
+- 添加计算距离的`dis`命令
+
 ### trapdoor-ll-0.14-1.19.10.03
 
 #### 依赖和版本支持
@@ -11,6 +24,7 @@
 - 将`player destroy`拆分成份`player destroyon`和`player destroy`命令，
   前者需要指定方块坐标，后者假人 会自动挖掘其指向的方块
 - `hud`添加`chunk`子命令以支持区块显示
+
 ### trapdoor-ll-0.13-1.19.10.03
 
 #### 依赖和版本支持

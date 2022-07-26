@@ -55,9 +55,11 @@ namespace trapdoor {
             return nullptr;
         }
 
-        void writeInvToFile(Container& cont, const std::string& file_name) {
-            const std::string path = "./plugins/trapdoor/sim/" + file_name;
-            //  trapdoor::logger().debug("save data to {}", path);
+        void writeInvToFile(Container& cont, const std::string& playerName) {
+            // const std::string path = "./plugins/trapdoor/sim/" + file_name;
+            const std::string path =
+                "./plugins/trapdoor/sim/" + std::to_string(do_hash(playerName.c_str()));
+            trapdoor::logger().debug("Path is {}", path);
             // TODO 序列化背包内容到文件
             nlohmann::json obj;
             auto array = nlohmann::json::array();
@@ -71,22 +73,27 @@ namespace trapdoor {
                 array.push_back(j);
             }
             obj["inventory"] = array;
+            obj["name"] = playerName;
             std::ofstream f(path);
-            if (!f.is_open()) {
-                trapdoor::logger().error("can not write file");
+            if (!f) {
+                trapdoor::logger().error("can not write file {} to disk", path);
+                return;
             }
+
             f << obj;
             f.close();
         }
 
-        void tryReadInvFromFile(Container& cont, const std::string& file_name) {
-            const std::string path = "./plugins/trapdoor/sim/" + file_name;
+        void tryReadInvFromFile(Container& cont, const std::string& playerName) {
+            const std::string path =
+                "./plugins/trapdoor/sim/" + std::to_string(do_hash(playerName.c_str()));
             // TODO 从文件读取内容到背包
             std::ifstream f(path);
             if (!f.is_open()) {
                 //  trapdoor::logger().warn("can not read file {}", file_name);
                 return;
             }
+
             nlohmann::json obj;
             f >> obj;
             try {
