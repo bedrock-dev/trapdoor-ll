@@ -13,6 +13,7 @@
 #include <MC/Material.hpp>
 #include <MC/NavigationComponent.hpp>
 #include <MC/Player.hpp>
+#include <unordered_map>
 #include <vector>
 
 #include "CommandHelper.h"
@@ -21,6 +22,7 @@
 #include "MC/PrettySnbtFormat.hpp"
 #include "Msg.h"
 #include "Particle.h"
+#include "TBlockPos.h"
 #include "TrAPI.h"
 #include "TrapdoorMod.h"
 #include "Utils.h"
@@ -36,14 +38,23 @@ namespace trapdoor {
             int mData = 0;                               // 7*4
         };
 
-        static_assert(sizeof(ComponentItem) == 32);
-
-        struct ActorNBTFormat : PrettySnbtFormat {
-            ActorNBTFormat() {
-                this->switchToPlayerFormat();
-                this->mMaxLevel = 1;
-            }
+        struct PendingEntry {
+            std::unique_ptr<BaseCircuitComponent> mComponent;
+            BlockPos mPos;
+            BaseCircuitComponent *mRawComponentPtr;
         };
+
+        /*
+         *Core data structure
+         */
+        struct TCircuitSceneGraph {
+            std::unordered_map<BlockPos, std::unique_ptr<BaseCircuitComponent>> mAllComponents;
+            std::vector<ComponentItem> mActiveComponents;
+            std::unordered_map<BlockPos, std::vector<ComponentItem>> mActiveComponentsPerChunk;
+            std::unordered_map<BlockPos, std::vector<ComponentItem>> mPowerAssociationMap;
+        };
+
+        static_assert(sizeof(ComponentItem) == 32);
 
         std::string printableNBT(const std::unique_ptr<CompoundTag> &nbt) {
             return nbt->toPrettySNBT(true);
@@ -139,26 +150,70 @@ namespace trapdoor {
 
     bool displayEnvInfo() { return true; }
 
-    ActionResult displayRedstoneCompInfo(Dimension *d, const BlockPos &pos) {
+    ActionResult displayRedstoneCompInfo(Dimension *d, const BlockPos &pos,
+                                         const std::string &type) {
         if (!d) return ErrorDimension();
+        if (pos == BlockPos::MAX) return ErrorPosition();
+
         auto &cs = d->getCircuitSystem();
         auto &graph = getCircuitSceneGraph(&cs);
+        auto *g = reinterpret_cast<TCircuitSceneGraph *>(&graph);
+        // 获取红石组件
+        if (type == "chunk") {
+            auto chunkPos = fromBlockPos(pos).toChunkPos();
+            BlockPos cp{chunkPos.x, 0, chunkPos.z};
+            auto iter = g->mActiveComponentsPerChunk.find(cp);
+            if (iter != g->mActiveComponentsPerChunk.end()) {
+                for (auto &l : iter.second) {
+                    auto lPos = l.mPos;
+                    trapdoor::shortHighlightBlock({lPos.x, lPos.y, lPos.z}, PCOLOR::BLUE,
+                                                  d->getDimensionId());
+                }
+            }
+
+            return {"", true};
+        }
+
         auto comp = graph.getBaseComponent(pos);
         if (!comp) {
             return {"Not an redstone component", false};
         }
 
-        TextBuilder builder;
-        builder.text("Signal: ").num(comp->getStrength()).text("\n");
+        if (type == "signal") {
+            TextBuilder builder;
+            builder.text("Signal: ").num(comp->getStrength()).text("\n");
+            //            auto &list = dAccess<std::vector<ComponentItem>, 8>(comp);
+            //            for (auto &source : list) {
+            //                auto p = source.mPos;
+            //                builder.textF("P: [%s] D: %d S: %d\n", p.toString().c_str(),
+            //                source.mDampening,
+            //                              source.mComponent->getStrength());
+            //            }
+            return {builder.get(), true};
+        }
+
+        if (type != "conn") return {"", true};
+
+        // link
+        // 高亮自身
+        trapdoor::shortHighlightBlock({pos.x, pos.y, pos.z}, PCOLOR::GREEN, d->getDimensionId());
+
+        // 高亮被自身激活的原件
+        auto it = g->mPowerAssociationMap.find(pos);
+        if (it != g->mPowerAssociationMap.end()) {
+            for (auto &c : it->second) {
+                auto p = c.mPos;
+                trapdoor::shortHighlightBlock({p.x, p.y, p.z}, PCOLOR::YELLOW, d->getDimensionId());
+            }
+        }
+
+        // 高亮可以激活自身的原件
         auto &list = dAccess<std::vector<ComponentItem>, 8>(comp);
         for (auto &source : list) {
             auto p = source.mPos;
-            builder.textF("P: [%s] D: %d S: %d\n", p.toString().c_str(), source.mDampening,
-                          source.mComponent->getStrength());
-            auto color = source.mDirectlyPowered ? PCOLOR::YELLOW : PCOLOR::GREEN;
-            trapdoor::shortHighlightBlock({p.x, p.y, p.z}, color, d->getDimensionId());
+            trapdoor::shortHighlightBlock({p.x, p.y, p.z}, PCOLOR::RED, d->getDimensionId());
         }
 
-        return {builder.get(), true};
+        return {"", true};
     }
 }  // namespace trapdoor

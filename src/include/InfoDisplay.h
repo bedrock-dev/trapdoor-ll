@@ -11,14 +11,15 @@
 #include "Global.h"
 
 namespace trapdoor {
-    ActionResult displayEntityInfo(Player * player, Actor * target, bool nbt,
+    ActionResult displayEntityInfo(Player *player, Actor *target, bool nbt,
                                    const std::string &path);
 
-    ActionResult displayBlockInfo(Player * p, const BlockPos &pos, bool nbt,
+    ActionResult displayBlockInfo(Player *p, const BlockPos &pos, bool nbt,
                                   const std::string &path);
     bool displayEnvInfo();
 
-    ActionResult displayRedstoneCompInfo(Dimension * d, const BlockPos &pos);
+    ActionResult displayRedstoneCompInfo(Dimension *d, const BlockPos &pos,
+                                         const std::string &type);
 
 }  // namespace trapdoor
 

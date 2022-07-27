@@ -44,6 +44,8 @@ namespace trapdoor {
         return {fmt::format("Error value {}, it should within [{},{}] ", name, begin, end), false};
     }
 
+    inline ActionResult ErrorPosition() { return {"A position needed", false}; }
+
     void registerShortcutCommand(const std::string &shortcut,
                                  const std::vector<std::string> &actions);
     void setup_tickCommand(int);
