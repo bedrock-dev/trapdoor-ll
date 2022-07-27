@@ -161,10 +161,10 @@ namespace trapdoor {
         // 获取红石组件
         if (type == "chunk") {
             auto chunkPos = fromBlockPos(pos).toChunkPos();
-            BlockPos cp{chunkPos.x, 0, chunkPos.z};
+            BlockPos cp{chunkPos.x * 16, 0, chunkPos.z * 16};
             auto iter = g->mActiveComponentsPerChunk.find(cp);
             if (iter != g->mActiveComponentsPerChunk.end()) {
-                for (auto &l : iter.second) {
+                for (auto &l : iter->second) {
                     auto lPos = l.mPos;
                     trapdoor::shortHighlightBlock({lPos.x, lPos.y, lPos.z}, PCOLOR::BLUE,
                                                   d->getDimensionId());
