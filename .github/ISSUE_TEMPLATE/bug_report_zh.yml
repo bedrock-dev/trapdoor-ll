@@ -8,7 +8,7 @@ body:
   attributes:
     label: trapdoor版本号版本
     placeholder: 输入你的trapdoor版本号
-     description: |
+    description: |
       请输入一个完整的版本号,如`0.15-1.19.10.03`,如果插件是从actions下载的，请填写action运行ID(#开头)或者commit hash
   validations:
     required: true
