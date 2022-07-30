@@ -41,4 +41,15 @@ body:
     placeholder: |
       1. Do something
       2. ...
+<<<<<<< HEAD
       3. ...
+=======
+      3. ...
+
+- type: markdown
+  attributes:
+    value: |
+      **如果你有图片或其他内容，请在下面评论(comment)。截图，日志和dmp文件对解决你的问题很重要、很有帮助**
+      ******
+      再次感谢您对LiteLoader的贡献!
+>>>>>>> 02ec5d5099e13fe73a6131794020e94b94cffed3
