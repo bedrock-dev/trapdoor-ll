@@ -10,12 +10,21 @@ assignees: ''
 **Describe the bug**
 A clear and concise description of what the bug is.
 
+
+
+
+
 **To Reproduce**
 Steps to reproduce the behavior:
+
+
 
 **Trapdoor version**
  (release full name or action number)
 
 **BDS verion:**
 
+
+
 **Liteloader  verion:**
+
