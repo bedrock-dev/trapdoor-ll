@@ -10,6 +10,8 @@
 - 修复无法保存中文名的假人的数据的问题(控制台频繁输出`can not write file`)
 - 添加配置项`keep-sim-player-inv`以配置是否保存假人背包数据
 - 添加配置项`tool-damage-threshold`以修改自动切换工具的耐久阈值
+- 强化`data redstone`指令以查看信号源的连接情况
+- 少量单词拼写错误
 
 ### trapdoor-ll-0.15-1.19.10.03
 

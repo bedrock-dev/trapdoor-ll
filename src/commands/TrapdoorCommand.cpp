@@ -41,6 +41,12 @@ namespace trapdoor {
             return {"Set freq to " + std::to_string(freq), true};
         }
 
+        ActionResult reloadConfig() {
+            auto succ = trapdoor::mod().initConfig();
+            auto msg = succ ? "Success reload trapdoor config" : "Fail reload trapdoor config";
+            return {msg, succ};
+        }
+
     }  // namespace
 
     void setup_trapdoorCommand(int level) {
@@ -52,12 +58,15 @@ namespace trapdoor {
         auto &particleShowLevelOpt = command->setEnum("level", {"low", "medium", "high"});
         auto &particleDistanceEnum = command->setEnum("particleDistanceEnum", {"pvd"});
         auto &hudRefreshFreqEnum = command->setEnum("hudRefreshFreq", {"hudfreq"});
+        auto &configEnum = command->setEnum("configEnum", {"dump", "reload"});
 
         command->mandatory("trapdoor", ParamType::Enum, particleShowLevelEnum,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("trapdoor", ParamType::Enum, particleDistanceEnum,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("trapdoor", ParamType::Enum, hudRefreshFreqEnum,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+        command->mandatory("trapdoor", ParamType::Enum, configEnum,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
         command->mandatory("particleLevelOpt", ParamType::Enum, particleShowLevelOpt,
@@ -69,6 +78,8 @@ namespace trapdoor {
         command->addOverload({particleShowLevelEnum, "particleLevelOpt"});
         command->addOverload({particleDistanceEnum, "maxDistance"});
         command->addOverload({hudRefreshFreqEnum, "frequency"});
+
+        command->addOverload({configEnum});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
@@ -83,6 +94,9 @@ namespace trapdoor {
                     break;
                 case do_hash("hudfreq"):
                     setHUDFreq(results["frequency"].get<int>()).sendTo(output);
+                    break;
+                case do_hash("reload"):
+                    reloadConfig().sendTo(output);
                     break;
             }
         };

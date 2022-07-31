@@ -8,8 +8,8 @@
 #include <map>
 #include <unordered_map>
 
+#include "CommandHelper.h"
 #include "Global.h"
-#include "MC/Command.hpp"
 #include "MC/Level.hpp"
 #include "MC/ServerPlayer.hpp"
 #include "Nlohmann/json.hpp"
@@ -50,6 +50,8 @@ namespace trapdoor {
         inline TweakConfig& getTweakConfig() { return this->tweakConfig; }
 
         bool init(const std::string& fileName);
+
+        std::string dumpConfigInfo();
 
        private:
         bool readConfigFile(const std::string& path);

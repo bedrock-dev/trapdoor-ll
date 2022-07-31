@@ -7,14 +7,16 @@
 #include "HsaHelper.h"
 #include "LoggerAPI.h"
 #include "SimPlayerHelper.h"
+#include "SlimeChunkHelper.h"
 #include "SpawnAnalyzer.h"
 #include "VillageHelper.h"
-#include "SlimeChunkHelper.h"
 
 namespace trapdoor {
     class TrapdoorMod {
        public:
         void init();
+
+        bool initConfig();
 
         void heavyTick();
 

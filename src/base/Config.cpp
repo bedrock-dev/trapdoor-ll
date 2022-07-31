@@ -25,7 +25,7 @@ namespace trapdoor {
 
         void setBoolValue(bool& key, bool value, const std::string& name) {
             key = value;
-            trapdoor::logger().info("Set {} to {}", name, key);
+            trapdoor::logger().info("Set [{}] to {}", name, key);
         }
 
     }  // namespace
@@ -183,5 +183,6 @@ namespace trapdoor {
 
         return true;
     }
+    std::string Configuration::dumpConfigInfo() { return "Developing!"; }
 
 }  // namespace trapdoor

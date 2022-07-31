@@ -6,6 +6,7 @@
 #include <unordered_set>
 
 #include "CommandHelper.h"
+#include "DynamicCommandAPI.h"
 #include "ScheduleAPI.h"
 
 namespace trapdoor {
