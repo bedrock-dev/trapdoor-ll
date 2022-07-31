@@ -7,6 +7,19 @@
 
 #### 更新日志
 
+- 修复无法保存中文名的假人的数据的问题(控制台频繁输出`can not write file`)
+- 添加配置项`keep-sim-player-inv`以配置是否保存假人背包数据
+- 添加配置项`tool-damage-threshold`以修改自动切换工具的耐久阈值
+
+### trapdoor-ll-0.15-1.19.10.03
+
+#### 依赖和版本支持
+
+- 需要LiteLoader 2.4.1 或以上版本
+- 理论上支持1.19.10及以上版本
+
+#### 更新日志
+
 - 支持县人装转方块,可使用`trapdoor blockrotate`命令开启,感谢@OEOTYAN的PR
 - 支持史莱姆区块显示，可使用`slime`命令配置，感谢@quizhizhe的PR
 - 添加计算距离的`dis`命令

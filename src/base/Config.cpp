@@ -8,7 +8,28 @@
 #include "CommandHelper.h"
 #include "Shortcuts.h"
 #include "TrapdoorMod.h"
+
 namespace trapdoor {
+
+    namespace {
+
+        void setIntValue(int& key, int value, const std::string& name, int min, int max) {
+            if (value >= min && value <= max) {
+                key = value;
+                trapdoor::logger().info("Set [{}] to {}", name, key);
+            } else {
+                trapdoor::logger().warn("Value of [{}] should within {} to {},set to default {}",
+                                        name, min, max, key);
+            }
+        }
+
+        void setBoolValue(bool& key, bool value, const std::string& name) {
+            key = value;
+            trapdoor::logger().info("Set {} to {}", name, key);
+        }
+
+    }  // namespace
+
     bool Configuration::init(const std::string& fileName) {
         if (!readConfigFile(fileName)) return false;
         if (!readCommandConfigs()) return false;
@@ -24,10 +45,10 @@ namespace trapdoor {
             this->config.clear();
             std::ifstream i(path);
             i >> this->config;
-            trapdoor::logger().info("read getConfig file {} successfully", path);
+            trapdoor::logger().info("Read getConfig file {} successfully", path);
             return true;
         } catch (std::exception&) {
-            trapdoor::logger().error("can not read getConfig file {}", path);
+            trapdoor::logger().error("Can't read configuration file: {}", path);
             return false;
         }
     }
@@ -43,7 +64,7 @@ namespace trapdoor {
                 this->commandsConfigs.insert({i.key(), tempConfig});
             }
         } catch (const std::exception& e) {
-            trapdoor::logger().error("error read command getConfig: {}", e.what());
+            trapdoor::logger().error("error read commands: {}", e.what());
             return false;
         }
         return true;
@@ -54,30 +75,17 @@ namespace trapdoor {
             auto pl = bc["particle-performance-level"].get<int>();
             auto pv = bc["particle-view-distance"].get<int>();
             auto hudFreq = bc["hud-refresh-freq"].get<int>();
+            auto tdh = bc["tool-damage-threshold"].get<int>();
+            auto keepSimPlayerInv = bc["keep-sim-player-inv"].get<bool>();
 
-            if (pl != 1 && pl != 2 && pl != 3) {
-                pl = 3;
-                trapdoor::logger().warn("Invalid particle-performance-level, set to default 3");
-            }
-            this->basicConfig.particleLevel = pl;
-            trapdoor::logger().debug("Set particle performance level to {}", pl);
-
-            if (pv <= 0 || pv >= 2048) {
-                pv = 128;
-                trapdoor::logger().warn("Invalid particle-view-distance, set to default 128");
-            }
-            this->basicConfig.particleViewDistance = pv;
-            trapdoor::logger().debug("Set particle view distance to {}", pv);
-
-            if (hudFreq <= 0) {
-                hudFreq = 20;
-                trapdoor::logger().warn("Invalid hud refresh frequency, set to default 20");
-            }
-            this->basicConfig.hudRefreshFreq = hudFreq;
-            trapdoor::logger().debug("Set HUD show freq to {}", hudFreq);
-
+            auto& cfg = this->basicConfig;
+            setIntValue(cfg.particleLevel, pl, "particle performance level", 1, 3);
+            setIntValue(cfg.particleViewDistance, pv, "particle view distance", 0, 2048);
+            setIntValue(cfg.hudRefreshFreq, hudFreq, "hud refresh frequency", 1, 100000);
+            setIntValue(cfg.toolDamageThreshold, tdh, "tool damage threshold", -100, 65536);
+            setBoolValue(cfg.keepSimPlayerInv, keepSimPlayerInv, "keep sim player inv");
         } catch (const std::exception& e) {
-            trapdoor::logger().error("error read  basic config: {}", e.what());
+            trapdoor::logger().error("error read basic-config: {}", e.what());
             return false;
         }
         return true;
@@ -87,19 +95,16 @@ namespace trapdoor {
             auto cc = this->config["shortcuts"];
             for (const auto& i : cc.items()) {
                 Shortcut sh;
-
                 const auto& value = i.value();
                 auto type = value["type"].get<std::string>();
                 auto actions = value["actions"];
                 for (const auto& act : actions) {
                     sh.actions.push_back(act.get<std::string>());
                 }
-
                 if (sh.actions.empty()) {
                     trapdoor::logger().error("Shortcut {} has no action", i.key());
                     continue;
                 }
-
                 if (type == "use") {
                     sh.type = ShortcutType::USE;
                     sh.setItem(value["item"].get<std::string>());
@@ -131,7 +136,7 @@ namespace trapdoor {
     CommandConfig Configuration::getCommandConfig(const std::string& command) {
         auto it = this->commandsConfigs.find(command);
         if (it == this->commandsConfigs.end()) {
-            trapdoor::logger().warn("Can nod find config info of [{}],it will not be registered",
+            trapdoor::logger().warn("Can not find config info of [{}],it will not be registered",
                                     command);
             return {false, 2};
         }
@@ -147,10 +152,9 @@ namespace trapdoor {
             mod.getHopperChannelManager().setAble(hc);
             mod.getHUDHelper().setAble(hud);
             trapdoor::setBlockRotationAble(br);
-            trapdoor::logger().warn("Set hopper counter to {}", hc);
-            trapdoor::logger().warn("Set HUD to {}", hud);
-            trapdoor::logger().warn("Set BlockRotate to {}", br);
-            // trapdoor::logger().warn("Set block rotate to {}", br);
+            trapdoor::logger().info("Set [hopper counter] to {}", hc);
+            trapdoor::logger().info("Set [HUD] to {}", hud);
+            trapdoor::logger().info("Set [Block rotate] to {}", br);
         } catch (const std::exception& e) {
             trapdoor::logger().error("error read default functions config: {}", e.what());
             return false;
@@ -160,25 +164,18 @@ namespace trapdoor {
     }
     bool Configuration::readTweakConfigs() {
         try {
-            /*
-                 "force-open-container": false,
-                 "dropper-no-cost": false,
-                 "auto-select-tool": false
-              */
             auto det = this->config["default-enable-tweaks"];
             auto& mod = trapdoor::mod();
-            auto fpl = det["force-place-level"].get<int>();
+            auto forcePlace = det["force-place-level"].get<int>();
             auto forceOpenContainer = det["force-open-container"].get<bool>();
             auto dropperNoCost = det["dropper-no-cost"].get<bool>();
             auto autoSelectTool = det["auto-select-tool"].get<bool>();
-            this->tweakConfig.autoSelectTool = autoSelectTool;
-            this->tweakConfig.dropperNoCost = dropperNoCost;
-            this->tweakConfig.forceOpenContainer = forceOpenContainer;
-            this->tweakConfig.forcePlaceLevel = fpl >= 0 && fpl <= 2 ? fpl : 0;
-            trapdoor::logger().warn("Set ForcePlaceLevel to {}", fpl);
-            trapdoor::logger().warn("Set ForceOpenContainer to {}", forceOpenContainer);
-            trapdoor::logger().warn("Set DropperNoCost to {}", dropperNoCost);
-            trapdoor::logger().warn("Set AutoSelectTool to {}", autoSelectTool);
+
+            auto& cfg = this->tweakConfig;
+            setBoolValue(cfg.autoSelectTool, autoSelectTool, "auto select tools");
+            setBoolValue(cfg.dropperNoCost, dropperNoCost, "dropper no cost");
+            setBoolValue(cfg.forceOpenContainer, forceOpenContainer, "force open container");
+            setIntValue(cfg.forcePlaceLevel, forcePlace, "force place level", 0, 2);
         } catch (const std::exception& e) {
             trapdoor::logger().error("error read tweak config: {}", e.what());
             return false;

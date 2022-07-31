@@ -72,7 +72,9 @@
   "basic-config": {
     "particle-performance-level": 3,
     "particle-view-distance": 128,
-    "hud-refresh-freq": 20
+    "hud-refresh-freq": 20,
+    "tool-damage-threshold": 10,
+    "keep-sim-player-inv": true
   },
   "default-enable-functions": {
     "hud": true,

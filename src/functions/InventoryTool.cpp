@@ -44,7 +44,7 @@ namespace trapdoor {
         }
     }  // namespace
 
-    void swapItemInContainer(Container & cont, int s1, int s2) {
+    void swapItemInContainer(Container &cont, int s1, int s2) {
         auto i1 = cont.getItem(s1).clone();
         auto i2 = cont.getItem(s2).clone();
         cont.removeItem(s1, 64);
@@ -52,7 +52,7 @@ namespace trapdoor {
         cont.setItem(s1, i2);
         cont.setItem(s2, i1);
     }
-    bool onStartDestroyBlock(Player * player, const BlockInstance &instance) {
+    bool onStartDestroyBlock(Player *player, const BlockInstance &instance) {
         if (!trapdoor::mod().getConfig().getTweakConfig().autoSelectTool) {
             return true;
         }
@@ -63,7 +63,7 @@ namespace trapdoor {
         if (bestSlot == curSlot) {
             auto &item = player->getSelectedItem();
             auto remain = item.getMaxDamage() - item.getDamageValue();
-            if (remain <= 5) {
+            if (remain <= trapdoor::mod().getConfig().getBasicConfig().toolDamageThreshold) {
                 TextBuilder builder;
                 builder.sText(TB::GOLD, " You don't have the right tools!");
                 player->sendText(builder.get());

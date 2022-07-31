@@ -57,6 +57,7 @@ namespace trapdoor {
 
         void writeInvToFile(Container& cont, const std::string& playerName) {
             // const std::string path = "./plugins/trapdoor/sim/" + file_name;
+            if (!trapdoor::mod().getConfig().getBasicConfig().keepSimPlayerInv) return;
             const std::string path =
                 "./plugins/trapdoor/sim/" + std::to_string(do_hash(playerName.c_str()));
             trapdoor::logger().debug("Path is {}", path);
@@ -85,6 +86,7 @@ namespace trapdoor {
         }
 
         void tryReadInvFromFile(Container& cont, const std::string& playerName) {
+            if (!trapdoor::mod().getConfig().getBasicConfig().keepSimPlayerInv) return;
             const std::string path =
                 "./plugins/trapdoor/sim/" + std::to_string(do_hash(playerName.c_str()));
             // TODO 从文件读取内容到背包
