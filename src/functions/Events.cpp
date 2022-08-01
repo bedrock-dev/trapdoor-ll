@@ -133,15 +133,12 @@ namespace trapdoor {
                 return true;
             });
     }
-}  // namespace trapdoor
 
-// TInstanceHook(bool,
-// "?_useOn@BlockItem@@MEBA_NAEAVItemStack@@AEAVActor@@VBlockPos@@EAEBVVec3@@@Z",
-//               Item, ItemStack* a2, Actor* ac, BlockPos* a4, unsigned __int8 a5, class Vec3* a6) {
-//     auto id = a2 ? a2->getId() : -1024;
-//     auto res = original(this, a2, ac, a4, a5, a6);
-//     if (ac && ac->isPlayer()) {
-//         trapdoor::afterUseItem((Player*)(ac), static_cast<int>(id));
-//     }
-//     return res;
-// }
+    void subscribeServerStartEvent() {
+        Event::ServerStartedEvent::subscribe([&](const Event::ServerStartedEvent& ev) {
+            trapdoor::mod().getSimPlayerManager().addPlayersInCache();
+            return true;
+        });
+    }
+
+}  // namespace trapdoor

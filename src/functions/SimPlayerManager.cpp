@@ -344,6 +344,7 @@ namespace trapdoor {
         it->second.task.cancel();
         if (it->second.simPlayer) it->second.simPlayer->simulateDisconnect();
         simPlayers.erase(name);
+        this->syncPlayerListToFile();
         this->refreshCommandSoftEnum();
         return {"", true};
     }
@@ -370,6 +371,7 @@ namespace trapdoor {
         this->simPlayers[name] = {name, sim, ScheduleTask()};
         tryReadInvFromFile(sim->getInventory(), name);
         this->refreshCommandSoftEnum();
+        this->syncPlayerListToFile();
         return {"", true};
     }
 
@@ -418,4 +420,53 @@ namespace trapdoor {
         // todo 序列化背包物品到文件
         writeInvToFile(player->getInventory(), name);
     }
+    void SimPlayerManager::syncPlayerListToFile() {
+        const std::string path = "./plugins/trapdoor/sim/cache.json";
+        nlohmann::json obj;
+        for (auto& sim : this->simPlayers) {
+            auto* p = sim.second.simPlayer;
+            if (p) {
+                auto pos = p->getPos();
+                json j = {
+                    {"x", pos.x}, {"y", pos.y}, {"z", pos.z}, {"dim", (int)p->getDimensionId()}};
+                obj[sim.first] = j;
+            }
+        }
+
+        std::ofstream f(path);
+        if (!f.is_open()) {
+            return;
+        }
+        f << obj.dump(4);
+        f.close();
+    }
+
+    void SimPlayerManager::addPlayersInCache() {
+        const std::string path = "./plugins/trapdoor/sim/cache.json";
+        nlohmann::json obj;
+        std::ifstream i(path);
+        if (!i.is_open()) {
+            return;
+        }
+        i >> obj;
+        try {
+            for (const auto& item : obj.items()) {
+                const auto name = item.key();
+                const auto& value = item.value();
+                auto dim = value["dim"].get<int>();
+                auto x = value["x"].get<float>();
+                auto y = value["y"].get<float>();
+                auto z = value["z"].get<float>();
+                this->addPlayer(name, {x, y, z}, dim, nullptr);
+                trapdoor::logger().debug("Spawn sim player [{}] at {},{},{} in dim {}", name, x, y,
+                                         z, dim);
+                //    tempConfig.enable = value["enable"].get<bool>();
+            }
+        } catch (const std::exception& e) {
+            trapdoor::logger().error("error read sim player cache: {}", e.what());
+        }
+
+        i.close();
+    }
+
 }  // namespace trapdoor

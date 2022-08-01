@@ -17,10 +17,15 @@ namespace trapdoor {
             ScheduleTask task;
         };
 
+        void syncPlayerListToFile();
+
        public:
         inline void setupCommandInstance(const DynamicCommandInstance* instance) {
             this->cmdInstance = instance;
         }
+
+        void addPlayersInCache();
+
         void tick();
 
         void processDieEvent(const std::string& name);
