@@ -27,6 +27,7 @@ namespace trapdoor {
         int hudRefreshFreq = 20;
         int toolDamageThreshold = 10;
         bool keepSimPlayerInv = true;
+        std::string serverCrashToken;
     };
 
     struct DefaultEnableFunctions {

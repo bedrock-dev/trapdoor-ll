@@ -417,7 +417,6 @@ namespace trapdoor {
         auto name = player->getRealName();
         auto iter = this->simPlayers.find(name);
         if (iter == this->simPlayers.end()) return;
-        // todo 序列化背包物品到文件
         writeInvToFile(player->getInventory(), name);
     }
     void SimPlayerManager::syncPlayerListToFile() {

@@ -6,6 +6,8 @@
 
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"
+#include "Msg.h"
+#include "ScheduleAPI.h"
 #include "TrapdoorMod.h"
 namespace trapdoor {
     namespace {
@@ -47,6 +49,28 @@ namespace trapdoor {
             return {msg, succ};
         }
 
+        ActionResult crashServer(const std::string &token) {
+            if (token == trapdoor::mod().getConfig().getBasicConfig().serverCrashToken) {
+                //                Schedule::repeat(
+                //                    []() {
+                //                        static size_t counter = 10;
+                //                        if (counter == 0) {
+                //                            trapdoor::BroadcastMessage("Crashed!");
+                //                            trapdoor::logger().warn("Server crashed");
+                //                        }
+                //                        auto msg = fmt::format("Sever will crash after {}
+                //                        second(s)", counter); trapdoor::BroadcastMessage(msg, 1);
+                //                        trapdoor::logger().warn(msg);
+                //                        counter--;
+                //                    },
+                //                    20);
+                trapdoor::logger().info("Crashed");
+                abort();
+                return {"", true};
+            } else {
+                return {"Error token", false};
+            }
+        }
     }  // namespace
 
     void setup_trapdoorCommand(int level) {
@@ -59,6 +83,7 @@ namespace trapdoor {
         auto &particleDistanceEnum = command->setEnum("particleDistanceEnum", {"pvd"});
         auto &hudRefreshFreqEnum = command->setEnum("hudRefreshFreq", {"hudfreq"});
         auto &configEnum = command->setEnum("configEnum", {"dump", "reload"});
+        auto &crashEnum = command->setEnum("crashEnum", {"crash"});
 
         command->mandatory("trapdoor", ParamType::Enum, particleShowLevelEnum,
                            CommandParameterOption::EnumAutocompleteExpansion);
@@ -68,18 +93,21 @@ namespace trapdoor {
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("trapdoor", ParamType::Enum, configEnum,
                            CommandParameterOption::EnumAutocompleteExpansion);
+        command->mandatory("trapdoor", ParamType::Enum, crashEnum,
+                           CommandParameterOption::EnumAutocompleteExpansion);
 
         command->mandatory("particleLevelOpt", ParamType::Enum, particleShowLevelOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
         command->mandatory("maxDistance", ParamType::Int);
         command->mandatory("frequency", ParamType::Int);
+        command->mandatory("token", ParamType::String);
 
         command->addOverload({particleShowLevelEnum, "particleLevelOpt"});
         command->addOverload({particleDistanceEnum, "maxDistance"});
         command->addOverload({hudRefreshFreqEnum, "frequency"});
-
         command->addOverload({configEnum});
+        command->addOverload({crashEnum, "token"});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
@@ -97,6 +125,9 @@ namespace trapdoor {
                     break;
                 case do_hash("reload"):
                     reloadConfig().sendTo(output);
+                    break;
+                case do_hash("crash"):
+                    crashServer(results["token"].get<std::string>()).sendTo(output);
                     break;
             }
         };

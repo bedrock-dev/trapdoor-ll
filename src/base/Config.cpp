@@ -77,6 +77,7 @@ namespace trapdoor {
             auto hudFreq = bc["hud-refresh-freq"].get<int>();
             auto tdh = bc["tool-damage-threshold"].get<int>();
             auto keepSimPlayerInv = bc["keep-sim-player-inv"].get<bool>();
+            auto severCrashToken = bc["server-crash-token"].get<std::string>();
 
             auto& cfg = this->basicConfig;
             setIntValue(cfg.particleLevel, pl, "particle performance level", 1, 3);
@@ -84,6 +85,7 @@ namespace trapdoor {
             setIntValue(cfg.hudRefreshFreq, hudFreq, "hud refresh frequency", 1, 100000);
             setIntValue(cfg.toolDamageThreshold, tdh, "tool damage threshold", -100, 65536);
             setBoolValue(cfg.keepSimPlayerInv, keepSimPlayerInv, "keep sim player inv");
+            this->basicConfig.serverCrashToken = severCrashToken;
         } catch (const std::exception& e) {
             trapdoor::logger().error("error read basic-config: {}", e.what());
             return false;

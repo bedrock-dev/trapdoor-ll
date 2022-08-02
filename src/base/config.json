@@ -74,7 +74,8 @@
     "particle-view-distance": 128,
     "hud-refresh-freq": 20,
     "tool-damage-threshold": 10,
-    "keep-sim-player-inv": true
+    "keep-sim-player-inv": true,
+    "server-crash-token": "demo"
   },
   "default-enable-functions": {
     "hud": true,
@@ -95,6 +96,13 @@
       "prevent": false,
       "actions": [
         "counter print {baux}"
+      ]
+    },
+    {
+      "type": "command",
+      "command": "here",
+      "actions": [
+        "say {px} {py} {pz}"
       ]
     }
   ]
