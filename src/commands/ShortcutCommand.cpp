@@ -26,9 +26,10 @@ namespace trapdoor {
             auto *p = origin.getPlayer();
             if (p) {
                 auto pos = p->getPos().toBlockPos();
+                auto dim = p->getDimensionId();
                 for (const auto &act : actions) {
                     auto cmd = fmt::format(act, fmt::arg("px", pos.x), fmt::arg("py", pos.y),
-                                           fmt::arg("pz", pos.z));
+                                           fmt::arg("pz", pos.z), fmt::arg("pdim", dim));
                     p->runcmd(cmd);
                 }
             }
