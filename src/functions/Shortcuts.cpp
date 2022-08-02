@@ -54,19 +54,19 @@ namespace trapdoor {
         std::string str;
         switch (this->type) {
             case USE:
-                str += "use " + itemName + "(" + std::to_string(itemAux) + ") ";
+                str += "use [" + itemName + ":" + std::to_string(itemAux) + "] ";
                 break;
             case USE_ON:
-                str += "use " + itemName + "(" + std::to_string(itemAux) + ") on " + blockName +
-                       "(" + std::to_string(blockAux) + ")  ";
+                str += "use [" + itemName + ":" + std::to_string(itemAux) + "] on [" + blockName +
+                       ":" + std::to_string(blockAux) + "]  ";
 
                 break;
             case CMD:
                 str += "command";
                 break;
             case DESTROY:
-                str += "use " + itemName + "(" + std::to_string(itemAux) + ") destroy " +
-                       blockName + "(" + std::to_string(blockAux) + ")  ";
+                str += "use [" + itemName + ":" + std::to_string(itemAux) + "] destroy [" +
+                       blockName + ":" + std::to_string(blockAux) + "]  ";
         }
 
         str += "prevent: " + std::to_string(prevent) + "  ";
@@ -80,7 +80,7 @@ namespace trapdoor {
         if (type != shortcut.type) return false;
         if (shortcut.type == USE) {
             return patternMatch(itemName, itemAux, shortcut.itemName, shortcut.itemAux);
-        } else if (shortcut.type == USE_ON) {
+        } else if (shortcut.type == USE_ON || shortcut.type == DESTROY) {
             return patternMatch(itemName, itemAux, shortcut.itemName, shortcut.itemAux) &&
                    patternMatch(blockName, blockAux, shortcut.blockName, shortcut.blockAux);
         }
@@ -96,7 +96,8 @@ namespace trapdoor {
             player->runcmd(cmd);
         }
     }
-    void Shortcut::runUseOn(Player* player,const ItemStack* item, Block* block, const BlockPos& p) {
+    void Shortcut::runUseOn(Player* player, const ItemStack* item, Block* block,
+                            const BlockPos& p) {
         auto pos = player->getPos().toBlockPos();
         for (auto& act : actions) {
             auto cmd =
@@ -109,7 +110,8 @@ namespace trapdoor {
             player->runcmd(cmd);
         }
     }
-    void Shortcut::runUseDestroy(Player* player, const ItemStack* item, Block* block, const BlockPos& p) {
+    void Shortcut::runUseDestroy(Player* player, const ItemStack* item, Block* block,
+                                 const BlockPos& p) {
         return runUseOn(player, item, block, p);
     }
 }  // namespace trapdoor

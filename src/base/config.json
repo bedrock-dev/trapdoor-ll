@@ -99,6 +99,15 @@
       ]
     },
     {
+      "type": "destroy",
+      "item": "",
+      "block": "",
+      "prevent": true,
+      "actions": [
+        "say trigger"
+      ]
+    },
+    {
       "type": "command",
       "command": "here",
       "actions": [

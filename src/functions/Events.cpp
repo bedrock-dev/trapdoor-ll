@@ -137,7 +137,7 @@ namespace trapdoor {
                 if (sh.match(shortcut)) {
                     sh.runUseDestroy(ev.mPlayer, &ev.mPlayer->getSelectedItem(), block,
                                      bi->getPosition());
-                    return sh.prevent;
+                    return !sh.prevent;
                 }
             }
 
