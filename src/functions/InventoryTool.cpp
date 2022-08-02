@@ -56,8 +56,9 @@ namespace trapdoor {
         if (!trapdoor::mod().getConfig().getTweakConfig().autoSelectTool) {
             return true;
         }
+
         auto *ins = const_cast<BlockInstance *>(&instance);
-        if (!player || !ins || ins->isNull()) return true;
+        if (!player || player->isCreative() || !ins || ins->isNull()) return true;
         auto curSlot = player->getSelectedItemSlot();
         auto bestSlot = searchBestToolInInv(player->getInventory(), curSlot, ins->getBlock());
         if (bestSlot == curSlot) {

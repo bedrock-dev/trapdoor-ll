@@ -119,6 +119,28 @@ namespace trapdoor {
     }
 
     void subscribePlayerStartDestroyBlockEvent() {
+        Event::PlayerDestroyBlockEvent::subscribe([&](const Event::PlayerDestroyBlockEvent& ev) {
+            //            Shortcut shortcut;
+            //            shortcut.type = DESTROY;
+            //            shortcut.itemAux = ev.mPlayer ->getAux();
+            //            shortcut.itemName = trapdoor::rmmc(ev.mItemStack->getTypeName());
+            //            shortcut.blockAux = block->getVariant();
+            //            shortcut.blockName = trapdoor::rmmc(block->getName().getString());
+            //            for (auto sh : shortcuts) {
+            //                if (sh.match(shortcut)) {
+            //                    if (antiShake(ev.mPlayer->getRealName(), bi->getPosition())) {
+            //                        sh.runUseOn(ev.mPlayer, ev.mItemStack, block,
+            //                        bi->getPosition()); return !sh.prevent;
+            //                    }
+            //                }
+            //            }
+            //
+            //            return true;
+            //        });
+            //
+            //        return true;
+            return true;
+        });
         Event::PlayerStartDestroyBlockEvent::subscribe(
             [&](const Event::PlayerStartDestroyBlockEvent& ev) {
                 return onStartDestroyBlock(ev.mPlayer, ev.mBlockInstance);

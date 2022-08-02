@@ -59,10 +59,14 @@ namespace trapdoor {
             case USE_ON:
                 str += "use " + itemName + "(" + std::to_string(itemAux) + ") on " + blockName +
                        "(" + std::to_string(blockAux) + ")  ";
+
                 break;
             case CMD:
                 str += "command";
                 break;
+            case DESTROY:
+                str += "use " + itemName + "(" + std::to_string(itemAux) + ") destroy " +
+                       blockName + "(" + std::to_string(blockAux) + ")  ";
         }
 
         str += "prevent: " + std::to_string(prevent) + "  ";
@@ -82,7 +86,7 @@ namespace trapdoor {
         }
         return false;
     }
-    void Shortcut::runUse(Player * player, ItemStack * item) {
+    void Shortcut::runUse(Player* player, ItemStack* item) {
         auto pos = player->getPos().toBlockPos();
         for (auto& act : actions) {
             auto cmd = fmt::format(act, fmt::arg("px", pos.x), fmt::arg("py", pos.y),
@@ -92,9 +96,8 @@ namespace trapdoor {
             player->runcmd(cmd);
         }
     }
-    void Shortcut::runUseOn(Player * player, ItemStack * item, Block * block, const BlockPos& p) {
+    void Shortcut::runUseOn(Player* player, ItemStack* item, Block* block, const BlockPos& p) {
         auto pos = player->getPos().toBlockPos();
-
         for (auto& act : actions) {
             auto cmd =
                 fmt::format(act, fmt::arg("px", pos.x), fmt::arg("py", pos.y),
@@ -105,5 +108,8 @@ namespace trapdoor {
             trapdoor::logger().debug("cmd is {}", cmd);
             player->runcmd(cmd);
         }
+    }
+    void Shortcut::runUseDestroy(Player* player, ItemStack* item, Block* block, const BlockPos& p) {
+        return runUseOn(player, item, block, p);
     }
 }  // namespace trapdoor

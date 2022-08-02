@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 namespace trapdoor {
-    enum ShortcutType { USE = 0, USE_ON = 1, CMD };
+    enum ShortcutType { USE = 0, USE_ON = 1, CMD, DESTROY };
     struct Shortcut {
         ShortcutType type;     // 类型
         std::string itemName;  // 使用的物品
@@ -23,6 +23,8 @@ namespace trapdoor {
         std::string getDescription() const;
         void runUse(Player* player, ItemStack* item);
         void runUseOn(Player* player, ItemStack* item, Block* block, const BlockPos& p);
+        void runUseDestroy(Player* player, ItemStack* item, Block* block, const BlockPos& p);
+
         bool match(const Shortcut& shortcut) const;
     };
 
