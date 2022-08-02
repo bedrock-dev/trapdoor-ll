@@ -96,7 +96,7 @@ namespace trapdoor {
             player->runcmd(cmd);
         }
     }
-    void Shortcut::runUseOn(Player* player, ItemStack* item, Block* block, const BlockPos& p) {
+    void Shortcut::runUseOn(Player* player,const ItemStack* item, Block* block, const BlockPos& p) {
         auto pos = player->getPos().toBlockPos();
         for (auto& act : actions) {
             auto cmd =
@@ -109,7 +109,7 @@ namespace trapdoor {
             player->runcmd(cmd);
         }
     }
-    void Shortcut::runUseDestroy(Player* player, ItemStack* item, Block* block, const BlockPos& p) {
+    void Shortcut::runUseDestroy(Player* player, const ItemStack* item, Block* block, const BlockPos& p) {
         return runUseOn(player, item, block, p);
     }
 }  // namespace trapdoor

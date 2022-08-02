@@ -120,27 +120,30 @@ namespace trapdoor {
 
     void subscribePlayerStartDestroyBlockEvent() {
         Event::PlayerDestroyBlockEvent::subscribe([&](const Event::PlayerDestroyBlockEvent& ev) {
-            //            Shortcut shortcut;
-            //            shortcut.type = DESTROY;
-            //            shortcut.itemAux = ev.mPlayer ->getAux();
-            //            shortcut.itemName = trapdoor::rmmc(ev.mItemStack->getTypeName());
-            //            shortcut.blockAux = block->getVariant();
-            //            shortcut.blockName = trapdoor::rmmc(block->getName().getString());
-            //            for (auto sh : shortcuts) {
-            //                if (sh.match(shortcut)) {
-            //                    if (antiShake(ev.mPlayer->getRealName(), bi->getPosition())) {
-            //                        sh.runUseOn(ev.mPlayer, ev.mItemStack, block,
-            //                        bi->getPosition()); return !sh.prevent;
-            //                    }
-            //                }
-            //            }
-            //
-            //            return true;
-            //        });
-            //
-            //        return true;
+            auto* bi = const_cast<BlockInstance*>(&ev.mBlockInstance);
+            if (bi->isNull()) {
+                return true;
+            }
+            auto* block = bi->getBlock();
+            Shortcut shortcut;
+            shortcut.type = DESTROY;
+            shortcut.itemAux = ev.mPlayer->getSelectedItem().getAux();
+            shortcut.itemName = trapdoor::rmmc(ev.mPlayer->getSelectedItem().getTypeName());
+
+            shortcut.blockAux = block->getVariant();
+            shortcut.blockName = trapdoor::rmmc(block->getName().getString());
+            auto& shortcuts = trapdoor::mod().getConfig().getShortcuts();
+            for (auto& sh : shortcuts) {
+                if (sh.match(shortcut)) {
+                    sh.runUseDestroy(ev.mPlayer, &ev.mPlayer->getSelectedItem(), block,
+                                     bi->getPosition());
+                    return sh.prevent;
+                }
+            }
+
             return true;
         });
+
         Event::PlayerStartDestroyBlockEvent::subscribe(
             [&](const Event::PlayerStartDestroyBlockEvent& ev) {
                 return onStartDestroyBlock(ev.mPlayer, ev.mBlockInstance);

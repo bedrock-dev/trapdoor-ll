@@ -120,7 +120,16 @@ namespace trapdoor {
                     sh.prevent = value["prevent"].get<bool>();
                     this->shortcuts.push_back(sh);
                     trapdoor::logger().debug("Shortcut: {}", sh.getDescription());
-                } else if (type == "command") {
+                } else if (type == "destroy") {
+                    sh.type = ShortcutType::DESTROY;
+                    sh.setItem(value["item"].get<std::string>());
+                    sh.setBlock(value["block"].get<std::string>());
+                    sh.prevent = value["prevent"].get<bool>();
+                    this->shortcuts.push_back(sh);
+                    trapdoor::logger().debug("Shortcut: {}", sh.getDescription());
+                }
+
+                else if (type == "command") {
                     auto command = value["command"].get<std::string>();
                     registerShortcutCommand(command, actions);
                     continue;
