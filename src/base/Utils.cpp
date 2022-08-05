@@ -4,6 +4,7 @@
 #include <MC/ListTag.hpp>
 #include <algorithm>
 
+#include "Global.h"
 #include "TrapdoorMod.h"
 namespace trapdoor {
     namespace {

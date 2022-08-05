@@ -99,19 +99,12 @@
       ]
     },
     {
-      "type": "destroy",
-      "item": "",
+      "type": "use-on",
+      "item": "stick",
       "block": "",
       "prevent": true,
       "actions": [
-        "say trigger"
-      ]
-    },
-    {
-      "type": "command",
-      "command": "here",
-      "actions": [
-        "say {px} {py} {pz}"
+        "data redstone signal {bx} {by} {bz}"
       ]
     }
   ]

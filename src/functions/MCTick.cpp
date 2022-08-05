@@ -3,6 +3,7 @@
 #include <MC/ChunkPos.hpp>
 #include <MC/Dimension.hpp>
 #include <MC/LevelChunk.hpp>
+#include <MC/Vec3.hpp>
 #include <algorithm>
 #include <chrono>
 

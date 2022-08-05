@@ -182,13 +182,13 @@ namespace trapdoor {
         if (type == "signal") {
             TextBuilder builder;
             builder.text("Signal: ").num(comp->getStrength()).text("\n");
-            //            auto &list = dAccess<std::vector<ComponentItem>, 8>(comp);
-            //            for (auto &source : list) {
-            //                auto p = source.mPos;
-            //                builder.textF("P: [%s] D: %d S: %d\n", p.toString().c_str(),
-            //                source.mDampening,
-            //                              source.mComponent->getStrength());
-            //            }
+            auto &list = dAccess<std::vector<ComponentItem>, 8>(comp);
+            for (auto &source : list) {
+                auto p = source.mPos;
+                builder.textF("Pos: [%s] Damp: %d  Dp: %d   Signal: %d\n", p.toString().c_str(),
+                              source.mDampening, source.mDirectlyPowered,
+                              source.mComponent->getStrength());
+            }
             return {builder.get(), true};
         }
 
