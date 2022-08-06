@@ -81,7 +81,8 @@ namespace trapdoor {
 
             auto& cfg = this->basicConfig;
             setIntValue(cfg.particleLevel, pl, "particle performance level", 1, 3);
-            setIntValue(cfg.particleViewDistance, pv, "particle view distance", 0, 2048);
+            setIntValue(cfg.particleViewDistance2D, pv * pv, "particle view distance", 0,
+                        INT32_MAX);
             setIntValue(cfg.hudRefreshFreq, hudFreq, "hud refresh frequency", 1, 100000);
             setIntValue(cfg.toolDamageThreshold, tdh, "tool damage threshold", -100, 65536);
             setBoolValue(cfg.keepSimPlayerInv, keepSimPlayerInv, "keep sim player inv");

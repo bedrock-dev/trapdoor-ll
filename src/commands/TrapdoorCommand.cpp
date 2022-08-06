@@ -30,7 +30,7 @@ namespace trapdoor {
             if (level <= 0 || level > 4096) {
                 return {"Invalid value,it should be within 1 to 4096", false};
             }
-            trapdoor::mod().getConfig().getBasicConfig().particleViewDistance = level;
+            trapdoor::mod().getConfig().getBasicConfig().particleViewDistance2D = level * level;
             return {"Success", true};
         }
 

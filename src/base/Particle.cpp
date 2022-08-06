@@ -53,9 +53,9 @@ namespace trapdoor {
        // 对外使用tr自己的vec3，调api时使用自己的
     void spawnParticle(const TVec3& pos, const std::string& type, int dimID) {
         Vec3 p(pos.x, pos.y, pos.z);
-        //        auto* d = Global<Level>->getDimension(dimID);
-        //        auto pvd = trapdoor::mod().getConfig().getBasicConfig().particleViewDistance;
-        //        if (d->distanceToNearestPlayerSqr2D(p) > pvd * pvd) return;
+        auto* d = Global<Level>->getDimension(dimID);
+        auto pvd = trapdoor::mod().getConfig().getBasicConfig().particleViewDistance2D;
+        if (d->distanceToNearestPlayerSqr2D(p) > pvd) return;
 
         Global<Level>->spawnParticleEffect(type, p, Global<Level>->getDimension(dimID));
     }
@@ -186,7 +186,7 @@ namespace trapdoor {
         spawnParticle(p4, pName2, dimType);
     }
 
-    void spawnSlimeChunkParticle(const ChunkPos &p) {
+    void spawnSlimeChunkParticle(const ChunkPos& p) {
         float x = static_cast<float>(p.x) * 16.0f;
         float z = static_cast<float>(p.z) * 16.0f;
         TVec3 p1{x + 0.01f, 0.0f, z + 8.0f};

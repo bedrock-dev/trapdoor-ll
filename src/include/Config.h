@@ -23,7 +23,7 @@ namespace trapdoor {
 
     struct BasicConfig {
         int particleLevel = 2;
-        int particleViewDistance = 128;
+        int particleViewDistance2D = 4096;
         int hudRefreshFreq = 20;
         int toolDamageThreshold = 10;
         bool keepSimPlayerInv = true;

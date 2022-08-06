@@ -2,7 +2,7 @@
   "commands": {
     "tick": {
       "enable": true,
-      "permission-level": 0
+      "permission-level": 1
     },
     "log": {
       "enable": true,
@@ -14,7 +14,7 @@
     },
     "func": {
       "enable": true,
-      "permission-level": 0
+      "permission-level": 1
     },
     "village": {
       "enable": true,
@@ -34,7 +34,7 @@
     },
     "player": {
       "enable": true,
-      "permission-level": 0
+      "permission-level": 1
     },
     "hud": {
       "enable": true,
@@ -42,7 +42,7 @@
     },
     "trapdoor": {
       "enable": true,
-      "permission-level": 0
+      "permission-level": 1
     },
     "data": {
       "enable": true,
@@ -62,7 +62,7 @@
     },
     "dis": {
       "enable": true,
-      "permission-level": 1
+      "permission-level": 0
     },
     "slime": {
       "enable": true,
