@@ -37,7 +37,7 @@ namespace trapdoor {
         double getTotalCPUUsage() {
             PDH_FMT_COUNTERVALUE counterVal;
             PdhCollectQueryData(cpuQuery);
-            PdhGetFormattedCounterValue(cpuTotal, PDH_FMT_DOUBLE, NULL, &counterVal);
+            PdhGetFormattedCounterValue(cpuTotal, PDH_FMT_DOUBLE, nullptr, &counterVal);
             return counterVal.doubleValue;
         }
 
@@ -100,14 +100,16 @@ namespace trapdoor {
                                     mem.totalPys >> 20, mem.curProcessUsed >> 20,
                                     mem.curTotalUsed >> 20);
 
-        builder
-            .text("CPU: ")
-            // total
-            .text("TotalUsage: ")
-            .textF("%.2lf", cpu.totalUsage)
-            .text("%%   ")
-            // cur
-            .text("CurUsage: ")
+        // Total
+        builder.text("CPU: ").text("TotalUsage: ");
+        if (cpu.totalUsage < 0.0 || cpu.totalUsage > 100.0) {
+            builder.text("Unknown");
+        } else {
+            builder.textF("%.2lf", cpu.totalUsage).text("%%   ");
+        }
+
+        // cur
+        builder.text("CurUsage: ")
             .textF("%.2lf", cpu.curUsage)
             .text("%%   ")
             // processor
