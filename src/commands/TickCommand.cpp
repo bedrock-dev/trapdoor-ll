@@ -14,7 +14,7 @@ namespace trapdoor {
         auto command = DynamicCommand::createCommand("tick", "Change world ticking speed",
                                                      static_cast<CommandPermissionLevel>(level));
 
-        auto &optForward = command->setEnum("forward", {"forward", "warp"});
+        auto &optForward = command->setEnum("forward", {"forward", "fw", "warp"});
         command->mandatory("tick", ParamType::Enum, optForward,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("tickNumber", ParamType::Int);
@@ -26,7 +26,7 @@ namespace trapdoor {
         command->mandatory("times", ParamType::Int);
         command->addOverload({optSpeedChange, "times"});
 
-        auto &optFreeze = command->setEnum("freeze", {"freeze", "reset", "query"});
+        auto &optFreeze = command->setEnum("freeze", {"freeze", "fz", "reset", "r", "query"});
         command->mandatory("tick", ParamType::Enum, optFreeze,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->addOverload({optFreeze});
@@ -49,13 +49,20 @@ namespace trapdoor {
                 case do_hash("forward"):
                     trapdoor::forwardWorld(results["tickNumber"].getRaw<int>()).sendTo(output);
                     break;
+                case do_hash("fw"):
+                    trapdoor::forwardWorld(results["tickNumber"].getRaw<int>()).sendTo(output);
+                    break;
                 case do_hash("warp"):
                     trapdoor::warpWorld(results["tickNumber"].getRaw<int>()).sendTo(output);
                     break;
                 case do_hash("freeze"):
                     trapdoor::freezeWorld().sendTo(output);
+                case do_hash("fz"):
+                    trapdoor::freezeWorld().sendTo(output);
                     break;
                 case do_hash("reset"):
+                    trapdoor::resetWorld().sendTo(output);
+                case do_hash("r"):
                     trapdoor::resetWorld().sendTo(output);
                     break;
                 case do_hash("query"):
