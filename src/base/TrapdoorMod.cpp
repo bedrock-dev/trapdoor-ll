@@ -35,6 +35,7 @@ namespace trapdoor {
             REG_COMMAND(seed)
             REG_COMMAND(dis)
             REG_COMMAND(slime)
+            REG_COMMAND(trigger)
         }
     }  // namespace
 

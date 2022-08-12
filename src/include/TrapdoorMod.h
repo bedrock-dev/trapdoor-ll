@@ -2,6 +2,7 @@
 #define _TRAPDOOR_TRAPDOOR_H_
 
 #include "Config.h"
+#include "EventTrigger.h"
 #include "HUDHelper.h"
 #include "HopperCounter.h"
 #include "HsaHelper.h"
@@ -46,6 +47,7 @@ namespace trapdoor {
         Configuration config;
         HopperChannelManager hopperChannelManager;
         HUDHelper HUDHelper;
+        EventTriggerManager eventTriggerManager;
         SimPlayerManager simPlayerManager;
         SpawnAnalyzer spawnAnalyzer;
         SlimeChunkHelper slimeChunkHelper;

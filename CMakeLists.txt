@@ -30,6 +30,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         ${PROJECT_SOURCE_DIR}/SDK/Header/*.hpp
         ${PROJECT_SOURCE_DIR}/SDK/Header/*.h
 
+        src/commands/TriggerCommand.cpp
         src/commands/SeedCommand.cpp
         src/commands/TrapdoorCommand.cpp
         src/commands/DistanceCommand.cpp
@@ -65,6 +66,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/base/TrAPI.cpp
         src/pch.cpp
         src/Plugin.cpp
+        src/functions/EventTrigger.cpp
         src/functions/DistanceHelper.cpp
         src/functions/SysInfoHelper.cpp
         src/functions/SpawnAnalyzer.cpp

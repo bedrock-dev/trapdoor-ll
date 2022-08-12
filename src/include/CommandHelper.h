@@ -34,7 +34,9 @@ namespace trapdoor {
 
     ActionResult ErrorMsg(const std::string &msg);
 
-    inline ActionResult ErrorPlayerNeed() { return {"This command a player as executor", false}; }
+    inline ActionResult ErrorPlayerNeed() {
+        return {"This command require a player as executor", false};
+    }
 
     inline ActionResult ErrorDimension() {
         return {"Can not get a dimension instance,try run this command in game", false};
@@ -66,6 +68,8 @@ namespace trapdoor {
     void setup_disCommand(int);
     void setup_seedCommand(int);
     void setup_slimeCommand(int);
+    void setup_triggerCommand(int);
+
 }  // namespace trapdoor
 
 #endif  // TRAPDOOR_COMMANDHELPER_H
