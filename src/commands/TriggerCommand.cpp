@@ -12,7 +12,7 @@ namespace trapdoor {
     void setup_triggerCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand("trigger", "getConfig hud display",
+        auto command = DynamicCommand::createCommand("trigger", "(Un)subscribe a trigger",
                                                      static_cast<CommandPermissionLevel>(level));
 
         auto &modifyOpt = command->setEnum("modify", {"sub", "unsub"});
@@ -34,20 +34,33 @@ namespace trapdoor {
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
-            // player needed
+            //  player needed
             if (!origin.getPlayer()) {
                 ErrorPlayerNeed().sendTo(output);
                 return;
             }
 
-            switch (do_hash(results["hud"].getRaw<std::string>().c_str())) {
+            auto e = results["eventsType"].get<std::string>();
+
+            switch (do_hash(results["trigger"].getRaw<std::string>().c_str())) {
                 case do_hash("sub"):
-                    // TODO
+                    trapdoor::mod()
+                        .getEventTriggerMgr()
+                        .eventAction(origin.getName(), e, 0)
+                        .sendTo(output);
                     break;
                 case do_hash("unsub"):
+                    trapdoor::mod()
+                        .getEventTriggerMgr()
+                        .eventAction(origin.getName(), e, 1)
+                        .sendTo(output);
                     // TODO
                     break;
                 case do_hash("list"):
+                    trapdoor::mod()
+                        .getEventTriggerMgr()
+                        .listEvents(origin.getName())
+                        .sendTo(output);
                     break;
             }
         };

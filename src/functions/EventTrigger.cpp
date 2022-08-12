@@ -4,21 +4,25 @@
 
 #include "EventTrigger.h"
 
+#include <MC/Level.hpp>
+
+#include "Global.h"
+#include "Msg.h"
 namespace trapdoor {
 
     namespace {
 
         const std::unordered_map<std::string, TrEventType>& eventMap() {
             static std::unordered_map<std::string, TrEventType> map = {
-                {"signalchanged", SignalChanged}, {"tntexplode", TNTExplode}};
+                {"signalchange", SignalChange}, {"entityexplode", EntityExplode}};
             return map;
         }
 
         std::string trEventToStr(TrEventType type) {
             switch (type) {
-                case SignalChanged:
+                case SignalChange:
                     return "signal change";
-                case TNTExplode:
+                case EntityExplode:
                     return "TNT explode";
             }
             return "Unknown";
@@ -56,6 +60,24 @@ namespace trapdoor {
             this->subscribe(name, type);
         } else {
             this->unsubscribe(name, type);
+        }
+        return {"Success", true};
+    }
+    void EventTriggerManager::broadcastMessage(TrEventType eventType,
+                                               const std::string& msg) const {
+        auto it = this->subscribeInfo.find(eventType);
+        if (it == this->subscribeInfo.end()) {
+            return;
+        }
+
+        trapdoor::TextBuilder b;
+        b.sTextF(TB::AQUA | TB::BOLD, "[%zu] ", Global<Level>->getCurrentServerTick().t % 72000);
+        b.textF("%s", msg.c_str());
+        for (auto& name : it->second) {
+            auto* p = Global<Level>->getPlayer(name);
+            if (p) {
+                p->sendText(b.get());
+            }
         }
     }
 }  // namespace trapdoor

@@ -41,6 +41,8 @@ namespace trapdoor {
 
         inline SlimeChunkHelper &getSlimeChunkHelper() { return this->slimeChunkHelper; }
 
+        inline EventTriggerManager &getEventTriggerMgr() { return this->eventTriggerManager; }
+
        private:
         VillageHelper villageHelper;
         HsaManager hsaManager;

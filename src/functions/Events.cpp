@@ -12,7 +12,9 @@
 #include "EventAPI.h"
 #include "Global.h"
 #include "InventoryTool.h"
+#include "Msg.h"
 #include "Shortcuts.h"
+#include "TVec3.h"
 #include "TrapdoorMod.h"
 #include "Utils.h"
 
@@ -162,6 +164,20 @@ namespace trapdoor {
     void subscribeServerStartEvent() {
         Event::ServerStartedEvent::subscribe([&](const Event::ServerStartedEvent& ev) {
             trapdoor::mod().getSimPlayerManager().addPlayersInCache();
+            return true;
+        });
+
+        Event::EntityExplodeEvent::subscribe([&](const Event::EntityExplodeEvent& ev) {
+            trapdoor::TextBuilder builder;
+            auto p = ev.mPos;
+            builder
+                .sTextF(TB::BOLD | TB::WHITE, "%s",
+                        trapdoor::rmmc(ev.mActor->getTypeName()).c_str())
+                .text(" explode at ")
+                .sTextF(TB::WHITE, "[%.5f, %.5f,  %.5f]", p.x, p.y, p.z)
+                .text(" with radius ")
+                .num(ev.mRadius);
+            trapdoor::mod().getEventTriggerMgr().broadcastMessage(EntityExplode, builder.get());
             return true;
         });
     }
