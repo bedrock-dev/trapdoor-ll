@@ -44,7 +44,7 @@ namespace trapdoor {
         }
 
         ActionResult reloadConfig() {
-            auto succ = trapdoor::mod().initConfig();
+            auto succ = trapdoor::mod().initConfig(true);
             auto msg = succ ? "Success reload trapdoor config" : "Fail reload trapdoor config";
             return {msg, succ};
         }

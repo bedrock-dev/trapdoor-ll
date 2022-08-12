@@ -33,7 +33,11 @@ namespace trapdoor {
                 if (item && item->getCount() != 0) {
                     auto speed = item->getDestroySpeed(*b);
                     auto remainDamage = item->getMaxDamage() - item->getDamageValue();
-                    if (remainDamage <= 5) continue;
+
+                    // 跳过已经用坏的工具
+                    if (remainDamage <=
+                        trapdoor::mod().getConfig().getBasicConfig().toolDamageThreshold)
+                        continue;
                     if (speed > curInfo.speed) {
                         curInfo = {speed, i, (short)remainDamage};
                     }

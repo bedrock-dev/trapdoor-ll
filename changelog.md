@@ -1,3 +1,22 @@
+### trapdoor-ll-0.17-1.19.10.03
+
+#### 依赖和版本支持
+
+- 需要LiteLoader 2.5.0 或以上版本
+- 理论上支持1.19.20.02及以上版本
+
+#### 更新日志
+
+- 支持1.19.20.02 by @dreamguxiang
+- 添加`trapdoor crash`命令支持指令崩服
+- 添加`trapdoor reload`以支持配置文件热重载(不可重载命令部分)
+- 给`data redstone signal`添加更多的信息显示(信号源的dampening,directlyPowered等)
+- 修复`log os`可能显示错误的CPU占用信息的bug(#11)
+- 给`tick`指令添加部分短命令以兼容旧版命令
+- 给shortcuts添加新的触发器`destroy`,可在玩家破坏方块时触发
+- 修复自动工具选择的耐久阈值设置错误的问题
+- 修复部分拼写错误
+
 ### trapdoor-ll-0.16-1.19.10.03
 
 #### 依赖和版本支持

@@ -50,7 +50,7 @@ namespace trapdoor {
         inline BasicConfig& getBasicConfig() { return this->basicConfig; }
         inline TweakConfig& getTweakConfig() { return this->tweakConfig; }
 
-        bool init(const std::string& fileName);
+        bool init(const std::string& fileName, bool reload);
 
         std::string dumpConfigInfo();
 

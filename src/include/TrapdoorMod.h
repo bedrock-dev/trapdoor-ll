@@ -16,7 +16,7 @@ namespace trapdoor {
        public:
         void init();
 
-        bool initConfig();
+        bool initConfig(bool reload);
 
         void heavyTick();
 

@@ -30,9 +30,12 @@ namespace trapdoor {
 
     }  // namespace
 
-    bool Configuration::init(const std::string& fileName) {
+    bool Configuration::init(const std::string& fileName, bool reload) {
         if (!readConfigFile(fileName)) return false;
-        if (!readCommandConfigs()) return false;
+        if (!reload) {
+            if (!readCommandConfigs()) return false;
+        }
+
         if (!readBasicConfigs()) return false;
         if (!readShortcutConfigs()) return false;
         if (!readDefaultEnableFunctions()) return false;
@@ -95,6 +98,7 @@ namespace trapdoor {
     }
     bool Configuration::readShortcutConfigs() {
         try {
+            this->shortcuts.clear();
             auto cc = this->config["shortcuts"];
             for (const auto& i : cc.items()) {
                 Shortcut sh;
