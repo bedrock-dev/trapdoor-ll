@@ -52,7 +52,7 @@ namespace trapdoor {
 }  // namespace trapdoor
 
 THook(void,
-      "?_spawnStructureMob@Spawner@@AEAAXAEAVBlockSource@@AEBVBlockPos@@"
+      "?_spawnStructureMob@Spawner@@IEAAXAEAVBlockSource@@AEBVBlockPos@@"
       "AEBUHardcodedSpawningArea@LevelChunk@@AEBVSpawnConditions@@@Z",
       void *spawner, const BlockSource &bs, const BlockPos &blockPos,
       const trapdoor::TBoundingBox &hsa, void *spawnConditions) {
