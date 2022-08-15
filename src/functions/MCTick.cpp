@@ -48,7 +48,7 @@ namespace trapdoor {
             case TickingStatus::Forwarding:
                 return {fmt::format("Forwarding, {} gt left", info.forwardTickNum), true};
             case TickingStatus::Warp:
-                return {fmt::format("Wraping, {} gt left", info.remainWarpTick), true};
+                return {fmt::format("Wrapping, {} gt left", info.remainWarpTick), true};
             case TickingStatus::Acc:
                 return {fmt::format("{} times faster", info.accTime), true};
             case TickingStatus::SlowDown:
@@ -65,7 +65,7 @@ namespace trapdoor {
         }
 
         info.status = TickingStatus::Frozen;
-        return {"success", true};
+        return {"Success", true};
     }
 
     ActionResult resetWorld() {
@@ -75,7 +75,7 @@ namespace trapdoor {
         info.slowDownTime = 1;
         info.remainWarpTick = 0;
         info.status = TickingStatus::Normal;
-        return {"success", true};
+        return {"Success", true};
     }
 
     ActionResult forwardWorld(int gt) {
@@ -91,7 +91,7 @@ namespace trapdoor {
                 return {"", true};
             }
         } else {
-            return {"Forward can only be used on normal or freeze mode", false};
+            return {"Forward can only be used on normal or freeze status", false};
         }
     }
     ActionResult warpWorld(int gt) {
@@ -103,7 +103,7 @@ namespace trapdoor {
             info.status = TickingStatus::Warp;
             return {"Warp start", true};
         }
-        return {"Warp can only be used on normal or freeze mode", false};
+        return {"Warp can only be used on normal or freeze status", false};
     }
     ActionResult slowDownWorld(int times) {
         auto &info = getTickingInfo();
@@ -186,15 +186,15 @@ namespace trapdoor {
 /*
 ServerLevel::tick
  - Redstone
-    - Dimension::tickRedstone(shouldUpdate,cacueValue,evaluate)
+    - Dimension::tickRedstone(shouldUpdate,cacheValue,evaluate)
     - pendingUpdate
-    - pendinnRemove
+    - pendingRemove
     - pendingAdd
  - Dimension::tick(chunk load/village)
  - entitySystem
- - Lvevl::tick
+ - Level::tick
     - LevelChunk::Tick
-        - blockEnties
+        - blockEntities
         - randomChunk
         - Actor::tick(non global)
 */
@@ -317,12 +317,14 @@ THook(bool,
       "?tickPendingTicks@BlockTickingQueue@@QEAA_NAEAVBlockSource@@AEBUTick@@H_"
       "N@Z",
       void *queue, void *bs, uint64_t until, int max, bool instalTick) {
+    max = trapdoor::mod().getConfig().getTweakConfig().maxPendingTickSize;
     auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
         TIMER_START
-        return original(queue, bs, until, max, instalTick);
+        auto res = original(queue, bs, until, max, instalTick);
         TIMER_END
         prof.chunkInfo.pendingTickTime += timeResult;
+        return res;
     } else {
         return original(queue, bs, until, max, instalTick);
     }

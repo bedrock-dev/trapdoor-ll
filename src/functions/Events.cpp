@@ -61,6 +61,9 @@ namespace trapdoor {
             if (shortcuts.empty()) {
                 return true;
             }
+
+            Item::addCreativeItem(*ev.mItemStack);
+
             Shortcut shortcut;
             shortcut.type = USE;
             shortcut.itemAux = ev.mItemStack->getAux();
@@ -82,6 +85,7 @@ namespace trapdoor {
             if (bi->isNull()) {
                 return true;
             }
+
             auto* block = bi->getBlock();
             if (ev.mItemStack->getTypeName() == "minecraft:cactus" &&
                 antiShake(ev.mPlayer->getName(), bi->getPosition())) {
@@ -183,3 +187,28 @@ namespace trapdoor {
     }
 
 }  // namespace trapdoor
+
+// Trevent
+
+#include <MC/BaseCircuitComponent.hpp>
+#include <MC/CircuitSystem.hpp>
+#include <MC/ConsumerComponent.hpp>
+
+#include "HookAPI.h"
+THook(bool, "?evaluate@ConsumerComponent@@UEAA_NAEAVCircuitSystem@@AEBVBlockPos@@@Z",
+      ConsumerComponent* comp, CircuitSystem& sys, const BlockPos& pos) {
+    auto o = comp->getStrength();
+    auto res = original(comp, sys, pos);
+    auto n = comp->getStrength();
+
+    if (o != n) {
+        trapdoor::TextBuilder builder;
+        builder.sTextF(trapdoor::TB::WHITE, "[%d, %d ,%d]  ", pos.x, pos.y, pos.z)
+            .sTextF(trapdoor::TB::WHITE | trapdoor::TB::BOLD, "%d", o)
+            .text(" -> ")
+            .sTextF(trapdoor::TB::RED | trapdoor::TB::BOLD, "%d", n);
+        trapdoor::mod().getEventTriggerMgr().broadcastMessage(trapdoor::SignalChange,
+                                                              builder.get());
+    }
+    return res;
+}

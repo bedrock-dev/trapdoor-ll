@@ -4,6 +4,8 @@
 
 #include "Tweakers.h"
 
+#include <MC/Block.hpp>
+#include <MC/BlockLegacy.hpp>
 #include <MC/PistonBlockActor.hpp>
 
 #include "Config.h"
@@ -29,3 +31,7 @@ THook(void, "?removeItem@Container@@UEAAXHH@Z", void *container, int slot, int c
         original(container, slot, count);
     }
 }
+
+// THook(void, "?setRuntimeId@Block@@IEBAXAEBI@Z", Block *b, unsigned int const &id) {
+//     return original(b, id);
+// }

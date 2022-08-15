@@ -186,12 +186,15 @@ namespace trapdoor {
             auto forceOpenContainer = det["force-open-container"].get<bool>();
             auto dropperNoCost = det["dropper-no-cost"].get<bool>();
             auto autoSelectTool = det["auto-select-tool"].get<bool>();
+            auto maxPendingTickSize = det["max-pending-tick-size"].get<int>();
 
             auto& cfg = this->tweakConfig;
             setBoolValue(cfg.autoSelectTool, autoSelectTool, "auto select tools");
             setBoolValue(cfg.dropperNoCost, dropperNoCost, "dropper no cost");
             setBoolValue(cfg.forceOpenContainer, forceOpenContainer, "force open container");
             setIntValue(cfg.forcePlaceLevel, forcePlace, "force place level", 0, 2);
+            setIntValue(cfg.maxPendingTickSize, maxPendingTickSize,
+                        "max pending tick size per chunk", 1, 0xffffff);
         } catch (const std::exception& e) {
             trapdoor::logger().error("error read tweak config: {}", e.what());
             return false;

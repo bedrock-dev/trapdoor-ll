@@ -41,6 +41,7 @@ namespace trapdoor {
         bool forceOpenContainer = false;
         bool dropperNoCost = false;
         bool autoSelectTool = false;
+        int maxPendingTickSize = 100;
     };
 
     class Configuration {

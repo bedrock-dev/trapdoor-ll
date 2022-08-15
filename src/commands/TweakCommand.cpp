@@ -13,6 +13,15 @@ namespace trapdoor {
         trapdoor::mod().getConfig().getTweakConfig().forcePlaceLevel = level;
         return {"Success", true};
     }
+    ActionResult setMaxPendingTickSize(int size) {
+        if (size < 0 || size > 0xffffff) {
+            return {"Size should within [0,0xffffff]", false};
+        }
+
+        trapdoor::mod().getConfig().getTweakConfig().maxPendingTickSize = size;
+        return {"Success", true};
+    }
+
     ActionResult setForceOpenContainer(bool able) {
         trapdoor::mod().getConfig().getTweakConfig().forceOpenContainer = able;
         return {"Success", true};
@@ -37,32 +46,37 @@ namespace trapdoor {
         auto &forceOpenContainer = command->setEnum("open", {"fcopen"});
         auto &dropperNoCost = command->setEnum("cost", {"nocost"});
         auto &autoSelectTools = command->setEnum("autoSelecttool", {"autotool"});
+        auto &maxPendingTickSize = command->setEnum("maxPendingTickSize", {"maxptsize"});
 
         command->mandatory("tweak", ParamType::Enum, forcePlaceOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("tweak", ParamType::Enum, forceOpenContainer,
                            CommandParameterOption::EnumAutocompleteExpansion);
-
         command->mandatory("tweak", ParamType::Enum, dropperNoCost,
                            CommandParameterOption::EnumAutocompleteExpansion);
-
         command->mandatory("tweak", ParamType::Enum, autoSelectTools,
                            CommandParameterOption::EnumAutocompleteExpansion);
+        command->mandatory("tweak", ParamType::Enum, maxPendingTickSize,
+                           CommandParameterOption::EnumAutocompleteExpansion);
 
-        command->mandatory("level", ParamType::Int);
+        command->mandatory("value", ParamType::Int);
         command->mandatory("onoroff", ParamType::Bool);
 
-        command->addOverload({forcePlaceOpt, "level"});
+        command->addOverload({forcePlaceOpt, "value"});
         command->addOverload({forceOpenContainer, "onoroff"});
         command->addOverload({dropperNoCost, "onoroff"});
         command->addOverload({autoSelectTools, "onoroff"});
+        command->addOverload({maxPendingTickSize, "value"});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
             switch (do_hash(results["tweak"].getRaw<std::string>().c_str())) {
                 case do_hash("fcplace"):
-                    setForcePlaceBlock(results["level"].get<int>()).sendTo(output);
+                    setForcePlaceBlock(results["value"].get<int>()).sendTo(output);
+                    break;
+                case do_hash("maxptsize"):
+                    setMaxPendingTickSize(results["value"].get<int>()).sendTo(output);
                     break;
                 case do_hash("fcopen"):
                     setForceOpenContainer(results["onoroff"].get<bool>()).sendTo(output);
