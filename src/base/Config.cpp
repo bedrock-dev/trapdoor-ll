@@ -204,6 +204,7 @@ namespace trapdoor {
     }
     std::string Configuration::dumpConfigInfo()  // NOLINT
     {
+
         return "Developing!";
     }
 
