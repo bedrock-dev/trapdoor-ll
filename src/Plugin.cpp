@@ -9,6 +9,9 @@ void prepare() {
     namespace fs = std::filesystem;
     if (!fs::exists("./plugins/trapdoor")) {
         fs::create_directory("./plugins/trapdoor");
+    }
+    
+    if (!fs::exists("./plugins/trapdoor/sim")) {       
         fs::create_directory("./plugins/trapdoor/sim");
     }
 }
