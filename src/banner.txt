@@ -6,5 +6,8 @@ R"=====(
         | |__| |  ( ( | | | | | (_| | |_| | |_| | |
          \___)_|   \_||_| |/_/ \____|\___/ \___/|_|
                         |_|
+        Github: https://github.com/hhhxiao/trapdoor-ll/
+           Wiki: https://hhhxiao.github.io/tr-wiki/
+     Feedback: https://github.com/hhhxiao/trapdoor-ll/issues
 
 )====="
