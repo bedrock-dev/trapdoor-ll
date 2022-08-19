@@ -10,7 +10,7 @@ namespace trapdoor {
     void setup_funcCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand("func", "trapdoor functions",
+        auto command = DynamicCommand::createCommand("func", "en/disable trapdoor functions",
                                                      static_cast<CommandPermissionLevel>(level));
 
         auto &hoppercounterOpt = command->setEnum("hoppercounter", {"hoppercounter"});

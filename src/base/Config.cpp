@@ -48,10 +48,10 @@ namespace trapdoor {
             this->config.clear();
             std::ifstream i(path);
             i >> this->config;
-            trapdoor::logger().info("Read getConfig file {} successfully", path);
+            trapdoor::logger().info("Read config file {} successfully", path);
             return true;
         } catch (std::exception&) {
-            trapdoor::logger().error("Can't read configuration file: {}", path);
+            trapdoor::logger().error("Can't read config file in path {}", path);
             return false;
         }
     }
@@ -204,7 +204,6 @@ namespace trapdoor {
     }
     std::string Configuration::dumpConfigInfo()  // NOLINT
     {
-
         return "Developing!";
     }
 

@@ -29,6 +29,7 @@
 namespace trapdoor {
     void BroadcastMessage(const std::string &msg, int level = 0);
 
+    // from stack overflow
     template <typename... Args>
     std::string format(const std::string &format, Args... args) {
         int size = snprintf(nullptr, 0, format.c_str(), args...) + 1;  // Extra space for '\0'
@@ -78,6 +79,8 @@ namespace trapdoor {
             this->sText(TextBuilder::BOLD, trapdoor::format(format, args...));
             return *this;
         }
+
+        inline TextBuilder &endl() { this->messageBuffer.emplace_back("\n"); }
 
         TextBuilder &sText(uint8_t style, const std::string &s);
 

@@ -204,6 +204,7 @@ namespace trapdoor {
     void SimpleProfiler::printActor() const {
         const static std::string dims[] = {"Overworld", "Nether", "The end"};
         TextBuilder builder;
+        double totalTime = 0.0;
         for (int i = 0; i < 3; i++) {
             auto &actor_data = this->actorInfo[i];
             if (!actor_data.empty()) {
@@ -215,7 +216,6 @@ namespace trapdoor {
                     v.emplace_back(kv);
                 }
 
-                auto sort_count = std::min(v.size(), static_cast<size_t>(5));
                 std::sort(v.begin(), v.end(),
                           [](const std::pair<std::string, EntityInfo> &p1,
                              const std::pair<std::string, EntityInfo> &p2) {
@@ -230,9 +230,13 @@ namespace trapdoor {
                             "%.3f ms (%d)\n",
                             micro_to_mill(item.second.time) / static_cast<double>(this->totalRound),
                             item.second.count / totalRound);
+                    totalTime +=
+                        micro_to_mill(item.second.time) / static_cast<double>(this->totalRound);
                 }
             }
         }
-        trapdoor::BroadcastMessage(builder.get());
+        TextBuilder bu;
+        bu.text("Total ").num(totalTime).text(" ms\n");
+        trapdoor::BroadcastMessage(bu.get() + builder.get());
     }  // namespace trapdoor
 }  // namespace trapdoor
