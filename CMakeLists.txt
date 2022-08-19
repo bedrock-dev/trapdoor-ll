@@ -25,6 +25,9 @@ else ()
     endif ()
 endif ()
 
+string(TIMESTAMP BUILD_TIME "%Y-%m-%d %H:%M:%S")
+add_definitions(-DBUILD_TIME="${BUILD_TIME}")
+
 file(GLOB_RECURSE SRC_FILES_DIR
         ${PROJECT_SOURCE_DIR}/SDK/Header/*.cpp
         ${PROJECT_SOURCE_DIR}/SDK/Header/*.hpp

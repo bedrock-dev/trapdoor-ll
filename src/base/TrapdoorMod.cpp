@@ -37,6 +37,16 @@ namespace trapdoor {
             REG_COMMAND(slime)
             REG_COMMAND(trigger)
         }
+
+        void printCopyrightInfo() {
+            logger().info("");
+            logger().info("Trapdoor : {}-{} Under AGPL", TD_VERSION, MC_VERSION);
+            logger().info("Build time: {}", BUILD_TIME);
+            logger().info(
+                "Visit out github page for more info: https://github.com/hhhxiao/trapdoor-ll/");
+            logger().info("");
+        }
+
     }  // namespace
 
     void TrapdoorMod::heavyTick() {
@@ -52,11 +62,12 @@ namespace trapdoor {
     }
 
     Logger &logger() {
-        static Logger logger("Trapdoor");
+        static Logger logger("trapdoor");
         return logger;
     }
 
     void TrapdoorMod::init() {
+        printCopyrightInfo();
         this->initConfig(false);
         trapdoor::initCPU();
         trapdoor::SubscribeEvents();

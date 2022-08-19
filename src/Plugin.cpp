@@ -10,18 +10,18 @@ void prepare() {
     if (!fs::exists("./plugins/trapdoor")) {
         fs::create_directory("./plugins/trapdoor");
     }
-    
-    if (!fs::exists("./plugins/trapdoor/sim")) {       
+
+    if (!fs::exists("./plugins/trapdoor/sim")) {
         fs::create_directory("./plugins/trapdoor/sim");
     }
 }
 
 void PluginInit() {
     CheckProtocolVersion();
-    const char *s =
-#include "banner.txt"
-        ;
-    printf("%s", s);
+    //    const char *s =
+    // #include "banner.txt"
+    //        ;
+    //    printf("%s", s);
     prepare();
     trapdoor::mod().init();
 }
