@@ -6,9 +6,9 @@
 
 #include "BlockRotateHelper.h"
 #include "CommandHelper.h"
+#include "Msg.h"
 #include "Shortcuts.h"
 #include "TrapdoorMod.h"
-
 namespace trapdoor {
 
     namespace {
@@ -26,6 +26,16 @@ namespace trapdoor {
         void setBoolValue(bool& key, bool value, const std::string& name) {
             key = value;
             trapdoor::logger().info("Set [{}] to {}", name, key);
+        }
+
+        template <typename T>
+        std::string createItem(const std::string& name, T value) {
+            trapdoor::TextBuilder builder;
+            return builder.sText(TB::GRAY, " - ")
+                .text(name)
+                .text(":")
+                .sTextF(TB::GREEN | TB::BOLD, " %s\n", std::to_string(value).c_str())
+                .get();
         }
 
     }  // namespace
@@ -204,7 +214,30 @@ namespace trapdoor {
     }
     std::string Configuration::dumpConfigInfo()  // NOLINT
     {
-        return "Developing!";
+        TextBuilder builder;
+        auto basicCfg = this->basicConfig;
+        builder.sText(TB::BOLD | TB::WHITE, "Basic\n")
+            .text(createItem("HUD refresh frequency", basicCfg.hudRefreshFreq))
+            .text(createItem("Particle display level", basicCfg.particleLevel))
+            .text(createItem("Particle view distance", sqrt(basicCfg.particleViewDistance2D)))
+            .text(createItem("Tool damage threshold", basicCfg.toolDamageThreshold))
+            .text(createItem("Keep Simulate Player Inv", basicCfg.keepSimPlayerInv));
+
+        auto tweaks = this->tweakConfig;
+
+        builder.sText(TB::BOLD | TB::WHITE, "Tweaks\n")
+            .text(createItem("Max pending tick size ", tweaks.maxPendingTickSize))
+            .text(createItem("Auto select tool", tweaks.autoSelectTool))
+            .text(createItem("Dropper no cost", tweaks.dropperNoCost))
+            .text(createItem("Force open container", tweaks.forceOpenContainer))
+            .text(createItem("Force place level", tweaks.forcePlaceLevel));
+
+        builder.sText(TB::BOLD | TB::WHITE, "Shortcuts\n");
+        auto& scs = this->shortcuts;
+        for (auto& sh : scs) {
+            builder.sText(TB::GRAY, " - ").textF("%s\n", sh.getDescription().c_str());
+        }
+        return builder.get();
     }
 
 }  // namespace trapdoor

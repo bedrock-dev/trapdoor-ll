@@ -126,11 +126,15 @@ namespace trapdoor {
                 case do_hash("reload"):
                     reloadConfig().sendTo(output);
                     break;
+                case do_hash("dump"):
+                    ActionResult(trapdoor::mod().getConfig().dumpConfigInfo(), true).sendTo(output);
+                    break;
                 case do_hash("crash"):
                     crashServer(results["token"].get<std::string>()).sendTo(output);
                     break;
             }
         };
+
         command->setCallback(cb);
         DynamicCommand::setup(std::move(command));
     }

@@ -18,6 +18,7 @@
 #include "Utils.h"
 enum SpawnBlockRequirements;
 class SpawnConditions;
+class MobSpawnRules;
 namespace trapdoor {
     namespace {
 
@@ -26,14 +27,10 @@ namespace trapdoor {
                            ActorSpawnRuleGroup *, Level *)(Global<Level>);
         }
 
-        bool isSpawnConditionsOK(Spawner *sp, const TMobSpawnRules *rule, BlockSource &bs,
-                                 const BlockPos &pos) {
-            return SymCall(
-                "?_isSpawnPositionOk@Spawner@@IEBA_NAEBVMobSpawnRules@@"
-                "AEAVBlockSource@@AEBVBlockPos@@_N@Z",
-                bool, Spawner *, const TMobSpawnRules *, BlockSource &, const BlockPos &,
-                bool)(sp, rule, bs, pos, false);
-        }
+        //        bool isSpawnConditionsOK(Spawner *sp, MobSpawnRules *rule, BlockSource &bs,
+        //                                 const BlockPos &pos) {
+        //            return sp->isSpawnPositionOk(*rule, bs, pos, false);
+        //        }
 
         TSpawnConditions buildSpawnConditions(const BlockPos &pos, BlockSource &bs, bool surface) {
             auto &a1m = bs.getBlock(pos + BlockPos(0, 1, 0)).getMaterial();
@@ -64,7 +61,7 @@ namespace trapdoor {
         return {id->getFullName() + " ==> " + std::to_string(pool), true};
     }
 
-    ActionResult countActors(Player * player, const std::string &type) {
+    ActionResult countActors(Player *player, const std::string &type) {
         auto chPos = fromBlockPos(player->getPos().toBlockPos()).toChunkPos();
         auto entities = Level::getAllEntities();
         std::unordered_map<std::string, size_t> chunkList, allList, densityList;
@@ -93,14 +90,14 @@ namespace trapdoor {
         return {builder.get(), true};
     }
 
-    ActionResult forceSpawn(Player * player, const ActorDefinitionIdentifier *id,
+    ActionResult forceSpawn(Player *player, const ActorDefinitionIdentifier *id,
                             const BlockPos &pos) {
         auto targetPos = pos;
         if (targetPos == BlockPos::MAX) {
             targetPos = trapdoor::getLookAtPos(player);
         }
         if (targetPos == BlockPos::MAX) {
-            return {"Invalid pos", false};
+            return {"Invalid position", false};
         }
 
         auto &bs = player->getRegion();
@@ -114,7 +111,7 @@ namespace trapdoor {
         }
     }
 
-    ActionResult printSpawnProbability(Player * player, const BlockPos &pos) {
+    ActionResult printSpawnProbability(Player *player, const BlockPos &pos) {
         BlockPos topPos = {pos.x, 320, pos.z};
         bool isSurface = true;
         bool hasFound = false;
@@ -135,28 +132,32 @@ namespace trapdoor {
             }
         }
         if (!hasFound) {
-            return {"No position", true};
+            return {"Invalid spawn position", true};
         }
 
+        // build conditions
         auto cond = buildSpawnConditions(topPos, player->getRegion(), isSurface);
-
         trapdoor::logger().debug("surf/under:{}/{} water/lava:{}/{}  bright:{}", cond.isOnSurface,
                                  cond.isUnderground, cond.isInWater, cond.isInLava,
                                  cond.rawBrightness);
+
         auto &block = player->getRegion().getBlock(topPos);
         std::map<std::string, std::pair<int, bool>> spawnMap;
+
+        // collect data
         for (int i = 0; i < 1000; i++) {
             auto *mobData = block.getMobToSpawn(*reinterpret_cast<SpawnConditions *>(&cond),
                                                 player->getRegion());
             if (!mobData) {
-                return {"No mob to spawn", true};
+                return {"Can not spawn mob in such spawn condition", true};
             }
+
             auto &id = dAccess<ActorDefinitionIdentifier, 8>(mobData);
             auto iter = spawnMap.find(id.getIdentifier());
             if (iter == spawnMap.end()) {
-                auto ok = isSpawnConditionsOK(&player->getLevel().getSpawner(),
-                                              &dAccess<TMobSpawnRules, 184>(mobData),
-                                              player->getRegion(), topPos + BlockPos(0, 1, 0));
+                auto &mobSpawnRule = dAccess<MobSpawnRules, 184>(mobData);
+                auto ok = Global<Level>->getSpawner().isSpawnPositionOk(
+                    mobSpawnRule, player->getRegion(), topPos + BlockPos(0, 1, 0), false);
                 spawnMap[id.getIdentifier()] = {1, ok};
             } else {
                 auto ct = iter->second.first;
@@ -179,16 +180,18 @@ namespace trapdoor {
             .text(" - Surface / Underground: ")
             .sTextF(TextBuilder::GREEN, "%d / %d\n", cond.isOnSurface, cond.isUnderground)
             .text(" - Water / Lava: ")
-            .sTextF(TextBuilder::GREEN, "%d / %d\n\n", cond.isInWater, cond.isInLava);
-
+            .sTextF(TextBuilder::GREEN, "%d / %d\n", cond.isInWater, cond.isInLava)
+            .text(" - Biome: ")
+            .sTextF(TB::GREEN, "%s\n", player->getRegion().getBiome(topPos).getName().c_str());
         for (const auto &mob : spawnMap) {
-            auto ok = mob.second.second;
-            auto color = ok ? TB::DARK_GREEN : TB::DARK_RED;
+            auto ok = mob.second.second ? "Yes" : "No";
+            auto color = mob.second.second ? TB::DARK_GREEN : TB::DARK_RED;
             builder.sText(TB::GRAY, " - ")
                 .textF("%s:  ", trapdoor::i18ActorName(mob.first).c_str())
+                .text("will: ")
                 .num(mob.second.first * 100.0 / totalCount)
-                .text("%%, Can: ")
-                .sTextF(color | TB::BOLD, "%d\n", ok);
+                .text("%%, can: ")
+                .sTextF(color | TB::BOLD, "%s\n", ok);
         }
         return {builder.get(), true};
     }
