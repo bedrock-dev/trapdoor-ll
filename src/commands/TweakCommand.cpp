@@ -34,6 +34,10 @@ namespace trapdoor {
         trapdoor::mod().getConfig().getTweakConfig().autoSelectTool = able;
         return {"Success", true};
     }
+    ActionResult setSafeExplosion(bool able) {
+        trapdoor::mod().getConfig().getTweakConfig().safeExplosion = able;
+        return {"Success", true};
+    }
 
     void setup_tweakCommand(int level) {
         // create a dynamic command
@@ -48,6 +52,8 @@ namespace trapdoor {
         auto &autoSelectTools = command->setEnum("autoSelecttool", {"autotool"});
         auto &maxPendingTickSize = command->setEnum("maxPendingTickSize", {"maxptsize"});
 
+        auto &safeExplosion = command->setEnum("safeExplosion", {"safeexplode"});
+
         command->mandatory("tweak", ParamType::Enum, forcePlaceOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("tweak", ParamType::Enum, forceOpenContainer,
@@ -58,6 +64,8 @@ namespace trapdoor {
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("tweak", ParamType::Enum, maxPendingTickSize,
                            CommandParameterOption::EnumAutocompleteExpansion);
+        command->mandatory("tweak", ParamType::Enum, safeExplosion,
+                           CommandParameterOption::EnumAutocompleteExpansion);
 
         command->mandatory("value", ParamType::Int);
         command->mandatory("onoroff", ParamType::Bool);
@@ -66,6 +74,7 @@ namespace trapdoor {
         command->addOverload({forceOpenContainer, "onoroff"});
         command->addOverload({dropperNoCost, "onoroff"});
         command->addOverload({autoSelectTools, "onoroff"});
+        command->addOverload({safeExplosion, "onoroff"});
         command->addOverload({maxPendingTickSize, "value"});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
@@ -86,6 +95,9 @@ namespace trapdoor {
                     break;
                 case do_hash("autotool"):
                     setAutoTools(results["onoroff"].get<bool>()).sendTo(output);
+                    break;
+                case do_hash("safeexplode"):
+                    setSafeExplosion(results["onoroff"].get<bool>()).sendTo(output);
                     break;
             }
         };

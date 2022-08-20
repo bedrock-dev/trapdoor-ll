@@ -6,6 +6,7 @@
 
 #include <MC/Block.hpp>
 #include <MC/BlockLegacy.hpp>
+#include <MC/ItemStackBase.hpp>
 #include <MC/PistonBlockActor.hpp>
 
 #include "Config.h"
@@ -32,6 +33,8 @@ THook(void, "?removeItem@Container@@UEAAXHH@Z", void *container, int slot, int c
     }
 }
 
-// THook(void, "?setRuntimeId@Block@@IEBAXAEBI@Z", Block *b, unsigned int const &id) {
-//     return original(b, id);
-// }
+THook(void, "?explode@Explosion@@QEAAXXZ", void *self) {
+    if (!trapdoor::mod().getConfig().getTweakConfig().safeExplosion) {
+        original(self);
+    }
+}

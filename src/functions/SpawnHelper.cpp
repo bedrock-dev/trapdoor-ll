@@ -187,7 +187,7 @@ namespace trapdoor {
             auto ok = mob.second.second ? "Yes" : "No";
             auto color = mob.second.second ? TB::DARK_GREEN : TB::DARK_RED;
             builder.sText(TB::GRAY, " - ")
-                .textF("%s:  ", trapdoor::i18ActorName(mob.first).c_str())
+                .textF("%s:  ", mob.first.c_str())
                 .text("will: ")
                 .num(mob.second.first * 100.0 / totalCount)
                 .text("%%, can: ")
