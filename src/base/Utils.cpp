@@ -74,6 +74,12 @@ namespace trapdoor {
         return cur->toJson(4);
     }
     std::string i18ActorName(const string& name) {
+        auto rm = rmmc(name);
+        if (rm == "player" || rm == "Player") {
+            //     return I18n::getCurrentLanguage() == "zh_cn" ? "玩家" : "Player";
+            return "Player";
+        }
+
         return I18n::get("entity." + rmmc(name) + ".name");
     }
 }  // namespace trapdoor

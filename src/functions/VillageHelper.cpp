@@ -82,7 +82,8 @@ namespace trapdoor {
                     auto ac = Global<Level>->fetchEntity(kv.first, false);
                     if (ac) {
                         if (index == DwellerType::Villager) {
-                            ac->setNameTag(ac->getNameTag() + " " + std::to_string(kv.second.tick));
+                            ac->setNameTag(ac->getNameTag() + "\n" +
+                                           std::to_string(kv.second.tick));
                         } else {
                             ac->setNameTag(std::to_string(kv.second.tick));
                         }
@@ -166,7 +167,7 @@ namespace trapdoor {
     }
     ActionResult VillageHelper::listTickingVillages(bool details) {
         if (this->vs_.empty()) {
-            return {"no village in ticking", true};
+            return {"No village in ticking", true};
         }
 
         trapdoor::TextBuilder builder;
