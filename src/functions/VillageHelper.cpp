@@ -66,7 +66,7 @@ namespace trapdoor {
                     for (int index = 0; index < 3; ++index) {
                         auto poi = kv.second[index].lock();
                         if (poi) {
-                            builder.sTextF(TextBuilder::GREEN, "%s", icons[index]);
+                            builder.sTextF(TextBuilder::GREEN, " %s", icons[index]);
                         } else {
                             builder.sTextF(TextBuilder::RED, " %s", icons[index]);
                         }
