@@ -197,11 +197,15 @@ namespace trapdoor {
             auto dropperNoCost = det["dropper-no-cost"].get<bool>();
             auto autoSelectTool = det["auto-select-tool"].get<bool>();
             auto maxPendingTickSize = det["max-pending-tick-size"].get<int>();
+            auto safeExplosion = det["safe-explosion"].get<bool>();
+
+            // auto disableNCUpdate = det["disable-nc-update"].get<bool>();
 
             auto& cfg = this->tweakConfig;
             setBoolValue(cfg.autoSelectTool, autoSelectTool, "auto select tools");
             setBoolValue(cfg.dropperNoCost, dropperNoCost, "dropper no cost");
             setBoolValue(cfg.forceOpenContainer, forceOpenContainer, "force open container");
+            setBoolValue(cfg.safeExplosion, safeExplosion, "safe explosion");
             setIntValue(cfg.forcePlaceLevel, forcePlace, "force place level", 0, 2);
             setIntValue(cfg.maxPendingTickSize, maxPendingTickSize,
                         "max pending tick size per chunk", 1, 0xffffff);
@@ -230,8 +234,8 @@ namespace trapdoor {
             .text(createItem("Auto select tool", tweaks.autoSelectTool))
             .text(createItem("Dropper no cost", tweaks.dropperNoCost))
             .text(createItem("Force open container", tweaks.forceOpenContainer))
-            .text(createItem("Force place level", tweaks.forcePlaceLevel));
-
+            .text(createItem("Force place level", tweaks.forcePlaceLevel))
+            .text(createItem("Safe Explosion", tweaks.safeExplosion));
         builder.sText(TB::BOLD | TB::WHITE, "Shortcuts\n");
         auto& scs = this->shortcuts;
         for (auto& sh : scs) {
