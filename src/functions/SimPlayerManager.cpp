@@ -89,13 +89,11 @@ namespace trapdoor {
             if (!trapdoor::mod().getConfig().getBasicConfig().keepSimPlayerInv) return;
             const std::string path =
                 "./plugins/trapdoor/sim/" + std::to_string(do_hash(playerName.c_str()));
-            // TODO 从文件读取内容到背包
             std::ifstream f(path);
             if (!f.is_open()) {
                 //  trapdoor::logger().warn("can not read file {}", file_name);
                 return;
             }
-
             nlohmann::json obj;
             f >> obj;
             try {
@@ -119,7 +117,7 @@ namespace trapdoor {
     }
 
     void SimPlayerManager::cancel(const std::string& name) {
-        trapdoor::logger().debug("cancel task of:{}", name);
+        trapdoor::logger().debug("cancel task  {}", name);
         auto it = this->simPlayers.find(name);
         if (it != this->simPlayers.end()) {
             it->second.task.cancel();
@@ -313,7 +311,6 @@ namespace trapdoor {
         return {"", true};
     }
     ActionResult SimPlayerManager::dropItem(const string& name, int itemId) {
-        //        GET_FREE_PLAYER(sim)
         //        auto* item = getItemInInv(sim, itemId);
         //        if (item) {
         //            sim->_drop(*item, true);
@@ -402,8 +399,19 @@ namespace trapdoor {
     }
     void SimPlayerManager::processDieEvent(const string& name) {
         trapdoor::logger().debug("try disconnect {}", name);
+        // 死亡后同步背包
+        auto iter = this->simPlayers.find(name);
+        if (iter == this->simPlayers.end()) return;
+        if (iter->second.simPlayer) {
+            // TODO: 死亡不掉落检测
+            writeInvToFile(iter->second.simPlayer->getInventory(), name);
+        } else {
+            trapdoor::logger().debug("Null Player");
+        }
+
         this->removePlayer(name);
     }
+
     void SimPlayerManager::refreshCommandSoftEnum() {
         if (!this->cmdInstance) return;
         std::vector<std::string> names;
@@ -419,6 +427,7 @@ namespace trapdoor {
         if (iter == this->simPlayers.end()) return;
         writeInvToFile(player->getInventory(), name);
     }
+
     void SimPlayerManager::syncPlayerListToFile() {
         const std::string path = "./plugins/trapdoor/sim/cache.json";
         nlohmann::json obj;
@@ -426,8 +435,10 @@ namespace trapdoor {
             auto* p = sim.second.simPlayer;
             if (p) {
                 auto pos = p->getPos();
-                json j = {
-                    {"x", pos.x}, {"y", pos.y}, {"z", pos.z}, {"dim", (int)p->getDimensionId()}};
+                json j = {{"x", pos.x},
+                          {"y", pos.y - 1},
+                          {"z", pos.z},
+                          {"dim", (int)p->getDimensionId()}};
                 obj[sim.first] = j;
             }
         }

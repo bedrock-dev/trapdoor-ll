@@ -42,6 +42,7 @@ namespace trapdoor {
         bool dropperNoCost = false;
         bool autoSelectTool = false;
         bool safeExplosion = false;
+        bool disableNCUpdate = false;
         int maxPendingTickSize = 100;
     };
 

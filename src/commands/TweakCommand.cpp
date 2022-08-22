@@ -38,21 +38,23 @@ namespace trapdoor {
         trapdoor::mod().getConfig().getTweakConfig().safeExplosion = able;
         return {"Success", true};
     }
+    ActionResult setDisableNCUpdate(bool able) {
+        trapdoor::mod().getConfig().getTweakConfig().disableNCUpdate = able;
+        return {"Success", true};
+    }
 
     void setup_tweakCommand(int level) {
-        // create a dynamic command
         auto command = DynamicCommand::createCommand("tweak", "Tweak vanilla features",
                                                      static_cast<CommandPermissionLevel>(level));
         using ParamType = DynamicCommand::ParameterType;
-        // create a dynamic command
 
         auto &forcePlaceOpt = command->setEnum("place", {"fcplace"});
         auto &forceOpenContainer = command->setEnum("open", {"fcopen"});
         auto &dropperNoCost = command->setEnum("cost", {"nocost"});
         auto &autoSelectTools = command->setEnum("autoSelecttool", {"autotool"});
         auto &maxPendingTickSize = command->setEnum("maxPendingTickSize", {"maxptsize"});
-
         auto &safeExplosion = command->setEnum("safeExplosion", {"safeexplode"});
+        auto &disableNUpdate = command->setEnum("disbaleNCUpdate", {"noncupdate"});
 
         command->mandatory("tweak", ParamType::Enum, forcePlaceOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
@@ -66,6 +68,8 @@ namespace trapdoor {
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("tweak", ParamType::Enum, safeExplosion,
                            CommandParameterOption::EnumAutocompleteExpansion);
+        command->mandatory("tweak", ParamType::Enum, disableNUpdate,
+                           CommandParameterOption::EnumAutocompleteExpansion);
 
         command->mandatory("value", ParamType::Int);
         command->mandatory("onoroff", ParamType::Bool);
@@ -75,6 +79,7 @@ namespace trapdoor {
         command->addOverload({dropperNoCost, "onoroff"});
         command->addOverload({autoSelectTools, "onoroff"});
         command->addOverload({safeExplosion, "onoroff"});
+        command->addOverload({disableNUpdate, "onoroff"});
         command->addOverload({maxPendingTickSize, "value"});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
@@ -98,6 +103,9 @@ namespace trapdoor {
                     break;
                 case do_hash("safeexplode"):
                     setSafeExplosion(results["onoroff"].get<bool>()).sendTo(output);
+                    break;
+                case do_hash("noncupdate"):
+                    setDisableNCUpdate(results["onoroff"].get<bool>()).sendTo(output);
                     break;
             }
         };

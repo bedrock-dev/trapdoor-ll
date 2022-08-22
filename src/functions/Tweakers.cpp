@@ -38,3 +38,9 @@ THook(void, "?explode@Explosion@@QEAAXXZ", void *self) {
         original(self);
     }
 }
+
+THook(void, "?updateNeighborsAt@BlockSource@@QEAAXAEBVBlockPos@@@Z", void *self, void *pos) {
+    if (!trapdoor::mod().getConfig().getTweakConfig().disableNCUpdate) {
+        original(self, pos);
+    }
+}
