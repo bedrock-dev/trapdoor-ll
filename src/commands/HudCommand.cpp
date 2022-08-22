@@ -70,5 +70,5 @@ namespace trapdoor {
         command->setCallback(cb);
         DynamicCommand::setup(std::move(command));
     }
-
+    
 }  // namespace trapdoor

@@ -7,7 +7,7 @@ namespace trapdoor {
     void subscribePlayerDieEvent();
     void subscribePlayerStartDestroyBlockEvent();
     void subscribePlayerPlaceBlockEvent();
-    void subscribePlayerInventoryChangeEvent();
+
     void subscribeServerStartEvent();
 
     inline void SubscribeEvents() {
@@ -16,7 +16,6 @@ namespace trapdoor {
         subscribePlayerDieEvent();
         subscribePlayerStartDestroyBlockEvent();
         subscribePlayerPlaceBlockEvent();
-        subscribePlayerInventoryChangeEvent();
         subscribeServerStartEvent();
     }
 

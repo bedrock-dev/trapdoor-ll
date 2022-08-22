@@ -30,7 +30,7 @@ namespace trapdoor {
 
         void processDieEvent(const std::string& name);
 
-        void tryRefreshInv(Player* player);
+        void tryRefreshInv(Player* player, int slot, ItemStack* newItem);
 
         SimulatedPlayer* tryFetchSimPlayer(const std::string& name, bool needFree);
 
