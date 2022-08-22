@@ -157,13 +157,6 @@ namespace trapdoor {
     }
 
     void subscribePlayerPlaceBlockEvent() {}
-    void subscribePlayerInventoryChangeEvent() {
-        Event::PlayerInventoryChangeEvent::subscribe(
-            [&](const Event::PlayerInventoryChangeEvent& ev) {
-                trapdoor::mod().getSimPlayerManager().tryRefreshInv(ev.mPlayer);
-                return true;
-            });
-    }
 
     void subscribeServerStartEvent() {
         Event::ServerStartedEvent::subscribe([&](const Event::ServerStartedEvent& ev) {
@@ -188,8 +181,8 @@ namespace trapdoor {
 
 }  // namespace trapdoor
 
-// Trevent
-
+// TR event
+// TODO: MOVE TO A SINGLE CLASS
 #include <MC/BaseCircuitComponent.hpp>
 #include <MC/CircuitSystem.hpp>
 #include <MC/ConsumerComponent.hpp>
@@ -210,5 +203,6 @@ THook(bool, "?evaluate@ConsumerComponent@@UEAA_NAEAVCircuitSystem@@AEBVBlockPos@
         trapdoor::mod().getEventTriggerMgr().broadcastMessage(trapdoor::SignalChange,
                                                               builder.get());
     }
+
     return res;
 }

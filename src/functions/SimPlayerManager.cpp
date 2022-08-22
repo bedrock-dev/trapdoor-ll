@@ -55,12 +55,19 @@ namespace trapdoor {
             return nullptr;
         }
 
-        void writeInvToFile(Container& cont, const std::string& playerName) {
-            // const std::string path = "./plugins/trapdoor/sim/" + file_name;
+        /**
+         * 第三个和第四个参数的作用是把更新的物品信息写入背包以解决写入滞后的问题
+         * @param cont
+         * @param playerName
+         * @param slot
+         * @param newItem
+         */
+        void writeInvToFile(Container& cont, const std::string& playerName, int slot,
+                            ItemStack* newItem) {
             if (!trapdoor::mod().getConfig().getBasicConfig().keepSimPlayerInv) return;
             const std::string path =
                 "./plugins/trapdoor/sim/" + std::to_string(do_hash(playerName.c_str()));
-            trapdoor::logger().debug("Path is {}", path);
+            trapdoor::logger().debug("Inv Write path is {}", path);
             // TODO 序列化背包内容到文件
             nlohmann::json obj;
             auto array = nlohmann::json::array();
@@ -70,9 +77,17 @@ namespace trapdoor {
                 if (item) {
                     sNbt = item->getNbt()->toSNBT();
                 }
-                json j = {{"slot", i}, {"nbt", sNbt}};
+
+                if (i == slot) {
+                    // 如果是新的槽位就覆盖
+                    sNbt = newItem ? newItem->getNbt()->toSNBT() : std::string();
+                }
+
+                json j;
+                j = {{"slot", i}, {"nbt", sNbt}};
                 array.push_back(j);
             }
+
             obj["inventory"] = array;
             obj["name"] = playerName;
             std::ofstream f(path);
@@ -398,18 +413,17 @@ namespace trapdoor {
         return {builder.get(), true};
     }
     void SimPlayerManager::processDieEvent(const string& name) {
-        trapdoor::logger().debug("try disconnect {}", name);
-        // 死亡后同步背包
+        trapdoor::logger().debug("player {} try disconnect", name);
         auto iter = this->simPlayers.find(name);
         if (iter == this->simPlayers.end()) return;
-        if (iter->second.simPlayer) {
-            // TODO: 死亡不掉落检测
-            writeInvToFile(iter->second.simPlayer->getInventory(), name);
-        } else {
-            trapdoor::logger().debug("Null Player");
-        }
-
         this->removePlayer(name);
+
+        // TODO: 死亡后同步背包
+        //        if (iter->second.simPlayer) {
+        //            writeInvToFile(iter->second.simPlayer->getInventory(), name);
+        //        } else {
+        //            trapdoor::logger().debug("Null Player");
+        //        }
     }
 
     void SimPlayerManager::refreshCommandSoftEnum() {
@@ -420,12 +434,13 @@ namespace trapdoor {
         }
         cmdInstance->setSoftEnum("name", names);
     }
-    void SimPlayerManager::tryRefreshInv(Player* player) {
+
+    void SimPlayerManager::tryRefreshInv(Player* player, int slot, ItemStack* newItem) {
         if (!player) return;
         auto name = player->getRealName();
         auto iter = this->simPlayers.find(name);
         if (iter == this->simPlayers.end()) return;
-        writeInvToFile(player->getInventory(), name);
+        writeInvToFile(player->getInventory(), name, slot, newItem);
     }
 
     void SimPlayerManager::syncPlayerListToFile() {
@@ -468,8 +483,8 @@ namespace trapdoor {
                 auto y = value["y"].get<float>();
                 auto z = value["z"].get<float>();
                 this->addPlayer(name, {x, y, z}, dim, nullptr);
-                trapdoor::logger().debug("Spawn sim player [{}] at {},{},{} in dim {}", name, x, y,
-                                         z, dim);
+                trapdoor::logger().info("Spawn sim player [{}] at {},{},{} in dim {}", name, x, y,
+                                        z, dim);
                 //    tempConfig.enable = value["enable"].get<bool>();
             }
         } catch (const std::exception& e) {
@@ -480,3 +495,12 @@ namespace trapdoor {
     }
 
 }  // namespace trapdoor
+
+// After inventory changed
+TInstanceHook(void, "?inventoryChanged@Player@@UEAAXAEAVContainer@@HAEBVItemStack@@1_N@Z", Player,
+              void* container, int slotNumber, ItemStack* oldItem, ItemStack* newItem, bool is) {
+    original(this, container, slotNumber, oldItem, newItem, is);
+    if (this->isPlayer(true)) {
+        trapdoor::mod().getSimPlayerManager().tryRefreshInv(this, slotNumber, newItem);
+    }
+}
