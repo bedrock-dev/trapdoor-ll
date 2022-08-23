@@ -79,7 +79,8 @@
     "hud-refresh-freq": 20,
     "tool-damage-threshold": 10,
     "keep-sim-player-inv": true,
-    "server-crash-token": "demo"
+    "server-crash-token": "demo",
+    "sim-player-prefix": "bot_"
   },
   "default-enable-functions": {
     "hud": true,

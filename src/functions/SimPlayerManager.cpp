@@ -381,6 +381,7 @@ namespace trapdoor {
         if (iter != simPlayers.end() && iter->second.simPlayer) {
             return {"Player has already existed", false};
         }
+
         if (iter != simPlayers.end()) {
             iter->second.task.cancel();
         }

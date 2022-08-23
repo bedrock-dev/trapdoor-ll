@@ -128,8 +128,10 @@ namespace trapdoor {
                 case do_hash("spawn"):
                     trapdoor::mod()
                         .getSimPlayerManager()
-                        .addPlayer(name, origin.getBlockPosition(),
-                                   origin.getDimension()->getDimensionId(), origin.getPlayer())
+                        .addPlayer(
+                            trapdoor::mod().getConfig().getBasicConfig().simPlayerPrefix + name,
+                            origin.getBlockPosition(), origin.getDimension()->getDimensionId(),
+                            origin.getPlayer())
                         .sendTo(output);
                     break;
                 case do_hash("despawn"):
