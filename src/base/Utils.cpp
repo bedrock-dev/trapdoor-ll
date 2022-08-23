@@ -82,4 +82,5 @@ namespace trapdoor {
 
         return I18n::get("entity." + rmmc(name) + ".name");
     }
+
 }  // namespace trapdoor

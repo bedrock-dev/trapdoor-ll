@@ -31,6 +31,12 @@ namespace trapdoor {
         return;                       \
     }
 
+        bool enableKeepInventory() {
+            auto res = Level::runcmdEx("gamerule keepinventory").second;
+            trapdoor::logger().debug("gamerule result: {}", res);
+            return res.find("true") != std::string::npos;
+        }
+
         BlockPos getTargetPos(Player* p, BlockPos pos) {
             if (!p) return pos;
             auto* a = reinterpret_cast<Actor*>(p);
@@ -53,6 +59,14 @@ namespace trapdoor {
                 }
             }
             return nullptr;
+        }
+
+        void writeEmptyInvToFile(const std::string& playerName) {
+            trapdoor::logger().debug("Clear player {}' inventory due to death");
+            const std::string path =
+                "./plugins/trapdoor/sim/" + std::to_string(do_hash(playerName.c_str()));
+            namespace fs = std::filesystem;
+            fs::remove(path);
         }
 
         /**
@@ -106,7 +120,6 @@ namespace trapdoor {
                 "./plugins/trapdoor/sim/" + std::to_string(do_hash(playerName.c_str()));
             std::ifstream f(path);
             if (!f.is_open()) {
-                //  trapdoor::logger().warn("can not read file {}", file_name);
                 return;
             }
             nlohmann::json obj;
@@ -326,11 +339,12 @@ namespace trapdoor {
         return {"", true};
     }
     ActionResult SimPlayerManager::dropItem(const string& name, int itemId) {
-        //        auto* item = getItemInInv(sim, itemId);
-        //        if (item) {
-        //            sim->_drop(*item, true);
-        //        }
-        //        return {"", true};
+        // TODO drop item
+        //         auto* item = getItemInInv(sim, itemId);
+        //         if (item) {
+        //             sim->_drop(*item, true);
+        //         }
+        //         return {"", true};
         return {"Developing", false};
     }
     ActionResult SimPlayerManager::behavior(const std::string& name, const std::string& behType,
@@ -350,7 +364,7 @@ namespace trapdoor {
     ActionResult SimPlayerManager::removePlayer(const std::string& name) {
         auto it = this->simPlayers.find(name);
         if (it == this->simPlayers.end()) {
-            return {"player does not exist", false};
+            return {"Player does not exist", false};
         }
 
         it->second.task.cancel();
@@ -416,6 +430,12 @@ namespace trapdoor {
         trapdoor::logger().debug("player {} try disconnect", name);
         auto iter = this->simPlayers.find(name);
         if (iter == this->simPlayers.end()) return;
+
+        // 如果没开死亡不掉落就清空玩家背包
+        if (!enableKeepInventory()) {
+            writeEmptyInvToFile(name);
+        }
+
         this->removePlayer(name);
 
         // TODO: 死亡后同步背包
