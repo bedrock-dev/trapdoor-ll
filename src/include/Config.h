@@ -28,6 +28,7 @@ namespace trapdoor {
         int toolDamageThreshold = 10;
         bool keepSimPlayerInv = true;
         std::string serverCrashToken;
+        std::string simPlayerPrefix;
     };
 
     struct DefaultEnableFunctions {

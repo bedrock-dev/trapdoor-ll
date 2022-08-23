@@ -38,6 +38,15 @@ namespace trapdoor {
                 .get();
         }
 
+        std::string createStringItem(const std::string& name, const std::string& value) {
+            trapdoor::TextBuilder builder;
+            return builder.sText(TB::GRAY, " - ")
+                .text(name)
+                .text(":")
+                .sTextF(TB::GREEN | TB::BOLD, " %s\n", value.c_str())
+                .get();
+        }
+
     }  // namespace
 
     bool Configuration::init(const std::string& fileName, bool reload) {
@@ -91,6 +100,7 @@ namespace trapdoor {
             auto tdh = bc["tool-damage-threshold"].get<int>();
             auto keepSimPlayerInv = bc["keep-sim-player-inv"].get<bool>();
             auto severCrashToken = bc["server-crash-token"].get<std::string>();
+            auto botPrefix = bc["sim-player-prefix"].get<std::string>();
 
             auto& cfg = this->basicConfig;
             setIntValue(cfg.particleLevel, pl, "particle performance level", 1, 3);
@@ -100,6 +110,8 @@ namespace trapdoor {
             setIntValue(cfg.toolDamageThreshold, tdh, "tool damage threshold", -100, 65536);
             setBoolValue(cfg.keepSimPlayerInv, keepSimPlayerInv, "keep sim player inv");
             this->basicConfig.serverCrashToken = severCrashToken;
+            this->basicConfig.simPlayerPrefix = botPrefix;
+
         } catch (const std::exception& e) {
             trapdoor::logger().error("error read basic-config: {}", e.what());
             return false;
@@ -225,8 +237,8 @@ namespace trapdoor {
             .text(createItem("Particle display level", basicCfg.particleLevel))
             .text(createItem("Particle view distance", sqrt(basicCfg.particleViewDistance2D)))
             .text(createItem("Tool damage threshold", basicCfg.toolDamageThreshold))
-            .text(createItem("Keep Simulate Player Inv", basicCfg.keepSimPlayerInv));
-
+            .text(createItem("Keep sim player Inv", basicCfg.keepSimPlayerInv))
+            .text(createStringItem("Sim player name prefix", basicCfg.simPlayerPrefix));
         auto tweaks = this->tweakConfig;
 
         builder.sText(TB::BOLD | TB::WHITE, "Tweaks\n")
