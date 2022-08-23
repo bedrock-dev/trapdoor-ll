@@ -44,3 +44,19 @@ THook(void, "?updateNeighborsAt@BlockSource@@QEAAXAEBVBlockPos@@@Z", void *self,
         original(self, pos);
     }
 }
+
+// #include <MC/Player.hpp>
+// THook(void,
+//       "?_tickLevelChunksAroundActor@LevelChunkTickingSystem@@CAXAEAVActor@@AEAVBlockSource@@"
+//       "AEAVLoadedChunksComponent@@@Z",
+//       Actor *actor, BlockSource *bs, void *comp) {
+//     if (actor) {
+//         trapdoor::logger().debug("Actor name is {} {} {}",
+//                                  reinterpret_cast<Player *>(actor)->getRealName(), (void *)bs,
+//                                  comp);
+//     } else {
+//         trapdoor::logger().debug("Actor is null");
+//     }
+//
+//     original(actor, bs, comp);
+// }
