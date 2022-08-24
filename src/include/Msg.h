@@ -27,7 +27,7 @@
 #define PH_POS "§a{},{},{}§r"
 
 namespace trapdoor {
-    void BroadcastMessage(const std::string &msg, int level = 0);
+    void broadcastMessage(const std::string &msg, int level = 0);
 
     // from stack overflow
     template <typename... Args>

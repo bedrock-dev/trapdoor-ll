@@ -148,7 +148,7 @@ namespace trapdoor {
             }
         }
 
-        trapdoor::BroadcastMessage(builder.get());
+        trapdoor::broadcastMessage(builder.get());
     }
     void SimpleProfiler::printPendingTicks() const {}
     void SimpleProfiler::printBasics() const {
@@ -198,7 +198,7 @@ namespace trapdoor {
             /*chunks*/
             cf(chunkInfo.totalTickTime), cf(chunkInfo.blockEntitiesTickTime),
             cf(chunkInfo.randomTickTime), cf(chunkInfo.pendingTickTime));
-        trapdoor::BroadcastMessage(res);
+        trapdoor::broadcastMessage(res);
     }
 
     void SimpleProfiler::printActor() const {
@@ -237,6 +237,6 @@ namespace trapdoor {
         }
         TextBuilder bu;
         bu.text("Total ").num(totalTime).text(" ms\n");
-        trapdoor::BroadcastMessage(bu.get() + builder.get());
+        trapdoor::broadcastMessage(bu.get() + builder.get());
     }  // namespace trapdoor
 }  // namespace trapdoor

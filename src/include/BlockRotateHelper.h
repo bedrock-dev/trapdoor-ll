@@ -9,7 +9,6 @@
 #include <MC/Vec3.hpp>
 #include "CommandHelper.h"
 // clang-format on
-
 namespace trapdoor {
 
     ActionResult setBlockRotationAble(bool able);

@@ -85,7 +85,7 @@ namespace trapdoor {
             info.forwardTickNum = gt;
             info.status = TickingStatus::Forwarding;
             if (gt >= 1200) {
-                trapdoor::BroadcastMessage("The world begins to forward");
+                trapdoor::broadcastMessage("The world begins to forward");
                 return {"Forward start", true};
             } else {
                 return {"", true};
@@ -113,7 +113,7 @@ namespace trapdoor {
             }
             info.status = TickingStatus::SlowDown;
             info.slowDownTime = times;
-            trapdoor::BroadcastMessage(fmt::format("The world will run {} times slower", times),
+            trapdoor::broadcastMessage(fmt::format("The world will run {} times slower", times),
                                        -1);
             return {"", true};
         } else {
@@ -129,7 +129,7 @@ namespace trapdoor {
             }
             info.accTime = times;
             info.status = TickingStatus::Acc;
-            trapdoor::BroadcastMessage(fmt::format("The world will run {} times faster", times),
+            trapdoor::broadcastMessage(fmt::format("The world will run {} times faster", times),
                                        -1);
             return {"", true};
         } else {
@@ -233,7 +233,7 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
         }
         mod.heavyTick();
         if (info.remainWarpTick <= 0) {
-            trapdoor::BroadcastMessage("Warp finished", -1);
+            trapdoor::broadcastMessage("Warp finished", -1);
             info.status = info.oldStatus;
         }
     }
@@ -256,7 +256,7 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
                 --info.forwardTickNum;
             }
 
-            trapdoor::BroadcastMessage("Froward finished", -1);
+            trapdoor::broadcastMessage("Froward finished", -1);
             info.status = info.oldStatus;
             mod.heavyTick();
             break;

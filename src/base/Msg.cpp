@@ -1,4 +1,3 @@
-
 #include "Msg.h"
 
 #include <MC/Level.hpp>
@@ -9,7 +8,7 @@
 #include "TVec3.h"
 
 namespace trapdoor {
-    void BroadcastMessage(const std::string &msg, int level) {
+    void broadcastMessage(const std::string &msg, int level) {
         auto fmtMsg = msg;
         if (level < 0) {
             fmtMsg = fmt::format(PH_GRAY, msg);
@@ -80,6 +79,6 @@ namespace trapdoor {
         return *this;
     }
 
-    void TextBuilder::broadcast() { trapdoor::BroadcastMessage(this->get()); }
+    void TextBuilder::broadcast() { trapdoor::broadcastMessage(this->get()); }
 
 }  // namespace trapdoor
