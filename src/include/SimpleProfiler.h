@@ -68,15 +68,15 @@ namespace trapdoor {
     /*
     ServerLevel::tick
      - Redstone
-        - Dimension::tickRedstone(shouldUpdate,cacueValue,evaluate)
+        - Dimension::tickRedstone(shouldUpdate,cacheValue,evaluate)
         - pendingUpdate
-        - pendinnRemove
+        - pendingRemove
         - pendingAdd
      - Dimension::tick(chunk load/village)
      - entitySystem
-     - Lvevl::tick
+     - Level::tick
         - LevelChunk::Tick
-            - blockEnties
+            - blockEntities
             - randomChunk
             - Actor::tick(non global)
     */

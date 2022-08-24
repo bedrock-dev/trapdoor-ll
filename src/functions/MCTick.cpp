@@ -17,7 +17,7 @@
 namespace trapdoor {
     namespace {
 
-        // In-file varilable;
+        // In-file variablle;
 
         TickingInfo &getTickingInfo() {
             static TickingInfo info;
@@ -36,7 +36,7 @@ namespace trapdoor {
 
     }  // namespace
 
-    // Command Aciton
+    // Command Action
 
     ActionResult queryWorld() {
         auto &info = getTickingInfo();
@@ -147,7 +147,7 @@ namespace trapdoor {
             return {"Profiling can only be performed in normal tick state", false};
         }
         if (normalProfiler().profiling) {
-            return {"Another profileing is running", false};
+            return {"Another profiling is running", false};
         } else {
             normalProfiler().start(rounds, type);
             return {"Profile Start", true};
@@ -381,7 +381,7 @@ THook(void, "?processPendingAdds@CircuitSceneGraph@@AEAAXXZ", void *c) {
     }
 }
 
-// pemding remove
+// pending remove
 THook(void, "?removeComponent@CircuitSceneGraph@@AEAAXAEBVBlockPos@@@Z", void *c, void *pos) {
     auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {

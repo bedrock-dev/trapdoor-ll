@@ -36,7 +36,7 @@ namespace trapdoor {
         }
     }
 
-    ActionResult HopperChannelManager::quickModifyChannel(Player * player, const BlockPos &pos,
+    ActionResult HopperChannelManager::quickModifyChannel(Player *player, const BlockPos &pos,
                                                           int opt) {
         if (!player) return ErrorPlayerNeed();
         auto &bs = player->getRegion();
@@ -125,9 +125,9 @@ THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self, un
         return;
     }
 
-    // get PointPOsition
+    // get Point Position
     auto &pos = ba.getPosition();
-    // try get player
+    // try to get player
     Player *nearest = nullptr;
 
     try {
