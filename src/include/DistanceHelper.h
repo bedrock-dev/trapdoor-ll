@@ -2,8 +2,8 @@
 // Created by xhy on 2022/7/19.
 //
 
-#ifndef TRAPDOOR_DISTANCEHELPER_H
-#define TRAPDOOR_DISTANCEHELPER_H
+#ifndef TRAPDOOR_DISTANCE_HELPER_H
+#define TRAPDOOR_DISTANCE_HELPER_H
 #include <MC/Player.hpp>
 
 #include "CommandHelper.h"
@@ -15,4 +15,4 @@ namespace trapdoor {
 
 }  // namespace trapdoor
 
-#endif  // TRAPDOOR_DISTANCEHELPER_H
+#endif  // TRAPDOOR_DISTANCE_HELPER_H

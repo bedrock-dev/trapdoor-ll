@@ -504,7 +504,7 @@ namespace trapdoor {
                 auto y = value["y"].get<float>();
                 auto z = value["z"].get<float>();
                 this->addPlayer(name, {x, y, z}, dim, nullptr);
-                trapdoor::logger().info("Spawn sim player [{}] at {},{},{} in dim {}", name, x, y,
+                trapdoor::logger().warn("Spawn sim player [{}] at {},{},{} in dim {}", name, x, y,
                                         z, dim);
                 //    tempConfig.enable = value["enable"].get<bool>();
             }

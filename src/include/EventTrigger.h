@@ -2,8 +2,8 @@
 // Created by xhy on 2022/8/12.
 //
 
-#ifndef TRAPDOOR_EVENTTRIGGER_H
-#define TRAPDOOR_EVENTTRIGGER_H
+#ifndef TRAPDOOR_EVENT_TRIGGER_H
+#define TRAPDOOR_EVENT_TRIGGER_H
 #include <unordered_map>
 #include <unordered_set>
 
@@ -36,4 +36,4 @@ namespace trapdoor {
 }  // namespace trapdoor
 
 class EventTrigger {};
-#endif  // TRAPDOOR_EVENTTRIGGER_H
+#endif  // TRAPDOOR_EVENT_TRIGGER_H

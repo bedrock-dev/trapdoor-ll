@@ -2,8 +2,8 @@
 // Created by xhy on 2022/5/17.
 //
 
-#ifndef TRAPDOOR_COMMANDHELPER_H
-#define TRAPDOOR_COMMANDHELPER_H
+#ifndef TRAPDOOR_COMMAND_HELPER_H
+#define TRAPDOOR_COMMAND_HELPER_H
 
 //clang-format off
 
@@ -72,4 +72,4 @@ namespace trapdoor {
 
 }  // namespace trapdoor
 
-#endif  // TRAPDOOR_COMMANDHELPER_H
+#endif  // TRAPDOOR_COMMAND_HELPER_H

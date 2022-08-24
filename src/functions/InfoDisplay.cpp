@@ -127,7 +127,7 @@ namespace trapdoor {
             .sTextF(trapdoor::TextBuilder::GREEN, "%d / %d\n", b.getId(), b.getRuntimeId())
             .text(" - Variant: ")
             .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", b.getVariant())
-            .text(" - CanInstatick: ")
+            .text(" - CanInstanceTick: ")
             .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", b.canInstatick())
             .text(" - BlockEntity: ")
             .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", b.hasBlockEntity())

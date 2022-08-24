@@ -2,8 +2,8 @@
 // Created by xhy on 2020/8/24.
 //
 
-#ifndef TRAPDOOR_MSGBUILDER_H
-#define TRAPDOOR_MSGBUILDER_H
+#ifndef TRAPDOOR_MSG_BUILDER_H
+#define TRAPDOOR_MSG_BUILDER_H
 
 #include <cstdarg>
 #include <map>
@@ -19,7 +19,7 @@
 #define PH_GREEN "§a{}§r"
 #define PH_AQUA "§b{}§r"
 #define PH_BLUE "§9{}§r"
-#define PH_LIGHT_PURLPE "§d{}§r"
+#define PH_LIGHT_PURPLE "§d{}§r"
 #define PH_WHITE "§f{}§r"
 #define PH_GRAY "§7{}§r"
 #define PH_DOUB "§f{:.3lf}§r"
@@ -80,7 +80,10 @@ namespace trapdoor {
             return *this;
         }
 
-        inline TextBuilder &endl() { this->messageBuffer.emplace_back("\n"); }
+        inline TextBuilder &endl() {
+            this->messageBuffer.emplace_back("\n");
+            return *this;
+        }
 
         TextBuilder &sText(uint8_t style, const std::string &s);
 
@@ -120,4 +123,4 @@ namespace trapdoor {
 
     typedef TextBuilder TB;
 }  // namespace trapdoor
-#endif  // TRAPDOOR_MSGBUILDER_H
+#endif  // TRAPDOOR_MSG_BUILDER_H

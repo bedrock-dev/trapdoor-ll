@@ -1,5 +1,5 @@
-#ifndef TRAPDOOR_MINIHUD_HELPER_H
-#define TRAPDOOR_MINIHUD_HELPER_H
+#ifndef TRAPDOOR_HUD_HELPER_H
+#define TRAPDOOR_HUD_HELPER_H
 #include <array>
 #include <unordered_map>
 

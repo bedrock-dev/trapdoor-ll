@@ -29,11 +29,11 @@ namespace trapdoor {
 #pragma pack(pop)
 
     ActionResult printCap(const ActorDefinitionIdentifier *id);
-    ActionResult countActors(Player * p, const std::string &type);
+    ActionResult countActors(Player *p, const std::string &type);
 
-    ActionResult printSpawnProbability(Player * player, const BlockPos &pos);
+    ActionResult printSpawnProbability(Player *player, const BlockPos &pos);
 
-    ActionResult forceSpawn(Player * p, const ActorDefinitionIdentifier *id, const BlockPos &pos);
+    ActionResult forceSpawn(Player *p, const ActorDefinitionIdentifier *id, const BlockPos &pos);
 
     class SpawnHelper {
         std::vector<BlockPos> verticalSpawnPositions;

@@ -160,7 +160,7 @@ namespace trapdoor {
 
     void subscribeServerStartEvent() {
         Event::ServerStartedEvent::subscribe([&](const Event::ServerStartedEvent& ev) {
-            trapdoor::mod().getSimPlayerManager().addPlayersInCache();
+            // trapdoor::mod().getSimPlayerManager().addPlayersInCache();
             return true;
         });
 
