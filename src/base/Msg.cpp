@@ -10,13 +10,14 @@
 
 namespace trapdoor {
     void BroadcastMessage(const std::string &msg, int level) {
-        if (level == 0) {
-            Level::broadcastText(msg, TextType::RAW);
-        } else if (level < 0) {
-            Level::broadcastText(fmt::format(PH_GRAY, msg), TextType::RAW);
+        auto fmtMsg = msg;
+        if (level < 0) {
+            fmtMsg = fmt::format(PH_GRAY, msg);
         } else if (level > 0) {
-            Level::broadcastText(fmt::format(PH_GREEN, msg), TextType::RAW);
+            fmtMsg = fmt::format(PH_GREEN, msg);
         }
+        Level::broadcastText(fmtMsg, TextType::RAW);
+        trapdoor::logger().info(fmtMsg);
     }
 
     const uint8_t TextBuilder::BLACK = 0x0;

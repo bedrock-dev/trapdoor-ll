@@ -36,7 +36,7 @@ namespace trapdoor {
         if (size <= 0) return {};
         std::unique_ptr<char[]> buf(new char[size]);
         snprintf(buf.get(), size, format.c_str(), args...);
-        return std::string(buf.get(), buf.get() + size - 1);  // We don't want the '\0' inside
+        return {buf.get(), buf.get() + size - 1};  // We don't want the '\0' inside
     }
 
     struct TVec3;
