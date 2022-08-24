@@ -34,7 +34,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         ${PROJECT_SOURCE_DIR}/SDK/Header/*.h
 
         src/commands/TriggerCommand.cpp
-        src/commands/SeedCommand.cpp
+        #src/commands/SeedCommand.cpp
         src/commands/TrapdoorCommand.cpp
         src/commands/DistanceCommand.cpp
         src/commands/CalCommand.cpp

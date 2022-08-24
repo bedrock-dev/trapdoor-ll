@@ -66,7 +66,7 @@ namespace trapdoor {
     void setup_tweakCommand(int);
     void setup_CalCommand(int);
     void setup_disCommand(int);
-    void setup_seedCommand(int);
+    // void setup_seedCommand(int);
     void setup_slimeCommand(int);
     void setup_triggerCommand(int);
 
