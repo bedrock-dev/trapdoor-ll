@@ -57,11 +57,13 @@ namespace trapdoor {
                     break;
                 case do_hash("freeze"):
                     trapdoor::freezeWorld().sendTo(output);
+                    break;
                 case do_hash("fz"):
                     trapdoor::freezeWorld().sendTo(output);
                     break;
                 case do_hash("reset"):
                     trapdoor::resetWorld().sendTo(output);
+                    break;
                 case do_hash("r"):
                     trapdoor::resetWorld().sendTo(output);
                     break;
