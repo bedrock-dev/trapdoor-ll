@@ -1,46 +1,46 @@
 name: "[English]"
 description: "Report a bug to us to make trapdoor better"
-labels: ["bug"]
+labels: [ "bug" ]
 body:
 
-- type: input
-  id: trversion
-  attributes:
-    label: trapdoor version
-    description: |
-      Please input a full version number,such as `0.15-1.19.10.03`,
-      if you downlaod the plugin from action, please input the action
-      run id or commit hash
-  validations:
-    required: true
+  - type: input
+    id: trversion
+    attributes:
+      label: trapdoor version
+      description: |
+        Please input a full version number,such as `0.15-1.19.10.03`,
+        if you download the plugin from action, please input the action
+        run id or commit hash
+    validations:
+      required: true
 
-- type: input
-  id: llversion
-  attributes:
-    label: LiteLoader version
-  validations:
-    required: true
+  - type: input
+    id: llversion
+    attributes:
+      label: LiteLoader version
+    validations:
+      required: true
 
-- type: input
-  id: bdsversion
-  attributes:
-    label: BDS version
-  validations:
-    required: true
+  - type: input
+    id: bdsversion
+    attributes:
+      label: BDS version
+    validations:
+      required: true
 
-- type: textarea
-  id: what-happened
-  attributes:
-    label: What happened?
-    placeholder: Describe your problem here
-  validations:
-    required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      placeholder: Describe your problem here
+    validations:
+      required: true
 
-- type: textarea
-  id: reproduce
-  attributes:
-    label: Steps to reproduce
-    placeholder: |
-      1. Do something
-      2. ...
-      3. ...
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Do something
+        2. ...
+        3. ...
