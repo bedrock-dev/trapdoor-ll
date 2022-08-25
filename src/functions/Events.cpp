@@ -203,6 +203,5 @@ THook(bool, "?evaluate@ConsumerComponent@@UEAA_NAEAVCircuitSystem@@AEBVBlockPos@
         trapdoor::mod().getEventTriggerMgr().broadcastMessage(trapdoor::SignalChange,
                                                               builder.get());
     }
-
     return res;
 }

@@ -13,7 +13,7 @@ namespace trapdoor {
 
     std::vector<std::string> collectTrEventsStr();
 
-    enum TrEventType : int { SignalChange, EntityExplode };
+    enum TrEventType : int { SignalChange, EntityExplode, BuildConnection };
     class EventTriggerManager {
        public:
         inline void subscribe(const std::string& name, TrEventType type) {

@@ -193,11 +193,9 @@ namespace trapdoor {
         }
 
         if (type != "conn") return {"", true};
-
         // link
         // 高亮自身
         trapdoor::shortHighlightBlock({pos.x, pos.y, pos.z}, PCOLOR::GREEN, d->getDimensionId());
-
         // 高亮被自身激活的原件
         auto it = g->mPowerAssociationMap.find(pos);
         if (it != g->mPowerAssociationMap.end()) {
@@ -217,3 +215,62 @@ namespace trapdoor {
         return {"", true};
     }
 }  // namespace trapdoor
+
+THook(void,
+      "?findRelationships@CircuitSceneGraph@@AEAAXAEBVBlockPos@@PEAVBaseCircuitComponent@@"
+      "PEAVBlockSource@@@Z",
+      void *graph, BlockPos const &pos, BaseCircuitComponent *comp, class BlockSource *bs) {
+    trapdoor::TextBuilder builder;
+    builder.sTextF(trapdoor::TB::BOLD | trapdoor::TB::GREEN, "[%s] ", pos.toString().c_str())
+        .text("Start a connection build\n");
+    trapdoor::mod().getEventTriggerMgr().broadcastMessage(trapdoor::BuildConnection, builder.get());
+    original(graph, pos, comp, bs);
+}
+
+//
+// THook(bool,
+//       "?addSource@TransporterComponent@@UEAA_NAEAVCircuitSceneGraph@@AEBVCircuitTrackingInfo@@"
+//       "AEAHAEA_N@Z",
+//       BaseCircuitComponent *self, CircuitSceneGraph *graph, CircuitTrackingInfo &info, int
+//       *damping, bool *directPowered) {
+//     auto &pos = dAccess<BlockPos, 8>(&info);
+//     auto res = original(self, graph, info, damping, directPowered);
+//     if (res) {
+//         auto msg = fmt::format(" - [{},{},{}] => dump: {} dp: {}", pos.x, pos.y, pos.z, *damping,
+//                                *directPowered);
+//         trapdoor::mod().getEventTriggerMgr().broadcastMessage(trapdoor::BuildConnection, msg);
+//     }
+//     return res;
+// }
+//
+//// 比较器
+// THook(bool,
+//       "?addSource@ComparatorCapacitor@@UEAA_NAEAVCircuitSceneGraph@@AEBVCircuitTrackingInfo@@"
+//       "AEAHAEA_N@Z",
+//       void *self, CircuitSceneGraph *graph, CircuitTrackingInfo &info, int *damping,
+//       bool *directPowered) {
+//     auto &pos = dAccess<BlockPos, 8>(&info);
+//     auto res = original(self, graph, info, damping, directPowered);
+//     if (res) {
+//         auto msg = fmt::format(" - [{},{},{}] => dump: {} dp: {}", pos.x, pos.y, pos.z, *damping,
+//                                *directPowered);
+//         trapdoor::mod().getEventTriggerMgr().broadcastMessage(trapdoor::BuildConnection, msg);
+//     }
+//     return res;
+// }
+//
+//// 消费者
+// THook(bool,
+//       "?addSource@ConsumerComponent@@UEAA_NAEAVCircuitSceneGraph@@AEBVCircuitTrackingInfo@@AEAHAEA_"
+//       "N@Z",
+//       void *self, CircuitSceneGraph *graph, CircuitTrackingInfo &info, int *damping,
+//       bool *directPowered) {
+//     auto &pos = dAccess<BlockPos, 8>(&info);
+//     auto res = original(self, graph, info, damping, directPowered);
+//     if (res) {
+//         auto msg = fmt::format(" - [{},{},{}] => dump: {} dp: {}", pos.x, pos.y, pos.z, *damping,
+//                                *directPowered);
+//         trapdoor::mod().getEventTriggerMgr().broadcastMessage(trapdoor::BuildConnection, msg);
+//     }
+//     return res;
+// }

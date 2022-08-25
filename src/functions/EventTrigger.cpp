@@ -14,7 +14,9 @@ namespace trapdoor {
 
         const std::unordered_map<std::string, TrEventType>& eventMap() {
             static std::unordered_map<std::string, TrEventType> map = {
-                {"signalchange", SignalChange}, {"entityexplode", EntityExplode}};
+                {"signalchange", SignalChange},
+                {"entityexplode", EntityExplode},
+                {"buildconn", BuildConnection}};
             return map;
         }
 
@@ -24,6 +26,8 @@ namespace trapdoor {
                     return "signal change";
                 case EntityExplode:
                     return "TNT explode";
+                case BuildConnection:
+                    return "Build connection";
             }
             return "Unknown";
         }
