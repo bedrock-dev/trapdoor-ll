@@ -13,6 +13,7 @@
 #include <MC/Material.hpp>
 #include <MC/NavigationComponent.hpp>
 #include <MC/Player.hpp>
+#include <MC/RedstoneTorchCapacitor.hpp>
 #include <unordered_map>
 #include <vector>
 
@@ -192,6 +193,10 @@ namespace trapdoor {
             return {builder.get(), true};
         }
 
+        if (type == "torch") {
+            return {"", true};
+        }
+
         if (type != "conn") return {"", true};
         // link
         // 高亮自身
@@ -227,50 +232,111 @@ THook(void,
     original(graph, pos, comp, bs);
 }
 
-//
-// THook(bool,
-//       "?addSource@TransporterComponent@@UEAA_NAEAVCircuitSceneGraph@@AEBVCircuitTrackingInfo@@"
-//       "AEAHAEA_N@Z",
-//       BaseCircuitComponent *self, CircuitSceneGraph *graph, CircuitTrackingInfo &info, int
-//       *damping, bool *directPowered) {
-//     auto &pos = dAccess<BlockPos, 8>(&info);
-//     auto res = original(self, graph, info, damping, directPowered);
+// 红石线
+
+std::string compTypeToStr(uint64_t type) {
+    auto color = trapdoor::TextBuilder::WHITE;
+    std::string str = "unk";
+    if (type == 0x100000) {
+        color = trapdoor::TB::RED;
+        str = "Wine";
+    } else if (type == 0x80000) {
+        color = trapdoor::TB::DARK_RED;
+        str = "PowB";
+    } else if (type == 0x200000) {
+        color = trapdoor::TB::AQUA;
+        str = "Capa";
+    } else if (type == 0x20000) {
+        color = trapdoor::TB::GRAY;
+        str = "Cons";
+    }
+    trapdoor::TextBuilder builder;
+    builder.sTextF(color, "%s", str.c_str());
+    return builder.get();
+}
+
+class TCircuitTrackingInfo {
+   public:
+    struct TEntry {
+        BaseCircuitComponent *mComponent = nullptr;  // 0 - 8
+        BlockPos mPos;                               // 9 ~20
+        trapdoor::TFACING mDirection;                // 21 ~ ?
+        uint64_t type{};
+    };
+
+    static_assert(sizeof(TEntry) == 0x20);
+    TEntry mCurrent{};
+    TEntry mPower{};
+    TEntry mNearest{};
+    TEntry m2ndNearest{};
+    bool mDirectlyPowered = true;
+    int mData = 0;
+    int mDampening;
+};
+
+std::string buildMsg(TCircuitTrackingInfo *info, int *damping, bool *dirPow) {
+    auto p = info->mCurrent.mPos;
+    auto ne = info->mNearest;
+    auto ned = trapdoor::facingToString(ne.mDirection);
+    auto neTypeStr = compTypeToStr(ne.type);
+    if (neTypeStr.find("unk") != std::string::npos) {
+        printf("Unknown type: 0x%llx\n", ne.type);
+    }
+
+    return fmt::format(" [Add S] [{}]--{}-->{} ({},{},{}) idp:{} / dp: {} / dp: {}", neTypeStr, ned,
+                       compTypeToStr(info->mCurrent.type), p.x, p.y, p.z, info->mDampening,
+                       *damping, *dirPow);
+}
+
+THook(bool,
+      "?addSource@TransporterComponent@@UEAA_NAEAVCircuitSceneGraph@@AEBVCircuitTrackingInfo@@"
+      "AEAHAEA_N@Z",
+      BaseCircuitComponent *self, CircuitSceneGraph *graph, TCircuitTrackingInfo *info,
+      int *damping, bool *directPowered) {
+    auto res = original(self, graph, info, damping, directPowered);
+    if (res) {
+        trapdoor::mod().getEventTriggerMgr().broadcastMessage(
+            trapdoor::BuildConnection, buildMsg(info, damping, directPowered));
+    }
+    return res;
+}
+
+// 比较器
+THook(bool,
+      "?addSource@ComparatorCapacitor@@UEAA_NAEAVCircuitSceneGraph@@AEBVCircuitTrackingInfo@@"
+      "AEAHAEA_N@Z",
+      void *self, CircuitSceneGraph *graph, TCircuitTrackingInfo *info, int *damping,
+      bool *directPowered) {
+    auto res = original(self, graph, info, damping, directPowered);
+    if (res) {
+        trapdoor::mod().getEventTriggerMgr().broadcastMessage(
+            trapdoor::BuildConnection, buildMsg(info, damping, directPowered));
+    }
+    return res;
+}
+
+// 消费者
+
+THook(bool,
+      "?addSource@ConsumerComponent@@UEAA_NAEAVCircuitSceneGraph@@AEBVCircuitTrackingInfo@@AEAHAEA_"
+      "N@Z",
+      void *self, CircuitSceneGraph *graph, TCircuitTrackingInfo *info, int *damping,
+      bool *directPowered) {
+    auto res = original(self, graph, info, damping, directPowered);
+    if (res) {
+        trapdoor::mod().getEventTriggerMgr().broadcastMessage(
+            trapdoor::BuildConnection, buildMsg(info, damping, directPowered));
+    }
+    return res;
+}
+
+// THook(bool, "?trackPowerSource@BaseCircuitComponent@@IEAA_NAEBVCircuitTrackingInfo@@H_NH@Z",
+//       void *self, void *info, int damp, bool dp, int data) {
+//     auto res = original(self, info, damp, dp, data);
 //     if (res) {
-//         auto msg = fmt::format(" - [{},{},{}] => dump: {} dp: {}", pos.x, pos.y, pos.z, *damping,
-//                                *directPowered);
+//         auto msg = fmt::format(" [tra PS] damp: {} dp {} data {}", damp, dp, data);
 //         trapdoor::mod().getEventTriggerMgr().broadcastMessage(trapdoor::BuildConnection, msg);
-//     }
-//     return res;
-// }
 //
-//// 比较器
-// THook(bool,
-//       "?addSource@ComparatorCapacitor@@UEAA_NAEAVCircuitSceneGraph@@AEBVCircuitTrackingInfo@@"
-//       "AEAHAEA_N@Z",
-//       void *self, CircuitSceneGraph *graph, CircuitTrackingInfo &info, int *damping,
-//       bool *directPowered) {
-//     auto &pos = dAccess<BlockPos, 8>(&info);
-//     auto res = original(self, graph, info, damping, directPowered);
-//     if (res) {
-//         auto msg = fmt::format(" - [{},{},{}] => dump: {} dp: {}", pos.x, pos.y, pos.z, *damping,
-//                                *directPowered);
-//         trapdoor::mod().getEventTriggerMgr().broadcastMessage(trapdoor::BuildConnection, msg);
-//     }
-//     return res;
-// }
-//
-//// 消费者
-// THook(bool,
-//       "?addSource@ConsumerComponent@@UEAA_NAEAVCircuitSceneGraph@@AEBVCircuitTrackingInfo@@AEAHAEA_"
-//       "N@Z",
-//       void *self, CircuitSceneGraph *graph, CircuitTrackingInfo &info, int *damping,
-//       bool *directPowered) {
-//     auto &pos = dAccess<BlockPos, 8>(&info);
-//     auto res = original(self, graph, info, damping, directPowered);
-//     if (res) {
-//         auto msg = fmt::format(" - [{},{},{}] => dump: {} dp: {}", pos.x, pos.y, pos.z, *damping,
-//                                *directPowered);
-//         trapdoor::mod().getEventTriggerMgr().broadcastMessage(trapdoor::BuildConnection, msg);
 //     }
 //     return res;
 // }

@@ -22,7 +22,7 @@ namespace trapdoor {
 
         auto nbtEnum = command->setEnum("nbt", {"nbt"});
 
-        auto redstoneEnum = command->setEnum("redstone", {"chunk", "conn", "signal"});
+        auto redstoneEnum = command->setEnum("redstone", {"chunk", "conn", "signal", "torch"});
 
         // 给根命令+enum提示信息
         command->mandatory("data", ParamType::Enum, blockSubCommandEnum,
