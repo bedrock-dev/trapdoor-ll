@@ -8,6 +8,7 @@
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"
 #include "InfoDisplay.h"
+#include "RedstoneTool.h"
 
 namespace trapdoor {
     void setup_dataCommand(int level) {
@@ -19,10 +20,9 @@ namespace trapdoor {
         auto &blockSubCommandEnum = command->setEnum("blockSubCommand", {"block"});
         auto &entitySubCommand = command->setEnum("entitySubCommand", {"entity"});
         auto &redstoneSubCommand = command->setEnum("redstoneSubCommand", {"redstone"});
-
         auto nbtEnum = command->setEnum("nbt", {"nbt"});
 
-        auto redstoneEnum = command->setEnum("redstone", {"chunk", "conn", "signal", "torch"});
+        auto redstoneEnum = command->setEnum("redstone", {"chunk", "conn", "signal"});
 
         // 给根命令+enum提示信息
         command->mandatory("data", ParamType::Enum, blockSubCommandEnum,

@@ -1,5 +1,4 @@
 // clang-format off
-//#include "Global.h"
 #include "Global.h"
 // clang-format on
 

@@ -18,8 +18,6 @@ namespace trapdoor {
                                   const std::string &path);
     bool displayEnvInfo();
 
-    ActionResult displayRedstoneCompInfo(Dimension *d, const BlockPos &pos,
-                                         const std::string &type);
 
 }  // namespace trapdoor
 

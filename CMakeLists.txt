@@ -69,6 +69,8 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/base/TrAPI.cpp
         src/pch.cpp
         src/Plugin.cpp
+
+        src/functions/RedstoneTool.cpp
         src/functions/EventTrigger.cpp
         src/functions/DistanceHelper.cpp
         src/functions/SysInfoHelper.cpp
