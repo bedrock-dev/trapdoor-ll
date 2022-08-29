@@ -8,7 +8,7 @@
 // static_assert(false, "Please modify your plugin registration details and
 // delete this line");
 #define PLUGIN_NAME "Trapdoor"
-#define PLUGIN_INTRODUCTION "Useful mod for technical player"
+#define PLUGIN_INTRODUCTION "Useful mod for technical players"
 #define PLUGIN_AUTHOR "hhhxiao"
 #define PLUGIN_VERSION_MAJOR 1
 #define PLUGIN_VERSION_MINOR 0
