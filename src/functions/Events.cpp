@@ -48,10 +48,7 @@ namespace trapdoor {
             return true;
         }
 
-        std::unordered_map<std::string, bool> getDisableDestroyMap() {
-            static std::unordered_map<std::string, bool> cache;
-            return cache;
-        }
+        void resetAntiShakeCache(const std::string& name) { getUseOnCache().erase(name); }
 
     }  // namespace
 
@@ -62,14 +59,13 @@ namespace trapdoor {
                 return true;
             }
 
-            Item::addCreativeItem(*ev.mItemStack);
-
             Shortcut shortcut;
             shortcut.type = USE;
             shortcut.itemAux = ev.mItemStack->getAux();
             shortcut.itemName = trapdoor::rmmc(ev.mItemStack->getTypeName());
             for (auto& sh : shortcuts) {
                 if (sh.match(shortcut)) {
+                    trapdoor::logger().debug("trigger: {}", sh.getDescription());
                     sh.runUse(ev.mPlayer, ev.mItemStack);
                     return !sh.prevent;
                 }
@@ -88,9 +84,9 @@ namespace trapdoor {
 
             auto* block = bi->getBlock();
             if (ev.mItemStack->getTypeName() == "minecraft:cactus" &&
-                antiShake(ev.mPlayer->getName(), bi->getPosition())) {
+                antiShake(ev.mPlayer->getRealName(), bi->getPosition())) {
                 trapdoor::rotateBlock(bi->getBlockSource(), bi, ev.mClickPos, ev.mFace);
-                return true;
+                resetAntiShakeCache(ev.mPlayer->getRealName());
             }
 
             auto& shortcuts = trapdoor::mod().getConfig().getShortcuts();
@@ -107,6 +103,7 @@ namespace trapdoor {
             for (auto sh : shortcuts) {
                 if (sh.match(shortcut)) {
                     if (antiShake(ev.mPlayer->getRealName(), bi->getPosition())) {
+                        trapdoor::logger().debug("Trigger event: {}", sh.getDescription());
                         sh.runUseOn(ev.mPlayer, ev.mItemStack, block, bi->getPosition());
                         return !sh.prevent;
                     }
@@ -163,6 +160,7 @@ namespace trapdoor {
             // trapdoor::mod().getSimPlayerManager().addPlayersInCache();
             return true;
         });
+
 
         Event::EntityExplodeEvent::subscribe([&](const Event::EntityExplodeEvent& ev) {
             trapdoor::TextBuilder builder;
