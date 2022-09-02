@@ -31,11 +31,11 @@ namespace trapdoor {
         std::string simPlayerPrefix;
     };
 
-//    struct DefaultEnableFunctions {
-//        bool blockRotate = false;
-//        bool hopperCounter = false;
-//        bool hud = false;
-//    };
+    //    struct DefaultEnableFunctions {
+    //        bool blockRotate = false;
+    //        bool hopperCounter = false;
+    //        bool hud = false;
+    //    };
 
     struct TweakConfig {
         int forcePlaceLevel = 0;

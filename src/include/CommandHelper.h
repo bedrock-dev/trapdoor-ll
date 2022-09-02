@@ -35,11 +35,11 @@ namespace trapdoor {
     ActionResult ErrorMsg(const std::string &msg);
 
     inline ActionResult ErrorPlayerNeed() {
-        return {"This command require a player as executor", false};
+        return {"This command requires a player as executor", false};
     }
 
     inline ActionResult ErrorDimension() {
-        return {"Can not get a dimension instance,try run this command in game", false};
+        return {"Can not find a dimension instance,try run this command in game", false};
     }
 
     inline ActionResult ErrorRange(const std::string &name, int begin, int end) {

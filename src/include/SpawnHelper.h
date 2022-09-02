@@ -29,29 +29,12 @@ namespace trapdoor {
 #pragma pack(pop)
 
     ActionResult printCap(const ActorDefinitionIdentifier *id);
+
     ActionResult countActors(Player *p, const std::string &type);
 
     ActionResult printSpawnProbability(Player *player, const BlockPos &pos);
 
     ActionResult forceSpawn(Player *p, const ActorDefinitionIdentifier *id, const BlockPos &pos);
-
-    class SpawnHelper {
-        std::vector<BlockPos> verticalSpawnPositions;
-        bool enable = false;
-        int dimensionID = 0;
-        unsigned long long gameTick;
-
-       public:
-        inline void setAble(bool able) { this->enable = able; }
-
-        inline bool isEnable() const { return this->enable; }
-
-        void tick();
-
-        void draw();
-
-        void updateVerticalSpawnPositions(const BlockPos &pos, Player *player);
-    };
 
 }  // namespace trapdoor
 #endif

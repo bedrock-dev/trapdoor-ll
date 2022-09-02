@@ -16,7 +16,7 @@ namespace trapdoor {
         void setIntValue(int& key, int value, const std::string& name, int min, int max) {
             if (value >= min && value <= max) {
                 key = value;
-                trapdoor::logger().info("Set [{}] to {}", name, key);
+                trapdoor::logger().debug("Set [{}] to {}", name, key);
             } else {
                 trapdoor::logger().warn("Value of [{}] should within {} to {},set to default {}",
                                         name, min, max, key);
@@ -25,7 +25,7 @@ namespace trapdoor {
 
         void setBoolValue(bool& key, bool value, const std::string& name) {
             key = value;
-            trapdoor::logger().info("Set [{}] to {}", name, key);
+            trapdoor::logger().debug("Set [{}] to {}", name, key);
         }
 
         template <typename T>
