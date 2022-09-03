@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(TRAPDOOR_VERSION 0.18.0)
 set(TEST_NUMBER 12)
-set(GAME_VERSION 1.19.20.02)
+set(GAME_VERSION 1.19.22.01)
 option(DEV "Build as developer version" ON)
 option(BETA "Build as beta version" OFF)
 add_definitions(-DTD_VERSION="${TRAPDOOR_VERSION}")
