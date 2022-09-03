@@ -6,6 +6,7 @@
 #include <MC/SimulatedPlayer.hpp>
 
 #include "Msg.h"
+#include "Nlohmann/json.hpp"
 #include "ScheduleAPI.h"
 #include "SimPlayerHelper.h"
 #include "TrapdoorMod.h"
@@ -97,7 +98,7 @@ namespace trapdoor {
                     sNbt = newItem ? newItem->getNbt()->toSNBT() : std::string();
                 }
 
-                json j;
+                nlohmann::json j;
                 j = {{"slot", i}, {"nbt", sNbt}};
                 array.push_back(j);
             }
@@ -471,10 +472,10 @@ namespace trapdoor {
             auto* p = sim.second.simPlayer;
             if (p) {
                 auto pos = p->getPos();
-                json j = {{"x", pos.x},
-                          {"y", pos.y - 1},
-                          {"z", pos.z},
-                          {"dim", (int)p->getDimensionId()}};
+                nlohmann::json j = {{"x", pos.x},
+                                    {"y", pos.y - 1},
+                                    {"z", pos.z},
+                                    {"dim", (int)p->getDimensionId()}};
                 obj[sim.first] = j;
             }
         }

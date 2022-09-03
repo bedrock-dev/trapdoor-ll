@@ -16,14 +16,13 @@ namespace trapdoor {
         const std::string PARTICLE_BASE_NAME = "trapdoor::line";
 
         std::array<std::string, 6>& lineParticleFacing() {
-            static std::array<std::string, 6> facing{"Yp", "Ym", "Zp", "Zm", "Xp", "Xm"};
+            static std::array<std::string, 6> facing{"pY", "mY", "pZ", "mZ", "pX", "mX"};
             return facing;
         }
 
-        std::array<std::string, 5>& lineParticleColor() {
-            //  enum class PCOLOR { WHITE = 0, RED = 1, YELLOW = 2, BLUE = 3,
-            //  GREEN = 4 };
-            static std::array<std::string, 5> color{"W", "R", "Y", "B", "G"};
+        std::array<std::string, 16>& lineParticleColor() {
+            static std::array<std::string, 16> color{"B", "I", "L", "T", "C", "D", "O", "W",
+                                                     "R", "A", "Y", "G", "V", "S", "P", "E"};
             return color;
         }
 
@@ -62,11 +61,13 @@ namespace trapdoor {
 
     std::string buildLienParticleType(int length, TFACING direction, PCOLOR color,
                                       bool back = false) {
-        std::string str = "trapdoor:line";
+        std::string str = "ll:line";
         if (back) str += "_back";
+        str += lineParticleFacing()[static_cast<int>(direction)];
+        str += lineParticleColor()[static_cast<int>(color)];
         str += std::to_string(length);
-        return str + lineParticleFacing()[static_cast<int>(direction)] +
-               lineParticleColor()[static_cast<int>(color)];
+        //  trapdoor::logger().debug("Particle name:{}", str);
+        return str;
     }
 
     void drawLine(const TVec3& originPoint, TFACING direction, float length, PCOLOR color,
@@ -202,5 +203,10 @@ namespace trapdoor {
         spawnParticle(p3, pName2);
         spawnParticle(p4, pName2);
         spawnParticle(top, pName3);
+    }
+    void spawnNumParticle(const TVec3& v, int num, PCOLOR color, int dimType) {
+        auto name = "ll:num" + std::to_string(num) + lineParticleColor()[color];
+        trapdoor::logger().debug("name:  {}, pos: {}", name, v.toString());
+        spawnParticle(v, name, dimType);
     }
 }  // namespace trapdoor

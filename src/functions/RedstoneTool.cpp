@@ -126,7 +126,7 @@ namespace trapdoor {
             if (iter != g->mActiveComponentsPerChunk.end()) {
                 for (auto &l : iter->second) {
                     auto lPos = l.mPos;
-                    trapdoor::shortHighlightBlock({lPos.x, lPos.y, lPos.z}, PCOLOR::BLUE,
+                    trapdoor::shortHighlightBlock({lPos.x, lPos.y, lPos.z}, PCOLOR::VATBLUE,
                                                   d->getDimensionId());
                 }
             }
@@ -145,9 +145,17 @@ namespace trapdoor {
             auto &list = dAccess<std::vector<ComponentItem>, 8>(comp);
             for (auto &source : list) {
                 auto p = source.mPos;
-                builder.textF("- Pos: [%s] Damp: %d Dp: %d Signal: %d\n", p.toString().c_str(),
+                builder.textF(" - Pos: [%s] Damp: %d Dp: %d Signal: %d\n", p.toString().c_str(),
                               source.mDampening, source.mDirectlyPowered,
                               source.mComponent->getStrength());
+                auto sigColor = PCOLOR::RED;
+                auto dampingColor = PCOLOR::DARK;
+                auto sigPos = TVec3(p.x, p.y, p.z) + TVec3(0.5f, 1.9f, 0.5f);
+                auto dampingPos = TVec3(p.x, p.y, p.z) + TVec3(0.5f, 1.3f, 0.5f);
+                spawnNumParticle(sigPos, source.mComponent->getStrength(), sigColor,
+                                 (int)d->getDimensionId());
+                spawnNumParticle(dampingPos, source.mDampening, dampingColor,
+                                 (int)d->getDimensionId());
             }
             return {builder.get(), true};
         }

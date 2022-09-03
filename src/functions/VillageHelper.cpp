@@ -129,9 +129,10 @@ namespace trapdoor {
             if (this->showBounds) {
                 trapdoor::drawAABB(fromAABB(v->getBounds()), trapdoor::PCOLOR::RED, false, 0);
             }
+
             if (this->showIronSpawn) {
-                trapdoor::drawAABB(getIronSpawnArea(v->getCenter()), trapdoor::PCOLOR::BLUE, false,
-                                   0);
+                trapdoor::drawAABB(getIronSpawnArea(v->getCenter()), trapdoor::PCOLOR::VATBLUE,
+                                   false, 0);
             }
             if (this->showCenter) {
                 trapdoor::spawnParticle(fromVec3(v->getCenter()) + TVec3(0.5f, 0.9f, 0.5f),
@@ -139,7 +140,7 @@ namespace trapdoor {
             }
             if (this->showPoiQuery) {
                 trapdoor::drawAABB(getPOIQueryRange(fromAABB(v->getBounds())),
-                                   trapdoor::PCOLOR::BLUE, false, 0);
+                                   trapdoor::PCOLOR::INDIGO, false, 0);
             }
         }
     }

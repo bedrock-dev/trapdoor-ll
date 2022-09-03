@@ -29,7 +29,7 @@ namespace trapdoor {
             for (const auto &hsa : this->hsaList) {
                 switch (hsa.type) {
                     case PillagerOutpost:
-                        color = PCOLOR::BLUE;
+                        color = PCOLOR::VATBLUE;
                         break;
                     case SwampHut:
                         color = PCOLOR::RED;
