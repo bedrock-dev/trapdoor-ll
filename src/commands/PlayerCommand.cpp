@@ -87,7 +87,7 @@ namespace trapdoor {
         command->addOverload({"name", setOpt, "itemId"});
 
         command->addOverload({"name", spawnOpt});
-        // move and loopat
+        // move and lookat
         command->addOverload({"name", behOpt, "vec3"});
         //和方块/实体交互
         command->addOverload({"name", intOpt, "repeatType", "interval","times"});
@@ -96,7 +96,7 @@ namespace trapdoor {
 
         command->addOverload({"name", destroyOpt, "repeatType", "interval", "times"});
 
-        // useitem
+        // use item
         command->addOverload({"name", useOnOpt, "itemId", "blockPos", "repeatType", "interval", "times"});
         //use item on
         command->addOverload({"name", useOpt, "itemId", "repeatType", "interval", "times"});
