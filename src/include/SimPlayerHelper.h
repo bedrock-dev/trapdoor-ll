@@ -64,6 +64,9 @@ namespace trapdoor {
         ActionResult useOnBlockSchedule(const std::string& name, int itemID, const BlockPos& p,
                                         Player* ori, int repType, int interval, int times);
 
+        ActionResult runCmdSchedule(const std::string& name, const std::string& comnand,
+                                    int repType, int interval, int times);
+
         ActionResult setItem(const std::string& name, int itemId);
 
         ActionResult dropItem(const std::string& name, int itemId);

@@ -27,6 +27,8 @@ namespace trapdoor {
         auto stopOpt = command->setEnum("stopOpt", {"stop", "cancel"});
         auto setOpt = command->setEnum("setOpt", {"set", "drop"});
 
+        auto cmdOpt = command->setEnum("cmdOpt", {"runcmd"});
+
         command->mandatory("player", ParamType::Enum, spawnOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("player", ParamType::Enum, behOpt,
@@ -57,10 +59,14 @@ namespace trapdoor {
         command->mandatory("player", ParamType::Enum, setOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
+        command->mandatory("player", ParamType::Enum, cmdOpt,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+
         //      command->mandatory("name", ParamType::String);
         //        command->addSoftEnumValues("name", {});
         command->mandatory("name", ParamType::SoftEnum, command->setSoftEnum("name", {}));
 
+        command->mandatory("command", ParamType::String);
         command->mandatory("itemId", ParamType::Item);
         command->optional("vec3", ParamType::Vec3);
         command->optional("blockPos", ParamType::BlockPos);
@@ -99,6 +105,7 @@ namespace trapdoor {
         //jump
         command->addOverload({"name", jumpOpt, "repeatType", "interval", "times"});
 
+        command->addOverload({"name", cmdOpt,"command","repeatType", "interval", "times"});
 
         command->addOverload(std::vector<std::string>());
 
@@ -227,6 +234,12 @@ namespace trapdoor {
                 case do_hash("stop"):
                     trapdoor::mod().getSimPlayerManager().stopAction(name);
                     break;
+                case do_hash("runcmd"):
+                    trapdoor::mod()
+                        .getSimPlayerManager()
+                        .runCmdSchedule(name, results["command"].get<std::string>(), rep, interval,
+                                        times)
+                        .sendTo(output);
             }
         };
 

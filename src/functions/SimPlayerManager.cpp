@@ -214,7 +214,18 @@ namespace trapdoor {
         ADD_TASK
         return {"", true};
     }
+    ActionResult SimPlayerManager::runCmdSchedule(const string& name, const string& command,
+                                                  int repType, int interval, int times) {
+        GET_FREE_PLAYER(sim)
+        // trapdoor::logger().debug("run cmd schedule");
+        auto task = [name, this, sim, command]() {
+            CHECK_SURVIVAL
+            sim->runcmd(command);
+        };
 
+        ADD_TASK
+        return {"", true};
+    }
     ActionResult SimPlayerManager::destroySchedule(const std::string& name, int repType,
                                                    int interval, int times) {
         GET_FREE_PLAYER(sim)
