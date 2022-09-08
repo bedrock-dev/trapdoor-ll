@@ -16,7 +16,7 @@ namespace trapdoor {
 #define GET_FREE_PLAYER(sim)                                       \
     auto*(sim) = this->tryFetchSimPlayer(name, true);              \
     if (!(sim)) {                                                  \
-        return {"Player dost not exists or in scheduling", false}; \
+        return {"Player dose not exists or in scheduling", false}; \
     }
 
 #define ADD_TASK                                            \
