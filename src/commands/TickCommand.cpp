@@ -47,8 +47,8 @@ namespace trapdoor {
                     trapdoor::slowDownWorld(results["times"].getRaw<int>()).sendTo(output);
                     break;
                 case do_hash("forward"):
-                    trapdoor::forwardWorld(results["tickNumber"].getRaw<int>()).sendTo(output);
-                    break;
+                    // trapdoor::forwardWorld(results["tickNumber"].getRaw<int>()).sendTo(output);
+                    // break;
                 case do_hash("fw"):
                     trapdoor::forwardWorld(results["tickNumber"].getRaw<int>()).sendTo(output);
                     break;
@@ -56,14 +56,14 @@ namespace trapdoor {
                     trapdoor::warpWorld(results["tickNumber"].getRaw<int>()).sendTo(output);
                     break;
                 case do_hash("freeze"):
-                    trapdoor::freezeWorld().sendTo(output);
-                    break;
+                    // trapdoor::freezeWorld().sendTo(output);
+                    // break;
                 case do_hash("fz"):
                     trapdoor::freezeWorld().sendTo(output);
                     break;
                 case do_hash("reset"):
-                    trapdoor::resetWorld().sendTo(output);
-                    break;
+                    // trapdoor::resetWorld().sendTo(output);
+                    // break;
                 case do_hash("r"):
                     trapdoor::resetWorld().sendTo(output);
                     break;

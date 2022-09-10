@@ -51,10 +51,10 @@ namespace trapdoor {
         auto &forcePlaceOpt = command->setEnum("place", {"fcplace"});
         auto &forceOpenContainer = command->setEnum("open", {"fcopen"});
         auto &dropperNoCost = command->setEnum("cost", {"nocost"});
-        auto &autoSelectTools = command->setEnum("autoSelecttool", {"autotool"});
+        auto &autoSelectTools = command->setEnum("autoSelectTool", {"autotool"});
         auto &maxPendingTickSize = command->setEnum("maxPendingTickSize", {"maxptsize"});
         auto &safeExplosion = command->setEnum("safeExplosion", {"safeexplode"});
-        auto &disableNUpdate = command->setEnum("disbaleNCUpdate", {"noncupdate"});
+        auto &disableNUpdate = command->setEnum("disableNCUpdate", {"noncupdate"});
 
         command->mandatory("tweak", ParamType::Enum, forcePlaceOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
