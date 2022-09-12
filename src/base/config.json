@@ -76,7 +76,7 @@
     "tool-damage-threshold": 10,
     "keep-sim-player-inv": true,
     "server-crash-token": "demo",
-    "sim-player-prefix": "bot_"
+    "sim-player-prefix": ""
   },
   "default-enable-functions": {
     "hud": true,
