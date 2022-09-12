@@ -14,22 +14,23 @@ namespace trapdoor {
 
         auto &optSwitch =
             command->setEnum("optSwitch", {"bound", "spawn", "center", "poi", "head"});
+        auto &optList = command->setEnum("optList", {"list"});
+        auto &optOther = command->setEnum("optOther", {"info"});
+
         command->mandatory("village", ParamType::Enum, optSwitch,
                            CommandParameterOption::EnumAutocompleteExpansion);
-        command->mandatory("onoroff", ParamType::Bool);
-        command->addOverload({optSwitch, "onoroff"});
-
-        auto &optList = command->setEnum("optList", {"list"});
         command->mandatory("village", ParamType::Enum, optList,
                            CommandParameterOption::EnumAutocompleteExpansion);
-        command->addOverload({optList});
+        command->mandatory("village", ParamType::Enum, optOther,
+                           CommandParameterOption::EnumAutocompleteExpansion);
 
-        auto &optOther = command->setEnum("optOther", {"info"});
-        command->optional("village", ParamType::Enum, optOther,
-                          CommandParameterOption::EnumAutocompleteExpansion);
-        command->addOverload({optOther});
-        command->mandatory("villageID", ParamType::Int);
-        command->addOverload({optOther, "villageID"});
+        command->mandatory("onoroff", ParamType::Bool);
+        command->optional("vid", ParamType::SoftEnum, command->setSoftEnum("vid", {}));
+        // command->mandatory("vid", ParamType::String);
+
+        command->addOverload({optSwitch, "onoroff"});
+        command->addOverload({optList});
+        command->addOverload({optOther, "vid"});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
@@ -60,22 +61,23 @@ namespace trapdoor {
                     trapdoor::mod().getVillageHelper().setShowVillagerHeadInfo(show).sendTo(output);
                     break;
                 case do_hash("info"):
-                    if (results["villageID"].isSet) {
+                    if (results["vid"].isSet) {
                         trapdoor::mod()
                             .getVillageHelper()
-                            .printDetails(results["villageID"].getRaw<int>(), Vec3::ZERO)
+                            .printDetails(results["vid"].getRaw<std::string>(), Vec3::ZERO)
                             .sendTo(output);
                     } else {
                         trapdoor::mod()
                             .getVillageHelper()
-                            .printDetails(-1, origin.getPlayer()->getPos())
+                            .printDetails("", origin.getPlayer()->getPos())
                             .sendTo(output);
                     }
                     break;
             }
         };
         command->setCallback(cb);
-        DynamicCommand::setup(std::move(command));
+        auto *cmd = DynamicCommand::setup(std::move(command));
+        trapdoor::mod().getVillageHelper().setupCommandInstance(cmd);
     }
 
 }  // namespace trapdoor

@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 #include "CommandHelper.h"
+#include "DynamicCommandAPI.h"
 
 namespace trapdoor {
     class VillageHelper {
@@ -28,11 +29,15 @@ namespace trapdoor {
 
         ActionResult setShowVillagerHeadInfo(bool able);
 
-        ActionResult printDetails(int vid, const Vec3& pos);
+        ActionResult printDetails(const std::string& id, const Vec3& pos);
 
+        void refreshCommandSoftEnum();
         //  ActionResult Goto(int vid, const Vec3& pos);
 
         bool ShowVillageInfo(Player* p, Actor* actor);
+        inline void setupCommandInstance(const DynamicCommandInstance* cmd) {
+            this->cmdInstance = cmd;
+        }
 
        private:
         std::map<int, Village*> vs_;
@@ -41,6 +46,7 @@ namespace trapdoor {
         bool showBounds = false;
         bool showPoiQuery = false;
         bool showHeadInfo = false;
+        const DynamicCommandInstance* cmdInstance = nullptr;
     };
 
 }  // namespace trapdoor

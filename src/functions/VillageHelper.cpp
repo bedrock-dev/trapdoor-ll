@@ -149,6 +149,7 @@ namespace trapdoor {
         static int refresh_time = 0;
         refresh_time = (refresh_time + 1) % 20;
         if (refresh_time == 0) {
+            this->refreshCommandSoftEnum();
             this->vs_.clear();
         }
     }
@@ -197,26 +198,48 @@ namespace trapdoor {
         return {builder.get(), true};
     }
 
-    ActionResult VillageHelper::printDetails(int vid, const Vec3 &pos) {
+    ActionResult VillageHelper::printDetails(const std::string &id, const Vec3 &pos) {
+        trapdoor::logger().debug("Vid is {}", id);
         if (this->vs_.empty()) {
-            return {"no village", false};
+            return {"No village exists", false};
         }
 
-        if (vid == -1) {
-            vid = this->vs_.begin()->first;
+        int targetVid = -1;
+        // if id is empty,choose the closest one
+        if (id.empty()) {
+            targetVid = this->vs_.begin()->first;
             auto dis = pos.distanceTo(this->vs_.begin()->second->getCenter());
             for (auto &kv : this->vs_) {
                 auto newDis = pos.distanceTo(kv.second->getCenter());
                 if (dis > newDis) {
                     dis = newDis;
-                    vid = kv.first;
+                    targetVid = kv.first;
+                }
+            }
+        } else {
+            // else compare id or uuid / choose id
+            for (auto &kv : this->vs_) {
+                if (kv.second) {
+                    if (id.size() == 11) {  //"e1234567..."
+                        if (kv.second->getUniqueID().asString().find(id.substr(0, 8)) == 0) {
+                            targetVid = kv.first;
+                            break;
+                        }
+                    } else {
+                        if (id == std::to_string(kv.first)) {
+                            targetVid = kv.first;
+                            break;
+                        }
+                    }
                 }
             }
         }
-        auto it = this->vs_.find(vid);
+
+        auto it = this->vs_.find(targetVid);
         if (it == this->vs_.end()) {
-            return {"invalid index", false};
+            return {fmt::format("Invalid id: {}", id), false};
         }
+
         auto vill = it->second;
 
         TextBuilder builder;
@@ -332,6 +355,20 @@ namespace trapdoor {
 
         return false;
     }
+    void VillageHelper::refreshCommandSoftEnum() {
+        if (!this->cmdInstance) return;
+        std::vector<std::string> ids;
+        std::vector<std::string> uuids;
+        for (auto &v : this->vs_) {
+            if (v.second) {
+                ids.push_back(std::to_string(v.first));
+                uuids.push_back(v.second->getUniqueID().asString().substr(0, 8) + "...");
+            }
+        }
+        ids.insert(ids.end(), uuids.begin(), uuids.end());
+        cmdInstance->setSoftEnum("vid", ids);
+    }
+
 }  // namespace trapdoor
 
 THook(void, "?tick@Village@@QEAAXUTick@@AEAVBlockSource@@@Z", Village *village, void *tick,
