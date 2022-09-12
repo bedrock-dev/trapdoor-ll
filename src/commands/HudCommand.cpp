@@ -10,7 +10,7 @@ namespace trapdoor {
     void setup_hudCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand("hud", "getConfig hud display",
+        auto command = DynamicCommand::createCommand("hud", "Display extra HUD on player's screen",
                                                      static_cast<CommandPermissionLevel>(level));
 
         auto &modifyOpt = command->setEnum("modify", {"add", "remove"});
@@ -39,30 +39,24 @@ namespace trapdoor {
                 ErrorPlayerNeed().sendTo(output);
                 return;
             }
-
+            auto playerName = reinterpret_cast<Player *>(origin.getPlayer())->getRealName();
             switch (do_hash(results["hud"].getRaw<std::string>().c_str())) {
                 case do_hash("add"):
                     trapdoor::mod()
                         .getHUDHelper()
-                        .modifyPlayerInfo(
-                            reinterpret_cast<Player *>(origin.getPlayer())->getRealName(),
-                            results["itemType"].get<std::string>(), 1)
+                        .modifyPlayerInfo(playerName, results["itemType"].get<std::string>(), 1)
                         .sendTo(output);
                     break;
                 case do_hash("remove"):
                     trapdoor::mod()
                         .getHUDHelper()
-                        .modifyPlayerInfo(
-                            reinterpret_cast<Player *>(origin.getPlayer())->getRealName(),
-                            results["itemType"].get<std::string>(), 0)
+                        .modifyPlayerInfo(playerName, results["itemType"].get<std::string>(), 0)
                         .sendTo(output);
                     break;
                 case do_hash("show"):
                     trapdoor::mod()
                         .getHUDHelper()
-                        .setAblePlayer(
-                            reinterpret_cast<Player *>(origin.getPlayer())->getRealName(),
-                            results["onoroff"].get<bool>())
+                        .setAblePlayer(playerName, results["onoroff"].get<bool>())
                         .sendTo(output);
                     break;
             }
@@ -70,5 +64,5 @@ namespace trapdoor {
         command->setCallback(cb);
         DynamicCommand::setup(std::move(command));
     }
-    
+
 }  // namespace trapdoor
