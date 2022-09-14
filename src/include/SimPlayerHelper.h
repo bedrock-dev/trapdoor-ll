@@ -23,14 +23,13 @@ namespace trapdoor {
         inline void setupCommandInstance(const DynamicCommandInstance* instance) {
             this->cmdInstance = instance;
         }
+        void savePlayerInventoryToFile();
 
         void addPlayersInCache();
 
         void tick();
 
         void processDieEvent(const std::string& name);
-
-        void tryRefreshInv(Player* player, int slot, ItemStack* newItem);
 
         SimulatedPlayer* tryFetchSimPlayer(const std::string& name, bool needFree);
 

@@ -71,19 +71,16 @@ namespace trapdoor {
         }
 
         /**
-         * 第三个和第四个参数的作用是把更新的物品信息写入背包以解决写入滞后的问题
+         * 序列化背包内容到文件
          * @param cont
          * @param playerName
-         * @param slot
-         * @param newItem
          */
-        void writeInvToFile(Container& cont, const std::string& playerName, int slot,
-                            ItemStack* newItem) {
+        void writeInvToFile(Container& cont, const std::string& playerName) {
             if (!trapdoor::mod().getConfig().getBasicConfig().keepSimPlayerInv) return;
             const std::string path =
                 "./plugins/trapdoor/sim/" + std::to_string(do_hash(playerName.c_str()));
-            trapdoor::logger().debug("Inv Write path is {}", path);
-            // TODO 序列化背包内容到文件
+            trapdoor::logger().debug("Inventory Write path is {}", path);
+
             nlohmann::json obj;
             auto array = nlohmann::json::array();
             for (auto i = 0; i < cont.getSize(); i++) {
@@ -92,12 +89,6 @@ namespace trapdoor {
                 if (item) {
                     sNbt = item->getNbt()->toSNBT();
                 }
-
-                if (i == slot) {
-                    // 如果是新的槽位就覆盖
-                    sNbt = newItem ? newItem->getNbt()->toSNBT() : std::string();
-                }
-
                 nlohmann::json j;
                 j = {{"slot", i}, {"nbt", sNbt}};
                 array.push_back(j);
@@ -107,7 +98,7 @@ namespace trapdoor {
             obj["name"] = playerName;
             std::ofstream f(path);
             if (!f) {
-                trapdoor::logger().error("can not write file {} to disk", path);
+                trapdoor::logger().error("Can not write file {} to disk", path);
                 return;
             }
 
@@ -146,7 +137,7 @@ namespace trapdoor {
     }
 
     void SimPlayerManager::cancel(const std::string& name) {
-        trapdoor::logger().debug("cancel task  {}", name);
+        trapdoor::logger().debug("Cancel task of sim player {}", name);
         auto it = this->simPlayers.find(name);
         if (it != this->simPlayers.end()) {
             it->second.task.cancel();
@@ -352,19 +343,17 @@ namespace trapdoor {
     }
     ActionResult SimPlayerManager::dropItem(const string& name, int itemId) {
         // TODO drop item
-        //         auto* item = getItemInInv(sim, itemId);
-        //         if (item) {
-        //             sim->_drop(*item, true);
-        //         }
-        //         return {"", true};
-        return {"Developing", false};
+        GET_FREE_PLAYER(sim)
+        auto* item = getItemInInv(sim, itemId);
+        if (item) {
+            // sim->_drop(*item, true);
+            // sim->drop(*item, false);
+        }
+        return {"", true};
     }
     ActionResult SimPlayerManager::behavior(const std::string& name, const std::string& behType,
                                             const Vec3& vec) {
-        auto sim = this->tryFetchSimPlayer(name, false);
-        if (!sim) {
-            return {"player does not exist", false};
-        }
+        GET_FREE_PLAYER(sim)
         if (behType == "lookat") {
             sim->simulateLookAt(vec + Vec3(0.5, 0.5, 0.5));
         } else if (behType == "moveto") {
@@ -405,7 +394,7 @@ namespace trapdoor {
         if (origin) {
             // 是玩家召唤的
             auto rot = origin->getRotation();
-            sim->teleport(origin->getPos() - Vec3(0.0f, 1.62f, 0.0f), dimID, rot.x, rot.y);
+            sim->teleport(origin->getPos() - Vec3(0.0f, 1.62001f, 0.0f), dimID, rot.x, rot.y);
         }
         this->simPlayers[name] = {name, sim, ScheduleTask()};
         tryReadInvFromFile(sim->getInventory(), name);
@@ -468,14 +457,6 @@ namespace trapdoor {
         cmdInstance->setSoftEnum("name", names);
     }
 
-    void SimPlayerManager::tryRefreshInv(Player* player, int slot, ItemStack* newItem) {
-        if (!player) return;
-        auto name = player->getRealName();
-        auto iter = this->simPlayers.find(name);
-        if (iter == this->simPlayers.end()) return;
-        writeInvToFile(player->getInventory(), name, slot, newItem);
-    }
-
     void SimPlayerManager::syncPlayerListToFile() {
         const std::string path = "./plugins/trapdoor/sim/cache.json";
         nlohmann::json obj;
@@ -526,14 +507,30 @@ namespace trapdoor {
 
         i.close();
     }
-
+    void SimPlayerManager::savePlayerInventoryToFile() {
+        //  trapdoor::logger().debug("Save inventory file");
+        for (auto& kv : this->simPlayers) {
+            if (kv.second.simPlayer) {
+                writeInvToFile(kv.second.simPlayer->getInventory(), kv.first);
+            }
+        }
+    }
 }  // namespace trapdoor
 
-// After inventory changed
-TInstanceHook(void, "?inventoryChanged@Player@@UEAAXAEAVContainer@@HAEBVItemStack@@1_N@Z", Player,
-              void* container, int slotNumber, ItemStack* oldItem, ItemStack* newItem, bool is) {
-    original(this, container, slotNumber, oldItem, newItem, is);
-    if (this->isPlayer(true)) {
-        trapdoor::mod().getSimPlayerManager().tryRefreshInv(this, slotNumber, newItem);
-    }
+// 定时保存背包数据(异步)，不使用异步是因为可能造成数据不同步然后刷物品
+//  After inventory changed
+//  TInstanceHook(void, "?inventoryChanged@Player@@UEAAXAEAVContainer@@HAEBVItemStack@@1_N@Z",
+//  Player,
+//               void* container, int slotNumber, ItemStack* oldItem, ItemStack* newItem, bool is) {
+//     original(this, container, slotNumber, oldItem, newItem, is);
+//     if (this->isPlayer(true)) {
+//         trapdoor::mod().getSimPlayerManager().tryRefreshInv(this, slotNumber, newItem);
+//     }
+// }
+/*
+ * 定时保存备背包数据(同步)
+ */
+THook(void, "?savePlayers@Level@@UEAAXXZ", Level* self) {
+    trapdoor::mod().getSimPlayerManager().savePlayerInventoryToFile();
+    original(self);
 }
