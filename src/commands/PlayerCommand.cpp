@@ -14,7 +14,7 @@ namespace trapdoor {
 
         // 我知道dropall放这里很不好，但是凑合用吧
         auto spawnOpt = command->setEnum("spawnOpt", {"spawn", "despawn", "dropall"});
-        auto behOpt = command->setEnum("behOpt", {"lookat", "moveto"});
+        auto behOpt = command->setEnum("behOpt", {"lookat", "moveto", "navto"});
         auto intOpt = command->setEnum("intOpt", {"interact"});
         auto destroyOpt = command->setEnum("destroyOpt", {"destroy"});
         auto destroyOnOpt = command->setEnum("destroyonOpt", {"destroyon"});
@@ -29,6 +29,7 @@ namespace trapdoor {
         auto setOpt = command->setEnum("setOpt", {"set"});
         auto dropOpt = command->setEnum("dropOpt", {"drop", "droptype"});
         auto cmdOpt = command->setEnum("cmdOpt", {"runcmd"});
+        auto followOpt = command->setEnum("followOpt", {"follow"});
 
         command->mandatory("player", ParamType::Enum, spawnOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
@@ -65,6 +66,8 @@ namespace trapdoor {
                            CommandParameterOption::EnumAutocompleteExpansion);
 
         command->mandatory("player", ParamType::Enum, cmdOpt,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+        command->mandatory("player", ParamType::Enum, followOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
         //      command->mandatory("name", ParamType::String);
@@ -120,6 +123,8 @@ namespace trapdoor {
 
         command->addOverload(std::vector<std::string>());
 
+        command->addOverload({"name", followOpt});
+
         // clang-format on
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
@@ -164,6 +169,7 @@ namespace trapdoor {
                                                         : getLookAtVec3(origin.getPlayer()))
                         .sendTo(output);
                     break;
+
                 case do_hash("set"):
                     trapdoor::mod().getSimPlayerManager().setItem(name, itemId).sendTo(output);
                     break;
@@ -183,6 +189,14 @@ namespace trapdoor {
                     trapdoor::mod()
                         .getSimPlayerManager()
                         .behavior(name, "moveto",
+                                  results["vec3"].isSet ? results["vec3"].get<Vec3>()
+                                                        : getLookAtVec3(origin.getPlayer()))
+                        .sendTo(output);
+                    break;
+                case do_hash("navto"):
+                    trapdoor::mod()
+                        .getSimPlayerManager()
+                        .behavior(name, "navto",
                                   results["vec3"].isSet ? results["vec3"].get<Vec3>()
                                                         : getLookAtVec3(origin.getPlayer()))
                         .sendTo(output);
@@ -260,6 +274,8 @@ namespace trapdoor {
                         .runCmdSchedule(name, results["command"].get<std::string>(), rep, interval,
                                         times)
                         .sendTo(output);
+                case do_hash("follow"):
+                    trapdoor::mod().getSimPlayerManager().followActor(name, origin.getPlayer());
             }
         };
 

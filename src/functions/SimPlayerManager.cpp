@@ -388,6 +388,9 @@ namespace trapdoor {
             sim->simulateLookAt(vec + Vec3(0.5, 0.5, 0.5));
         } else if (behType == "moveto") {
             sim->simulateMoveToLocation(vec + Vec3(0.5, 1.0, 0.5), 1.0f);
+        } else if (behType == "navto") {
+            trapdoor::logger().debug("Navto");
+            sim->simulateNavigateToLocation(vec + Vec3(0.5, 1.0, 0.5), 1.0f);
         }
 
         return {"", true};
@@ -544,6 +547,31 @@ namespace trapdoor {
                 writeInvToFile(kv.second.simPlayer->getInventory(), kv.first);
             }
         }
+    }
+    ActionResult SimPlayerManager::followActor(const std::string& name, Player* player) {
+        if (!player) {
+            return ErrorPlayerNeed();
+        }
+        GET_FREE_PLAYER(sim)
+
+        auto* playerActor = reinterpret_cast<Actor*>(player);
+        auto uid = playerActor->getUniqueID();
+        auto* target = playerActor->getActorFromViewVector(5.25);
+        if (target) uid = target->getUniqueID();
+        if (uid == sim->getUniqueID()) return {"The sim player can not follow itself", false};
+
+        auto task = [this, sim, name, uid]() {
+            CHECK_SURVIVAL
+            auto t = Global<Level>->fetchEntity(uid, true);
+            if (t) {
+                sim->simulateNavigateToEntity(*t, 4.3f);
+            }
+        };
+        int repType = 1;
+        int interval = 20;
+        int times = -1;
+        ADD_TASK
+        return {"", true};
     }
 
 }  // namespace trapdoor
