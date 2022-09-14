@@ -70,6 +70,8 @@ namespace trapdoor {
 
         ActionResult dropItem(const std::string& name, int itemId);
 
+        ActionResult dropAllItems(const std::string& name, int itemId);
+
         void cancel(const std::string& name);
 
         void stopAction(const std::string& name);

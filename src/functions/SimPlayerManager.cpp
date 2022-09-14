@@ -49,13 +49,15 @@ namespace trapdoor {
             }
         }  // namespace
 
-        ItemStack* getItemInInv(SimulatedPlayer* sim, int itemID) {
+        ItemStack* getItemInInv(SimulatedPlayer* sim, int itemID, int& slot) {
             if (!sim) return nullptr;
+            slot = -1;
             auto& inv = sim->getInventory();
             int sz = inv.getSize();
             for (int i = 0; i < sz; i++) {
                 auto* item = inv.getSlot(i);
                 if (item && item->getId() == itemID) {
+                    slot = i;
                     return item;
                 }
             }
@@ -172,10 +174,12 @@ namespace trapdoor {
     ActionResult SimPlayerManager::getBackpack(const std::string& name, int slot) {
         GET_FREE_PLAYER(sim)
         TextBuilder builder;
+        size_t ctr = 0;
         auto& inv = sim->getInventory();
         for (int i = 0; i < inv.getSize(); i++) {
             auto* itemStack = inv.getSlot(i);
             if (itemStack && (!itemStack->getName().empty())) {
+                ctr++;
                 auto c = itemStack->getColor();
                 builder.sText(TB::GRAY, " - ")
                     .textF("[%d] ", i)
@@ -185,6 +189,7 @@ namespace trapdoor {
                     .text("\n");
             }
         }
+        if (ctr == 0) builder.text("Empty Inventory");
         return {builder.get(), true};
     }
 
@@ -208,7 +213,6 @@ namespace trapdoor {
     ActionResult SimPlayerManager::runCmdSchedule(const string& name, const string& command,
                                                   int repType, int interval, int times) {
         GET_FREE_PLAYER(sim)
-        // trapdoor::logger().debug("run cmd schedule");
         auto task = [name, this, sim, command]() {
             CHECK_SURVIVAL
             sim->runcmd(command);
@@ -290,7 +294,8 @@ namespace trapdoor {
         GET_FREE_PLAYER(sim)
         auto task = [this, name, sim, itemId]() {
             CHECK_SURVIVAL
-            auto* item = getItemInInv(sim, itemId);
+            int slot = -1;
+            auto* item = getItemInInv(sim, itemId, slot);
             this->stopAction(name);
             if (item) {
                 sim->simulateSetItem(*item, true, 0);
@@ -325,7 +330,8 @@ namespace trapdoor {
         auto task = [this, name, pos, itemId, sim]() {
             CHECK_SURVIVAL
             auto v = Vec3(0.5, 1.0, 0.5);
-            auto* item = getItemInInv(sim, itemId);
+            int slot = 0;
+            auto* item = getItemInInv(sim, itemId, slot);
             if (item) {
                 sim->simulateUseItemOnBlock(*item, pos, DEFAULT_FACING, v);
             }
@@ -335,7 +341,8 @@ namespace trapdoor {
     }
     ActionResult SimPlayerManager::setItem(const string& name, int itemId) {
         GET_FREE_PLAYER(sim)
-        auto* item = getItemInInv(sim, itemId);
+        int slot = -1;
+        auto* item = getItemInInv(sim, itemId, slot);
         if (item) {
             sim->simulateSetItem(*item, true, 0);
         }
@@ -344,13 +351,36 @@ namespace trapdoor {
     ActionResult SimPlayerManager::dropItem(const string& name, int itemId) {
         // TODO drop item
         GET_FREE_PLAYER(sim)
-        auto* item = getItemInInv(sim, itemId);
+        int slot = -1;
+        auto* item = getItemInInv(sim, itemId, slot);
         if (item) {
-            // sim->_drop(*item, true);
-            // sim->drop(*item, false);
+            // 丢完物品后手动删除
+            sim->drop(*item, false);
+            sim->getInventory().removeItem(slot, 64);
         }
         return {"", true};
     }
+
+    /**
+     * 丢出背包内的所有物品
+     * @param name  假人名字
+     * @param itemID  物品id
+     * @return
+     */
+    ActionResult SimPlayerManager::dropAllItems(const string& name, int itemID) {
+        GET_FREE_PLAYER(sim)
+        auto& inv = sim->getInventory();
+        int sz = inv.getSize();
+        for (int i = 0; i < sz; i++) {
+            auto* item = inv.getSlot(i);
+            if (item && (itemID == INT_MAX || item->getId() == itemID)) {
+                sim->drop(*item, false);
+                sim->getInventory().removeItem(i, 64);
+            }
+        }
+        return {"", true};
+    }
+
     ActionResult SimPlayerManager::behavior(const std::string& name, const std::string& behType,
                                             const Vec3& vec) {
         GET_FREE_PLAYER(sim)
@@ -515,6 +545,7 @@ namespace trapdoor {
             }
         }
     }
+
 }  // namespace trapdoor
 
 // 定时保存背包数据(异步)，不使用异步是因为可能造成数据不同步然后刷物品

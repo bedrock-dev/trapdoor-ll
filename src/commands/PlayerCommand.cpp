@@ -12,7 +12,8 @@ namespace trapdoor {
         auto command = DynamicCommand::createCommand("player", "sapwn simPlayer player",
                                                      static_cast<CommandPermissionLevel>(level));
 
-        auto spawnOpt = command->setEnum("spawnOpt", {"spawn", "despawn"});
+        // 我知道dropall放这里很不好，但是凑合用吧
+        auto spawnOpt = command->setEnum("spawnOpt", {"spawn", "despawn", "dropall"});
         auto behOpt = command->setEnum("behOpt", {"lookat", "moveto"});
         auto intOpt = command->setEnum("intOpt", {"interact"});
         auto destroyOpt = command->setEnum("destroyOpt", {"destroy"});
@@ -25,8 +26,8 @@ namespace trapdoor {
         auto useOnOpt = command->setEnum("useOnOpt", {"useon"});
         auto backpackOpt = command->setEnum("backpackOpt", {"backpack"});
         auto stopOpt = command->setEnum("stopOpt", {"stop", "cancel"});
-        auto setOpt = command->setEnum("setOpt", {"set", "drop"});
-
+        auto setOpt = command->setEnum("setOpt", {"set"});
+        auto dropOpt = command->setEnum("dropOpt", {"drop", "droptype"});
         auto cmdOpt = command->setEnum("cmdOpt", {"runcmd"});
 
         command->mandatory("player", ParamType::Enum, spawnOpt,
@@ -59,6 +60,10 @@ namespace trapdoor {
         command->mandatory("player", ParamType::Enum, setOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
+        // 丢一组 丢一种
+        command->mandatory("player", ParamType::Enum, dropOpt,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+
         command->mandatory("player", ParamType::Enum, cmdOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
@@ -83,9 +88,14 @@ namespace trapdoor {
         command->addOverload({"name", stopOpt});
         // check inv
         command->addOverload({"name", backpackOpt, "slot"});
-        // spawn despawn
+
+        //set
         command->addOverload({"name", setOpt, "itemId"});
 
+        //drop
+        command->addOverload({"name", dropOpt, "itemId"});
+
+        // spawn despawn
         command->addOverload({"name", spawnOpt});
         // move and lookat
         command->addOverload({"name", behOpt, "vec3"});
@@ -105,6 +115,7 @@ namespace trapdoor {
         //jump
         command->addOverload({"name", jumpOpt, "repeatType", "interval", "times"});
 
+        //执行命令
         command->addOverload({"name", cmdOpt,"command","repeatType", "interval", "times"});
 
         command->addOverload(std::vector<std::string>());
@@ -158,6 +169,15 @@ namespace trapdoor {
                     break;
                 case do_hash("drop"):
                     trapdoor::mod().getSimPlayerManager().dropItem(name, itemId).sendTo(output);
+                    break;
+                case do_hash("droptype"):
+                    trapdoor::mod().getSimPlayerManager().dropAllItems(name, itemId).sendTo(output);
+                    break;
+                case do_hash("dropall"):
+                    trapdoor::mod()
+                        .getSimPlayerManager()
+                        .dropAllItems(name, INT_MAX)
+                        .sendTo(output);
                     break;
                 case do_hash("moveto"):
                     trapdoor::mod()
