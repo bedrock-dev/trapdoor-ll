@@ -31,15 +31,15 @@ without notifying users and will **NOT** affect the game, so it is suitable for 
 ## Quick Start
 
 1. Install [LiteLoaderBDS](https://github.com/LiteLDev/LiteLoaderBDS) on you BDS server
-2. Go to [Release page](https://github.com/hhhxiao/trapdoor-ll/releases) to download the release and extract it to the
+2. Go to [Release page](https://github.com/bedrock-dev/trapdoor-ll/releases) to download the release and extract it to the
    server root directory
 3. run `bedrock_server_mod.exe` and enjoy yourself
 
-Visit [INSTALL page](https://hhhxiao.github.io/tr-wiki/use.html) to get more details.
+Visit [INSTALL page](https://bedrock-dev.github.io/tr-wiki/use.html) to get more details.
 
 ## Docs & Settings
 
-Visit the [wiki page](https://hhhxiao.github.io/tr-wiki) for details of each command/function and how to edit the
+Visit the [wiki page](https://bedrock-dev.github.io/tr-wiki) for details of each command/function and how to edit the
 configuration file.
 
 ## Thanks and Credits
