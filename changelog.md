@@ -1,3 +1,34 @@
+### trapdoor-ll-0.19.0-1.19.22.02
+
+#### **注意**
+
+此版本需要同时安装
+
+- [https://github.com/OEOTYAN/LiteLoaderBDS-CUI/releases/tag/ll.1.0](https://github.com/OEOTYAN/LiteLoaderBDS-CUI/releases/tag/ll.1.0)
+- [https://github.com/OEOTYAN/Trapdoor-CUI/releases/tag/v5.0](https://github.com/OEOTYAN/Trapdoor-CUI/releases/tag/v5.0)
+
+这两个材质包，如果不使用区块边界和史莱姆区块显示功能，可不安装第二个
+
+#### 依赖和版本支持
+
+- 需要LiteLoader 2.6.1 或以上版本
+- 理论上支持1.19.22.01及以上版本
+
+#### 更新日志
+
+- 将粒子调整为LL统一使用的材质包
+- 在默认配置文件中移除了假人的默认前缀`bot_`
+- `village info`命令支持补全(同时支持vid和uuid)
+- 假人支持自动寻路到某处(`player <name> navto <pos>`)
+- 假人支持跟随(除了掉落物外的任意)实体，使用指针指定实体，不指向任何实体时假人会跟随自己(`player <name> follow`)
+- 假人支持丢出背包内物品
+    - `drop`丢出某种物品一组
+    - `droptype`丢出背包内所有该种物品
+    - `dropall`丢出背包内所有物品(不包含盔甲栏)
+- 修复异步保存假人背包导致的潜在刷物品的bug
+- 假人现在可以执行命令了(`player <name> runcmd <command> ...`)
+- 修复部分typo错误
+
 ### trapdoor-ll-0.18.0-1.19.22.02
 
 #### 依赖和版本支持
