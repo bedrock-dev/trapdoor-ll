@@ -42,7 +42,8 @@ namespace trapdoor {
             logger().info("Trapdoor : {}-{} Under AGPL License", TD_VERSION, MC_VERSION);
             logger().info("Build time: {}", BUILD_TIME);
             logger().info(
-                "Visit out github page for more info:  https://github.com/hhhxiao/trapdoor-ll/");
+                "Visit out github page for more info:  "
+                "https://github.com/bedrock-dev/trapdoor-ll/");
             logger().info("");
         }
 
