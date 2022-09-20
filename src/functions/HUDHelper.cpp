@@ -19,9 +19,14 @@
 #include "PlayerInfoAPI.h"
 #include "TrAPI.h"
 #include "Utils.h"
-
+#include "VillageHelper.h"
 namespace trapdoor {
     namespace {
+
+        std::string buildVillagerInfo(Player* player) {
+            auto act = reinterpret_cast<Actor*>(player)->getActorFromViewVector(5.25);
+            return trapdoor::mod().getVillageHelper().getVillagerInfo(act, false);
+        }
 
         std::string buildRedstoneInfo(Player* player) {
             auto pointBlock = reinterpret_cast<Actor*>(player)->getBlockFromViewVector();
@@ -137,7 +142,7 @@ namespace trapdoor {
                     s += buildRedstoneInfo(p);
                 }
                 if (cfg[HUDInfoType::Vill]) {
-                    s += "Village: Developing\n";
+                    s += buildVillagerInfo(p);
                 }
                 if (cfg[HUDInfoType::Counter]) {
                     s += buildHopperCounter(p);

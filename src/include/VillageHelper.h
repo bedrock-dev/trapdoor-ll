@@ -34,7 +34,10 @@ namespace trapdoor {
         void refreshCommandSoftEnum();
         //  ActionResult Goto(int vid, const Vec3& pos);
 
-        bool ShowVillageInfo(Player* p, Actor* actor);
+        std::string getVillagerInfo(Actor* v, bool highlight);
+
+        ActionResult showVillageInfo(Player* p);
+
         inline void setupCommandInstance(const DynamicCommandInstance* cmd) {
             this->cmdInstance = cmd;
         }

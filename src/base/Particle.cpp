@@ -206,7 +206,6 @@ namespace trapdoor {
     }
     void spawnNumParticle(const TVec3& v, int num, PCOLOR color, int dimType) {
         auto name = "ll:num" + std::to_string(num) + lineParticleColor()[color];
-        trapdoor::logger().debug("name:  {}, pos: {}", name, v.toString());
         spawnParticle(v, name, dimType);
     }
 }  // namespace trapdoor

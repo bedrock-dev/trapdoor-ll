@@ -15,8 +15,7 @@ namespace trapdoor {
         auto &optSwitch =
             command->setEnum("optSwitch", {"bound", "spawn", "center", "poi", "head"});
         auto &optList = command->setEnum("optList", {"list"});
-        auto &optOther = command->setEnum("optOther", {"info"});
-
+        auto &optOther = command->setEnum("optOther", {"info", "dweller"});
         command->mandatory("village", ParamType::Enum, optSwitch,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("village", ParamType::Enum, optList,
@@ -72,6 +71,13 @@ namespace trapdoor {
                             .printDetails("", origin.getPlayer()->getPos())
                             .sendTo(output);
                     }
+                    break;
+
+                case do_hash("dweller"):
+                    trapdoor::mod()
+                        .getVillageHelper()
+                        .showVillageInfo(origin.getPlayer())
+                        .sendTo(output);
                     break;
             }
         };

@@ -323,38 +323,48 @@ namespace trapdoor {
         return {"", true};
     }
 
-    bool VillageHelper::ShowVillageInfo(Player *p, Actor *actor) {
-        if (!actor || !p) {
-            return true;
+    std::string VillageHelper::getVillagerInfo(Actor *actor, bool highlight) {
+        if (!actor) {
+            return "";
         }
         auto aUid = actor->getUniqueID();
-
+        TextBuilder builder;
         for (auto v : this->vs_) {
             auto dweller_map = Village_getDwellerPOIMap(v.second);
             auto iter = dweller_map.find(aUid);
 
             const static std::string name[] = {"Bed", "Alarm", "Work"};
             if (iter != dweller_map.end()) {
-                TextBuilder builder;
                 builder.textF("VID: %d\n", v.first);
                 for (int i = 0; i < 3; i++) {
                     const auto &poi = iter->second[i].lock();
                     if (poi) {
-                        builder.textF("%s: [%d %d %d],%d/%d %.2f %zu\n", poi->getTypeName(),
+                        builder.textF("%s: [%d %d %d], %d/%d  %.2f  %zu\n", poi->getTypeName(),
                                       poi->getPosition().x, poi->getPosition().y,
                                       poi->getPosition().z, poi->getOwnerCount(),
                                       poi->getOwnerCapacity(), poi->getRadius(), poi->getWeight());
-
-                        trapdoor::shortHighlightBlock(fromBlockPos(poi->getPosition()),
-                                                      PCOLOR::YELLOW, 0);
+                        if (highlight) {
+                            trapdoor::shortHighlightBlock(fromBlockPos(poi->getPosition()),
+                                                          PCOLOR::TEAL, 0);
+                        }
                     }
                 }
-                p->sendText(builder.get());
             }
         }
-
-        return false;
+        return builder.get();
     }
+
+    ActionResult VillageHelper::showVillageInfo(Player *p) {
+        if (!p) return trapdoor::ErrorPlayerNeed();
+        auto actor = p->getActorFromViewVector(5.25);
+        auto msg = this->getVillagerInfo(actor, true);
+        if (msg.empty()) {
+            return {"Can not find a villager", false};
+        } else {
+            return {msg, true};
+        }
+    }
+
     void VillageHelper::refreshCommandSoftEnum() {
         if (!this->cmdInstance) return;
         std::vector<std::string> ids;

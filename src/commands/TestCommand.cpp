@@ -4,7 +4,9 @@
 
 #include <MC/Abilities.hpp>
 #include <MC/Ability.hpp>
+#include <MC/Block.hpp>
 #include <MC/BlockSource.hpp>
+#include <MC/Brightness.hpp>
 #include <MC/ChunkSource.hpp>
 #include <MC/Dimension.hpp>
 #include <MC/LayeredAbilities.hpp>
@@ -18,57 +20,61 @@
 #include "Particle.h"
 #include "ScheduleAPI.h"
 #include "SendPacketAPI.h"
-namespace trapdoor {
-    void print_ab(Player *p) {
-        if (!p) return;
-        auto &layeredAbilities = dAccess<LayeredAbilities, 2412>(p);
-        layeredAbilities.forEachAbility(
-            [](Ability const &ab, char const *name) {
-                trapdoor::logger().debug("name: {} => {} {}", name, (int)ab.getType(), ab.isSet());
-            },
-            (Ability::Options)(0));
-    }
+#include "TVec3.h"
 
-    void test_ab(Player *p, int index, bool value) {
-        if (!p) return;
-        if (index == -1) {
-            print_ab(p);
-            return;
+namespace trapdoor {
+
+    void show_light(Player *player) {
+        if (!player) return;
+        auto *bs = player->getBlockSource();
+
+        auto pos = player->getPos().toBlockPos();
+
+        for (int i = -7; i < 7; i++) {
+            for (int j = -2; j < 3; j++) {
+                for (int k = -7; k < 7; k++) {
+                    // TODO
+                    auto p = pos + BlockPos(i, j, k);
+                    auto &b1 = bs->getBlock(p);
+                    auto &b2 = bs->getBlock(p + BlockPos(0, -1, 0));
+                    if (b1.isAir() && (!b2.isAir())) {
+                        auto rb = bs->getRawBrightness(pos + BlockPos(i, j, k), true, true);
+                        auto bright = (uint32_t) * reinterpret_cast<unsigned char *>(&rb);
+
+                        auto color = trapdoor::PCOLOR::GREEN;
+                        if (bright < 8) color = trapdoor::PCOLOR::YELLOW;
+                        if (bright < 1) color = trapdoor::PCOLOR::RED;
+                        trapdoor::spawnNumParticle(
+                            trapdoor::TVec3(p.x + 0.5f, p.y + 0.2f, p.z + 0.5f), (int)bright, color,
+                            0);
+                    }
+                }
+            }
         }
 
-        trapdoor::logger().debug("Set {} to  {}", index, value);
-        auto &layeredAbilities = dAccess<LayeredAbilities, 2412>(p);
-        auto &abs = dAccess<Abilities, 220>(&layeredAbilities);
-        abs.unSet((AbilitiesIndex)index);
-        // layeredAbilities.setAbility(static_cast<AbilitiesIndex>(index), value);
-    }
+        // auto rb = bs.getRawBrightness(pos + BlockPos(0, 1, 0), true, true);
+        // auto bright = (uint32_t) * reinterpret_cast<unsigned char *>(&rb);
 
+        //
+    }
     void setup_testCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
         auto command = DynamicCommand::createCommand("test", "change world tick command",
                                                      static_cast<CommandPermissionLevel>(level));
 
-        auto &optFreeze = command->setEnum("su", {"ability"});
-        command->mandatory("test", ParamType::Enum, optFreeze,
-                           CommandParameterOption::EnumAutocompleteExpansion);
-
         auto &optPrintAb = command->setEnum("pab", {"print"});
         command->mandatory("test", ParamType::Enum, optPrintAb,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
-        command->mandatory("ab", ParamType::Int);
-        command->mandatory("onoroff", ParamType::Bool);
-        command->addOverload({optFreeze, "ab", "onoroff"});
+        command->addOverload({optPrintAb});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
             switch (do_hash(results["test"].getRaw<std::string>().c_str())) {
-                case do_hash("ability"):
-                    test_ab(origin.getPlayer(), results["ab"].get<int>(),
-                            results["onoroff"].get<bool>());
-                default:
+                case do_hash("print"):
+                    show_light(origin.getPlayer());
                     break;
             }
         };
