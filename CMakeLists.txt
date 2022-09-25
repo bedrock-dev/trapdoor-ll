@@ -1,6 +1,11 @@
+#"C:\Program Files\CMake\bin\cmake.EXE" --no-warn-unused-cli 
+#-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE "-DCMAKE_C_COMPILER:FILEPATH=C:\Program Files\LLVM\bin\clang.exe" "-DCMAKE_CXX_COMPILER:FILEPATH=C:\Program Files\LLVM\bin\clang++.exe" -Sc:/Users/xhy/dev/trapdoor-ll -Bc:/Users/xhy/dev/trapdoor-llild -G "Visual Studio 17 2022"
+#
+
 cmake_minimum_required(VERSION 3.16)
 project(Trapdoor)
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(TRAPDOOR_VERSION 0.19.1)
 set(TEST_NUMBER 12)
@@ -9,6 +14,8 @@ option(DEV "Build as developer version" ON)
 option(BETA "Build as beta version" OFF)
 add_definitions(-DTD_VERSION="${TRAPDOOR_VERSION}")
 add_definitions(-DMC_VERSION="${GAME_VERSION}")
+
+#cmake -=1
 
 if (${DEV} STREQUAL "ON")
     add_definitions(-DDEV)

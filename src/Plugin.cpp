@@ -6,6 +6,7 @@
 inline void CheckProtocolVersion() {}
 
 void prepare() {
+    
     namespace fs = std::filesystem;
     if (!fs::exists("./plugins/trapdoor")) {
         fs::create_directory("./plugins/trapdoor");
