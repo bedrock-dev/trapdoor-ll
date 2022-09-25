@@ -34,7 +34,7 @@ namespace trapdoor {
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
-            if (origin.getOriginType() == 1) {
+            if (static_cast<int>(origin.getOriginType()) == 1) {
                 output.error("Tick command cannot be executed inside a command block");
                 return;
             }

@@ -18,7 +18,6 @@ namespace trapdoor {
                                   const std::string &path);
     bool displayEnvInfo();
 
-
 }  // namespace trapdoor
 
 #endif
