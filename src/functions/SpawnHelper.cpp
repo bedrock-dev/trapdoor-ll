@@ -1,14 +1,14 @@
 #include "SpawnHelper.h"
 
-#include <MC/ActorSpawnRuleGroup.hpp>
-#include <MC/Biome.hpp>
-#include <MC/Block.hpp>
-#include <MC/BlockSource.hpp>
-#include <MC/Brightness.hpp>
-#include <MC/Dimension.hpp>
-#include <MC/Level.hpp>
-#include <MC/Material.hpp>
-#include <MC/Spawner.hpp>
+#include <mc/ActorSpawnRuleGroup.hpp>
+#include <mc/Biome.hpp>
+#include <mc/Block.hpp>
+#include <mc/BlockSource.hpp>
+#include <mc/Brightness.hpp>
+#include <mc/Dimension.hpp>
+#include <mc/Level.hpp>
+#include <mc/Material.hpp>
+#include <mc/Spawner.hpp>
 #include <unordered_map>
 
 #include "CommandHelper.h"

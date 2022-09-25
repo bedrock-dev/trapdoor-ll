@@ -4,9 +4,9 @@
 
 #include "SpawnAnalyzer.h"
 
-#include <MC/ActorDefinitionIdentifier.hpp>
-#include <MC/BlockSource.hpp>
-#include <MC/LevelChunk.hpp>
+#include <mc/ActorDefinitionIdentifier.hpp>
+#include <mc/BlockSource.hpp>
+#include <mc/LevelChunk.hpp>
 
 #include "DataConverter.h"
 #include "HookAPI.h"
@@ -14,7 +14,7 @@
 #include "TrapdoorMod.h"
 #include "Utils.h"
 namespace trapdoor {
-    void SpawnAnalyzer::AddMob(Mob * mob, const string &name, bool surface) {
+    void SpawnAnalyzer::AddMob(Mob *mob, const string &name, bool surface) {
         if (!inAnalyzing || !mob) return;
         auto dimension = mob->getDimensionId();
         if (dimension != dimensionID) return;

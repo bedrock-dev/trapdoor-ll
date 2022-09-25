@@ -4,9 +4,9 @@
 
 #ifndef TRAPDOOR_INVENTORY_TOOL_H
 #define TRAPDOOR_INVENTORY_TOOL_H
-#include <MC/BlockInstance.hpp>
-#include <MC/Inventory.hpp>
-#include <MC/Player.hpp>
+#include <mc/BlockInstance.hpp>
+#include <mc/Inventory.hpp>
+#include <mc/Player.hpp>
 namespace trapdoor {
     bool onStartDestroyBlock(Player *player, const BlockInstance &instance);
 

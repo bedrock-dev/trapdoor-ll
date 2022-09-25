@@ -10,12 +10,12 @@
 //clang-format off
 #include "RedstoneTool.h"
 
-#include <MC/BaseCircuitComponent.hpp>
-#include <MC/Block.hpp>
-#include <MC/BlockActor.hpp>
-#include <MC/Brightness.hpp>
-#include <MC/Dimension.hpp>
-#include <MC/Material.hpp>
+#include <mc/BaseCircuitComponent.hpp>
+#include <mc/Block.hpp>
+#include <mc/BlockActor.hpp>
+#include <mc/Brightness.hpp>
+#include <mc/Dimension.hpp>
+#include <mc/Material.hpp>
 #include <unordered_map>
 #include <vector>
 

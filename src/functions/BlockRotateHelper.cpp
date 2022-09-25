@@ -1,13 +1,13 @@
 #include "BlockRotateHelper.h"
 
-#include <MC/BedrockBlocks.hpp>
-#include <MC/Block.hpp>
-#include <MC/BlockLegacy.hpp>
-#include <MC/BlockSource.hpp>
-#include <MC/ByteTag.hpp>
-#include <MC/CommandUtils.hpp>
-#include <MC/IntTag.hpp>
-#include <MC/StringTag.hpp>
+#include <mc/BedrockBlocks.hpp>
+#include <mc/Block.hpp>
+#include <mc/BlockLegacy.hpp>
+#include <mc/BlockSource.hpp>
+#include <mc/ByteTag.hpp>
+#include <mc/CommandUtils.hpp>
+#include <mc/IntTag.hpp>
+#include <mc/StringTag.hpp>
 #include <regex>
 
 #include "TrapdoorMod.h"

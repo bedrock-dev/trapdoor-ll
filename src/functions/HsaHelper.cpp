@@ -1,7 +1,7 @@
 #include "HsaHelper.h"
 
-#include <MC/Biome.hpp>
-#include <MC/BlockSource.hpp>
+#include <mc/Biome.hpp>
+#include <mc/BlockSource.hpp>
 
 #include "HookAPI.h"
 #include "Particle.h"

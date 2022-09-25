@@ -1,4 +1,4 @@
-#include <MC/Dimension.hpp>
+#include <mc/Dimension.hpp>
 
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"

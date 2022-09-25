@@ -3,10 +3,10 @@
 
 // clang-format off
 #include "Global.h"
-#include <MC/BlockPos.hpp>
-#include <MC/BlockSource.hpp>
-#include <MC/BlockInstance.hpp>
-#include <MC/Vec3.hpp>
+#include <mc/BlockPos.hpp>
+#include <mc/BlockSource.hpp>
+#include <mc/BlockInstance.hpp>
+#include <mc/Vec3.hpp>
 #include "CommandHelper.h"
 // clang-format on
 namespace trapdoor {

@@ -1,9 +1,10 @@
 #ifndef TRAPDOOR_TACTOR
 #define TRAPDOOR_TACTOR
-#include <MC/ActorUniqueID.hpp>
 #include <cstdint>
+#include <mc/ActorUniqueID.hpp>
 
 #include "TBlockPos.h"
+
 
 namespace trapdoor {
     struct TActorUniqueIDHash {

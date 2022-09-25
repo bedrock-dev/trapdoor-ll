@@ -1,8 +1,8 @@
 //
 // Created by xhy on 2022/5/17.
 //
-#include <MC/Level.hpp>
-#include <MC/LevelSeed64.hpp>
+#include <mc/Level.hpp>
+#include <mc/LevelSeed64.hpp>
 #include <unordered_map>
 
 #include "CommandHelper.h"

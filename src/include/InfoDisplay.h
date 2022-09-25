@@ -1,11 +1,11 @@
 #ifndef TRAPDOOR_INFO_DISPLAYER
 #define TRAPDOOR_INFO_DISPLAYER
 
-#include <MC/BlockInstance.hpp>
-#include <MC/BlockPos.hpp>
-#include <MC/CircuitSceneGraph.hpp>
-#include <MC/Dimension.hpp>
-#include <MC/ServerPlayer.hpp>
+#include <mc/BlockInstance.hpp>
+#include <mc/BlockPos.hpp>
+#include <mc/CircuitSceneGraph.hpp>
+#include <mc/Dimension.hpp>
+#include <mc/ServerPlayer.hpp>
 
 #include "CommandHelper.h"
 #include "Global.h"

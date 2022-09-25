@@ -1,11 +1,11 @@
 #include "MCTick.h"
 
-#include <MC/ChunkPos.hpp>
-#include <MC/Dimension.hpp>
-#include <MC/LevelChunk.hpp>
-#include <MC/Vec3.hpp>
 #include <algorithm>
 #include <chrono>
+#include <mc/ChunkPos.hpp>
+#include <mc/Dimension.hpp>
+#include <mc/LevelChunk.hpp>
+#include <mc/Vec3.hpp>
 
 #include "CommandHelper.h"
 #include "HookAPI.h"
@@ -13,6 +13,7 @@
 #include "Msg.h"
 #include "SimpleProfiler.h"
 #include "TrapdoorMod.h"
+
 
 namespace trapdoor {
     namespace {

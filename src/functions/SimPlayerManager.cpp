@@ -1,9 +1,9 @@
 #include <DynamicCommandAPI.h>
 
-#include <MC/Container.hpp>
-#include <MC/ItemStack.hpp>
-#include <MC/SimpleContainer.hpp>
-#include <MC/SimulatedPlayer.hpp>
+#include <mc/Container.hpp>
+#include <mc/ItemStack.hpp>
+#include <mc/SimpleContainer.hpp>
+#include <mc/SimulatedPlayer.hpp>
 
 #include "Msg.h"
 #include "Nlohmann/json.hpp"

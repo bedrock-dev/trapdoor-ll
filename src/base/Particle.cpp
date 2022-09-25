@@ -1,14 +1,15 @@
 #include "Particle.h"
 
-#include <MC/Dimension.hpp>
-#include <MC/Vec3.hpp>
 #include <array>
 #include <map>
+#include <mc/Dimension.hpp>
+#include <mc/Vec3.hpp>
 
 #include "Config.h"
 #include "Global.h"
 #include "TBlockPos.h"
 #include "TVec3.h"
+
 
 namespace trapdoor {
     namespace {

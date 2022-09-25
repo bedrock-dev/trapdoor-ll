@@ -1,7 +1,7 @@
 //
 // Created by xhy on 2022/8/12.
 //
-#include <MC/Player.hpp>
+#include <mc/Player.hpp>
 
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"

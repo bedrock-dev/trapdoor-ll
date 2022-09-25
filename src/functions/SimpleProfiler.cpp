@@ -4,8 +4,8 @@
 
 #include "SimpleProfiler.h"
 
-#include <MC/I18n.hpp>
 #include <algorithm>
+#include <mc/I18n.hpp>
 #include <numeric>
 
 #include "Msg.h"

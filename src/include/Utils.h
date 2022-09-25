@@ -1,6 +1,6 @@
 #ifndef TRAPDOOR_UTILS_H
 #define TRAPDOOR_UTILS_H
-#include <MC/CompoundTag.hpp>
+#include <mc/CompoundTag.hpp>
 #include <string>
 namespace trapdoor {
     std::string getNBTInfoFromPath(const std::unique_ptr<CompoundTag> &tag, const std::string &path,

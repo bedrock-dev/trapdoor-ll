@@ -1,13 +1,13 @@
 #include "HUDHelper.h"
 
-#include <MC/BaseCircuitComponent.hpp>
-#include <MC/Biome.hpp>
-#include <MC/Block.hpp>
-#include <MC/BlockSource.hpp>
-#include <MC/Brightness.hpp>
-#include <MC/Dimension.hpp>
-#include <MC/Level.hpp>
-#include <MC/Player.hpp>
+#include <mc/BaseCircuitComponent.hpp>
+#include <mc/Biome.hpp>
+#include <mc/Block.hpp>
+#include <mc/BlockSource.hpp>
+#include <mc/Brightness.hpp>
+#include <mc/Dimension.hpp>
+#include <mc/Level.hpp>
+#include <mc/Player.hpp>
 
 #include "CommandHelper.h"
 #include "Config.h"

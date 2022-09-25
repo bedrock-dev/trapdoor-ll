@@ -4,7 +4,7 @@
 
 #ifndef TRAPDOOR_DISTANCE_HELPER_H
 #define TRAPDOOR_DISTANCE_HELPER_H
-#include <MC/Player.hpp>
+#include <mc/Player.hpp>
 
 #include "CommandHelper.h"
 namespace trapdoor {

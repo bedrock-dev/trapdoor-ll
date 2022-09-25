@@ -4,13 +4,13 @@
 
 #include "VillageHelper.h"
 
-#include <MC/Dimension.hpp>
-#include <MC/Level.hpp>
-#include <MC/POIInstance.hpp>
-#include <MC/Vec3.hpp>
-#include <MC/Village.hpp>
-#include <MC/VillageManager.hpp>
 #include <array>
+#include <mc/Dimension.hpp>
+#include <mc/Level.hpp>
+#include <mc/POIInstance.hpp>
+#include <mc/Vec3.hpp>
+#include <mc/Village.hpp>
+#include <mc/VillageManager.hpp>
 #include <unordered_set>
 
 #include "DataConverter.h"
@@ -20,6 +20,7 @@
 #include "TActor.h"
 #include "TBlockPos.h"
 #include "TrapdoorMod.h"
+
 
 namespace trapdoor {
     namespace {

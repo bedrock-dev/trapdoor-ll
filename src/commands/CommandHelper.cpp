@@ -3,8 +3,8 @@
 //
 #include "CommandHelper.h"
 
-#include <MC/BlockInstance.hpp>
-#include <MC/Player.hpp>
+#include <mc/BlockInstance.hpp>
+#include <mc/Player.hpp>
 
 #include "DynamicCommandAPI.h"
 #include "TBlockPos.h"

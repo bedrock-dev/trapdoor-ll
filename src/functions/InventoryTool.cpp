@@ -4,16 +4,17 @@
 
 #include "InventoryTool.h"
 
-#include <MC/Block.hpp>
-#include <MC/Inventory.hpp>
-#include <MC/ItemStack.hpp>
-#include <MC/Material.hpp>
 #include <cstdio>
+#include <mc/Block.hpp>
+#include <mc/Inventory.hpp>
+#include <mc/ItemStack.hpp>
+#include <mc/Material.hpp>
 
 #include "Config.h"
 #include "Msg.h"
 #include "TrapdoorMod.h"
 #include "Utils.h"
+
 namespace trapdoor {
     namespace {
 

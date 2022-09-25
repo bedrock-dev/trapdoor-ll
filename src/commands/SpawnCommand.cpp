@@ -1,6 +1,6 @@
 
-#include <MC/BlockInstance.hpp>
-#include <MC/Dimension.hpp>
+#include <mc/BlockInstance.hpp>
+#include <mc/Dimension.hpp>
 #include <string>
 
 #include "CommandHelper.h"
@@ -109,7 +109,7 @@ namespace trapdoor {
                     }
             }
         };
-        
+
         command->setCallback(cb);
         DynamicCommand::setup(std::move(command));
     }

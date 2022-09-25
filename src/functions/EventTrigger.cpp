@@ -4,7 +4,7 @@
 
 #include "EventTrigger.h"
 
-#include <MC/Level.hpp>
+#include <mc/Level.hpp>
 
 #include "Global.h"
 #include "Msg.h"

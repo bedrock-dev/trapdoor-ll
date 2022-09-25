@@ -1,15 +1,15 @@
 #include "InfoDisplay.h"
 
-#include <MC/Actor.hpp>
-#include <MC/BaseCircuitComponent.hpp>
-#include <MC/Biome.hpp>
-#include <MC/Block.hpp>
-#include <MC/BlockActor.hpp>
-#include <MC/Brightness.hpp>
-#include <MC/CircuitSystem.hpp>
-#include <MC/Material.hpp>
-#include <MC/NavigationComponent.hpp>
-#include <MC/Player.hpp>
+#include <mc/Actor.hpp>
+#include <mc/BaseCircuitComponent.hpp>
+#include <mc/Biome.hpp>
+#include <mc/Block.hpp>
+#include <mc/BlockActor.hpp>
+#include <mc/Brightness.hpp>
+#include <mc/CircuitSystem.hpp>
+#include <mc/Material.hpp>
+#include <mc/NavigationComponent.hpp>
+#include <mc/Player.hpp>
 
 #include "CommandHelper.h"
 #include "DataConverter.h"

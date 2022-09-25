@@ -1,6 +1,6 @@
 #include "TrapdoorMod.h"
 
-#include <MC/MapItem.hpp>
+#include <mc/MapItem.hpp>
 
 #include "BlockRotateHelper.h"
 #include "CommandHelper.h"

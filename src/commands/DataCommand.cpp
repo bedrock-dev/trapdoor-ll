@@ -1,8 +1,8 @@
 
-#include <MC/BlockSource.hpp>
-#include <MC/Dimension.hpp>
-#include <MC/Player.hpp>
-#include <MC/ServerPlayer.hpp>
+#include <mc/BlockSource.hpp>
+#include <mc/Dimension.hpp>
+#include <mc/Player.hpp>
+#include <mc/ServerPlayer.hpp>
 #include <string>
 
 #include "CommandHelper.h"

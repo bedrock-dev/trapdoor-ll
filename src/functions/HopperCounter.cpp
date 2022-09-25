@@ -1,11 +1,11 @@
 #include "HopperCounter.h"
 
-#include <MC/Block.hpp>
-#include <MC/BlockActor.hpp>
-#include <MC/BlockSource.hpp>
-#include <MC/I18n.hpp>
-#include <MC/Item.hpp>
-#include <MC/ItemStackBase.hpp>
+#include <mc/Block.hpp>
+#include <mc/BlockActor.hpp>
+#include <mc/BlockSource.hpp>
+#include <mc/I18n.hpp>
+#include <mc/Item.hpp>
+#include <mc/ItemStackBase.hpp>
 #include <stdexcept>
 
 #include "DataConverter.h"

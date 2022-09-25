@@ -3,9 +3,9 @@
 
 // clang-format off
 #include "Global.h"
-#include <MC/AABB.hpp>
-#include <MC/Vec3.hpp>
-#include <MC/BlockPos.hpp>
+#include <mc/AABB.hpp>
+#include <mc/Vec3.hpp>
+#include <mc/BlockPos.hpp>
 #include "TAABB.h"
 #include "TBlockPos.h"
 // clang-format on

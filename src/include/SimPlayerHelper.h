@@ -1,7 +1,7 @@
 #ifndef TRAPDOOR_SIM_PLAYER_H
 #define TRAPDOOR_SIM_PLAYER_H
-#include <MC/BlockSource.hpp>
-#include <MC/SimulatedPlayer.hpp>
+#include <mc/BlockSource.hpp>
+#include <mc/SimulatedPlayer.hpp>
 #include <unordered_map>
 #include <unordered_set>
 

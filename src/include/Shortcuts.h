@@ -1,6 +1,6 @@
 #ifndef TRAPDOOR_SHORTCUTS_H
 #define TRAPDOOR_SHORTCUTS_H
-#include <MC/Player.hpp>
+#include <mc/Player.hpp>
 #include <string>
 #include <vector>
 namespace trapdoor {

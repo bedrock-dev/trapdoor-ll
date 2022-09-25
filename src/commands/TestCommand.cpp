@@ -2,16 +2,16 @@
 // Created by xhy on 2022/5/17.
 //
 
-#include <MC/Abilities.hpp>
-#include <MC/Ability.hpp>
-#include <MC/Block.hpp>
-#include <MC/BlockSource.hpp>
-#include <MC/Brightness.hpp>
-#include <MC/ChunkSource.hpp>
-#include <MC/Dimension.hpp>
-#include <MC/LayeredAbilities.hpp>
-#include <MC/Level.hpp>
-#include <MC/LevelChunk.hpp>
+#include <mc/Abilities.hpp>
+#include <mc/Ability.hpp>
+#include <mc/Block.hpp>
+#include <mc/BlockSource.hpp>
+#include <mc/Brightness.hpp>
+#include <mc/ChunkSource.hpp>
+#include <mc/Dimension.hpp>
+#include <mc/LayeredAbilities.hpp>
+#include <mc/Level.hpp>
+#include <mc/LevelChunk.hpp>
 #include <string>
 
 #include "CommandHelper.h"

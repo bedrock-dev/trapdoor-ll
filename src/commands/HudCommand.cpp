@@ -1,4 +1,4 @@
-#include <MC/Player.hpp>
+#include <mc/Player.hpp>
 
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"

@@ -4,10 +4,10 @@
 
 #include "Tweakers.h"
 
-#include <MC/Block.hpp>
-#include <MC/BlockLegacy.hpp>
-#include <MC/ItemStackBase.hpp>
-#include <MC/PistonBlockActor.hpp>
+#include <mc/Block.hpp>
+#include <mc/BlockLegacy.hpp>
+#include <mc/ItemStackBase.hpp>
+#include <mc/PistonBlockActor.hpp>
 
 #include "Config.h"
 #include "HookAPI.h"
@@ -45,7 +45,7 @@ THook(void, "?updateNeighborsAt@BlockSource@@QEAAXAEBVBlockPos@@@Z", void *self,
     }
 }
 
-// #include <MC/Player.hpp>
+// #include <mc/Player.hpp>
 // THook(void,
 //       "?_tickLevelChunksAroundActor@LevelChunkTickingSystem@@CAXAEAVActor@@AEAVBlockSource@@"
 //       "AEAVLoadedChunksComponent@@@Z",

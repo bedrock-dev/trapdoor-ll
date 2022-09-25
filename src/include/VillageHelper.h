@@ -1,7 +1,7 @@
 #ifndef TRAPDOOR_VILLAGE_HELPER_H
 #define TRAPDOOR_VILLAGE_HELPER_H
 
-#include <MC/Village.hpp>
+#include <mc/Village.hpp>
 #include <unordered_map>
 
 #include "CommandHelper.h"

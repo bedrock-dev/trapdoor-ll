@@ -3,8 +3,8 @@
 
 // clang-format off
 #include "Global.h"
-#include <MC/Vec3.hpp>
-#include <MC/Player.hpp>
+#include <mc/Vec3.hpp>
+#include <mc/Player.hpp>
 #include <map>
 #include <string>
 #include <vector>

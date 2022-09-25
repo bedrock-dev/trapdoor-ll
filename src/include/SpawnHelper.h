@@ -1,7 +1,7 @@
 #ifndef TRAPDOOR_SPAWN_HELPER_H
 #define TRAPDOOR_SPAWN_HELPER_H
-#include <MC/ActorDefinitionIdentifier.hpp>
-#include <MC/Player.hpp>
+#include <mc/ActorDefinitionIdentifier.hpp>
+#include <mc/Player.hpp>
 
 #include "CommandHelper.h"
 

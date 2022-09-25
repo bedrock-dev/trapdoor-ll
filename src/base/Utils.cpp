@@ -1,11 +1,12 @@
 #include "Utils.h"
 
-#include <MC/I18n.hpp>
-#include <MC/ListTag.hpp>
 #include <algorithm>
+#include <mc/I18n.hpp>
+#include <mc/ListTag.hpp>
 
 #include "Global.h"
 #include "TrapdoorMod.h"
+
 namespace trapdoor {
     namespace {
 

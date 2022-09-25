@@ -3,10 +3,10 @@
 //
 #include "Events.h"
 
-#include <MC/Block.hpp>
-#include <MC/Item.hpp>
-#include <MC/ItemStack.hpp>
-#include <MC/Level.hpp>
+#include <mc/Block.hpp>
+#include <mc/Item.hpp>
+#include <mc/ItemStack.hpp>
+#include <mc/Level.hpp>
 
 #include "BlockRotateHelper.h"
 #include "EventAPI.h"
@@ -161,7 +161,6 @@ namespace trapdoor {
             return true;
         });
 
-
         Event::EntityExplodeEvent::subscribe([&](const Event::EntityExplodeEvent& ev) {
             trapdoor::TextBuilder builder;
             auto p = ev.mPos;
@@ -181,9 +180,9 @@ namespace trapdoor {
 
 // TR event
 // TODO: MOVE TO A SINGLE CLASS
-#include <MC/BaseCircuitComponent.hpp>
-#include <MC/CircuitSystem.hpp>
-#include <MC/ConsumerComponent.hpp>
+#include <mc/BaseCircuitComponent.hpp>
+#include <mc/CircuitSystem.hpp>
+#include <mc/ConsumerComponent.hpp>
 
 #include "HookAPI.h"
 THook(bool, "?evaluate@ConsumerComponent@@UEAA_NAEAVCircuitSystem@@AEBVBlockPos@@@Z",

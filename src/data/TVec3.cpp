@@ -4,6 +4,8 @@
 
 #include "TVec3.h"
 
+#include <FMT/format.h>
+
 #include <cmath>
 
 #include "TBlockPos.h"
@@ -19,12 +21,10 @@ namespace trapdoor {
                                              (vec3.z - z) * (vec3.z - z)));
     }
 
-    std::string TVec3::toString() const {
-        char buffer[64];
-        sprintf(buffer, "[%.2f %.2f %.2f]", x, y, z);
-        return std::string(buffer);
+    std::string TVec3::toString() const { return fmt::format("[{:.3f},{:.3f},{:.3f}]", x, y, z); }
+    std::string TVec3::toDetailString() const {
+        return fmt::format("[{:.7f},{:.7f},{:.7f}]", x, y, z);
     }
-
     bool TVec3::operator!=(const TVec3 &v) const { return x != v.x || y != v.y || z != v.z; }
 
     bool TVec3::operator==(const TVec3 &v) const { return x == v.x && y == v.y && z == v.z; }

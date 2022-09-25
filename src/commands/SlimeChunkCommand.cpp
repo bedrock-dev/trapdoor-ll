@@ -1,12 +1,12 @@
 
-#include <MC/Player.hpp>
+#include <mc/Player.hpp>
 
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"
 #include "TrapdoorMod.h"
 
-namespace trapdoor{
-    void setup_slimeCommand(int level){
+namespace trapdoor {
+    void setup_slimeCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         auto command = DynamicCommand::createCommand("slime", "show slime spawn chunk",
                                                      static_cast<CommandPermissionLevel>(level));
@@ -59,4 +59,4 @@ namespace trapdoor{
         command->setCallback(cb);
         DynamicCommand::setup(std::move(command));
     }
-}
+}  // namespace trapdoor

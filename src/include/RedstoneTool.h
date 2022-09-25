@@ -4,8 +4,8 @@
 
 #ifndef TRAPDOOR_REDSTONE_TOOL_H
 #define TRAPDOOR_REDSTONE_TOOL_H
-#include <MC/BlockPos.hpp>
-#include <MC/Dimension.hpp>
+#include <mc/BlockPos.hpp>
+#include <mc/Dimension.hpp>
 #include <string>
 
 #include "CommandHelper.h"

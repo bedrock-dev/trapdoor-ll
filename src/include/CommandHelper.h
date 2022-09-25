@@ -8,7 +8,7 @@
 //clang-format off
 
 #include <mc/Player.hpp>
-#include <MC/Vec3.hpp>
+#include <mc/Vec3.hpp>
 #include <string>
 #include <tuple>
 #include <utility>

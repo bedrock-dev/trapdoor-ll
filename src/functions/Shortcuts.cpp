@@ -2,8 +2,8 @@
 
 #include <FMT/format.h>
 
-#include <MC/Block.hpp>
-#include <MC/ItemStack.hpp>
+#include <mc/Block.hpp>
+#include <mc/ItemStack.hpp>
 
 #include "TrapdoorMod.h"
 namespace trapdoor {
