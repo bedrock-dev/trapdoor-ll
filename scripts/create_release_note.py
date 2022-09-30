@@ -1,6 +1,6 @@
 if __name__ == "__main__":
     total = ''
-    with open('changelog.md', encoding='utf-8') as f:
+    with open('../changelog.md', encoding='utf-8') as f:
         total = f.readlines()
     content = ''
     index = 0

@@ -8,6 +8,7 @@ set(TRAPDOOR_VERSION 0.19.2)
 set(GAME_VERSION 1.19.30.04)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE Release)
+
 #set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 string(TIMESTAMP BUILD_TIME "%Y-%m-%d %H:%M:%S")
 set(BUILD_TIME="${BUILD_TIME}")
@@ -21,6 +22,8 @@ project(Trapdoor VERSION ${TRAPDOOR_VERSION})
 #export configure file
 configure_file(${PROJECT_SOURCE_DIR}/src/config.h.in ${PROJECT_SOURCE_DIR}/src/include/config.h)
 
+
+#choose version to build
 if (${DEV} STREQUAL "ON")
     add_definitions(-DDEV)
     message("Build a developer version")
@@ -37,7 +40,6 @@ file(GLOB_RECURSE SRC_FILES_DIR
         ${PROJECT_SOURCE_DIR}/SDK/Header/*.h
 
         src/commands/TriggerCommand.cpp
-        #src/commands/SeedCommand.cpp
         src/commands/TrapdoorCommand.cpp
         src/commands/DistanceCommand.cpp
         src/commands/CalCommand.cpp
@@ -63,15 +65,12 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/data/TAABB.cpp
         src/data/TActor.cpp
         src/data/DataConverter.cpp
-        src/dllmain.cpp
         src/base/TrapdoorMod.cpp
         src/base/Config.cpp
         src/base/Msg.cpp
         src/base/Particle.cpp
         src/base/Utils.cpp
         src/base/TrAPI.cpp
-        src/pch.cpp
-        src/Plugin.cpp
 
         src/functions/RedstoneTool.cpp
         src/functions/EventTrigger.cpp
@@ -93,6 +92,9 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/functions/Tweakers.cpp
         src/functions/InventoryTool.cpp
         src/functions/SlimeChunkHelper.cpp
+        src/pch.cpp
+        src/Plugin.cpp
+        src/dllmain.cpp
         )
 
 include_directories(SDK/include)
@@ -123,3 +125,10 @@ add_custom_command(TARGET ${TARGET_NAME} PRE_BUILD
         COMMAND cmd /c ${PROJECT_SOURCE_DIR}/prepareLib.cmd ${PROJECT_SOURCE_DIR}
         COMMENT "Preparing Library"
         )
+
+#
+#add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+#        COMMAND ${WORKING_DIR}${BDS_EXE}
+#        WORKING_DIRECTORY ${WORKING_DIR}
+#        COMMENT "Running CRC32 check..."
+#        )

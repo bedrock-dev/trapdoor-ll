@@ -54,7 +54,7 @@ jobs:
       - name: Prepare Release
         run: |
           7z a release.zip ${{github.workspace}}/out
-          python create_release_note.py
+          python ./scripts/create_release_note.py
 
       - name: Publish Release
         uses: softprops/action-gh-release@v1
@@ -64,4 +64,4 @@ jobs:
           files: |
             release.zip
         env:
-          GITHUB_REPOSITORY: hhhxiao/trapdoor-ll
+          GITHUB_REPOSITORY: bedrock-dev/trapdoor-ll
