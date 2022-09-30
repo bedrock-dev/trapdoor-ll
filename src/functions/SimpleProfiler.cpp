@@ -1,8 +1,9 @@
 //
 // Created by xhy on 2022/5/17.
 //
-
 #include "SimpleProfiler.h"
+
+#include <FMT/format.h>
 
 #include <algorithm>
 #include <mc/I18n.hpp>

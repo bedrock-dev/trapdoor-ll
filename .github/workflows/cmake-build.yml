@@ -27,7 +27,7 @@ jobs:
         shell: cmd
 
       - name: Configure CMake
-        run: cmake -B ${{github.workspace}}/build -DBETA=PFF -DDEV=OFF
+        run: cmake -B ${{github.workspace}}/build -DBETA=OFF -DDEV=OFF
 
       - name: Build
         run: cmake --build ${{github.workspace}}/build

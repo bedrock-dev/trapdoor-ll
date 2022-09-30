@@ -1,6 +1,6 @@
 #ifndef _TRAPDOOR_TRAPDOOR_H_
 #define _TRAPDOOR_TRAPDOOR_H_
-
+#include "Windows.h"
 #include "Config.h"
 #include "EventTrigger.h"
 #include "HUDHelper.h"

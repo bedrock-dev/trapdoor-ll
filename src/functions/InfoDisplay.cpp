@@ -1,7 +1,7 @@
 #include "InfoDisplay.h"
 
 #include <mc/Actor.hpp>
-#include <mc/BaseCircuitComponent.hpp>
+// #include <mc/BaseCircuitComponent.hpp>
 #include <mc/Biome.hpp>
 #include <mc/Block.hpp>
 #include <mc/BlockActor.hpp>
