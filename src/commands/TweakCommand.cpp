@@ -2,7 +2,7 @@
 // Created by xhy on 2022/6/29.
 //
 #include "CommandHelper.h"
-#include "Config.h"
+#include "Configuration.h"
 #include "DynamicCommandAPI.h"
 #include "TrapdoorMod.h"
 namespace trapdoor {

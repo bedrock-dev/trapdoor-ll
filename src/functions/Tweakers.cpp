@@ -9,7 +9,7 @@
 #include <mc/ItemStackBase.hpp>
 #include <mc/PistonBlockActor.hpp>
 
-#include "Config.h"
+#include "Configuration.h"
 #include "HookAPI.h"
 #include "TrapdoorMod.h"
 THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_N@Z", void *bs,

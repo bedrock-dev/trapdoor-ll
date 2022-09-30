@@ -13,15 +13,21 @@ extern "C" int64_t __pfnDliFailureHook2 = 0;
 #pragma comment(lib, "../SDK/lib/bedrock_server_var.lib")
 #pragma comment(lib, "../SDK/lib/SymDBHelper.lib")
 #pragma comment(lib, "../SDK/lib/LiteLoader.lib")
-
+#include "config.h"
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
-    auto version = ll::Version(PLUGIN_VERSION_MAJOR, PLUGIN_VERSION_MINOR, PLUGIN_VERSION_REVISION,
-                               ll::Version::Status::Release);
+#ifdef DEV
+    auto v = ll::Version::Status::Dev;
+#else
+    auto v = ll::Version::Status::Release;
+#endif
+
+    auto version =
+        ll::Version(PLUGIN_VERSION_MAJOR, PLUGIN_VERSION_MINOR, PLUGIN_VERSION_REVISION, v);
     switch (ul_reason_for_call) {
         case DLL_PROCESS_ATTACH:
             ll::registerPlugin(PLUGIN_NAME, PLUGIN_INTRODUCTION, version,
-                               "https:github.com/bedrock-dev/trapdoor-ll",
-                               "https:github.com/bedrock-dev/trapdoor-ll", "AGPL");
+                               "https:github.com/bedrock-dev/trapdoor-ll", "AGPL",
+                               "https:github.com/bedrock-dev/trapdoor-ll");
             break;
         case DLL_THREAD_ATTACH:
         case DLL_THREAD_DETACH:

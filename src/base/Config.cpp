@@ -2,10 +2,9 @@
 // Created by xhy on 2022/5/17.
 //
 
-#include "Config.h"
-
 #include "BlockRotateHelper.h"
 #include "CommandHelper.h"
+#include "Configuration.h"
 #include "Msg.h"
 #include "Shortcuts.h"
 #include "TrapdoorMod.h"

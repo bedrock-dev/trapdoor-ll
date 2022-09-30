@@ -110,6 +110,8 @@ namespace trapdoor {
 ?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z
 */
 
+
+
 THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self, unsigned int index,
       ItemStackBase *itemStack) {
     auto &hcm = trapdoor::mod().getHopperChannelManager();
@@ -117,6 +119,8 @@ THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self, un
         original(self, index, itemStack);
         return;
     }
+
+    //Global<Level>->getBlockSource();
 
     auto &ba = dAccess<BlockActor, -200>(self);
     auto *block = ba.getBlock();

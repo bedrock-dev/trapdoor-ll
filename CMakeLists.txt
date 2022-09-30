@@ -1,39 +1,35 @@
 #"C:\Program Files\CMake\bin\cmake.EXE" --no-warn-unused-cli 
 #-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE "-DCMAKE_C_COMPILER:FILEPATH=C:\Program Files\LLVM\bin\clang.exe" "-DCMAKE_CXX_COMPILER:FILEPATH=C:\Program Files\LLVM\bin\clang++.exe" -Sc:/Users/xhy/dev/trapdoor-ll -Bc:/Users/xhy/dev/trapdoor-llild -G "Visual Studio 17 2022"
-#
-
+#Version
 cmake_minimum_required(VERSION 3.16)
-project(Trapdoor)
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_BUILD_TYPE Release)
-set(TRAPDOOR_VERSION 0.19.2)
-set(TEST_NUMBER 12)
-set(GAME_VERSION 1.19.30.04)
-option(DEV "Build as developer version" ON)
-option(BETA "Build as beta version" OFF)
-add_definitions(-DTD_VERSION="${TRAPDOOR_VERSION}")
-add_definitions(-DMC_VERSION="${GAME_VERSION}")
 
-#cmake -=1
+#variables
+set(TRAPDOOR_VERSION 0.19.2)
+set(GAME_VERSION 1.19.30.04)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_BUILD_TYPE Release)
+#set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+string(TIMESTAMP BUILD_TIME "%Y-%m-%d %H:%M:%S")
+set(BUILD_TIME="${BUILD_TIME}")
+
+#configurations
+option(DEV "Build as developer version" ON)
+
+
+project(Trapdoor VERSION ${TRAPDOOR_VERSION})
+
+#export configure file
+configure_file(${PROJECT_SOURCE_DIR}/src/config.h.in ${PROJECT_SOURCE_DIR}/src/include/config.h)
 
 if (${DEV} STREQUAL "ON")
     add_definitions(-DDEV)
     message("Build a developer version")
     set(TARGET_NAME trapdoor-dev)
 else ()
-    message("Build a Player version")
-    if (${BETA} STREQUAL "OFF")
-        message("Build beta version")
-        set(TARGET_NAME trapdoor-${TRAPDOOR_VERSION}-${GAME_VERSION}-beta-${TEST_NUMBER})
-    else ()
-        message("build stable version")
-        set(TARGET_NAME trapdoor-${TRAPDOOR_VERSION}-${GAME_VERSION})
-    endif ()
+    message("Build a release version")
+    set(TARGET_NAME trapdoor-${TRAPDOOR_VERSION}-${GAME_VERSION})
 endif ()
 
-string(TIMESTAMP BUILD_TIME "%Y-%m-%d %H:%M:%S")
-add_definitions(-DBUILD_TIME="${BUILD_TIME}")
 
 file(GLOB_RECURSE SRC_FILES_DIR
         ${PROJECT_SOURCE_DIR}/SDK/Header/*.cpp
