@@ -23,6 +23,7 @@ namespace trapdoor {
         std::string printableNBT(const std::unique_ptr<CompoundTag> &nbt) {
             return nbt->toPrettySNBT(true);
         }
+
         ActionResult getNBTString(const std::unique_ptr<CompoundTag> &nbt,
                                   const std::string &path) {
             if (path.empty()) {
@@ -48,12 +49,12 @@ namespace trapdoor {
             .text(" - type / UID: ")
             .sTextF(TextBuilder::GREEN, "%s    %llx\n", a->getTypeName().c_str(),
                     a->getUniqueID().get())
-            .text(" - Pos/DeltaPos: ")
-            .sTextF(TextBuilder::GREEN, "%s / %s|%s", fromVec3(a->getPos()).toString().c_str(),
-                    fromVec3(a->getPosDelta()).toString().c_str())
+            .text(" - Position: ")
+            .sTextF(TextBuilder::GREEN, "%s\n", fromVec3(a->getPos()).toDetailString().c_str())
+            .text(" - DeltaPos: ")
+            .sTextF(TextBuilder::GREEN, "%s\n", fromVec3(a->getPosDelta()).toDetailString().c_str())
             .text(" - AABB: ")
-            .sTextF(TextBuilder::GREEN, "%s", fromAABB(a->getAABB()).ToString().c_str())
-            .text("\n")
+            .sTextF(TextBuilder::GREEN, "%s\n", fromAABB(a->getAABB()).ToString().c_str())
             .text(" - Surface: ")
             .sTextF(TextBuilder::GREEN, "%d\n", a->isSurfaceMob());
         return {builder.get(), true};
