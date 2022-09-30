@@ -25,6 +25,7 @@ namespace trapdoor {
     std::string TVec3::toDetailString() const {
         return fmt::format("[{:.7f},{:.7f},{:.7f}]", x, y, z);
     }
+
     bool TVec3::operator!=(const TVec3 &v) const { return x != v.x || y != v.y || z != v.z; }
 
     bool TVec3::operator==(const TVec3 &v) const { return x == v.x && y == v.y && z == v.z; }
