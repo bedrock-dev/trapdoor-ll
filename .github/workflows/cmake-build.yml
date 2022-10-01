@@ -54,7 +54,7 @@ jobs:
       - name: Prepare Release
         run: |
           7z a release.zip ${{github.workspace}}/out
-          python ./scripts/create_release_note.py
+          python create_release_note.py
 
       - name: Publish Release
         uses: softprops/action-gh-release@v1

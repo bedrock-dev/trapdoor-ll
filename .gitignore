@@ -12,4 +12,4 @@
 build/*
 /out/*
 .cache
-scripts/run_bds.cmd
+run_bds.cmd
