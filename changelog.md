@@ -1,3 +1,28 @@
+### trapdoor-ll-0.19.5-1.19.22.02
+
+#### **注意**
+
+此版本需要同时安装
+
+- [https://github.com/OEOTYAN/LiteLoaderBDS-CUI/releases/tag/ll.1.0](https://github.com/OEOTYAN/LiteLoaderBDS-CUI/releases/tag/ll.1.0)
+- [https://github.com/OEOTYAN/Trapdoor-CUI/releases/tag/v5.0](https://github.com/OEOTYAN/Trapdoor-CUI/releases/tag/v5.0)
+
+这两个材质包，如果不使用区块边界和史莱姆区块显示功能，可不安装第二个
+
+#### 依赖和版本支持
+
+- 需要LiteLoader 2.7.2 或以上版本
+- 理论上支持1.19.30.04及以上版本
+
+#### 更新日志
+
+- 支持1.19.30.04
+- 新增`village dweller`命令以显示村民所绑定的POI坐标
+- `HUD`新增`villager`选项，功能同上
+- `data entity`会显示更加精确的坐标和速度数据(#37)
+- 现在内建命令`ll list Trapdoor`会显示正确的版本信息了
+- 修复有关漏斗计数器的一系列bug(#38)
+
 ### trapdoor-ll-0.19.1-1.19.22.02
 
 #### **注意**
