@@ -3,6 +3,8 @@
 #include <mc/Block.hpp>
 #include <mc/BlockActor.hpp>
 #include <mc/BlockSource.hpp>
+#include <mc/ChunkPos.hpp>
+#include <mc/Dimension.hpp>
 #include <mc/I18n.hpp>
 #include <mc/Item.hpp>
 #include <mc/ItemStackBase.hpp>
@@ -12,8 +14,22 @@
 #include "HookAPI.h"
 #include "Msg.h"
 #include "TrapdoorMod.h"
-
 namespace trapdoor {
+
+    namespace {
+
+        BlockSource *getProperRegion(Block *block, const BlockPos &pos) {
+            auto cp = fromBlockPos(pos).toChunkPos();
+            for (int i = 0; i < 3; i++) {
+                auto bs = Global<Level>->getDimension(1)->tryGetClosestPublicRegion({cp.x, cp.z});
+                if (bs && &bs->getBlock(pos.x, pos.y, pos.z) == block) {
+                    return bs;
+                }
+            }
+            return nullptr;
+        }
+    }  // namespace
+
     const size_t HopperChannelManager::HOPPER_COUNTER_BLOCK = 236;
     void HopperChannelManager::tick() {
         if (this->enable) {
@@ -110,61 +126,45 @@ namespace trapdoor {
 ?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z
 */
 
-
+#define HOPPER_RET                    \
+    original(self, index, itemStack); \
+    return;
 
 THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self, unsigned int index,
       ItemStackBase *itemStack) {
     auto &hcm = trapdoor::mod().getHopperChannelManager();
+
     if (!hcm.isEnable()) {
-        original(self, index, itemStack);
-        return;
+        HOPPER_RET
     }
 
-    //Global<Level>->getBlockSource();
+    auto &ba = dAccess<BlockActor>(self, -200);
+    auto pos = ba.getPosition();
+    auto cp = trapdoor::fromBlockPos(pos).toChunkPos();
+    auto bs = Global<Level>->getDimension(0)->tryGetClosestPublicRegion({cp.x, cp.z});
 
-    auto &ba = dAccess<BlockActor, -200>(self);
-    auto *block = ba.getBlock();
-    if (!block) {
-        original(self, index, itemStack);
-        return;
-    }
-
-    // get Point Position
-    auto &pos = ba.getPosition();
-    // try to get player
-    Player *nearest = nullptr;
-
-    try {
-        Global<Level>->forEachPlayer([&](Player &player) {
-            auto &b = player.getRegion().getBlock(pos);
-            if (&b == block) {
-                trapdoor::logger().debug("find {}", player.getRealName());
-                nearest = &player;
-                throw std::logic_error("");
-            }
-            return true;
-        });
-    } catch (std::exception &) {
-    }
-    if (!nearest) {
-        original(self, index, itemStack);
-        return;
+    auto block = ba.getBlock();
+    if (!bs || !block) {
+        trapdoor::logger().debug("can not found a BlockSource");
+        HOPPER_RET
     }
 
     auto dir = trapdoor::facingToBlockPos(static_cast<trapdoor::TFACING>(block->getVariant()));
     auto pointPos = BlockPos(pos.x + dir.x, pos.y + dir.y, pos.z + dir.z);
-    auto &pointBlock = nearest->getRegion().getBlock(pointPos);
-    if (pointBlock.getId() != 236) {  // 混凝土
-        original(self, index, itemStack);
-        return;
+    auto &pointBlock = bs->getBlock(pointPos);
+
+    if (pointBlock.getId() != trapdoor::HopperChannelManager::HOPPER_COUNTER_BLOCK) {  // 混凝土
+        HOPPER_RET;
     }
 
     auto ch = pointBlock.getVariant();
     if (ch < 0 || ch > 15 || itemStack->getName().empty()) {
-        original(self, index, itemStack);
-        return;
+        HOPPER_RET;
     }
 
+    trapdoor::logger().debug("{} ==> {}", itemStack->getName(), itemStack->getCount());
     trapdoor::mod().getHopperChannelManager().getChannel(ch).add(itemStack->getName(),
                                                                  itemStack->getCount());
+    itemStack->setNull();
+    HOPPER_RET;
 }
