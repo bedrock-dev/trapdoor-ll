@@ -44,13 +44,15 @@ namespace trapdoor {
         // 更新计数器
         void tick();
 
-        inline bool isEnable() const { return this->enable; }
+        [[nodiscard]] inline bool isEnable() const { return this->enable; }
 
         inline ActionResult setAble(bool able) {
             this->enable = able;
             if (this->enable) {
                 return {"Hopper counter is enable", true};
             } else {
+                this->clearAllData();
+                // TODO: 清楚数据
                 return {"Hopper counter is disable", true};
             }
         }
@@ -61,7 +63,11 @@ namespace trapdoor {
 
         std::string getHUDData(size_t channel);
 
-        void quickPrintData(const BlockPos &pos);
+        inline void clearAllData() {
+            for (auto &ch : this->channels) {
+                ch.reset();
+            }
+        }
     };
 
 }  // namespace trapdoor
