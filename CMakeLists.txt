@@ -125,10 +125,3 @@ add_custom_command(TARGET ${TARGET_NAME} PRE_BUILD
         COMMAND cmd /c ${PROJECT_SOURCE_DIR}/prepareLib.cmd ${PROJECT_SOURCE_DIR}
         COMMENT "Preparing Library"
         )
-
-#
-#add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-#        COMMAND ${WORKING_DIR}${BDS_EXE}
-#        WORKING_DIRECTORY ${WORKING_DIR}
-#        COMMENT "Running CRC32 check..."
-#        )
