@@ -3,6 +3,9 @@
 #include <mc/Block.hpp>
 #include <mc/BlockActor.hpp>
 #include <mc/BlockSource.hpp>
+#include <mc/ChunkPos.hpp>
+#include <mc/Dimension.hpp>
+#include <mc/HopperBlockActor.hpp>
 #include <mc/I18n.hpp>
 #include <mc/Item.hpp>
 #include <mc/ItemStackBase.hpp>
@@ -12,9 +15,10 @@
 #include "HookAPI.h"
 #include "Msg.h"
 #include "TrapdoorMod.h"
-
 namespace trapdoor {
+
     const size_t HopperChannelManager::HOPPER_COUNTER_BLOCK = 236;
+
     void HopperChannelManager::tick() {
         if (this->enable) {
             for (auto &channel : channels) {
@@ -24,6 +28,10 @@ namespace trapdoor {
     }
 
     ActionResult HopperChannelManager::modifyChannel(size_t channel, int opt) {
+        if (!this->enable) {
+            return {"Hopper counter is disabled", false};
+        }
+
         if (channel < 0 || channel > 15) {
             return {"Invalid channel number", false};
         } else {
@@ -38,17 +46,19 @@ namespace trapdoor {
 
     ActionResult HopperChannelManager::quickModifyChannel(Player *player, const BlockPos &pos,
                                                           int opt) {
+        if (!this->enable) {
+            return {"Hopper counter is disabled", false};
+        }
         if (!player) return ErrorPlayerNeed();
         auto &bs = player->getRegion();
         auto &b = bs.getBlock(pos);
         if (b.getId() != HOPPER_COUNTER_BLOCK) {
             return {"", true};
         }
+
         auto ch = b.getVariant();
         return modifyChannel(ch, opt);
     }
-
-    void HopperChannelManager::quickPrintData(const BlockPos &pos) {}
 
     std::string HopperChannelManager::getHUDData(size_t channel) {
         if (channel < 0 || channel > 15) return "";
@@ -81,15 +91,23 @@ namespace trapdoor {
 
         if (!simple) {
             builder.text("Channel: ").sTextF(TB::BOLD | TB::WHITE, "%d \n", channel);
-            builder.text("Total ")
+            builder
+                .text("Total ")
+                // total items number
                 .num(n)
+                // total speed
+                .text(" items (")
+                .num(static_cast<float>(n) * 1.0f / static_cast<float>(gameTick) * 72000)
+                .text("/h)")
+                // time
                 .text(" in ")
                 .num(gameTick)
+                // time in hour
                 .text(" gt (")
                 .num(static_cast<float>(gameTick) / 72000.0f)
                 .text(" h)\n");
         } else {
-            builder.textF("%d (%.1f h))\n", n, static_cast<float>(gameTick) / 72000.0f);
+            builder.textF("%d,(%.1f h))\n", n, static_cast<float>(gameTick) / 72000.0f);
         }
 
         for (const auto &i : counterList) {
@@ -110,57 +128,54 @@ namespace trapdoor {
 ?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z
 */
 
+#define HOPPER_RET                    \
+    original(self, index, itemStack); \
+    return;
+
+namespace {
+    BlockSource *hopperRegion;
+}
+
+THook(void, "?tick@HopperBlockActor@@UEAAXAEAVBlockSource@@@Z", HopperBlockActor *self,
+      BlockSource *region) {
+    hopperRegion = region;
+    original(self, region);
+}
+
 THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self, unsigned int index,
       ItemStackBase *itemStack) {
     auto &hcm = trapdoor::mod().getHopperChannelManager();
     if (!hcm.isEnable()) {
-        original(self, index, itemStack);
-        return;
+        HOPPER_RET
+    }
+    if (!hopperRegion) {
+        trapdoor::logger().debug("Invalid Hopper region");
     }
 
-    auto &ba = dAccess<BlockActor, -200>(self);
-    auto *block = ba.getBlock();
+    auto &ba = dAccess<BlockActor>(self, -200);
+    auto pos = ba.getPosition();
+
+    auto block = ba.getBlock();
     if (!block) {
-        original(self, index, itemStack);
-        return;
-    }
-
-    // get Point Position
-    auto &pos = ba.getPosition();
-    // try to get player
-    Player *nearest = nullptr;
-
-    try {
-        Global<Level>->forEachPlayer([&](Player &player) {
-            auto &b = player.getRegion().getBlock(pos);
-            if (&b == block) {
-                trapdoor::logger().debug("find {}", player.getRealName());
-                nearest = &player;
-                throw std::logic_error("");
-            }
-            return true;
-        });
-    } catch (std::exception &) {
-    }
-    if (!nearest) {
-        original(self, index, itemStack);
-        return;
+        trapdoor::logger().debug("Invalid Block Actor");
+        HOPPER_RET
     }
 
     auto dir = trapdoor::facingToBlockPos(static_cast<trapdoor::TFACING>(block->getVariant()));
-    auto pointPos = BlockPos(pos.x + dir.x, pos.y + dir.y, pos.z + dir.z);
-    auto &pointBlock = nearest->getRegion().getBlock(pointPos);
-    if (pointBlock.getId() != 236) {  // 混凝土
-        original(self, index, itemStack);
-        return;
+    auto &pointBlock = hopperRegion->getBlock(pos + BlockPos(dir.x, dir.y, dir.z));
+
+    if (pointBlock.getId() != trapdoor::HopperChannelManager::HOPPER_COUNTER_BLOCK) {  // 混凝土
+        HOPPER_RET;
     }
 
     auto ch = pointBlock.getVariant();
     if (ch < 0 || ch > 15 || itemStack->getName().empty()) {
-        original(self, index, itemStack);
-        return;
+        HOPPER_RET;
     }
 
+    // trapdoor::logger().debug("{} ==> {}", itemStack->getName(), itemStack->getCount());
     trapdoor::mod().getHopperChannelManager().getChannel(ch).add(itemStack->getName(),
                                                                  itemStack->getCount());
+    itemStack->setNull();
+    HOPPER_RET;
 }

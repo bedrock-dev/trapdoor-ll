@@ -1,5 +1,5 @@
 #pragma once
-
+#include "config.h"
 #define PLUGIN_VERSION_DEV 0
 #define PLUGIN_VERSION_BETA 1
 #define PLUGIN_VERSION_RELEASE 2
@@ -10,9 +10,9 @@
 #define PLUGIN_NAME "Trapdoor"
 #define PLUGIN_INTRODUCTION "Useful mod for technical players"
 #define PLUGIN_AUTHOR "hhhxiao"
-#define PLUGIN_VERSION_MAJOR 1
-#define PLUGIN_VERSION_MINOR 0
-#define PLUGIN_VERSION_REVISION 0
+#define PLUGIN_VERSION_MAJOR Trapdoor_VERSION_MAJOR
+#define PLUGIN_VERSION_MINOR Trapdoor_VERSION_MINOR
+#define PLUGIN_VERSION_REVISION Trapdoor_VERSION_PATCH
 #define PLUGIN_VERSION_BUILD 0
 #define PLUGIN_VERSION_STATUS PLUGIN_VERSION_DEV
 

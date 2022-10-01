@@ -1,7 +1,6 @@
 #ifndef _TRAPDOOR_TRAPDOOR_H_
 #define _TRAPDOOR_TRAPDOOR_H_
-#include "Windows.h"
-#include "Config.h"
+#include "Configuration.h"
 #include "EventTrigger.h"
 #include "HUDHelper.h"
 #include "HopperCounter.h"
@@ -11,6 +10,7 @@
 #include "SlimeChunkHelper.h"
 #include "SpawnAnalyzer.h"
 #include "VillageHelper.h"
+#include "Windows.h"
 
 namespace trapdoor {
     class TrapdoorMod {

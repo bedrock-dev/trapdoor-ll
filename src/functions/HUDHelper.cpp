@@ -10,7 +10,7 @@
 #include <mc/Player.hpp>
 
 #include "CommandHelper.h"
-#include "Config.h"
+#include "Configuration.h"
 #include "DataConverter.h"
 #include "HopperCounter.h"
 #include "MCTick.h"

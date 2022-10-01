@@ -7,6 +7,7 @@
 #include "Events.h"
 #include "LoggerAPI.h"
 #include "SysInfoHelper.h"
+#include "config.h"
 #define REG_COMMAND(c)                                         \
     auto cfg_##c = cmdCfg.getCommandConfig(#c);                \
     if (cfg_##c.enable) {                                      \
@@ -39,8 +40,9 @@ namespace trapdoor {
 
         void printCopyrightInfo() {
             logger().info("");
-            logger().info("Trapdoor : {}-{} Under AGPL License", TD_VERSION, MC_VERSION);
-            logger().info("Build time: {}", BUILD_TIME);
+            logger().info("Trapdoor : {}-{} Under AGPL License", STR(TRAPDOOR_VERSION),
+                          STR(GAME_VERSION));
+            logger().info("Build time: {}", STR(BUILD_TIME));
             logger().info(
                 "Visit out github page for more info:  "
                 "https://github.com/bedrock-dev/trapdoor-ll/");

@@ -16,7 +16,7 @@
 #include "HookAPI.h"
 #include "Msg.h"
 #include "Utils.h"
-enum SpawnBlockRequirements;
+enum class SpawnBlockRequirements;
 class SpawnConditions;
 class MobSpawnRules;
 namespace trapdoor {

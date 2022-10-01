@@ -69,7 +69,7 @@ namespace trapdoor {
         }
 
         if (pos == BlockPos::MAX) {
-            return {"Get blockName failure", false};
+            return {"Get block failure", false};
         }
         auto &b = p->getRegion().getBlock(pos);
         trapdoor::TextBuilder builder;
@@ -85,9 +85,12 @@ namespace trapdoor {
         }
 
         builder.sText(trapdoor::TextBuilder::AQUA, "Base:\n")
+            .text(" - Ptr: ")
+            .sTextF(trapdoor::TextBuilder::GREEN, "%p\n", &b)
             .text(" - Name / Type: ")
             .sTextF(trapdoor::TextBuilder::GREEN, "%s / %s\n", b.getName().c_str(),
                     b.getTypeName().c_str())
+
             .text(" - ID / RTID: ")
             .sTextF(trapdoor::TextBuilder::GREEN, "%d / %d\n", b.getId(), b.getRuntimeId())
             .text(" - Variant: ")

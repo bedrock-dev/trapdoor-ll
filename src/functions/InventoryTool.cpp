@@ -10,7 +10,7 @@
 #include <mc/ItemStack.hpp>
 #include <mc/Material.hpp>
 
-#include "Config.h"
+#include "Configuration.h"
 #include "Msg.h"
 #include "TrapdoorMod.h"
 #include "Utils.h"

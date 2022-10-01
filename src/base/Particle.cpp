@@ -5,7 +5,7 @@
 #include <mc/Dimension.hpp>
 #include <mc/Vec3.hpp>
 
-#include "Config.h"
+#include "Configuration.h"
 #include "Global.h"
 #include "TBlockPos.h"
 #include "TVec3.h"
