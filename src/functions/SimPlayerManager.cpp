@@ -65,7 +65,7 @@ namespace trapdoor {
         }
 
         void writeEmptyInvToFile(const std::string& playerName) {
-            trapdoor::logger().debug("Clear player {}' inventory due to death");
+            trapdoor::logger().debug("Clear player {}' inventory due to death", playerName);
             const std::string path =
                 "./plugins/trapdoor/sim/" + std::to_string(do_hash(playerName.c_str()));
             namespace fs = std::filesystem;
@@ -462,10 +462,9 @@ namespace trapdoor {
         return {builder.get(), true};
     }
     void SimPlayerManager::processDieEvent(const string& name) {
-        trapdoor::logger().debug("player {} try disconnect", name);
+        trapdoor::logger().debug("player {} try disconnect due to death", name);
         auto iter = this->simPlayers.find(name);
         if (iter == this->simPlayers.end()) return;
-
         // 如果没开死亡不掉落就清空玩家背包
         if (!enableKeepInventory()) {
             writeEmptyInvToFile(name);
