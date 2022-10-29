@@ -70,6 +70,8 @@ namespace trapdoor {
     void setup_slimeCommand(int);
     void setup_triggerCommand(int);
 
+    void setup_randCommand(int);
+
 }  // namespace trapdoor
 
 #endif  // TRAPDOOR_COMMAND_HELPER_H

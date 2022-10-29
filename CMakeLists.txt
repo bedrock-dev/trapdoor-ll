@@ -60,6 +60,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/commands/TrapdoorCommand.cpp
         src/commands/TweakCommand.cpp
         src/commands/SlimeChunkCommand.cpp
+        src/commands/RandCommand.cpp
         src/data/TVec3.cpp
         src/data/TBlockPos.cpp
         src/data/TAABB.cpp
@@ -92,6 +93,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/functions/Tweakers.cpp
         src/functions/InventoryTool.cpp
         src/functions/SlimeChunkHelper.cpp
+        src/functions/RandomTweaker.cpp
         src/pch.cpp
         src/Plugin.cpp
         src/dllmain.cpp

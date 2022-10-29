@@ -67,6 +67,10 @@
     "trigger": {
       "enable": true,
       "permission-level": 0
+    },
+    "rand": {
+      "enable": true,
+      "permission-level": 0
     }
   },
   "basic-config": {
