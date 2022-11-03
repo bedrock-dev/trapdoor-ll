@@ -4,8 +4,8 @@
 cmake_minimum_required(VERSION 3.16)
 
 #variables
-set(TRAPDOOR_VERSION 0.19.5)
-set(GAME_VERSION 1.19.30.04)
+set(TRAPDOOR_VERSION 0.20.0)
+set(GAME_VERSION 1.19.40.02)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE Release)
 

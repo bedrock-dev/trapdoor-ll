@@ -36,7 +36,7 @@ namespace trapdoor {
             REG_COMMAND(dis)
             REG_COMMAND(slime)
             REG_COMMAND(trigger)
-            REG_COMMAND(rand)
+            // REG_COMMAND(rand)
         }
 
         void printCopyrightInfo() {

@@ -54,10 +54,10 @@ namespace trapdoor {
     }
 }  // namespace trapdoor
 
-THook(__int64, "?_genRandInt32@Random@Core@@AEAAIXZ", void* self) {
-    auto& rtInfo = trapdoor::getRandRtInfo("normal");
-    if (rtInfo.type == trapdoor::Normal && rtInfo.status == trapdoor::Fixed) {
-        return rtInfo.fixedValue;
-    }
-    return original(self);
-}
+// THook(__int64, "?_genRandInt32@Random@Core@@AEAAIXZ", void* self) {
+//     auto& rtInfo = trapdoor::getRandRtInfo("normal");
+//     if (rtInfo.type == trapdoor::Normal && rtInfo.status == trapdoor::Fixed) {
+//         return rtInfo.fixedValue;
+//     }
+//     return original(self);
+// }
