@@ -1,4 +1,40 @@
-### trapdoor-ll-0.19.5-1.19.22.02
+### trapdoor-ll-0.20.0-1.19.40.02
+
+#### **注意**
+
+此版本需要同时安装
+
+- [https://github.com/OEOTYAN/LiteLoaderBDS-CUI/releases/tag/ll.1.0](https://github.com/OEOTYAN/LiteLoaderBDS-CUI/releases/tag/ll.1.0)
+- [https://github.com/OEOTYAN/Trapdoor-CUI/releases/tag/v5.0](https://github.com/OEOTYAN/Trapdoor-CUI/releases/tag/v5.0)
+
+这两个材质包，如果不使用区块边界和史莱姆区块显示功能，可不安装第二个
+
+#### 依赖和版本支持
+
+- 需要LiteLoader 2.8.0 或以上版本
+- 理论上支持1.19.40.02及以上版本
+
+#### 更新日志
+
+- 支持1.19.40.02
+
+----
+
+Both the follow 2 resource packs are required
+
+- [https://github.com/OEOTYAN/LiteLoaderBDS-CUI/releases/tag/ll.1.0](https://github.com/OEOTYAN/LiteLoaderBDS-CUI/releases/tag/ll.1.0)
+- [https://github.com/OEOTYAN/Trapdoor-CUI/releases/tag/v5.0](https://github.com/OEOTYAN/Trapdoor-CUI/releases/tag/v5.0)
+
+#### Dependencies and Version Support
+
+- Requires LiteLoader 2.8.0 or above
+- Theoretically supports 1.19.40.02 and above
+
+#### Changelog
+
+- Support 1.19.40.02
+
+### trapdoor-ll-0.19.5-1.19.30.04
 
 #### **注意**
 
