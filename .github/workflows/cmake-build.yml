@@ -22,7 +22,7 @@ jobs:
 
       - name: Build Bedrock Library
         run: |
-          cd SDK/Tools
+          cd SDK-cpp/Tools
           LibraryBuilder.exe -o ..\Lib D:\BDS
         shell: cmd
 

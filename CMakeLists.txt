@@ -4,8 +4,8 @@
 cmake_minimum_required(VERSION 3.16)
 
 #variables
-set(TRAPDOOR_VERSION 0.20.0)
-set(GAME_VERSION 1.19.40.02)
+set(TRAPDOOR_VERSION 0.21.0)
+set(GAME_VERSION 1.19.50.02)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE Release)
 
@@ -99,8 +99,8 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/dllmain.cpp
         )
 
-include_directories(SDK/include)
-include_directories(SDK/include/llapi)
+include_directories(SDK-cpp/include)
+include_directories(SDK-cpp/include/llapi)
 include_directories(${PROJECT_SOURCE_DIR}/src/include)
 link_directories(.)
 
