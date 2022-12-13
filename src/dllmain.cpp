@@ -9,10 +9,10 @@
 extern "C" int64_t __pfnDliNotifyHook2 = 0;
 extern "C" int64_t __pfnDliFailureHook2 = 0;
 
-#pragma comment(lib, "../SDK/lib/bedrock_server_api.lib")
-#pragma comment(lib, "../SDK/lib/bedrock_server_var.lib")
-#pragma comment(lib, "../SDK/lib/SymDBHelper.lib")
-#pragma comment(lib, "../SDK/lib/LiteLoader.lib")
+#pragma comment(lib, "../SDK-cpp/lib/bedrock_server_api.lib")
+#pragma comment(lib, "../SDK-cpp/lib/bedrock_server_var.lib")
+#pragma comment(lib, "../SDK-cpp/lib/SymDBHelper.lib")
+#pragma comment(lib, "../SDK-cpp/lib/LiteLoader.lib")
 #include "config.h"
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
 #ifdef DEV

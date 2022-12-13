@@ -176,6 +176,6 @@ THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self, un
     // trapdoor::logger().debug("{} ==> {}", itemStack->getName(), itemStack->getCount());
     trapdoor::mod().getHopperChannelManager().getChannel(ch).add(itemStack->getName(),
                                                                  itemStack->getCount());
-    itemStack->setNull();
+    itemStack->setNull(nullptr);
     HOPPER_RET;
 }

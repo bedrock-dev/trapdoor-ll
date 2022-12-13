@@ -9,6 +9,10 @@ namespace trapdoor {
     std::string rmmc(const std::string &s);
 
     std::string i18ActorName(const std::string &name);
+    template <typename T>
+    T *unwrap_shard_ptr_ref(SharePtrRefTraits<T> *ref) {
+        return reinterpret_cast<T *>(ref);
+    }
 
 }  // namespace trapdoor
 

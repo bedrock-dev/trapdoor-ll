@@ -9,7 +9,7 @@
 #include "Global.h"
 #include "TBlockPos.h"
 #include "TVec3.h"
-
+#include "Utils.h"
 
 namespace trapdoor {
     namespace {
@@ -53,11 +53,11 @@ namespace trapdoor {
        // 对外使用tr自己的vec3，调api时使用自己的
     void spawnParticle(const TVec3& pos, const std::string& type, int dimID) {
         Vec3 p(pos.x, pos.y, pos.z);
-        auto* d = Global<Level>->getDimension(dimID);
+        auto dim_ref = Global<Level>->getDimension(dimID).mHandle.lock();
+        auto* d = trapdoor::unwrap_shard_ptr_ref(dim_ref.get());
         auto pvd = trapdoor::mod().getConfig().getBasicConfig().particleViewDistance2D;
         if (d->distanceToNearestPlayerSqr2D(p) > pvd) return;
-
-        Global<Level>->spawnParticleEffect(type, p, Global<Level>->getDimension(dimID));
+        Global<Level>->spawnParticleEffect(type, p, d);
     }
 
     std::string buildLienParticleType(int length, TFACING direction, PCOLOR color,

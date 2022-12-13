@@ -35,9 +35,9 @@ endif ()
 
 
 file(GLOB_RECURSE SRC_FILES_DIR
-        ${PROJECT_SOURCE_DIR}/SDK/Header/*.cpp
-        ${PROJECT_SOURCE_DIR}/SDK/Header/*.hpp
-        ${PROJECT_SOURCE_DIR}/SDK/Header/*.h
+        ${PROJECT_SOURCE_DIR}/SDK-cpp/Header/*.cpp
+        ${PROJECT_SOURCE_DIR}/SDK-cpp/Header/*.hpp
+        ${PROJECT_SOURCE_DIR}/SDK-cpp/Header/*.h
 
         src/commands/TriggerCommand.cpp
         src/commands/TrapdoorCommand.cpp
