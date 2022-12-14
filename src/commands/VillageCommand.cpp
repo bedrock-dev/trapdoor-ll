@@ -23,6 +23,7 @@ namespace trapdoor {
         command->mandatory("village", ParamType::Enum, optOther,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
+
         command->mandatory("onoroff", ParamType::Bool);
         command->optional("vid", ParamType::SoftEnum, command->setSoftEnum("vid", {}));
         // command->mandatory("vid", ParamType::String);

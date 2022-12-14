@@ -24,7 +24,7 @@ namespace trapdoor {
         command->mandatory("hsa", ParamType::Enum, placeEnum,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("onoroff", ParamType::Bool);
-        command->mandatory("blockName", ParamType::Block);
+        // command->mandatory("blockName", ParamType::Block);
 
         command->addOverload({showEnum, "onoroff"});
         command->addOverload({cleanEnum});
