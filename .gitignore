@@ -13,3 +13,4 @@ build/*
 /out/*
 .cache
 run_bds.cmd
+.build

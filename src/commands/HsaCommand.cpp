@@ -16,19 +16,18 @@ namespace trapdoor {
 
         auto &showEnum = command->setEnum("showSubCommand", {"show"});
         auto &cleanEnum = command->setEnum("cleanSubCommand", {"clear"});
-        auto &placeEnum = command->setEnum("placeSubCommand", {"place"});
+       // auto &placeEnum = command->setEnum("placeSubCommand", {"place"});
         command->mandatory("hsa", ParamType::Enum, showEnum,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("hsa", ParamType::Enum, cleanEnum,
                            CommandParameterOption::EnumAutocompleteExpansion);
-        command->mandatory("hsa", ParamType::Enum, placeEnum,
-                           CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("onoroff", ParamType::Bool);
+       // command->mandatory("hsa", ParamType::Enum, placeEnum,CommandParameterOption::EnumAutocompleteExpansion);
         // command->mandatory("blockName", ParamType::Block);
 
         command->addOverload({showEnum, "onoroff"});
         command->addOverload({cleanEnum});
-        command->addOverload({placeEnum, "blockName"});
+       // command->addOverload({placeEnum, "blockName"});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
@@ -42,9 +41,6 @@ namespace trapdoor {
                     break;
                 case do_hash("clear"):
                     trapdoor::mod().getHsaManager().clear().sendTo(output);
-                    break;
-                case do_hash("place"):
-                    // results["blockName"].get<Block>();
                     break;
             }
         };
