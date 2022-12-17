@@ -13,7 +13,8 @@ namespace trapdoor {
         Redstone = 3,
         Counter = 4,
         Chunk = 5,
-        Unknown = 6,
+        Cont = 7, //容器，写全名会和原版容器冲突
+        Unknown = 8,
     };
 
     struct PlayerHudInfo {

@@ -35,10 +35,22 @@ namespace trapdoor {
             auto& cs = player->getDimension().getCircuitSystem();
             auto& graph = getCircuitSceneGraph(&cs);
             auto comp = graph.getBaseComponent(pointBlock.getPosition());
-            if (!comp) {
-                return "Signal: -\n";
+
+            std::string redstone_signal = "-";
+            std::string container_signal = "-";
+
+            if(comp){
+                redstone_signal = std::to_string(comp->getStrength());
             }
-            return "Signal: " + std::to_string(comp->getStrength()) + "\n";
+
+            auto *block = pointBlock.getBlock();
+            if(block && block->hasComparatorSignal()){
+
+                container_signal =  std::to_string(block->getComparatorSignal(player->getRegion(),pointBlock.getPosition(),
+                                                                        static_cast<unsigned  char >(FaceID::East)));
+            }
+
+            return fmt::format("Signal: {} / {}\n",redstone_signal,container_signal);
         }
 
         std::string buildHopperCounter(Player* player) {
@@ -54,6 +66,18 @@ namespace trapdoor {
 
             return "";
         }
+
+        std::string  buildContainerInfo(Player * player){
+//            TextBuilder b;
+//            auto pointBlock = reinterpret_cast<Actor*>(player)->getBlockFromViewVector();
+//            if (pointBlock.isNull()) return "";
+//            auto* block = pointBlock.getBlock();
+//            if(!block || !block->isContainerBlock())return  "";
+//           // block->getComparatorSignal();
+            return  "";
+        }
+
+
 
         std::string buildBaseHud(Player* player) {
             TextBuilder b;
@@ -103,6 +127,7 @@ namespace trapdoor {
             if (str == "redstone") return HUDInfoType::Redstone;
             if (str == "mspt") return HUDInfoType::Mspt;
             if (str == "chunk") return HUDInfoType::Chunk;
+            if (str == "container") return HUDInfoType::Cont;
             return HUDInfoType::Unknown;
         }
 
@@ -146,6 +171,9 @@ namespace trapdoor {
                 }
                 if (cfg[HUDInfoType::Counter]) {
                     s += buildHopperCounter(p);
+                }
+                if(cfg[HUDInfoType::Cont]){
+                    s += buildContainerInfo(p);
                 }
                 p->sendText(s, TextType::TIP);
             }
