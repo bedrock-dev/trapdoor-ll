@@ -19,7 +19,7 @@ body:
     label: 您认为还缺少什么?如何解决您的问题?
     description: 简明扼要地描述你想要什么
     placeholder: |
-      e.g. 我想要一个新的监听事件...
+      e.g. 我想要一个新的功能...
 - type: markdown
   attributes:
     value: |

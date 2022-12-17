@@ -1,4 +1,4 @@
-name: "[English]"
+name: "[English] Bug Report"
 description: "Report a bug to us to make trapdoor better"
 labels: [ "bug" ]
 body:
