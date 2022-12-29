@@ -80,6 +80,10 @@ namespace trapdoor {
         for (auto &m : this->actorInfo) {
             m.clear();
         }
+
+        for (auto &pt : this->ptCounter) {
+            pt.clear();
+        }
     }
 
     void SimpleProfiler::start(size_t round, SimpleProfiler::Type t) {
@@ -151,7 +155,38 @@ namespace trapdoor {
 
         trapdoor::broadcastMessage(builder.get());
     }
-    void SimpleProfiler::printPendingTicks() const {}
+    void SimpleProfiler::printPendingTicks() const {
+        trapdoor::logger().debug("print Pending ticks info!!");
+        const static std::string dims[] = {"Overworld", "Nether", "The end"};
+        TextBuilder builder;
+        double totalTime = 0.0;
+        for (int i = 0; i < 3; i++) {
+            auto &pt_data = this->ptCounter[i];
+            if (!pt_data.empty()) {
+                builder.sTextF(TextBuilder::AQUA | TextBuilder::BOLD, "-- %s --\n",
+                               dims[i].c_str());
+                std::vector<std::pair<TBlockPos2, size_t>> v;
+                for (auto &kv : pt_data) {
+                    assert(!kv.second.empty());
+                    v.emplace_back(kv);
+                }
+
+                std::sort(
+                    v.begin(), v.end(),
+                    [](const std::pair<TBlockPos2, size_t> &p1,
+                       const std::pair<TBlockPos2, size_t> &p2) { return p1.second > p2.second; });
+
+                if (v.size() > 10) v.resize(10);
+                for (auto &item : v) {
+                    builder.text(" - ")
+                        .sTextF(TextBuilder::GREEN, "%s   ", item.first.toString().c_str())
+                        .textF("%d\n", item.second);
+                }
+            }
+        }
+        TextBuilder bu;
+        trapdoor::broadcastMessage(bu.get() + builder.get());
+    }
     void SimpleProfiler::printBasics() const {
         /*
   ServerLevel::tick

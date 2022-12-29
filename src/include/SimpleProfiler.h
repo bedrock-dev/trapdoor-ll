@@ -27,15 +27,15 @@ namespace trapdoor {
     struct MSPTInfo {
         std::deque<int64_t> values;
 
-        int64_t mean() const;
+        [[nodiscard]] int64_t mean() const;
 
         void push(int64_t value);
 
-        int64_t min() const;
+        [[nodiscard]] int64_t min() const;
 
-        int64_t max() const;
+        [[nodiscard]] int64_t max() const;
 
-        std::pair<int64_t, int64_t> pairs() const;
+        [[nodiscard]] std::pair<int64_t, int64_t> pairs() const;
     };
 
     struct ChunkProfileInfo {
@@ -45,7 +45,7 @@ namespace trapdoor {
         microsecond_t pendingTickTime = 0;
         size_t totalTickTime = 0;
 
-        inline size_t getChunkNumber() const {
+        [[nodiscard]] inline size_t getChunkNumber() const {
             size_t num = 0;
             for (auto &m : chunk_counter) {
                 num += m.size();
@@ -116,6 +116,8 @@ namespace trapdoor {
         microsecond_t serverLevelTickTime = 0;  // mspt
         microsecond_t dimensionTickTime = 0;    // 区块加载卸载&村庄
         microsecond_t entitySystemTickTime = 0;
+
+        std::array<std::map<TBlockPos2, size_t>, 3> ptCounter{};
 
         void print() const;
 

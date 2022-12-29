@@ -88,9 +88,9 @@ namespace trapdoor {
 
         TBlockPos2(int _x, int _z) : x(_x), z(_z) {}
         TBlockPos2() : TBlockPos2(0, 0) {}
-        std::string toString() const;
+        [[nodiscard]] std::string toString() const;
 
-        bool isSlimeChunk() const;
+        [[nodiscard]] bool isSlimeChunk() const;
 
         bool operator<(const TBlockPos2 &rhs) const;
 

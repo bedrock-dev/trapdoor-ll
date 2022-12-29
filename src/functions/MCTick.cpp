@@ -8,17 +8,17 @@
 #include <mc/Vec3.hpp>
 
 #include "CommandHelper.h"
+#include "DataConverter.h"
 #include "HookAPI.h"
 #include "LoggerAPI.h"
 #include "Msg.h"
 #include "SimpleProfiler.h"
 #include "TrapdoorMod.h"
 
-
 namespace trapdoor {
     namespace {
 
-        // In-file variablle;
+        // In-file variable;
 
         TickingInfo &getTickingInfo() {
             static TickingInfo info;
@@ -317,11 +317,22 @@ THook(void, "?tickBlockEntities@LevelChunk@@QEAAXAEAVBlockSource@@@Z", void *chu
 THook(bool,
       "?tickPendingTicks@BlockTickingQueue@@QEAA_NAEAVBlockSource@@AEBUTick@@H_"
       "N@Z",
-      void *queue, void *bs, uint64_t until, int max, bool instalTick) {
+      trapdoor::BlockTickingQueue *queue, BlockSource *bs, uint64_t until, int max,
+      bool instalTick) {
     max = trapdoor::mod().getConfig().getTweakConfig().maxPendingTickSize;
     auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
         TIMER_START
+        if (!queue->next.queue.empty()) {
+            // 记录PT数据
+            auto tickData = queue->next.queue[0].data;
+            auto chunkPos = trapdoor::fromBlockPos(tickData.pos).toChunkPos();
+            auto dimId = static_cast<int>(bs->getDimension().getDimensionId());
+
+            auto current = prof.ptCounter[dimId][chunkPos];
+            prof.ptCounter[dimId][chunkPos] = std::max(current, queue->next.queue.size());
+        }
+
         auto res = original(queue, bs, until, max, instalTick);
         TIMER_END
         prof.chunkInfo.pendingTickTime += timeResult;
