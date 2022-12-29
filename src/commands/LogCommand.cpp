@@ -37,16 +37,26 @@ namespace trapdoor {
         auto &optMain = command->setEnum("main", {"mspt", "os"});
         auto &optSeed = command->setEnum("seeds", {"levelseed", "enchantseed"});
 
+        auto &optPendingTick = command->setEnum("pts", {"pt"});
+
         command->mandatory("log", ParamType::Enum, optMain,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("log", ParamType::Enum, optSeed,
                            CommandParameterOption::EnumAutocompleteExpansion);
+
+        command->mandatory("log", ParamType::Enum, optPendingTick,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+
+        command->optional("blockPos", ParamType::BlockPos);
+
         command->addOverload({optMain});
         command->addOverload({optSeed});
+        command->addOverload({optPendingTick, "blockPos"});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
+            auto pos = results["blockPos"].isSet ? results["p1"].get<BlockPos>() : BlockPos::MAX;
             switch (do_hash(results["log"].getRaw<std::string>().c_str())) {
                 case do_hash("mspt"):
                     trapdoor::printMSPT().sendTo(output);
@@ -59,6 +69,9 @@ namespace trapdoor {
                     break;
                 case do_hash("enchantseed"):
                     getPlayerEnchantSeed(origin.getPlayer()).sendTo(output);
+                    break;
+                case do_hash("pt"):
+                    trapdoor::getPendingTickInfo(origin.getPlayer(), pos).sendTo(output);
                     break;
                 default:
                     break;

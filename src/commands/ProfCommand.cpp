@@ -44,7 +44,8 @@ namespace trapdoor {
                     trapdoor::startProfiler(tickTime, SimpleProfiler::Entity).sendTo(output);
                     break;
                 case do_hash("pt"):
-                    ErrorMsg("Function is developing by developer").sendTo(output);
+                    trapdoor::startProfiler(tickTime, SimpleProfiler::PendingTick).sendTo(output);
+                    // ErrorMsg("Function is developing by developer").sendTo(output);
                     break;
             }
         };

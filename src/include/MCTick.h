@@ -1,8 +1,35 @@
 #ifndef TRAPDOOR_GAME_TICK_H
 #define TRAPDOOR_GAME_TICK_H
+#include <mc/Block.hpp>
+#include <mc/BlockPos.hpp>
+
 #include "SimpleProfiler.h"
 namespace trapdoor {
     struct ActionResult;
+
+    // Data structures for Pending Tick
+    struct TTickNextTickData {
+        BlockPos pos;
+        Block* block{nullptr};
+        uint64_t tick{0};
+        int priorityOffset{};
+    };
+
+    struct TBlockTick {
+        bool removed{};
+        TTickNextTickData data;
+    };
+    struct TTickDataSet {
+        std::vector<TBlockTick> queue;
+    };
+    struct TBlockTickingQueue {
+        void* owningChunk{nullptr};
+        uint64_t currentTick{0};
+        TTickDataSet next;
+        TTickDataSet active;
+        bool queueType{};
+        bool installTick{};
+    };
 
     enum class TickingStatus { Normal, Forwarding, SlowDown, Frozen, Acc, Warp };
 
@@ -39,6 +66,9 @@ namespace trapdoor {
     ActionResult cancelWorld();
 
     ActionResult startProfiler(int rounds, SimpleProfiler::Type type);
+
+    // PT info;
+    ActionResult getPendingTickInfo(Player* player, const BlockPos& p);
 
 }  // namespace trapdoor
 #endif
