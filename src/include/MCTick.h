@@ -22,7 +22,7 @@ namespace trapdoor {
     struct TTickDataSet {
         std::vector<TBlockTick> queue;
     };
-    struct BlockTickingQueue {
+    struct TBlockTickingQueue {
         void* owningChunk{nullptr};
         uint64_t currentTick{0};
         TTickDataSet next;
@@ -66,6 +66,9 @@ namespace trapdoor {
     ActionResult cancelWorld();
 
     ActionResult startProfiler(int rounds, SimpleProfiler::Type type);
+
+    // PT info;
+    ActionResult getPendingTickInfo(Player* player, const BlockPos& p);
 
 }  // namespace trapdoor
 #endif

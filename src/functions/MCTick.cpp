@@ -14,7 +14,7 @@
 #include "Msg.h"
 #include "SimpleProfiler.h"
 #include "TrapdoorMod.h"
-
+#include "Utils.h"
 namespace trapdoor {
     namespace {
 
@@ -181,6 +181,60 @@ namespace trapdoor {
         auto tps = 1000.0 / trapdoor::getMeanMSPT();
         return tps > 20.0 ? 20.0 : tps;
     }
+    ActionResult getPendingTickInfo(Player *player, const BlockPos &position) {
+        if (!player) return trapdoor::ErrorPlayerNeed();
+        bool printAll = false;
+        auto p = position;
+
+        if (p == BlockPos::MAX) {
+            p = player->getPosition().toBlockPos();
+            printAll = true;
+        }
+
+        auto chunkPos = fromBlockPos(p).toChunkPos();
+        auto chunk = player->getBlockSource()->getChunk(chunkPos.x, chunkPos.z);
+        if (!chunk) {
+            return ErrorMsg("Can not get chunk info");
+        }
+
+        auto *queue = reinterpret_cast<TBlockTickingQueue *>(&chunk->getTickQueue());
+        if (!queue) {
+            return ErrorMsg("can not get block ticking queue");
+        }
+
+        auto buildPtItem = [](const trapdoor::TBlockTick &pt, size_t currentTick) -> std::string {
+            trapdoor::TextBuilder b;
+            b.text(" - ")
+                .sTextF(trapdoor::TB::AQUA, "[%d %d %d]", pt.data.pos.x, pt.data.pos.y,
+                        pt.data.pos.z)
+                .textF(" %s ", trapdoor::rmmc(pt.data.block->getName().getString()).c_str())
+                .sTextF(trapdoor::TB::GREEN, " %zu / %d ", pt.data.tick, pt.data.tick - currentTick)
+                .text(" p: ")
+                .sTextF(trapdoor::TB::GREEN, "%d", pt.data.priorityOffset)
+                .text(" v: ")
+                .sTextF(trapdoor::TB::GREEN, "%d", !pt.removed);
+            return b.get();
+        };
+
+        trapdoor::TextBuilder b;
+        if (printAll) {
+            b.sTextF(trapdoor::TB::AQUA, "-- [%d %d] Tick = %zu, Total %d Pts--\n", chunkPos.x,
+                     chunkPos.z, queue->currentTick, queue->next.queue.size());
+            for (auto &pt : queue->next.queue) {
+                b.textF("%s\n", buildPtItem(pt, queue->currentTick).c_str());
+            }
+
+        } else {
+            for (auto &pt : queue->next.queue) {
+                if (pt.data.pos == p) {
+                    b.textF("%s\n", buildPtItem(pt, queue->currentTick).c_str());
+                    break;
+                }
+            }
+        }
+
+        return {b.get(), true};
+    }
 
 }  // namespace trapdoor
 
@@ -317,7 +371,7 @@ THook(void, "?tickBlockEntities@LevelChunk@@QEAAXAEAVBlockSource@@@Z", void *chu
 THook(bool,
       "?tickPendingTicks@BlockTickingQueue@@QEAA_NAEAVBlockSource@@AEBUTick@@H_"
       "N@Z",
-      trapdoor::BlockTickingQueue *queue, BlockSource *bs, uint64_t until, int max,
+      trapdoor::TBlockTickingQueue *queue, BlockSource *bs, uint64_t until, int max,
       bool instalTick) {
     max = trapdoor::mod().getConfig().getTweakConfig().maxPendingTickSize;
     auto &prof = trapdoor::normalProfiler();
