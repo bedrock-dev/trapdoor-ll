@@ -6,8 +6,8 @@
 #include "Version.h"
 #include "pch.h"
 
-extern "C" int64_t __pfnDliNotifyHook2 = 0;
-extern "C" int64_t __pfnDliFailureHook2 = 0;
+extern "C" int64_t __pfnDliNotifyHook2 = 0;   // NOLINT
+extern "C" int64_t __pfnDliFailureHook2 = 0;  // NOLINT
 
 #pragma comment(lib, "../SDK-cpp/lib/bedrock_server_api.lib")
 #pragma comment(lib, "../SDK-cpp/lib/bedrock_server_var.lib")
@@ -32,6 +32,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
         case DLL_THREAD_ATTACH:
         case DLL_THREAD_DETACH:
         case DLL_PROCESS_DETACH:
+        default:
             break;
     }
     return TRUE;

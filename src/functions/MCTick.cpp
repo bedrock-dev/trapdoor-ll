@@ -57,7 +57,6 @@ namespace trapdoor {
             default:
                 return {"unknown", true};
         }
-        return {"unknown", true};
     }
     ActionResult freezeWorld() {
         auto &info = getTickingInfo();

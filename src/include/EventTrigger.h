@@ -27,7 +27,7 @@ namespace trapdoor {
         void broadcastMessage(TrEventType eventType, const std::string& msg) const;
         ActionResult eventAction(const std::string& name, const std::string& eventName, int action);
 
-        ActionResult listEvents(const std::string& name) const;
+        [[nodiscard]] ActionResult listEvents(const std::string& name) const;
 
        private:
         std::unordered_map<TrEventType, std::unordered_set<std::string>> subscribeInfo;

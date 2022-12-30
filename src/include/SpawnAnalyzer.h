@@ -19,7 +19,7 @@ namespace trapdoor {
         ActionResult clear();
         ActionResult start(int id, const TBlockPos2& pos);
         ActionResult stop();
-        ActionResult printResult() const;
+        [[nodiscard]] ActionResult printResult() const;
 
        private:
         void collectDensityInfo();

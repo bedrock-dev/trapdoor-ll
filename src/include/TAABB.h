@@ -12,7 +12,7 @@ namespace trapdoor {
         TVec3 p2{};
         inline TAABB(const TVec3& pos1, const TVec3& pos2) : p1(pos1), p2(pos2) {}
 
-        inline std::string ToString() const {
+        [[nodiscard]] inline std::string ToString() const {
             return "[" + p1.toString() + ", " + p2.toString() + "]";
         }
     };

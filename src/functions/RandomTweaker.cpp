@@ -38,7 +38,7 @@ namespace trapdoor {
         }
     }  // namespace
 
-    ActionResult trapdoor::tweakFixedRandomNumber(const std::string& type, int value) {
+    ActionResult tweakFixedRandomNumber(const std::string& type, int value) {
         auto& info = getRandRtInfo(type);
         if (info.type == UnknownRand) {
             return ErrorMsg("Unknown random type");

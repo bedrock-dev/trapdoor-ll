@@ -61,7 +61,7 @@ namespace trapdoor {
     }
 
     std::string HopperChannelManager::getHUDData(size_t channel) {
-        if (channel < 0 || channel > 15) return "";
+        if (channel > 15) return "";
         auto &ch = this->getChannel(channel);
         return ch.info();
     }

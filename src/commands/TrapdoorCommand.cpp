@@ -66,7 +66,6 @@ namespace trapdoor {
                 //                    20);
                 trapdoor::logger().info("Crashed");
                 abort();
-                return {"", true};
             } else {
                 return {"Error token", false};
             }

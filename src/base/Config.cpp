@@ -202,7 +202,7 @@ namespace trapdoor {
     bool Configuration::readTweakConfigs() {
         try {
             auto det = this->config["default-enable-tweaks"];
-            auto& mod = trapdoor::mod();
+            [[maybe_unused]] auto& mod = trapdoor::mod();
             auto forcePlace = det["force-place-level"].get<int>();
             auto forceOpenContainer = det["force-open-container"].get<bool>();
             auto dropperNoCost = det["dropper-no-cost"].get<bool>();

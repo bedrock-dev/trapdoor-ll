@@ -59,21 +59,21 @@ namespace trapdoor {
 
         bool operator!=(const TBlockPos &v) const;
 
-        double distanceTo(const TBlockPos &blockPos) const;
+        [[nodiscard]] double distanceTo(const TBlockPos &blockPos) const;
 
         friend std::ostream &operator<<(std::ostream &os, const TBlockPos &vec3);
 
-        TVec3 toVec3() const;
+        [[nodiscard]] TVec3 toVec3() const;
 
-        std::string toString() const;
+        [[nodiscard]] std::string toString() const;
 
         std::vector<TBlockPos> getNeighbourPos();
 
         std::vector<TBlockPos> getPlainNeighbourPos();
 
-        TBlockPos2 toChunkPos() const;
+        [[nodiscard]] TBlockPos2 toChunkPos() const;
 
-        TBlockPos2 InChunkOffset() const;
+        [[nodiscard]] TBlockPos2 InChunkOffset() const;
 
         int operator*(const TBlockPos &pos) const;
 

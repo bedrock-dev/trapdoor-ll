@@ -119,5 +119,5 @@ namespace trapdoor {
 
         return {builder.get(), true};
     }
-    void initCPU() { auto _ = getCPUInfo(); }
+    void initCPU() { [[maybe_unused]] auto _ = getCPUInfo(); }
 }  // namespace trapdoor

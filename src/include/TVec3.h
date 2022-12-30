@@ -37,13 +37,13 @@ namespace trapdoor {
 
         TVec3 operator*(float times) const;
 
-        double distanceTo(const TVec3 &vec3) const;
+        [[nodiscard]] double distanceTo(const TVec3 &vec3) const;
 
-        std::string toString() const;
+        [[nodiscard]] std::string toString() const;
 
-        std::string toDetailString() const;
+        [[nodiscard]] std::string toDetailString() const;
 
-        TBlockPos toBlockPos() const;
+        [[nodiscard]] TBlockPos toBlockPos() const;
     };
 }  // namespace trapdoor
 

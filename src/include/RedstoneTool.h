@@ -16,4 +16,4 @@ namespace trapdoor {
 
 }  // namespace trapdoor
 
-#endif  // TRAPDOOR_REDSTONETOOL_H
+#endif  // TRAPDOOR_REDSTONE_TOOL_H

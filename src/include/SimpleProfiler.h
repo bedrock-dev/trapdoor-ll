@@ -93,7 +93,7 @@ namespace trapdoor {
             pendingRemove = 0;
         }
 
-        inline microsecond_t sum() const {
+        [[nodiscard]] inline microsecond_t sum() const {
             return signalUpdate + pendingAdd + pendingRemove + pendingUpdate;
         }
     };

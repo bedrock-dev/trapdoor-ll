@@ -131,24 +131,24 @@ namespace trapdoor {
 
                 for (auto &kv : dim_data) {
                     assert(!kv.second.empty());
-                    auto time =
-                        micro_to_mill(std::accumulate(kv.second.begin(), kv.second.end(), 0ull)) /
-                        static_cast<double>(kv.second.size());
+                    auto time = micro_to_mill(std::accumulate(kv.second.begin(), kv.second.end(),
+                                                              static_cast<microsecond_t>(0))) /
+                                static_cast<double>(kv.second.size());
                     v.emplace_back(kv.first, time);
                 }
 
-                auto sort_count = std::min(v.size(), static_cast<size_t>(5));
+                auto sort_count = std::min(static_cast<long long>(v.size()), 5ll);
                 std::partial_sort(v.begin(), v.begin() + sort_count, v.end(),
                                   [](const std::pair<trapdoor::TBlockPos2, double> &p1,
                                      const std::pair<trapdoor::TBlockPos2, double> &p2) {
                                       return p1.second > p2.second;
                                   });
 
-                for (int i = 0; i < sort_count; i++) {
+                for (int j = 0; j < sort_count; j++) {
                     builder.text(" - ")
-                        .sTextF(TextBuilder::GREEN, "[%d %d]   ", v[i].first.x * 16 + 8,
-                                v[i].first.z * 16 + 8)
-                        .textF("%.3f ms\n", v[i].second);
+                        .sTextF(TextBuilder::GREEN, "[%d %d]   ", v[j].first.x * 16 + 8,
+                                v[j].first.z * 16 + 8)
+                        .textF("%.3f ms\n", v[j].second);
                 }
             }
         }
@@ -159,7 +159,6 @@ namespace trapdoor {
         trapdoor::logger().debug("print Pending ticks info!!");
         const static std::string dims[] = {"Overworld", "Nether", "The end"};
         TextBuilder builder;
-        double totalTime = 0.0;
         for (int i = 0; i < 3; i++) {
             auto &pt_data = this->ptCounter[i];
             if (!pt_data.empty()) {
@@ -206,7 +205,7 @@ namespace trapdoor {
 
         const double divide = 1000.0 * static_cast<double>(totalRound);
         trapdoor::logger().debug("divide = {}", divide);
-        auto cf = [divide](microsecond_t time) { return time * 1.0f / divide; };
+        auto cf = [divide](microsecond_t time) { return static_cast<float>(time) * 1.0f / divide; };
         auto mspt = cf(serverLevelTickTime);
         int tps = mspt <= 50 ? 20 : static_cast<int>(1000.0 / mspt);
         auto res = fmt::format(
@@ -232,8 +231,9 @@ namespace trapdoor {
             /*entities system & dimension*/
             cf(entitySystemTickTime), cf(dimensionTickTime),  //
             /*chunks*/
-            cf(chunkInfo.totalTickTime), cf(chunkInfo.blockEntitiesTickTime),
-            cf(chunkInfo.randomTickTime), cf(chunkInfo.pendingTickTime));
+            cf(static_cast<microsecond_t>(chunkInfo.totalTickTime)),
+            cf(chunkInfo.blockEntitiesTickTime), cf(chunkInfo.randomTickTime),
+            cf(chunkInfo.pendingTickTime));
         trapdoor::broadcastMessage(res);
     }
 

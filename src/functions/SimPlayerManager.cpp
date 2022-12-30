@@ -266,7 +266,7 @@ namespace trapdoor {
     ActionResult SimPlayerManager::attackSchedule(const std::string& name, Player* origin,
                                                   int repType, int interval, int times) {
         GET_FREE_PLAYER(sim)
-        Actor* target = nullptr;
+        Actor* target{nullptr};
         ActorUniqueID uid;
         if (origin) {
             auto* playerActor = reinterpret_cast<Actor*>(origin);

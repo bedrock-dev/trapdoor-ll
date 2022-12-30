@@ -143,7 +143,7 @@ namespace trapdoor {
             int rep = results["repeatType"].isSet ? 1 : 0;
             int itemId =
                 results["itemId"].isSet ? results["itemId"].getRaw<CommandItem>().getId() : 0;
-            int slot = results["slot"].isSet ? results["slot"].get<int>() : -1;
+            [[maybe_unused]] int slot = results["slot"].isSet ? results["slot"].get<int>() : -1;
             auto blockPos =
                 results["blockPos"].isSet ? results["blockPos"].get<BlockPos>() : BlockPos::MAX;
 

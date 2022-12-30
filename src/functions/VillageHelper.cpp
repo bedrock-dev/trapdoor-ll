@@ -21,7 +21,6 @@
 #include "TBlockPos.h"
 #include "TrapdoorMod.h"
 
-
 namespace trapdoor {
     namespace {
         enum DwellerType { Villager = 0, IronGolem = 1, Cat = 2, XXX = 3 };
@@ -269,7 +268,7 @@ namespace trapdoor {
                 "POIS:\n      Bed               |         Alarm          |     "
                 "              Work         |\n");
         auto map = Village_getDwellerPOIMap(vill);
-        bool existAlarm = false;
+        [[maybe_unused]] bool existAlarm = false;
         for (auto &villager : map) {
             for (int index = 0; index < 3; ++index) {
                 if (index == 0) {
@@ -340,10 +339,11 @@ namespace trapdoor {
                 for (int i = 0; i < 3; i++) {
                     const auto &poi = iter->second[i].lock();
                     if (poi) {
-                        builder.textF("%s: [%d %d %d], %d/%d  %.2f  %zu\n", poi->getTypeName(),
-                                      poi->getPosition().x, poi->getPosition().y,
-                                      poi->getPosition().z, poi->getOwnerCount(),
-                                      poi->getOwnerCapacity(), poi->getRadius(), poi->getWeight());
+                        builder.textF("%s: [%d %d %d], %d/%d  %.2f  %zu\n",
+                                      poi->getTypeName().c_str(), poi->getPosition().x,
+                                      poi->getPosition().y, poi->getPosition().z,
+                                      poi->getOwnerCount(), poi->getOwnerCapacity(),
+                                      poi->getRadius(), poi->getWeight());
                         if (highlight) {
                             trapdoor::shortHighlightBlock(fromBlockPos(poi->getPosition()),
                                                           PCOLOR::TEAL, 0);

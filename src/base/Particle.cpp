@@ -56,7 +56,7 @@ namespace trapdoor {
         auto dim_ref = Global<Level>->getDimension(dimID).mHandle.lock();
         auto* d = trapdoor::unwrap_shard_ptr_ref(dim_ref.get());
         auto pvd = trapdoor::mod().getConfig().getBasicConfig().particleViewDistance2D;
-        if (d->distanceToNearestPlayerSqr2D(p) > pvd) return;
+        if (d->distanceToNearestPlayerSqr2D(p) > static_cast<float>(pvd)) return;
         Global<Level>->spawnParticleEffect(type, p, d);
     }
 

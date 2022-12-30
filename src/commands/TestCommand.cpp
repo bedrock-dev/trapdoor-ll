@@ -44,9 +44,9 @@ namespace trapdoor {
                         auto color = trapdoor::PCOLOR::GREEN;
                         if (bright < 8) color = trapdoor::PCOLOR::YELLOW;
                         if (bright < 1) color = trapdoor::PCOLOR::RED;
-                        trapdoor::spawnNumParticle(
-                            trapdoor::TVec3(p.x + 0.5f, p.y + 0.2f, p.z + 0.5f), (int)bright, color,
-                            0);
+                        //                        trapdoor::spawnNumParticle(
+                        //                            trapdoor::TVec3(p.x + 0.5f, p.y + 0.2f, p.z +
+                        //                            0.5f), (int)bright, color, 0);
                     }
                 }
             }
