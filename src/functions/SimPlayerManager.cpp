@@ -279,7 +279,7 @@ namespace trapdoor {
         auto task = [this, name, sim, uid]() {
             CHECK_SURVIVAL
             auto t = Global<Level>->fetchEntity(uid, true);
-            if (t) {
+            if (t && t != sim) {
                 sim->simulateAttack(t);
             } else {
                 sim->simulateAttack();
