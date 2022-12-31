@@ -173,9 +173,11 @@ THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self, un
         HOPPER_RET;
     }
 
-    // trapdoor::logger().debug("{} ==> {}", itemStack->getName(), itemStack->getCount());
+    trapdoor::logger().debug("{} ==> {}", itemStack->getName(), itemStack->getCount());
     trapdoor::mod().getHopperChannelManager().getChannel(ch).add(itemStack->getName(),
                                                                  itemStack->getCount());
-    itemStack->setNull(nullptr);
-    HOPPER_RET;
+    // trapdoor::logger().debug("set null {}", reinterpret_cast<uint64_t>(itemStack));
+    itemStack->remove(64);
+    // trapdoor::logger().debug("remove finish");
+    //  HOPPER_RET;
 }
