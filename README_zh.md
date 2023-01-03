@@ -13,13 +13,13 @@
 
 这是[LiteLoaderBDS](https://github.com/LiteLDev/LiteLoaderBDS)版本的[TrapDoor](https://github.com/hhhxiao/TrapDoor)，仅支持MCBE 1.19+.
 
-Trapdoor是一个受到JE的[carpet mod](https://github.com/gnembon/fabric-carpet)写的基岩版BDS插件，它为技术玩家提供了大量有用的功能，包括但不限于：
+Trapdoor是一个以[carpet mod](https://github.com/gnembon/fabric-carpet)灵感(模板)写的基岩版BDS插件，它为技术玩家提供了大量有用的功能，包括但不限于：
 - 改变世界运行速度
 - 村庄边界，铁傀儡刷新区域可视化
 - 测量服务器的MSPT和TPS
 - 假人生成和行为控制
 
-此外，本插件**绝对不会在不通知玩家的前提下修改原版游戏特性**，也**不会对玩家的存档产生任何影响**,因此本插件非常适合用在原版生点电服。
+此外，本插件**绝对不会在不通知玩家的前提下修改原版游戏特性**，也**不会对玩家的存档产生任何影响**,因此本插件非常适合用在原版生电服。
 
 ## Quick start
 
