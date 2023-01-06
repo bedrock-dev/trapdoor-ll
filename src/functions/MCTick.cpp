@@ -124,8 +124,8 @@ namespace trapdoor {
     ActionResult accWorld(int times) {
         auto &info = getTickingInfo();
         if (info.status == TickingStatus::Normal) {
-            if (times < 2 || times > 10) {
-                return {"times show be limited in [2,10]", false};
+            if (times < 2 || times > 100) {
+                return ErrorRange("acc time", 2, 100);
             }
             info.accTime = times;
             info.status = TickingStatus::Acc;
@@ -138,8 +138,8 @@ namespace trapdoor {
     }
 
     ActionResult startProfiler(int rounds, SimpleProfiler::Type type) {
-        if (rounds <= 0 || rounds > 1200) {
-            return {"Rounds show be limited in [1,1200]", false};
+        if (rounds <= 0 || rounds > 12000) {
+            return {"Rounds show be limited in [1,12000]", false};
         }
 
         auto &info = getTickingInfo();
@@ -277,7 +277,7 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
         auto mean_mspt = trapdoor::micro_to_mill(trapdoor::getMSPTinfo().mean());
         int max_wrap_time = static_cast<int>(45.0 / mean_mspt);
         // 最快10倍速
-        max_wrap_time = std::min(max_wrap_time, 10);
+        max_wrap_time = std::min(max_wrap_time, 10000);
         // 当前gt要跑的次数
         int m = std::min(max_wrap_time, info.remainWarpTick);
         for (int i = 0; i < m; i++) {
