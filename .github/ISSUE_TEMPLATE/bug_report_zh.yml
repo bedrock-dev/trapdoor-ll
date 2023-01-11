@@ -1,6 +1,6 @@
 name: "[简体中文] 报告漏洞/问题"
 description: "向我们报告漏洞/问题以让Trapdoor变得更好"
-labels: [ "bug" ]
+labels: [ "bug","pending"]
 body:
 
   - type: input
