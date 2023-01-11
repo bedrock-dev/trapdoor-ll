@@ -2,8 +2,11 @@
 
 #include <mc/Container.hpp>
 #include <mc/ItemStack.hpp>
+#include <mc/OwnerStorageEntity.hpp>
+#include <mc/ServerNetworkHandler.hpp>
 #include <mc/SimpleContainer.hpp>
 #include <mc/SimulatedPlayer.hpp>
+#include <mc/StackResultStorageEntity.hpp>
 
 #include "Msg.h"
 #include "Nlohmann/json.hpp"
@@ -16,7 +19,7 @@ namespace trapdoor {
 #define GET_FREE_PLAYER(sim)                                       \
     auto*(sim) = this->tryFetchSimPlayer(name, true);              \
     if (!(sim)) {                                                  \
-        return {"Player dose not exists or in scheduling", false}; \
+        return {"Player does not exists or in scheduling", false}; \
     }
 
 #define ADD_TASK                                            \
@@ -427,8 +430,9 @@ namespace trapdoor {
         if (origin) {
             // 是玩家召唤的
             auto rot = origin->getRotation();
-            sim->teleport(origin->getPos() - Vec3(0.0f, 1.62001f, 0.0f), dimID, rot.x, rot.y);
+            sim->teleport(origin->getPos(), dimID, rot.x, rot.y);
         }
+
         this->simPlayers[name] = {name, sim, ScheduleTask()};
         tryReadInvFromFile(sim->getInventory(), name);
         this->refreshCommandSoftEnum();
@@ -573,7 +577,22 @@ namespace trapdoor {
         ADD_TASK
         return {"", true};
     }
+    ActionResult SimPlayerManager::getSimPlayerInfo(const string& name) {
+        GET_FREE_PLAYER(sim)
+        trapdoor::TextBuilder builder;
+        builder.textF("- Name: %s\n", sim->getName().c_str())
+            .textF("- Xuid: %s\n", sim->getXuid().c_str())
+            .textF("- Uid: %ld\n", sim->getUniqueID().get())
+            .textF("- Game mode: %d\n", static_cast<int>(sim->getPlayerGameType()))
+            .textF("- Command Permission level: %d\n",
+                   static_cast<int>(sim->getCommandPermissionLevel()))
+            .textF("- Input speed: %.2f\n", sim->_getInputSpeed())
+            .textF("- Spawn chunk limit: %d\n", sim->_getSpawnChunkLimit());
+        return {builder.get(), true};
+    }
 
+    // 独立于LLAPI之外的假人生成函数
+    SimulatedPlayer* SimPlayerManager::createSimPlayer(const string& name) { return nullptr; }
 }  // namespace trapdoor
 
 // 定时保存背包数据(异步)，不使用异步是因为可能造成数据不同步然后刷物品

@@ -74,6 +74,8 @@ namespace trapdoor {
 
         ActionResult followActor(const std::string& name, Player* player);
 
+        ActionResult getSimPlayerInfo(const std::string& name);
+
         void cancel(const std::string& name);
 
         void stopAction(const std::string& name);
@@ -82,6 +84,7 @@ namespace trapdoor {
 
        private:
         void refreshCommandSoftEnum();
+        static SimulatedPlayer* createSimPlayer(const std::string& name);
 
         std::unordered_map<std::string, SimInfo> simPlayers;
         const DynamicCommandInstance* cmdInstance = nullptr;

@@ -13,7 +13,7 @@ namespace trapdoor {
                                                      static_cast<CommandPermissionLevel>(level));
 
         // 我知道dropall放这里很不好，但是凑合用吧
-        auto spawnOpt = command->setEnum("spawnOpt", {"spawn", "despawn", "dropall"});
+        auto spawnOpt = command->setEnum("spawnOpt", {"spawn", "despawn", "dropall", "info"});
         auto behOpt = command->setEnum("behOpt", {"lookat", "moveto", "navto"});
         auto intOpt = command->setEnum("intOpt", {"interact"});
         auto destroyOpt = command->setEnum("destroyOpt", {"destroy"});
@@ -146,7 +146,6 @@ namespace trapdoor {
             [[maybe_unused]] int slot = results["slot"].isSet ? results["slot"].get<int>() : -1;
             auto blockPos =
                 results["blockPos"].isSet ? results["blockPos"].get<BlockPos>() : BlockPos::MAX;
-
             switch (do_hash(results["player"].getRaw<std::string>().c_str())) {
                 case do_hash("spawn"):
                     trapdoor::mod()
@@ -160,7 +159,9 @@ namespace trapdoor {
                 case do_hash("despawn"):
                     trapdoor::mod().getSimPlayerManager().removePlayer(name).sendTo(output);
                     break;
-
+                case do_hash("info"):
+                    trapdoor::mod().getSimPlayerManager().getSimPlayerInfo(name).sendTo(output);
+                    break;
                 case do_hash("lookat"):
                     trapdoor::mod()
                         .getSimPlayerManager()
