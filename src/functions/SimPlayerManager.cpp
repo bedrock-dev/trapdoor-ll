@@ -413,7 +413,7 @@ namespace trapdoor {
     }
 
     ActionResult SimPlayerManager::addPlayer(const std::string& name, const BlockPos& p, int dimID,
-                                             Player* origin) {
+                                             int gameMode, Player* origin) {
         auto iter = this->simPlayers.find(name);
         if (iter != simPlayers.end() && iter->second.simPlayer) {
             return {"Player has already existed", false};
@@ -432,7 +432,7 @@ namespace trapdoor {
             auto rot = origin->getRotation();
             sim->teleport(origin->getPos(), dimID, rot.x, rot.y);
         }
-
+        sim->setPlayerGameType(static_cast<GameType>(gameMode));
         this->simPlayers[name] = {name, sim, ScheduleTask()};
         tryReadInvFromFile(sim->getInventory(), name);
         this->refreshCommandSoftEnum();
@@ -462,7 +462,6 @@ namespace trapdoor {
                 builder.textF("  %d @ [%d %d %d]\n", static_cast<int>(dim), pos.x, pos.y, pos.z);
             }
         }
-
         return {builder.get(), true};
     }
     void SimPlayerManager::processDieEvent(const string& name) {
@@ -504,7 +503,10 @@ namespace trapdoor {
                 nlohmann::json j = {{"x", pos.x},
                                     {"y", pos.y - 1},
                                     {"z", pos.z},
-                                    {"dim", (int)p->getDimensionId()}};
+                                    {"dim", (int)p->getDimensionId()},
+                                    {"mode", (int)p->getPlayerGameType()}
+
+                };
                 obj[sim.first] = j;
             }
         }
@@ -533,9 +535,11 @@ namespace trapdoor {
                 auto x = value["x"].get<float>();
                 auto y = value["y"].get<float>();
                 auto z = value["z"].get<float>();
-                this->addPlayer(name, {x, y, z}, dim, nullptr);
+                auto mode = value["mode"].get<int>();
+                this->addPlayer(name, {x, y, z}, dim, mode, nullptr);
                 trapdoor::logger().warn("Spawn sim player [{}] at {},{},{} in dim {}", name, x, y,
                                         z, dim);
+
                 //    tempConfig.enable = value["enable"].get<bool>();
             }
         } catch (const std::exception& e) {
@@ -552,6 +556,7 @@ namespace trapdoor {
             }
         }
     }
+
     ActionResult SimPlayerManager::followActor(const std::string& name, Player* player) {
         if (!player) {
             return ErrorPlayerNeed();

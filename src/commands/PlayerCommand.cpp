@@ -153,6 +153,7 @@ namespace trapdoor {
                         .addPlayer(
                             trapdoor::mod().getConfig().getBasicConfig().simPlayerPrefix + name,
                             origin.getBlockPosition(), origin.getDimension()->getDimensionId(),
+                            static_cast<int>(origin.getPlayer()->getPlayerGameType()),
                             origin.getPlayer())
                         .sendTo(output);
                     break;
