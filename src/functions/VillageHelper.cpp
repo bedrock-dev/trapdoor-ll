@@ -319,7 +319,18 @@ namespace trapdoor {
     }
 
     ActionResult VillageHelper::setShowVillagerHeadInfo(bool able) {
-        this->showHeadInfo = true;
+        this->showHeadInfo = able;
+        if (!this->showHeadInfo) {
+            for (auto &kv : this->vs_) {
+                auto *village = kv.second;
+                if (!village) continue;
+                auto map = Village_getDwellerPOIMap(village);
+                for (auto &info : map) {
+                    auto actor = Global<Level>->fetchEntity(info.first, false);
+                    actor->setNameTag("");
+                }
+            }
+        }
         return {"", true};
     }
 
