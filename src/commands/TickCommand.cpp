@@ -34,10 +34,10 @@ namespace trapdoor {
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
-            if (static_cast<int>(origin.getOriginType()) == 1) {
-                output.error("Tick command cannot be executed inside a command block");
-                return;
-            }
+            //            if (static_cast<int>(origin.getOriginType()) == 1) {
+            //                output.error("Tick command cannot be executed inside a command
+            //                block"); return;
+            //            }
 
             switch (do_hash(results["tick"].getRaw<std::string>().c_str())) {
                 case do_hash("acc"):
@@ -47,8 +47,6 @@ namespace trapdoor {
                     trapdoor::slowDownWorld(results["times"].getRaw<int>()).sendTo(output);
                     break;
                 case do_hash("forward"):
-                    // trapdoor::forwardWorld(results["tickNumber"].getRaw<int>()).sendTo(output);
-                    // break;
                 case do_hash("fw"):
                     trapdoor::forwardWorld(results["tickNumber"].getRaw<int>()).sendTo(output);
                     break;
@@ -56,17 +54,14 @@ namespace trapdoor {
                     trapdoor::warpWorld(results["tickNumber"].getRaw<int>()).sendTo(output);
                     break;
                 case do_hash("freeze"):
-                    // trapdoor::freezeWorld().sendTo(output);
-                    // break;
                 case do_hash("fz"):
                     trapdoor::freezeWorld().sendTo(output);
                     break;
                 case do_hash("reset"):
-                    // trapdoor::resetWorld().sendTo(output);
-                    // break;
                 case do_hash("r"):
                     trapdoor::resetWorld().sendTo(output);
                     break;
+
                 case do_hash("query"):
                     trapdoor::queryWorld().sendTo(output);
                 default:

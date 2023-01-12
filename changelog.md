@@ -1,3 +1,33 @@
+### trapdoor-ll-0.22.0-1.19.50.02
+
+#### 依赖和版本支持
+
+- 需要LiteLoader 2.9.0 或以上版本
+- 支持1.19.50.x以及1.19.51.x及以上版本
+
+#### 更新日志
+
+- `hud redstone`现在会显示容器能提供的比较器信号
+- 添加`prof pt`子命令用于评估区块内计刻数量
+- 添加 `log pt`子命令用于显示区块内所有计划刻的详细信息
+- 修复假人会攻击自己的问题
+- 移除`tick`命令的部分倍率限制以及不能在命令方块内执行的限制
+- 添加 `player info`命令用于显示假人的部分元数据信息
+- 修复召唤假人时其游戏模式可能和召唤者不一致的问题
+- 修复`village head`无法关闭村民头顶信息显示的问题
+- 调高部分命令的权限等级
+- 修复一些typo
+
+----
+
+#### Dependencies and Version Support
+
+- Requires LiteLoader 2.9.0 or above
+- Supports 1.19.50.x and 1.19.51.x
+
+#### Changelog
+
+- Support 1.19.5x
 
 ### trapdoor-ll-0.21.0-1.19.50.02
 
@@ -34,10 +64,6 @@ Both the follow 2 resource packs are required
 #### Changelog
 
 - Support 1.19.5x
-
-
-
-
 
 ### trapdoor-ll-0.20.0-1.19.40.02
 
