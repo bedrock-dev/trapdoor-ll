@@ -11,7 +11,7 @@ set(CMAKE_BUILD_TYPE Release)
 
 #set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 string(TIMESTAMP BUILD_TIME "%Y-%m-%d %H:%M:%S")
-set(BUILD_TIME="${BUILD_TIME}")
+set(BUILD_TIME= "${BUILD_TIME}")
 
 #configurations
 option(DEV "Build as developer version" ON)

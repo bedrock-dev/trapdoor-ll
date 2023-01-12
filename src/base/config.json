@@ -54,7 +54,7 @@
     },
     "tweak": {
       "enable": true,
-      "permission-level": 0
+      "permission-level": 1
     },
     "dis": {
       "enable": true,
@@ -65,11 +65,11 @@
       "permission-level": 0
     },
     "trigger": {
-      "enable": true,
+      "enable": false,
       "permission-level": 0
     },
     "rand": {
-      "enable": true,
+      "enable": false,
       "permission-level": 0
     }
   },
