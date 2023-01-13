@@ -48,6 +48,8 @@ namespace trapdoor {
 
     inline ActionResult ErrorPosition() { return {"A position needed", false}; }
 
+    inline ActionResult ErrorDeveloping() { return {"Function is in developing", false}; }
+
     void registerShortcutCommand(const std::string &shortcut,
                                  const std::vector<std::string> &actions);
     void setup_tickCommand(int);

@@ -1,6 +1,8 @@
 #include <DynamicCommandAPI.h>
 
+#include <mc/ChunkSource.hpp>
 #include <mc/Container.hpp>
+#include <mc/Dimension.hpp>
 #include <mc/ItemStack.hpp>
 #include <mc/OwnerStorageEntity.hpp>
 #include <mc/ServerNetworkHandler.hpp>
@@ -13,6 +15,39 @@
 #include "ScheduleAPI.h"
 #include "SimPlayerHelper.h"
 #include "TrapdoorMod.h"
+#include "Utils.h"
+
+// from liteloaderBDS
+// https://github.com/LiteLDev/LiteLoaderBDS/blob
+// /9b0c794d05d98ed3c9a920d7923e9bd6a5d08e91/LiteLoader/src/llapi/SimulatedPlayerAPI.cpp#L40
+
+template <>
+class OwnerPtrT<struct EntityRefTraits> {
+    char filler[24];
+
+   public:
+    MCAPI ~OwnerPtrT();
+
+    inline OwnerPtrT(OwnerPtrT&& right) noexcept {
+        void (OwnerPtrT::*rv)(OwnerPtrT && right);
+        *((void**)&rv) = dlsym("??0OwnerStorageEntity@@IEAA@$$QEAV0@@Z");
+        (this->*rv)(std::move(right));
+    }
+    inline OwnerPtrT& operator=(OwnerPtrT&& right) noexcept {
+        void (OwnerPtrT::*rv)(OwnerPtrT && right);
+        *((void**)&rv) = dlsym("??4OwnerStorageEntity@@IEAAAEAV0@$$QEAV0@@Z");
+        (this->*rv)(std::move(right));
+    }
+
+    inline SimulatedPlayer* tryGetSimulatedPlayer(bool b = false) {
+        auto& context = dAccess<StackResultStorageEntity, 0>(this).getStackRef();
+        return SimulatedPlayer::tryGetFromEntity(context, b);
+    }
+
+    inline bool hasValue() const { return dAccess<bool, 16>(this); }
+    // inline bool isValid()
+};
+
 namespace trapdoor {
     namespace {
 
@@ -348,6 +383,7 @@ namespace trapdoor {
         auto* item = getItemInInv(sim, itemId, slot);
         if (item) {
             sim->simulateSetItem(*item, true, 0);
+            sim->sendInventory(true);
         }
         return {"", true};
     }
@@ -430,13 +466,21 @@ namespace trapdoor {
         if (origin) {
             // 是玩家召唤的
             auto rot = origin->getRotation();
-            sim->teleport(origin->getPos(), dimID, rot.x, rot.y);
+            // sim->teleport(origin->getPos(), dimID, rot.x, rot.y);
         }
         sim->setPlayerGameType(static_cast<GameType>(gameMode));
         this->simPlayers[name] = {name, sim, ScheduleTask()};
         tryReadInvFromFile(sim->getInventory(), name);
         this->refreshCommandSoftEnum();
         this->syncPlayerListToFile();
+
+        //        if (!sim->hasOwnedChunkSource()) {
+        //            // sim->_createChunkSource();
+        //            trapdoor::logger().debug("try prepare region");
+        //            auto dim_ref = Global<Level>->getDimension(dimID).mHandle.lock();
+        //            auto* d = trapdoor::unwrap_shard_ptr_ref(dim_ref.get());
+        //            auto cs = sim->_createChunkSource(d->getChunkSource());
+        //        }
         return {"", true};
     }
 
@@ -539,7 +583,6 @@ namespace trapdoor {
                 this->addPlayer(name, {x, y, z}, dim, mode, nullptr);
                 trapdoor::logger().warn("Spawn sim player [{}] at {},{},{} in dim {}", name, x, y,
                                         z, dim);
-
                 //    tempConfig.enable = value["enable"].get<bool>();
             }
         } catch (const std::exception& e) {
@@ -592,12 +635,61 @@ namespace trapdoor {
             .textF("- Command Permission level: %d\n",
                    static_cast<int>(sim->getCommandPermissionLevel()))
             .textF("- Input speed: %.2f\n", sim->_getInputSpeed())
-            .textF("- Spawn chunk limit: %d\n", sim->_getSpawnChunkLimit());
+            .textF("- Spawn chunk limit: %d\n", sim->_getSpawnChunkLimit())
+            .textF("- Has owned chunk source: %d\n", sim->hasOwnedChunkSource())
+            .textF("- Chunk radius: %d\n", sim->getChunkRadius())
+            .textF("- Block source %p\n", &sim->getRegion())
+            .textF("- Has level: %d", sim->hasLevel());
+        // .textF("- Has",sim->_updateChunkPublisherView())
         return {builder.get(), true};
     }
 
     // 独立于LLAPI之外的假人生成函数
-    SimulatedPlayer* SimPlayerManager::createSimPlayer(const string& name) { return nullptr; }
+    SimulatedPlayer* SimPlayerManager::createSimPlayer(const string& name) {
+        return nullptr;
+        //        auto ownerPtr = Global<ServerNetworkHandler>->createSimulatedPlayer(name, "");
+        //        auto player = ownerPtr.tryGetSimulatedPlayer();
+        //        if (!player) return nullptr;
+        //        player->postLoad(false);
+        //        auto& level = player->getLevel();
+        //        level.addUser(std::move(ownerPtr));
+        //        // player->setSpawnBlockRespawnPosition(position, dimensionId);
+        //        player->setLocalPlayerAsInitialized();
+        //        player->doInitialSpawn();
+        //        return player;
+    }
+    ActionResult SimPlayerManager::teleportTo(const string& name, const Vec3& position) {
+        return ErrorDeveloping();
+        //        GET_FREE_PLAYER(sim)
+        //        sim->teleportTo(position, true, 0, 0, true);
+        //        return {"", false};
+        //
+    }
+    ActionResult SimPlayerManager::swapBackpack(const string& name, Player* origin) {
+        GET_FREE_PLAYER(sim)
+        if (!origin) return ErrorPlayerNeed();
+        if (origin->getInventorySize() != sim->getInventorySize()) {
+            return {"Backpack size error", false};
+        }
+
+        auto& simInv = sim->getInventory();
+        auto& playerInv = origin->getInventory();
+        // 备份玩家数据
+        auto size = playerInv.getSize();
+
+        for (auto i = 0; i < size; i++) {
+            auto iSim = simInv.getItem(i).clone();
+            auto iPlayer = playerInv.getItem(i).clone();
+            playerInv.removeItem(i, 64);
+            simInv.removeItem(i, 64);
+            playerInv.setItem(i, iSim);
+            simInv.setItem(i, iPlayer);
+        }
+        sim->sendInventory(true);
+        origin->sendInventory(true);
+        return {"Success", true};
+    }
+
 }  // namespace trapdoor
 
 // 定时保存背包数据(异步)，不使用异步是因为可能造成数据不同步然后刷物品

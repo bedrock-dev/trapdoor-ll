@@ -13,7 +13,8 @@ namespace trapdoor {
                                                      static_cast<CommandPermissionLevel>(level));
 
         // 我知道dropall放这里很不好，但是凑合用吧
-        auto spawnOpt = command->setEnum("spawnOpt", {"spawn", "despawn", "dropall", "info"});
+        auto spawnOpt =
+            command->setEnum("spawnOpt", {"spawn", "despawn", "dropall", "info", "swap"});
         auto behOpt = command->setEnum("behOpt", {"lookat", "moveto", "navto"});
         auto intOpt = command->setEnum("intOpt", {"interact"});
         auto destroyOpt = command->setEnum("destroyOpt", {"destroy"});
@@ -30,6 +31,7 @@ namespace trapdoor {
         auto dropOpt = command->setEnum("dropOpt", {"drop", "droptype"});
         auto cmdOpt = command->setEnum("cmdOpt", {"runcmd"});
         auto followOpt = command->setEnum("followOpt", {"follow"});
+        auto tpOpt = command->setEnum("tpOpt", {"tp"});
 
         command->mandatory("player", ParamType::Enum, spawnOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
@@ -70,13 +72,14 @@ namespace trapdoor {
         command->mandatory("player", ParamType::Enum, followOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
-        //      command->mandatory("name", ParamType::String);
-        //        command->addSoftEnumValues("name", {});
+        command->mandatory("player", ParamType::Enum, tpOpt,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+
         command->mandatory("name", ParamType::SoftEnum, command->setSoftEnum("name", {}));
 
         command->mandatory("command", ParamType::String);
         command->mandatory("itemId", ParamType::Item);
-        command->optional("vec3", ParamType::Vec3);
+        command->mandatory("vec3", ParamType::Vec3);
         command->optional("blockPos", ParamType::BlockPos);
 
         command->optional("repeatType", ParamType::Enum, repeatOpt,
@@ -125,6 +128,8 @@ namespace trapdoor {
 
         command->addOverload({"name", followOpt});
 
+
+        command->addOverload({"name", tpOpt, "vec3"});
         // clang-format on
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
@@ -146,6 +151,9 @@ namespace trapdoor {
             [[maybe_unused]] int slot = results["slot"].isSet ? results["slot"].get<int>() : -1;
             auto blockPos =
                 results["blockPos"].isSet ? results["blockPos"].get<BlockPos>() : BlockPos::MAX;
+
+            auto vec3 = results["vec3"].isSet ? results["vec3"].get<Vec3>() : Vec3::MAX;
+
             switch (do_hash(results["player"].getRaw<std::string>().c_str())) {
                 case do_hash("spawn"):
                     trapdoor::mod()
@@ -278,6 +286,15 @@ namespace trapdoor {
                         .sendTo(output);
                 case do_hash("follow"):
                     trapdoor::mod().getSimPlayerManager().followActor(name, origin.getPlayer());
+                    break;
+                case do_hash("tp"):
+                    trapdoor::mod().getSimPlayerManager().teleportTo(name, vec3).sendTo(output);
+                    break;
+                case do_hash("swap"):
+                    trapdoor::mod()
+                        .getSimPlayerManager()
+                        .swapBackpack(name, origin.getPlayer())
+                        .sendTo(output);
             }
         };
 

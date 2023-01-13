@@ -27,7 +27,17 @@
 
 #### Changelog
 
-- Support 1.19.5x
+- `hud redstone` now displays the comparator signals that container can provide
+- Added the `prof pt` subcommand to evaluate the number of pending ticks in a chunk
+- Added `log pt` subcommand to display detailed information about all the pending ticks in a chunk
+- Fix the problem that fake player can attack themselves
+- Removed some restrictions of the `tick` command and the restriction that it cannot be executed
+  within a command block
+- Add `player info` command to show some metadata information of the fake player
+- Fix the problem that the game mode of the fake player may not match with command executor
+- Fix the problem that `village head` cannot turn off the display of villagers' head information.
+- Increase the default permission level of some commands.
+- Fix some typos
 
 ### trapdoor-ll-0.21.0-1.19.50.02
 

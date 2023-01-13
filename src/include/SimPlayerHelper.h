@@ -76,6 +76,10 @@ namespace trapdoor {
 
         ActionResult getSimPlayerInfo(const std::string& name);
 
+        ActionResult teleportTo(const std::string& name, const Vec3& position);
+
+        ActionResult swapBackpack(const std::string& name, Player* origin);
+
         void cancel(const std::string& name);
 
         void stopAction(const std::string& name);
