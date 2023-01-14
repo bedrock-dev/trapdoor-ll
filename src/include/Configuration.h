@@ -22,6 +22,7 @@ namespace trapdoor {
     };
 
     struct BasicConfig {
+        bool useClientLevel = false;
         int particleLevel = 2;
         int particleViewDistance2D = 4096;
         int hudRefreshFreq = 20;

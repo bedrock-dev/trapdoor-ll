@@ -1,5 +1,6 @@
 #include "TrapdoorMod.h"
 
+#include <cstdlib>
 #include <mc/MapItem.hpp>
 
 #include "BlockRotateHelper.h"
@@ -8,6 +9,7 @@
 #include "LoggerAPI.h"
 #include "SysInfoHelper.h"
 #include "config.h"
+
 #define REG_COMMAND(c)                                         \
     auto cfg_##c = cmdCfg.getCommandConfig(#c);                \
     if (cfg_##c.enable) {                                      \
@@ -16,6 +18,7 @@
     }
 
 namespace trapdoor {
+
     namespace {
         void setupCommands() {
             auto &cmdCfg = trapdoor::mod().getConfig();
@@ -72,6 +75,7 @@ namespace trapdoor {
     void TrapdoorMod::init() {
         printCopyrightInfo();
         this->initConfig(false);
+        getLevelNameFromUser();
         trapdoor::initCPU();
         trapdoor::SubscribeEvents();
         trapdoor::initRotateBlockHelper();
@@ -86,6 +90,20 @@ namespace trapdoor {
 #endif
         logger().debug("Config path: {}", path);
         return this->config.init(path + "config.json", reload);
+    }
+
+    void TrapdoorMod::getLevelNameFromUser() {
+        //        if (!this->config.getBasicConfig().useClientLevel) {
+        //            return;
+        //        }
+        //        auto homePath = std::string(getenv("HOMEPATH"));
+        //        if (homePath.empty()) {
+        //            trapdoor::logger().error("Can not get environment variable []");
+        //        }
+        //        trapdoor::logger().debug("User home path is {}", homePath);
+        //        const std::string client_level_path;
+        //
+        //
     }
 
     TrapdoorMod &mod() {

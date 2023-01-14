@@ -19,6 +19,8 @@ namespace trapdoor {
 
         bool initConfig(bool reload);
 
+        void getLevelNameFromUser();
+
         void heavyTick();
 
         void lightTick();
@@ -53,6 +55,10 @@ namespace trapdoor {
         SimPlayerManager simPlayerManager;
         SpawnAnalyzer spawnAnalyzer;
         SlimeChunkHelper slimeChunkHelper;
+
+        // base path
+        std::string baseLevelPath;
+        std::string levelName;
     };
 
     Logger &logger();

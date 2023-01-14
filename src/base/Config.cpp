@@ -100,14 +100,17 @@ namespace trapdoor {
             auto keepSimPlayerInv = bc["keep-sim-player-inv"].get<bool>();
             auto severCrashToken = bc["server-crash-token"].get<std::string>();
             auto botPrefix = bc["sim-player-prefix"].get<std::string>();
+            auto useClientLevel = bc["use-client-level"].get<bool>();
 
             auto& cfg = this->basicConfig;
+
             setIntValue(cfg.particleLevel, pl, "particle performance level", 1, 3);
             setIntValue(cfg.particleViewDistance2D, pv * pv, "particle view distance", 0,
                         INT32_MAX);
             setIntValue(cfg.hudRefreshFreq, hudFreq, "hud refresh frequency", 1, 100000);
             setIntValue(cfg.toolDamageThreshold, tdh, "tool damage threshold", -100, 65536);
             setBoolValue(cfg.keepSimPlayerInv, keepSimPlayerInv, "keep sim player inv");
+            setBoolValue(cfg.useClientLevel, useClientLevel, "use client's level");
             this->basicConfig.serverCrashToken = severCrashToken;
             this->basicConfig.simPlayerPrefix = botPrefix;
 

@@ -80,7 +80,8 @@
     "tool-damage-threshold": 10,
     "keep-sim-player-inv": true,
     "server-crash-token": "demo",
-    "sim-player-prefix": ""
+    "sim-player-prefix": "",
+    "use-client-level": false
   },
   "default-enable-functions": {
     "hud": true,
