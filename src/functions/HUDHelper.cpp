@@ -39,18 +39,18 @@ namespace trapdoor {
             std::string redstone_signal = "-";
             std::string container_signal = "-";
 
-            if(comp){
+            if (comp) {
                 redstone_signal = std::to_string(comp->getStrength());
             }
 
-            auto *block = pointBlock.getBlock();
-            if(block && block->hasComparatorSignal()){
-
-                container_signal =  std::to_string(block->getComparatorSignal(player->getRegion(),pointBlock.getPosition(),
-                                                                        static_cast<unsigned  char >(FaceID::East)));
+            auto* block = pointBlock.getBlock();
+            if (block && block->hasComparatorSignal()) {
+                container_signal = std::to_string(
+                    block->getComparatorSignal(player->getRegion(), pointBlock.getPosition(),
+                                               static_cast<unsigned char>(FaceID::East)));
             }
 
-            return fmt::format("Signal: {} / {}\n",redstone_signal,container_signal);
+            return fmt::format("Signal: {} / {}\n", redstone_signal, container_signal);
         }
 
         std::string buildHopperCounter(Player* player) {
@@ -67,17 +67,15 @@ namespace trapdoor {
             return "";
         }
 
-        std::string  buildContainerInfo(Player * player){
-//            TextBuilder b;
-//            auto pointBlock = reinterpret_cast<Actor*>(player)->getBlockFromViewVector();
-//            if (pointBlock.isNull()) return "";
-//            auto* block = pointBlock.getBlock();
-//            if(!block || !block->isContainerBlock())return  "";
-//           // block->getComparatorSignal();
-            return  "";
+        std::string buildContainerInfo(Player* player) {
+            //            TextBuilder b;
+            //            auto pointBlock =
+            //            reinterpret_cast<Actor*>(player)->getBlockFromViewVector(); if
+            //            (pointBlock.isNull()) return ""; auto* block = pointBlock.getBlock();
+            //            if(!block || !block->isContainerBlock())return  "";
+            //           // block->getComparatorSignal();
+            return "";
         }
-
-
 
         std::string buildBaseHud(Player* player) {
             TextBuilder b;
@@ -120,7 +118,7 @@ namespace trapdoor {
             return builder.get();
         }
 
-        HUDInfoType getTypeFromString(const std::string& str) {
+        HUDInfoType getHUDTypeFromString(const std::string& str) {
             if (str == "base") return HUDInfoType::Base;
             if (str == "hopper") return HUDInfoType::Counter;
             if (str == "village") return HUDInfoType::Vill;
@@ -131,14 +129,45 @@ namespace trapdoor {
             return HUDInfoType::Unknown;
         }
 
+        std::string getStringFromHUDType(HUDInfoType t) {
+            switch (t) {
+                case Unknown:
+                    return "unknown";
+                case Base:
+                    return "base";
+                case Mspt:
+                    return "mspt";
+                case Vill:
+                    return "village";
+                case Redstone:
+                    return "redstone";
+                case Counter:
+                    return "hopper";
+                case Chunk:
+                    return "chunk";
+                case Cont:
+                    return "container";
+            }
+        }
+
     }  // namespace
+    // 下面是成员函数
+
+    std::vector<std::string> HUDHelper::getHUDItemStringList() {
+        std::vector<std::string> hudItems;
+        for (int i = 1; i < HUD_TYPE_NUMBER; i++) {  // 0是unknown不列入
+            hudItems.push_back(getStringFromHUDType(static_cast<HUDInfoType>(i)));
+        }
+        return hudItems;
+    }
+
     void HUDHelper::tickChunk() {
         static int refresh_time = 0;
         refresh_time = (refresh_time + 1) % 15;
         if (refresh_time != 1) return;
         for (auto& info : this->playerInfos) {
             auto* p = Global<Level>->getPlayer(info.first);
-            if (p && info.second.enable && info.second.config[HUDInfoType::Chunk]) {
+            if (p && /*info.second.enable &&*/ info.second.config[HUDInfoType::Chunk]) {
                 auto pos = p->getPos().toBlockPos();
                 trapdoor::drawChunkSurface(fromBlockPos(pos).toChunkPos(),
                                            (int)p->getDimension().getDimensionId());
@@ -154,12 +183,13 @@ namespace trapdoor {
         if (refresh_time != 1) return;
         for (auto& info : this->playerInfos) {
             auto* p = Global<Level>->getPlayer(info.first);
-            if (p && info.second.enable) {
+            if (p /* && info.second.enable*/) {
                 std::string s;
                 auto& cfg = info.second.config;
                 if (cfg[HUDInfoType::Base]) {
                     s += buildBaseHud(p);
                 }
+
                 if (cfg[HUDInfoType::Mspt]) {
                     s += buildMsptHud();
                 }
@@ -172,7 +202,7 @@ namespace trapdoor {
                 if (cfg[HUDInfoType::Counter]) {
                     s += buildHopperCounter(p);
                 }
-                if(cfg[HUDInfoType::Cont]){
+                if (cfg[HUDInfoType::Cont]) {
                     s += buildContainerInfo(p);
                 }
                 p->sendText(s, TextType::TIP);
@@ -182,20 +212,75 @@ namespace trapdoor {
 
     ActionResult HUDHelper::modifyPlayerInfo(const std::string& playerName, const std::string& item,
                                              int op) {
-        auto type = getTypeFromString(item);
+        auto type = getHUDTypeFromString(item);
         if (type == HUDInfoType::Unknown) {
-            return {"Unknown type", false};
+            return {"Unknown HUD type", false};
         }
-        this->playerInfos[playerName].config[type] = op;
+        auto& playerCfg = this->playerInfos[playerName].config;
+        playerCfg.resize(HUD_TYPE_NUMBER);
+        playerCfg[type] = op;
+        this->syncConfigToFile();
         return {"Success", true};
     }
 
-    ActionResult HUDHelper::setAblePlayer(const std::string& playerName, bool able) {
-        if (!this->enable) {
-            return {"This function is disabled by Operator", false};
-        }
-        this->playerInfos[playerName].enable = able;
-        return {"Success", true};
-    }
+    //    ActionResult HUDHelper::setAblePlayer(const std::string& playerName, bool able) {
+    //        if (!this->enable) {
+    //            return {"This function is disabled by Operator", false};
+    //        }
+    //        this->playerInfos[playerName].enable = able;
+    //        return {"Success", true};
+    //    }
+    //
+    void HUDHelper::init() { this->readConfigCacheFromFile(); }
 
+    bool HUDHelper::readConfigCacheFromFile() {
+        const std::string cacheFileName = "./plugins/trapdoor/HUDCache";
+        std::ifstream f(cacheFileName);
+        if (!f.is_open()) {
+            trapdoor::logger().warn("Can not open HUD Cache {}", cacheFileName);
+            return false;
+        }
+
+        try {
+            nlohmann::json obj;
+            f >> obj;
+            for (auto& [key, value] : obj.items()) {
+                PlayerHudInfo info;
+                info.realName = key;
+                info.config.resize(HUD_TYPE_NUMBER);
+                for (auto& [item, on] : value.items()) {
+                    auto type = getHUDTypeFromString(item);
+                    if (type != Unknown) {
+                        info.config[static_cast<int>(type)] = on.get<bool>();
+                    }
+                }
+                this->playerInfos[info.realName] = info;
+            }
+        } catch (const std::exception&) {
+            trapdoor::logger().error("Can not parse HUDCache");
+            return false;
+        }
+        return true;
+    }
+    bool HUDHelper::syncConfigToFile() {
+        const std::string cacheFileName = "./plugins/trapdoor/HUDCache";
+        nlohmann::json j;
+        for (auto& info : this->playerInfos) {
+            auto items = nlohmann::json();
+            for (int i = 1; i < HUD_TYPE_NUMBER; i++) {  // 同样不缓存unknown的
+                items[getStringFromHUDType(static_cast<HUDInfoType>(i))] =
+                    info.second.config[i] == 1;
+            }
+            j[info.first] = items;
+        }
+
+        std::ofstream f(cacheFileName);
+        if (!f) {
+            trapdoor::logger().error("Can not write file {} to disk", cacheFileName);
+            return false;
+        }
+        f << j;
+        f.close();
+        return true;
+    }
 }  // namespace trapdoor

@@ -75,7 +75,7 @@ namespace trapdoor {
     void TrapdoorMod::init() {
         printCopyrightInfo();
         this->initConfig(false);
-        getLevelNameFromUser();
+        this->HUDHelper.init();
         trapdoor::initCPU();
         trapdoor::SubscribeEvents();
         trapdoor::initRotateBlockHelper();
