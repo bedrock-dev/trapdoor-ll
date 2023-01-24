@@ -75,19 +75,19 @@ namespace trapdoor {
 
         std::string compTypeToStr(uint64_t type) {
             auto color = trapdoor::TextBuilder::WHITE;
-            std::string str = "unk";
+            std::string str = "[unknown]";
             if (type == 0x100000) {
                 color = trapdoor::TB::RED;
-                str = "Wine";
+                str = "[Redstone Wine]";
             } else if (type == 0x80000) {
                 color = trapdoor::TB::DARK_RED;
-                str = "PowB";
+                str = "[Power Block]";
             } else if (type == 0x200000) {
                 color = trapdoor::TB::AQUA;
-                str = "Capa";
+                str = "[Capacitor]";
             } else if (type == 0x20000) {
                 color = trapdoor::TB::GRAY;
-                str = "Cons";
+                str = "[Consumer]";
             }
             trapdoor::TextBuilder builder;
             builder.sTextF(color, "%s", str.c_str());
@@ -95,17 +95,21 @@ namespace trapdoor {
         }
 
         std::string buildTrackMsg(TCircuitTrackingInfo *info, int *damping, bool *dirPow) {
-            auto p = info->mCurrent.mPos;
-            auto ne = info->mNearest;
-            auto ned = trapdoor::facingToString(ne.mDirection);
-            auto neTypeStr = compTypeToStr(ne.type);
-            if (neTypeStr.find("unk") != std::string::npos) {
-                printf("Unknown type: 0x%llx\n", ne.type);
-            }
+            // 调用的时候near才是当前的
+            // 2nd是上一个
+            // cur是下一个
 
-            return fmt::format(" - [{}]--{}-->{} ({},{},{}) idp:{} / dp: {} / dp: {}", neTypeStr,
-                               ned, compTypeToStr(info->mCurrent.type), p.x, p.y, p.z,
-                               info->mDampening, *damping, *dirPow);
+            auto &cur = info->mCurrent;
+            auto &prev = info->mNearest;
+            auto p = cur.mPos;
+
+            auto color = *dirPow ? PCOLOR::TEAL : PCOLOR::COCOA;
+            trapdoor::spawnNumParticle({(float)p.x + 0.5f, (float)p.y + 1.2f, (float)p.z + 0.5f},
+                                       *damping, color, 0);
+            return fmt::format(" -{}  -- {} --> {} ({},{},{}) IDamp:{} / damp: {} dp: {}",
+                               compTypeToStr(prev.type), trapdoor::facingToString(prev.mDirection),
+                               compTypeToStr(cur.type), p.x, p.y, p.z, info->mDampening, *damping,
+                               *dirPow);
         }
 
     }  // namespace
@@ -195,9 +199,12 @@ namespace trapdoor {
 //       void *graph, BlockPos const &pos, BaseCircuitComponent *comp, class BlockSource *bs) {
 //     trapdoor::TextBuilder builder;
 //     builder.sTextF(trapdoor::TB::BOLD | trapdoor::TB::GREEN, "[%s] ", pos.toString().c_str())
-//         .text("Start a connection build\n");
-//     trapdoor::mod().getEventTriggerMgr().broadcastMessage(trapdoor::BuildConnection,
-//     builder.get()); original(graph, pos, comp, bs);
+//         .text("Start a connection search\n");
+//     trapdoor::shortHighlightBlock({pos.x, pos.y, pos.z}, trapdoor::PCOLOR::GREEN, 0);
+//     // trapdoor::mod().getEventTriggerMgr().broadcastMessage(trapdoor::BuildConnection,
+//     // builder.get());
+//     trapdoor::broadcastMessage(builder.get());
+//     original(graph, pos, comp, bs);
 // }
 //
 // THook(bool,
@@ -207,9 +214,9 @@ namespace trapdoor {
 //       int *damping, bool *directPowered) {
 //     auto res = original(self, graph, info, damping, directPowered);
 //     if (res) {
-//         trapdoor::mod().getEventTriggerMgr().broadcastMessage(
-//             trapdoor::BuildConnection, trapdoor::buildTrackMsg(info, damping, directPowered));
+//         trapdoor::broadcastMessage(trapdoor::buildTrackMsg(info, damping, directPowered));
 //     }
+//
 //     return res;
 // }
 //
@@ -221,8 +228,7 @@ namespace trapdoor {
 //       bool *directPowered) {
 //     auto res = original(self, graph, info, damping, directPowered);
 //     if (res) {
-//         trapdoor::mod().getEventTriggerMgr().broadcastMessage(
-//             trapdoor::BuildConnection, trapdoor::buildTrackMsg(info, damping, directPowered));
+//         trapdoor::broadcastMessage(trapdoor::buildTrackMsg(info, damping, directPowered));
 //     }
 //     return res;
 // }
@@ -230,14 +236,28 @@ namespace trapdoor {
 //// 消费者
 //
 // THook(bool,
-//      "?addSource@ConsumerComponent@@UEAA_NAEAVCircuitSceneGraph@@AEBVCircuitTrackingInfo@@AEAHAEA_"
+//      "?addSource@ConsumerComponent@@UEAA_NAEAVCircuitSceneGraph@@AEBVCircuitTrackingInfo@@"
+//      "AEAHAEA_"
 //      "N@Z",
 //      void *self, CircuitSceneGraph *graph, trapdoor::TCircuitTrackingInfo *info, int *damping,
 //      bool *directPowered) {
 //    auto res = original(self, graph, info, damping, directPowered);
 //    if (res) {
-//        trapdoor::mod().getEventTriggerMgr().broadcastMessage(
-//            trapdoor::BuildConnection, trapdoor::buildTrackMsg(info, damping, directPowered));
+//        trapdoor::broadcastMessage(trapdoor::buildTrackMsg(info, damping, directPowered));
 //    }
 //    return res;
 //}
+
+/*
+ * void CircuitSceneGraph::scheduleRelationshipUpdate(class BlockPos const &, class
+BaseCircuitComponent *)
+[25395104]?scheduleRelationshipUpdate@CircuitSceneGraph@@AEAAXAEBVBlockPos@@PEAVBaseCircuitComponent@@@Z
+ */
+
+// THook(void,
+//       "?scheduleRelationshipUpdate@CircuitSceneGraph@@AEAAXAEBVBlockPos@@PEAVBaseCircuitComponent@@"
+//       "@Z",
+//       void *self, const BlockPos &pos, void *comp) {
+//     trapdoor::shortHighlightBlock({pos.x, pos.y, pos.z}, trapdoor::PINK, 0);
+//     original(self, pos, comp);
+// }

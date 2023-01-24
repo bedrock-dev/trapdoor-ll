@@ -2,7 +2,7 @@
 #-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE "-DCMAKE_C_COMPILER:FILEPATH=C:\Program Files\LLVM\bin\clang.exe" "-DCMAKE_CXX_COMPILER:FILEPATH=C:\Program Files\LLVM\bin\clang++.exe" -Sc:/Users/xhy/dev/trapdoor-ll -Bc:/Users/xhy/dev/trapdoor-llild -G "Visual Studio 17 2022"
 #Version
 cmake_minimum_required(VERSION 3.16)
-
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 #variables
 set(TRAPDOOR_VERSION 0.22.0)
 set(GAME_VERSION 1.19.50.02)
