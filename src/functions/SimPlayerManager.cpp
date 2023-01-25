@@ -519,13 +519,6 @@ namespace trapdoor {
         }
 
         this->removePlayer(name);
-
-        // TODO: 死亡后同步背包
-        //        if (iter->second.simPlayer) {
-        //            writeInvToFile(iter->second.simPlayer->getInventory(), name);
-        //        } else {
-        //            trapdoor::logger().debug("Null Player");
-        //        }
     }
 
     void SimPlayerManager::refreshCommandSoftEnum() {

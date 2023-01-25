@@ -45,6 +45,16 @@ THook(void, "?updateNeighborsAt@BlockSource@@QEAAXAEBVBlockPos@@@Z", void *self,
     }
 }
 
+THook(void, "?setPlayerGameType@ServerPlayer@@UEAAXW4GameType@@@Z", ServerPlayer *player,
+      int mode) {
+    original(player, mode);
+    if (mode == 1 &&
+        trapdoor::mod().getConfig().getTweakConfig().creativeNoClip) {  // 如果切到了创造模式
+        trapdoor::logger().debug("player {} change game mode to {}", player->getRealName(), mode);
+        player->setAbility(static_cast<AbilitiesIndex>(17), true);
+    }
+}
+
 // #include <mc/Player.hpp>
 // THook(void,
 //       "?_tickLevelChunksAroundActor@LevelChunkTickingSystem@@CAXAEAVActor@@AEAVBlockSource@@"

@@ -42,6 +42,16 @@ namespace trapdoor {
         trapdoor::mod().getConfig().getTweakConfig().disableNCUpdate = able;
         return {"Success", true};
     }
+    ActionResult setCreativeNoClip(bool able) {
+        trapdoor::mod().getConfig().getTweakConfig().creativeNoClip = able;
+        Global<Level>->forEachPlayer([able](Player &p) {
+            if (p.getPlayerGameType() == GameType::GameTypeCreative) {
+                p.setAbility(static_cast<AbilitiesIndex>(17), able);
+            }
+            return true;
+        });
+        return {"Success", true};
+    }
 
     void setup_tweakCommand(int level) {
         auto command = DynamicCommand::createCommand("tweak", "Tweak vanilla features",
@@ -55,6 +65,7 @@ namespace trapdoor {
         auto &maxPendingTickSize = command->setEnum("maxPendingTickSize", {"maxptsize"});
         auto &safeExplosion = command->setEnum("safeExplosion", {"safeexplode"});
         auto &disableNUpdate = command->setEnum("disableNCUpdate", {"noncupdate"});
+        auto &creativeNoClip = command->setEnum("creativeNoClip", {"noclip"});
 
         command->mandatory("tweak", ParamType::Enum, forcePlaceOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
@@ -70,6 +81,8 @@ namespace trapdoor {
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("tweak", ParamType::Enum, disableNUpdate,
                            CommandParameterOption::EnumAutocompleteExpansion);
+        command->mandatory("tweak", ParamType::Enum, creativeNoClip,
+                           CommandParameterOption::EnumAutocompleteExpansion);
 
         command->mandatory("value", ParamType::Int);
         command->mandatory("onoroff", ParamType::Bool);
@@ -81,6 +94,7 @@ namespace trapdoor {
         command->addOverload({safeExplosion, "onoroff"});
         command->addOverload({disableNUpdate, "onoroff"});
         command->addOverload({maxPendingTickSize, "value"});
+        command->addOverload({creativeNoClip, "onoroff"});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
@@ -106,6 +120,9 @@ namespace trapdoor {
                     break;
                 case do_hash("noncupdate"):
                     setDisableNCUpdate(results["onoroff"].get<bool>()).sendTo(output);
+                    break;
+                case do_hash("noclip"):
+                    setCreativeNoClip(results["onoroff"].get<bool>()).sendTo(output);
                     break;
             }
         };

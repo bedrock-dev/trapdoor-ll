@@ -212,11 +212,12 @@ namespace trapdoor {
             auto autoSelectTool = det["auto-select-tool"].get<bool>();
             auto maxPendingTickSize = det["max-pending-tick-size"].get<int>();
             auto safeExplosion = det["safe-explosion"].get<bool>();
-
+            auto creativeNoClip = det["creative-no-clip"].get<bool>();
             // auto disableNCUpdate = det["disable-nc-update"].get<bool>();
 
             auto& cfg = this->tweakConfig;
             setBoolValue(cfg.autoSelectTool, autoSelectTool, "auto select tools");
+            setBoolValue(cfg.creativeNoClip, creativeNoClip, "creative no clip");
             setBoolValue(cfg.dropperNoCost, dropperNoCost, "dropper no cost");
             setBoolValue(cfg.forceOpenContainer, forceOpenContainer, "force open container");
             setBoolValue(cfg.safeExplosion, safeExplosion, "safe explosion");

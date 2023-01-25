@@ -45,6 +45,7 @@ namespace trapdoor {
         bool autoSelectTool = false;
         bool safeExplosion = false;
         bool disableNCUpdate = false;
+        bool creativeNoClip = false;
         int maxPendingTickSize = 100;
     };
 
