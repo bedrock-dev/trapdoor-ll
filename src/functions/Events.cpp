@@ -203,13 +203,13 @@ THook(bool, "?evaluate@ConsumerComponent@@UEAA_NAEAVCircuitSystem@@AEBVBlockPos@
     return res;
 }
 
-THook(std::string*,
-      "?getWorldsPath@FilePathManager@Core@@QEBA?AV?$PathBuffer@V?$basic_string@DU?$char_traits@D@"
-      "std@@V?$allocator@D@2@@std@@@2@XZ",
-      void* self, void* a, void* b) {
-    auto r = original(self, a, b);
-    *r = std::string(
-        "C:/Users/xhy/AppData/Local/Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/LocalState/games/"
-        "com.mojang/minecraftWorlds/");
-    return r;
-}
+// THook(std::string*,
+//       "?getWorldsPath@FilePathManager@Core@@QEBA?AV?$PathBuffer@V?$basic_string@DU?$char_traits@D@"
+//       "std@@V?$allocator@D@2@@std@@@2@XZ",
+//       void* self, void* a, void* b) {
+//     auto r = original(self, a, b);
+//     *r = std::string(
+//         "C:/Users/xhy/AppData/Local/Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/LocalState/games/"
+//         "com.mojang/minecraftWorlds/");
+//     return r;
+// }

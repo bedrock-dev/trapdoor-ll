@@ -377,10 +377,19 @@ namespace trapdoor {
         ADD_TASK
         return {"", true};
     }
-    ActionResult SimPlayerManager::setItem(const string& name, int itemId) {
+    ActionResult SimPlayerManager::setItem(const string& name, int itemId, int slot) {
         GET_FREE_PLAYER(sim)
-        int slot = -1;
-        auto* item = getItemInInv(sim, itemId, slot);
+        ItemStack* item{nullptr};
+        if (slot == -1) {
+            item = getItemInInv(sim, itemId, slot);
+        } else {
+            // 需要检查是否会有溢出
+            if (slot >= sim->getInventory().getSize()) {
+                return ErrorRange("slot number", 0, sim->getInventorySize());
+            }
+            item = sim->getInventory().getSlot(slot);
+        }
+
         if (item) {
             sim->simulateSetItem(*item, true, 0);
             sim->sendInventory(true);

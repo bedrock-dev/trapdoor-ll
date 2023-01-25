@@ -66,7 +66,7 @@ namespace trapdoor {
         ActionResult runCmdSchedule(const std::string& name, const std::string& command,
                                     int repType, int interval, int times);
 
-        ActionResult setItem(const std::string& name, int itemId);
+        ActionResult setItem(const std::string& name, int itemId, int slot);
 
         ActionResult dropItem(const std::string& name, int itemId);
 

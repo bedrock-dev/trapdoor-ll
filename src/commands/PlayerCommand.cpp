@@ -87,17 +87,16 @@ namespace trapdoor {
         command->optional("interval", ParamType::Int);
         command->optional("times", ParamType::Int);
 
-        command->optional("slot", ParamType::Int);
+        command->mandatory("slot", ParamType::Int);
 
         // clang-format off
         //  cancel task and stop action
         command->addOverload({"name", stopOpt});
         // check inv
-        command->addOverload({"name", backpackOpt, "slot"});
-
+        command->addOverload({"name", backpackOpt});
         //set
         command->addOverload({"name", setOpt, "itemId"});
-
+        command->addOverload({"name", setOpt, "slot"});
         //drop
         command->addOverload({"name", dropOpt, "itemId"});
 
@@ -128,7 +127,6 @@ namespace trapdoor {
 
         command->addOverload({"name", followOpt});
 
-
         command->addOverload({"name", tpOpt, "vec3"});
         // clang-format on
 
@@ -148,7 +146,7 @@ namespace trapdoor {
             int rep = results["repeatType"].isSet ? 1 : 0;
             int itemId =
                 results["itemId"].isSet ? results["itemId"].getRaw<CommandItem>().getId() : 0;
-            [[maybe_unused]] int slot = results["slot"].isSet ? results["slot"].get<int>() : -1;
+            int slot = results["slot"].isSet ? results["slot"].get<int>() : -1;
             auto blockPos =
                 results["blockPos"].isSet ? results["blockPos"].get<BlockPos>() : BlockPos::MAX;
 
@@ -181,7 +179,10 @@ namespace trapdoor {
                     break;
 
                 case do_hash("set"):
-                    trapdoor::mod().getSimPlayerManager().setItem(name, itemId).sendTo(output);
+                    trapdoor::mod()
+                        .getSimPlayerManager()
+                        .setItem(name, itemId, slot)
+                        .sendTo(output);
                     break;
                 case do_hash("drop"):
                     trapdoor::mod().getSimPlayerManager().dropItem(name, itemId).sendTo(output);
@@ -291,10 +292,12 @@ namespace trapdoor {
                     trapdoor::mod().getSimPlayerManager().teleportTo(name, vec3).sendTo(output);
                     break;
                 case do_hash("swap"):
-                    trapdoor::mod()
-                        .getSimPlayerManager()
-                        .swapBackpack(name, origin.getPlayer())
-                        .sendTo(output);
+                    ErrorDeveloping().sendTo(output);
+                    break;
+                    //                    trapdoor::mod()
+                    //                        .getSimPlayerManager()
+                    //                        .swapBackpack(name, origin.getPlayer())
+                    //                        .sendTo(output);
             }
         };
 

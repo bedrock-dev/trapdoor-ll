@@ -14,23 +14,22 @@ namespace trapdoor {
                                                      static_cast<CommandPermissionLevel>(level));
 
         auto &modifyOpt = command->setEnum("modify", {"add", "remove"});
-        auto &showOpt = command->setEnum("show", {"show"});
+        //  auto &showOpt = command->setEnum("show", {"show"});
 
         command->mandatory("hud", ParamType::Enum, modifyOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
-        command->mandatory("hud", ParamType::Enum, showOpt,
-                           CommandParameterOption::EnumAutocompleteExpansion);
+        //        command->mandatory("hud", ParamType::Enum, showOpt,
+        //                           CommandParameterOption::EnumAutocompleteExpansion);
 
-        auto &showItemsOpt = command->setEnum(
-            "showItems", {"base", "mspt", "hopper", "village", "redstone", "chunk"});
+        auto &showItemsOpt = command->setEnum("showItems", HUDHelper::getHUDItemStringList());
 
         command->mandatory("itemType", ParamType::Enum, showItemsOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
         command->mandatory("onoroff", ParamType::Bool);
         command->addOverload({modifyOpt, "itemType"});
-        command->addOverload({showOpt, "onoroff"});
+        //  command->addOverload({showOpt, "onoroff"});
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
@@ -53,12 +52,12 @@ namespace trapdoor {
                         .modifyPlayerInfo(playerName, results["itemType"].get<std::string>(), 0)
                         .sendTo(output);
                     break;
-                case do_hash("show"):
-                    trapdoor::mod()
-                        .getHUDHelper()
-                        .setAblePlayer(playerName, results["onoroff"].get<bool>())
-                        .sendTo(output);
-                    break;
+                    //                case do_hash("show"):
+                    //                    trapdoor::mod()
+                    //                        .getHUDHelper()
+                    //                        .setAblePlayer(playerName,
+                    //                        results["onoroff"].get<bool>()) .sendTo(output);
+                    //                    break;
             }
         };
         command->setCallback(cb);
