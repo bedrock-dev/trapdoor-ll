@@ -50,11 +50,11 @@ namespace trapdoor {
     }
 
     inline  ActionResult OperationSuccess(){
-        return ErrorMsg("command.operation.success");
-}
+        return SuccessMsg("command.operation.success");
+    }
 
     inline ActionResult ErrorPosition() {
-        return ErrorMsg("command.error.position.required");
+        return ErrorMsg("command.error.position-required");
     }
 
     inline ActionResult ErrorDeveloping() {

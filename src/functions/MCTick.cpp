@@ -86,9 +86,8 @@ namespace trapdoor {
             info.status = TickingStatus::Forwarding;
             if (gt >= 1200) {
                 trapdoor::broadcastMessage(tr("tick.forward.info.start"));
-            } else {
-                return {"", true};
             }
+            return {"", true};
         } else {
             return ErrorMsg("tick.forward.error");
         }
@@ -100,9 +99,9 @@ namespace trapdoor {
             info.oldStatus = info.status;
             info.remainWarpTick = gt;
             info.status = TickingStatus::Warp;
-            return SuccessMsg("tick.warp.info");
+            return SuccessMsg("tick.warp.info.start");
         }
-        return SuccessMsg("tick.warp.error");
+        return ErrorMsg("tick.warp.error");
     }
 
     ActionResult slowDownWorld(int times) {
@@ -143,7 +142,7 @@ namespace trapdoor {
 
     ActionResult startProfiler(int rounds, SimpleProfiler::Type type) {
         if (rounds <= 0 || rounds > 12000) {
-            return ErrorMsg(fmt::format("prof.error.range",1,12000));
+            return ErrorMsg(fmt::format(tr("prof.error.range"),1,12000));
         }
 
         auto &info = getTickingInfo();
@@ -292,7 +291,7 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
         }
         mod.heavyTick();
         if (info.remainWarpTick <= 0) {
-            trapdoor::broadcastMessage(tr("rick.warp.info.end"), -1);
+            trapdoor::broadcastMessage(tr("tick.warp.info.end"), -1);
             info.status = info.oldStatus;
         }
     }
@@ -315,7 +314,7 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
                 --info.forwardTickNum;
             }
 
-            trapdoor::broadcastMessage(tr("rick.forward.info.end"), -1);
+            trapdoor::broadcastMessage(tr("tick.forward.info.end"), -1);
             info.status = info.oldStatus;
             mod.heavyTick();
             break;

@@ -55,7 +55,7 @@ namespace trapdoor {
 #define GET_FREE_PLAYER(sim)                                       \
     auto*(sim) = this->tryFetchSimPlayer(name, true);              \
     if (!(sim)) {                                                  \
-        return {"player.error.schedule-failed", false}; \
+        return ErrorMsg("player.error.schedule-failed"); \
     }
 
 #define ADD_TASK                                            \

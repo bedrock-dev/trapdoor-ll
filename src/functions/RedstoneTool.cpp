@@ -4,6 +4,7 @@
 
 // clang-format off
 #include "Global.h"
+#include "CommandHelper.h"
 // clang-format on
 
 //clang-format on
@@ -140,7 +141,7 @@ namespace trapdoor {
 
         auto comp = graph.getBaseComponent(pos);
         if (!comp) {
-            return {"data.error.no-circuit-component", false};
+            return trapdoor::ErrorMsg("data.error.no-circuit-component");
         }
 
         if (type == "signal") {
