@@ -16,7 +16,6 @@ set(BUILD_TIME= "${BUILD_TIME}")
 #configurations
 option(DEV "Build as developer version" ON)
 
-
 project(Trapdoor VERSION ${TRAPDOOR_VERSION})
 
 #export configure file
@@ -106,6 +105,8 @@ link_directories(.)
 
 add_definitions(-D"NDEBUG" -D"TEMPLATE_EXPORTS" -D"WIN32_LEAN_AND_MEAN" -D"_CRT_SECURE_NO_WARNINGS" -D"_WINDOWS"
         -D"_USRDLL" -D"_AMD64_" -D"NOMINMAX" -D"_WINDLL" -D"_UNICODE" -D"UNICODE")
+
+
 
 add_compile_options(
         /utf-8
