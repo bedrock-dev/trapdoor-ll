@@ -9,7 +9,7 @@
 #include <mc/IntTag.hpp>
 #include <mc/StringTag.hpp>
 #include <regex>
-
+#include "CommandHelper.h"
 #include "TrapdoorMod.h"
 #include "Utils.h"
 namespace trapdoor {
@@ -187,6 +187,7 @@ namespace trapdoor {
     }
     ActionResult setBlockRotationAble(bool able) {
         enableRotation = able;
-        return {"Success", true};
+        return  OperationSuccess();
     }
 }  // namespace trapdoor
+

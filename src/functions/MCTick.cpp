@@ -43,29 +43,29 @@ namespace trapdoor {
         auto &info = getTickingInfo();
         switch (info.status) {
             case TickingStatus::Normal:
-                return {"Normal", true};
+                return SuccessMsg("tick.status.normal");
             case TickingStatus::Frozen:
-                return {"Frozen", true};
+                return SuccessMsg("tick.status.frozen");
             case TickingStatus::Forwarding:
-                return {fmt::format("Forwarding, {} gt left", info.forwardTickNum), true};
+                return {fmt::format(tr("tick.status.forward"), info.forwardTickNum), true};
             case TickingStatus::Warp:
-                return {fmt::format("Wrapping, {} gt left", info.remainWarpTick), true};
+                return {fmt::format(tr("tick.status.warp"), info.remainWarpTick), true};
             case TickingStatus::Acc:
-                return {fmt::format("{} times faster", info.accTime), true};
+                return {fmt::format(tr("tick.status.acc"), info.accTime), true};
             case TickingStatus::SlowDown:
-                return {fmt::format("{} times slower", info.slowDownTime), true};
+                return {fmt::format(tr("tick.status.slow"), info.slowDownTime), true};
             default:
-                return {"unknown", true};
+                return ErrorMsg("tick.status.unknown");
         }
     }
     ActionResult freezeWorld() {
         auto &info = getTickingInfo();
         if (info.status == TickingStatus::Frozen) {
-            return {"Already in freeze status", false};
+            return ErrorMsg("tick.error.in-frozen");
         }
 
         info.status = TickingStatus::Frozen;
-        return {"Success", true};
+        return OperationSuccess();
     }
 
     ActionResult resetWorld() {
@@ -75,7 +75,7 @@ namespace trapdoor {
         info.slowDownTime = 1;
         info.remainWarpTick = 0;
         info.status = TickingStatus::Normal;
-        return {"Success", true};
+        return OperationSuccess();
     }
 
     ActionResult forwardWorld(int gt) {
@@ -85,13 +85,12 @@ namespace trapdoor {
             info.forwardTickNum = gt;
             info.status = TickingStatus::Forwarding;
             if (gt >= 1200) {
-                trapdoor::broadcastMessage("The world begins to forward");
-                return {"Forward start", true};
+                trapdoor::broadcastMessage(tr("tick.forward.info.start"));
             } else {
                 return {"", true};
             }
         } else {
-            return {"Forward can only be used on normal or freeze status", false};
+            return ErrorMsg("tick.forward.error");
         }
     }
     ActionResult warpWorld(int gt) {
@@ -101,23 +100,26 @@ namespace trapdoor {
             info.oldStatus = info.status;
             info.remainWarpTick = gt;
             info.status = TickingStatus::Warp;
-            return {"Warp start", true};
+            return SuccessMsg("tick.warp.info");
         }
-        return {"Warp can only be used on normal or freeze status", false};
+        return SuccessMsg("tick.warp.error");
     }
+
     ActionResult slowDownWorld(int times) {
         auto &info = getTickingInfo();
         if (info.status == TickingStatus::Normal) {
             if (times < 2 || times > 64) {
-                return {"times show be limited in [2,64]", false};
+                return ErrorMsg(fmt::format(tr("tick.slow.error-range"),2,256));
             }
+
             info.status = TickingStatus::SlowDown;
             info.slowDownTime = times;
-            trapdoor::broadcastMessage(fmt::format("The world will run {} times slower", times),
+            trapdoor::broadcastMessage(fmt::format(tr("tick.slow.broadcast"), times),
                                        -1);
+
             return {"", true};
         } else {
-            return {"Slow can only be used on normal mode", false};
+            return ErrorMsg("tick.slow.error");
         }
     }
 
@@ -125,32 +127,35 @@ namespace trapdoor {
         auto &info = getTickingInfo();
         if (info.status == TickingStatus::Normal) {
             if (times < 2 || times > 100) {
-                return ErrorRange("acc time", 2, 100);
+                return ErrorMsg(fmt::format(tr("tick.acc.error-range"),2,100));
             }
+
             info.accTime = times;
             info.status = TickingStatus::Acc;
-            trapdoor::broadcastMessage(fmt::format("The world will run {} times faster", times),
+            trapdoor::broadcastMessage(fmt::format(tr("tick.acc.broadcast"), times),
                                        -1);
             return {"", true};
         } else {
-            return {"Acc can only be used on normal mode", false};
+            return ErrorMsg("tick.acc.error");
+
         }
     }
 
     ActionResult startProfiler(int rounds, SimpleProfiler::Type type) {
         if (rounds <= 0 || rounds > 12000) {
-            return {"Rounds show be limited in [1,12000]", false};
+            return ErrorMsg(fmt::format("prof.error.range",1,12000));
         }
 
         auto &info = getTickingInfo();
         if (info.status != TickingStatus::Normal) {
-            return {"Profiling can only be performed in normal tick state", false};
+            return ErrorMsg("prof.error.state");
         }
+
         if (normalProfiler().profiling) {
-            return {"Another profiling is running", false};
+            return ErrorMsg("prof.error.running");
         } else {
             normalProfiler().start(rounds, type);
-            return {"Profile Start", true};
+            return SuccessMsg("prof.info.start");
         }
     }
 
@@ -193,12 +198,12 @@ namespace trapdoor {
         auto chunkPos = fromBlockPos(p).toChunkPos();
         auto chunk = player->getBlockSource()->getChunk(chunkPos.x, chunkPos.z);
         if (!chunk) {
-            return ErrorMsg("Can not get chunk info");
+            return ErrorMsg("prof.pt.error.chunk");
         }
 
         auto *queue = reinterpret_cast<TBlockTickingQueue *>(&chunk->getTickQueue());
         if (!queue) {
-            return ErrorMsg("can not get block ticking queue");
+            return ErrorMsg("prof.pt.error.pt-queue");
         }
 
         auto buildPtItem = [](const trapdoor::TBlockTick &pt, size_t currentTick) -> std::string {
@@ -287,7 +292,7 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
         }
         mod.heavyTick();
         if (info.remainWarpTick <= 0) {
-            trapdoor::broadcastMessage("Warp finished", -1);
+            trapdoor::broadcastMessage(tr("rick.warp.info.end"), -1);
             info.status = info.oldStatus;
         }
     }
@@ -310,7 +315,7 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
                 --info.forwardTickNum;
             }
 
-            trapdoor::broadcastMessage("Froward finished", -1);
+            trapdoor::broadcastMessage(tr("rick.forward.info.end"), -1);
             info.status = info.oldStatus;
             mod.heavyTick();
             break;

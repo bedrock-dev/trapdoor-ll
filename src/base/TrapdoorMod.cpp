@@ -9,6 +9,7 @@
 #include "LoggerAPI.h"
 #include "SysInfoHelper.h"
 #include "config.h"
+#include "I18nAPI.h"
 
 #define REG_COMMAND(c)                                         \
     auto cfg_##c = cmdCfg.getCommandConfig(#c);                \
@@ -83,13 +84,14 @@ namespace trapdoor {
     }
 
     bool TrapdoorMod::initConfig(bool reload) {
-        auto path = std::string("./plugins/trapdoor/");
+        auto modRootPath = std::string("./plugins/trapdoor/");
 #ifdef DEV
-        path = "C:/Users/xhy/dev/trapdoor-ll/src/base/";
+        modRootPath = "C:/Users/xhy/dev/trapdoor-ll/src/base/";
         logger().consoleLevel = 8;
 #endif
-        logger().debug("Config path: {}", path);
-        return this->config.init(path + "config.json", reload);
+        logger().debug("mod root path: {}", modRootPath);
+        Translation::load(modRootPath + "lang.json");
+        return this->config.init(modRootPath + "config.json", reload);
     }
 
     void TrapdoorMod::getLevelNameFromUser() {

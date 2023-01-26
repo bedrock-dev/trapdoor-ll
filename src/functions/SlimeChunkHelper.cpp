@@ -41,11 +41,11 @@ namespace trapdoor {
 
     ActionResult SlimeChunkHelper::draw() {
         for (const auto i : this->posList) trapdoor::spawnSlimeChunkParticle(i);
-        return {"Slime chunk display refreshed", true};
+        return SuccessMsg("slime.info.refresh");
     }
 
     ActionResult SlimeChunkHelper::setRadius(int r) {
         this->showRadius = r;
-        return {"Set the slime chunk to appear as " + std::to_string(r), true};
+        return {fmt::format(tr("slime.info.radius"),r), true};
     }
 }  // namespace trapdoor

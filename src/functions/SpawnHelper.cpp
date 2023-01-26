@@ -97,7 +97,7 @@ namespace trapdoor {
             targetPos = trapdoor::getLookAtPos(player);
         }
         if (targetPos == BlockPos::MAX) {
-            return {"Invalid position", false};
+            return ErrorMsg("spawn.forcesp.error.position");
         }
 
         auto &bs = player->getRegion();
@@ -107,7 +107,7 @@ namespace trapdoor {
         if (mob) {
             return {"", true};
         } else {
-            return {"Failed to spawn mob", false};
+            return ErrorMsg("spawn.forcesp.error.fail");
         }
     }
 
@@ -132,7 +132,7 @@ namespace trapdoor {
             }
         }
         if (!hasFound) {
-            return {"Invalid spawn position", true};
+            return ErrorMsg("spawn.prob.error.position");
         }
 
         // build conditions
@@ -149,7 +149,7 @@ namespace trapdoor {
             auto *mobData = block.getMobToSpawn(*reinterpret_cast<SpawnConditions *>(&cond),
                                                 player->getRegion());
             if (!mobData) {
-                return {"Can not spawn mob in such spawn condition", true};
+                return ErrorMsg("spawn.prob.error.condition");
             }
 
             auto &id = dAccess<ActorDefinitionIdentifier, 8>(mobData);

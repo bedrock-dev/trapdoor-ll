@@ -25,7 +25,7 @@ namespace trapdoor {
 
         void setBoolValue(bool& key, bool value, const std::string& name) {
             key = value;
-            trapdoor::logger().debug("Set [{}] to {}", name, key);
+            trapdoor::logger().debug(tr("Set [{}] to {}"), name, key);
         }
 
         template <typename T>
@@ -67,10 +67,10 @@ namespace trapdoor {
             this->config.clear();
             std::ifstream i(path);
             i >> this->config;
-            trapdoor::logger().info("Read config file {} successfully", path);
+            trapdoor::logger().info(tr("Read config file {} successfully"), path);
             return true;
         } catch (std::exception&) {
-            trapdoor::logger().error("Can't read config file in path {}", path);
+            trapdoor::logger().error(tr("Can't read config file in path {}"), path);
             return false;
         }
     }

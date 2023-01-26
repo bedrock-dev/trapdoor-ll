@@ -140,7 +140,7 @@ namespace trapdoor {
 
         auto comp = graph.getBaseComponent(pos);
         if (!comp) {
-            return {"Not a redstone component", false};
+            return {"data.error.no-circuit-component", false};
         }
 
         if (type == "signal") {

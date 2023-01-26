@@ -15,7 +15,9 @@ namespace trapdoor {
         success ? output.success(msg) : output.error(msg);
     }
 
-    ActionResult ErrorMsg(const std::string &msg) { return {msg, false}; }
+    ActionResult ErrorMsg(const std::string &msg) { return {tr(msg), false}; }
+
+    ActionResult SuccessMsg(const string &msg) { return {tr(msg), true}; }
 
     Vec3 getLookAtVec3(Player *player) {
         if (!player) {

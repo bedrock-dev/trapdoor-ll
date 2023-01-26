@@ -26,20 +26,21 @@ namespace trapdoor {
 
     ActionResult SpawnAnalyzer::start(int id, const TBlockPos2 &pos) {
         if (this->inAnalyzing) {
-            return {"Already in analyzing", false};
+            return ErrorMsg("spawn.analyzer.error.start");
         }
         this->clear();
         this->inAnalyzing = true;
         this->dimensionID = id;
         this->centerChunkPos = pos;
-        return {"Start analyzing,This may bring higher MSPT", true};
+        return SuccessMsg("spawn.analyzer.success.start");
     }
+
     ActionResult SpawnAnalyzer::stop() {
         if (!this->inAnalyzing) {
-            return {"Not in analyzing", false};
+            return ErrorMsg("spawn.analyzer.error.stop");
         }
         this->inAnalyzing = false;
-        return {"Stop analyzing", true};
+        return SuccessMsg("spawn.analyzer.success.stop");
     }
 
     void SpawnAnalyzer::collectDensityInfo() {

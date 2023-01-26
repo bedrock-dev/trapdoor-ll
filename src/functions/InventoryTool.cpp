@@ -71,7 +71,7 @@ namespace trapdoor {
             auto remain = item.getMaxDamage() - item.getDamageValue();
             if (remain <= trapdoor::mod().getConfig().getBasicConfig().toolDamageThreshold) {
                 TextBuilder builder;
-                builder.sText(TB::GOLD, " You don't have the right tools!");
+                builder.sText(TB::GOLD, tr("tweak.autotool.no-tools"));
                 player->sendText(builder.get());
                 return false;
             } else {

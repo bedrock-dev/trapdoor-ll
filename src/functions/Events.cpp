@@ -185,23 +185,23 @@ namespace trapdoor {
 #include <mc/ConsumerComponent.hpp>
 
 #include "HookAPI.h"
-THook(bool, "?evaluate@ConsumerComponent@@UEAA_NAEAVCircuitSystem@@AEBVBlockPos@@@Z",
-      ConsumerComponent* comp, CircuitSystem& sys, const BlockPos& pos) {
-    auto o = comp->getStrength();
-    auto res = original(comp, sys, pos);
-    auto n = comp->getStrength();
-
-    if (o != n) {
-        trapdoor::TextBuilder builder;
-        builder.sTextF(trapdoor::TB::WHITE, "[%d, %d ,%d]  ", pos.x, pos.y, pos.z)
-            .sTextF(trapdoor::TB::WHITE | trapdoor::TB::BOLD, "%d", o)
-            .text(" -> ")
-            .sTextF(trapdoor::TB::RED | trapdoor::TB::BOLD, "%d", n);
-        trapdoor::mod().getEventTriggerMgr().broadcastMessage(trapdoor::SignalChange,
-                                                              builder.get());
-    }
-    return res;
-}
+//THook(bool, "?evaluate@ConsumerComponent@@UEAA_NAEAVCircuitSystem@@AEBVBlockPos@@@Z",
+//      ConsumerComponent* comp, CircuitSystem& sys, const BlockPos& pos) {
+//    auto o = comp->getStrength();
+//    auto res = original(comp, sys, pos);
+//    auto n = comp->getStrength();
+//
+//    if (o != n) {
+//        trapdoor::TextBuilder builder;
+//        builder.sTextF(trapdoor::TB::WHITE, "[%d, %d ,%d]  ", pos.x, pos.y, pos.z)
+//            .sTextF(trapdoor::TB::WHITE | trapdoor::TB::BOLD, "%d", o)
+//            .text(" -> ")
+//            .sTextF(trapdoor::TB::RED | trapdoor::TB::BOLD, "%d", n);
+//        trapdoor::mod().getEventTriggerMgr().broadcastMessage(trapdoor::SignalChange,
+//                                                              builder.get());
+//    }
+//    return res;
+//}
 
 // THook(std::string*,
 //       "?getWorldsPath@FilePathManager@Core@@QEBA?AV?$PathBuffer@V?$basic_string@DU?$char_traits@D@"
