@@ -71,6 +71,8 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/base/Particle.cpp
         src/base/Utils.cpp
         src/base/TrAPI.cpp
+        src/base/LoggerHelper.cpp
+
 
         src/functions/RedstoneTool.cpp
         src/functions/EventTrigger.cpp

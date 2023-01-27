@@ -34,21 +34,32 @@ namespace trapdoor {
 
     ActionResult ErrorMsg(const std::string &msg);
 
+    ActionResult SuccessMsg(const std::string &msg);
+
+
     inline ActionResult ErrorPlayerNeed() {
-        return {"This command requires a player as executor", false};
+        return ErrorMsg("command.error.player-required");
     }
 
     inline ActionResult ErrorDimension() {
-        return {"Can not find a dimension instance,try run this command in game", false};
+        return ErrorMsg("command.error.dimension-required");
     }
 
     inline ActionResult ErrorRange(const std::string &name, int begin, int end) {
-        return {fmt::format("Error value {}, it should within [{},{}] ", name, begin, end), false};
+        return {fmt::format( tr("command.error.range"), name, begin, end), false};
     }
 
-    inline ActionResult ErrorPosition() { return {"A position needed", false}; }
+    inline  ActionResult OperationSuccess(){
+        return SuccessMsg("command.operation.success");
+    }
 
-    inline ActionResult ErrorDeveloping() { return {"Function is in developing", false}; }
+    inline ActionResult ErrorPosition() {
+        return ErrorMsg("command.error.position-required");
+    }
+
+    inline ActionResult ErrorDeveloping() {
+        return ErrorMsg("command.error.developing");
+    }
 
     void registerShortcutCommand(const std::string &shortcut,
                                  const std::vector<std::string> &actions);

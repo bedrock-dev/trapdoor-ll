@@ -16,6 +16,7 @@
 #include "SimPlayerHelper.h"
 #include "TrapdoorMod.h"
 #include "Utils.h"
+#include "CommandHelper.h"
 
 // from liteloaderBDS
 // https://github.com/LiteLDev/LiteLoaderBDS/blob
@@ -54,7 +55,7 @@ namespace trapdoor {
 #define GET_FREE_PLAYER(sim)                                       \
     auto*(sim) = this->tryFetchSimPlayer(name, true);              \
     if (!(sim)) {                                                  \
-        return {"Player does not exists or in scheduling", false}; \
+        return ErrorMsg("player.error.schedule-failed"); \
     }
 
 #define ADD_TASK                                            \
@@ -227,7 +228,7 @@ namespace trapdoor {
                     .text("\n");
             }
         }
-        if (ctr == 0) builder.text("Empty Inventory");
+        if (ctr == 0) builder.text(tr("player.info.empty-inv"));
         return {builder.get(), true};
     }
 
@@ -348,10 +349,7 @@ namespace trapdoor {
 
     ActionResult SimPlayerManager::jumpSchedule(const std::string& name, int repType, int interval,
                                                 int times) {
-        auto* sim = this->tryFetchSimPlayer(name, true);
-        if (!sim) {
-            return {"No player or player is in scheduling", false};
-        }
+        GET_FREE_PLAYER(sim)
         auto task = [this, name, sim]() {
             CHECK_SURVIVAL
             sim->simulateJump();
@@ -446,7 +444,7 @@ namespace trapdoor {
     ActionResult SimPlayerManager::removePlayer(const std::string& name) {
         auto it = this->simPlayers.find(name);
         if (it == this->simPlayers.end()) {
-            return {"Player does not exist", false};
+            return ErrorMsg("player.error.not-exists");
         }
 
         it->second.task.cancel();
@@ -461,7 +459,7 @@ namespace trapdoor {
                                              int gameMode, Player* origin) {
         auto iter = this->simPlayers.find(name);
         if (iter != simPlayers.end() && iter->second.simPlayer) {
-            return {"Player has already existed", false};
+            return ErrorMsg("player.error.existed");
         }
 
         if (iter != simPlayers.end()) {
@@ -470,7 +468,7 @@ namespace trapdoor {
         auto* sim = SimulatedPlayer::create(name, p, dimID);
 
         if (!sim) {
-            return {"Spawn player failure", false};
+            return ErrorMsg("player.error.spawn");
         }
         if (origin) {
             // 是玩家召唤的
@@ -497,8 +495,9 @@ namespace trapdoor {
     void SimPlayerManager::tick() {}
     ActionResult SimPlayerManager::listAll() {
         if (this->simPlayers.empty()) {
-            return {"No player exists", true};
+            return ErrorMsg("player.error.no-players");
         }
+
         TextBuilder builder;
         for (const auto& i : this->simPlayers) {
             builder.text(" - ").textF("%s   ", i.first.c_str());
@@ -612,8 +611,8 @@ namespace trapdoor {
         auto uid = playerActor->getUniqueID();
         auto* target = playerActor->getActorFromViewVector(5.25);
         if (target) uid = target->getUniqueID();
-        if (uid == sim->getUniqueID()) return {"The sim player can not follow itself", false};
-
+        if (uid == sim->getUniqueID())
+            return ErrorMsg("player.error.follow");
         auto task = [this, sim, name, uid]() {
             CHECK_SURVIVAL
             auto t = Global<Level>->fetchEntity(uid, true);
@@ -689,7 +688,7 @@ namespace trapdoor {
         }
         sim->sendInventory(true);
         origin->sendInventory(true);
-        return {"Success", true};
+        return OperationSuccess();
     }
 
 }  // namespace trapdoor

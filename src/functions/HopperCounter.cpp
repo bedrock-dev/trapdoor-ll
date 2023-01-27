@@ -29,11 +29,11 @@ namespace trapdoor {
 
     ActionResult HopperChannelManager::modifyChannel(size_t channel, int opt) {
         if (!this->enable) {
-            return {"Hopper counter is disabled", false};
+            return ErrorMsg("hopper.error.disable");
         }
 
         if (channel < 0 || channel > 15) {
-            return {"Invalid channel number", false};
+            return ErrorMsg("hopper.error.invalid-channel");
         } else {
             auto &ch = this->getChannel(channel);
             if (opt == 0) {
@@ -47,7 +47,7 @@ namespace trapdoor {
     ActionResult HopperChannelManager::quickModifyChannel(Player *player, const BlockPos &pos,
                                                           int opt) {
         if (!this->enable) {
-            return {"Hopper counter is disabled", false};
+            return ErrorMsg("hopper.error.disable");
         }
         if (!player) return ErrorPlayerNeed();
         auto &bs = player->getRegion();
@@ -73,7 +73,7 @@ namespace trapdoor {
     ActionResult CounterChannel::reset() {
         gameTick = 0;
         counterList.clear();
-        return {"Channel cleaned", true};
+        return SuccessMsg("hopper.info.channel-cleaned");
     }
 
     std::string CounterChannel::info(bool simple) {
@@ -83,7 +83,7 @@ namespace trapdoor {
         }
 
         if (this->gameTick == 0 || n == 0) {
-            return "No data in this channel";
+            return tr("hopper.info.no-data");
         }
 
         std::string stringBuilder;

@@ -38,7 +38,7 @@ namespace trapdoor {
     ActionResult displayEntityInfo(Player *player, Actor *a, bool nbt, const std::string &path) {
         if (!player) return ErrorPlayerNeed();
         if (!a) {
-            return {"No actor found", false};
+            return ErrorMsg("data.error.no-actor");
         }
         TextBuilder builder;
         if (nbt) {
@@ -69,8 +69,9 @@ namespace trapdoor {
         }
 
         if (pos == BlockPos::MAX) {
-            return {"Get block failure", false};
+            return ErrorMsg("data.error.no-block");
         }
+
         auto &b = p->getRegion().getBlock(pos);
         trapdoor::TextBuilder builder;
         if (nbt) {
@@ -80,7 +81,7 @@ namespace trapdoor {
                     return getNBTString(be->getNbt(), path);
                 }
             } else {
-                return {"No NBT data", false};
+                return ErrorMsg("data.error.no-nbt");
             }
         }
 

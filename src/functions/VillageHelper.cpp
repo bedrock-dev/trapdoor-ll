@@ -168,7 +168,7 @@ namespace trapdoor {
     }
     ActionResult VillageHelper::listTickingVillages(bool details) {
         if (this->vs_.empty()) {
-            return {"No village in ticking", true};
+            return SuccessMsg("village.info.no-village");
         }
 
         trapdoor::TextBuilder builder;
@@ -201,7 +201,7 @@ namespace trapdoor {
     ActionResult VillageHelper::printDetails(const std::string &id, const Vec3 &pos) {
         trapdoor::logger().debug("Vid is {}", id);
         if (this->vs_.empty()) {
-            return {"No village exists", false};
+            return SuccessMsg("village.info.no-village");
         }
 
         int targetVid = -1;
@@ -371,7 +371,7 @@ namespace trapdoor {
         auto actor = p->getActorFromViewVector(5.25);
         auto msg = this->getVillagerInfo(actor, true);
         if (msg.empty()) {
-            return {"Can not find a villager", false};
+            return ErrorMsg("spawn.prob.error.condition");
         } else {
             return {msg, true};
         }

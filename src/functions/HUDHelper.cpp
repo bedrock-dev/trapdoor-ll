@@ -214,23 +214,16 @@ namespace trapdoor {
                                              int op) {
         auto type = getHUDTypeFromString(item);
         if (type == HUDInfoType::Unknown) {
-            return {"Unknown HUD type", false};
+            return ErrorMsg("hud.error.unknown-type");
         }
+
         auto& playerCfg = this->playerInfos[playerName].config;
         playerCfg.resize(HUD_TYPE_NUMBER);
         playerCfg[type] = op;
         this->syncConfigToFile();
-        return {"Success", true};
+        return OperationSuccess();
     }
 
-    //    ActionResult HUDHelper::setAblePlayer(const std::string& playerName, bool able) {
-    //        if (!this->enable) {
-    //            return {"This function is disabled by Operator", false};
-    //        }
-    //        this->playerInfos[playerName].enable = able;
-    //        return {"Success", true};
-    //    }
-    //
     void HUDHelper::init() { this->readConfigCacheFromFile(); }
 
     bool HUDHelper::readConfigCacheFromFile() {
