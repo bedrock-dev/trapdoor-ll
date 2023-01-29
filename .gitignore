@@ -15,5 +15,6 @@ build/*
 run_bds.cmd
 .build
 .fleet
-
 src/include/config.h
+dist/*
+dist/create_release.ps1
