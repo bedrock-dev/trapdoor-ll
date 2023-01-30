@@ -27,20 +27,25 @@ jobs:
         shell: cmd
 
       - name: Configure CMake
-        run: cmake -B ${{github.workspace}}/build -DBETA=OFF -DDEV=OFF
+
+        run: |
+          githubSHA1=${{GITHUB_SHA}}
+          cmake -B ${{github.workspace}}/build -DDEV=OFF  -DCommitHash="${githubSHA1:0:7}" 
 
       - name: Build
-        run: cmake --build ${{github.workspace}}/build
+        run: cmake --build ${{github.workspace}}/build --config Release
 
       - name: Create Artifact
         run: |
           mkdir out
           mkdir out/plugins
           mkdir out/plugins/trapdoor
-          cp ./build/Debug/trapdoor*.dll ./out/plugins/
-          cp ./build/Debug/trapdoor*.pdb ./out/plugins/
+          cp ./build/Release/trapdoor*.dll ./out/plugins/
+          cp ./build/Release/trapdoor*.pdb ./out/plugins/
           cp ./src/base/config.json ./out/plugins/trapdoor/
-          cp ./changelog.md ./out/
+          cp ./src/base/lang.json ./out/plugins/trapdoor/
+          cp ./installer.exe ./out
+          cp ./changelog.md ./out
           cp ./README.md ./out
         shell: bash
 
@@ -53,7 +58,8 @@ jobs:
       #create release
       - name: Prepare Release
         run: |
-          7z a release.zip ${{github.workspace}}/out
+          archiveName=$(ls ./out/plugins/*.dll  | awk '{split($0,n,".dll"); print n[1]}')
+          7z a ${archiveName}.zip ${{github.workspace}}/out
           python create_release_note.py
 
       - name: Publish Release
