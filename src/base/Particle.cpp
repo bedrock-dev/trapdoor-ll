@@ -56,7 +56,7 @@ namespace trapdoor {
         auto dim_ref = Global<Level>->getDimension(dimID).mHandle.lock();
         auto* d = trapdoor::unwrap_shard_ptr_ref(dim_ref.get());
         auto pvd = trapdoor::mod().getConfig().getBasicConfig().particleViewDistance2D;
-        if (d->distanceToNearestPlayerSqr2D(p) > static_cast<float>(pvd)) return;
+        //  if (d->distanceToNearestPlayerSqr2D(p) > static_cast<float>(pvd)) return;
         Global<Level>->spawnParticleEffect(type, p, d);
     }
 
@@ -188,7 +188,7 @@ namespace trapdoor {
         spawnParticle(p4, pName2, dimType);
     }
 
-    void spawnSlimeChunkParticle(const ChunkPos& p) {
+    void spawnSlimeChunkParticle(const TBlockPos2& p) {
         float x = static_cast<float>(p.x) * 16.0f;
         float z = static_cast<float>(p.z) * 16.0f;
         TVec3 p1{x + 0.01f, 0.0f, z + 8.0f};

@@ -1,7 +1,10 @@
 #ifndef TRAPDOOR_UTILS_H
 #define TRAPDOOR_UTILS_H
+#include <mc/BlockPos.hpp>
+#include <mc/ChunkPos.hpp>
 #include <mc/CompoundTag.hpp>
 #include <string>
+
 namespace trapdoor {
     std::string getNBTInfoFromPath(const std::unique_ptr<CompoundTag> &tag, const std::string &path,
                                    bool &success);
@@ -13,6 +16,8 @@ namespace trapdoor {
     T *unwrap_shard_ptr_ref(SharePtrRefTraits<T> *ref) {
         return reinterpret_cast<T *>(ref);
     }
+
+    ChunkPos blockPosToChunkPos(const BlockPos &p);
 
 }  // namespace trapdoor
 

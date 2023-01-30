@@ -1,42 +1,27 @@
 #ifndef TRAPDOOR_HSA_HELPER
 #define TRAPDOOR_HSA_HELPER
 
+#include <mc/LevelChunk.hpp>
 #include <set>
 
 #include "CommandHelper.h"
 #include "TBlockPos.h"
 
 namespace trapdoor {
-    enum StructureType { SwampHut, OceanMonument, PillagerOutpost, NetherFortress };
-
-    struct HsaInfo {
-        StructureType type = PillagerOutpost;
-        TBoundingBox bb{};
-        int dimensionID = 0;
-
-        bool operator<(const HsaInfo &rhs) const;
-    };
-
     class HsaManager {
         bool showHsa = false;
-        std::set<HsaInfo> hsaList;
+        std::unordered_map<BlockPos, LevelChunk::HardcodedSpawningArea> globalAreas;
 
        public:
-        inline void insert(HsaInfo info) { this->hsaList.insert(info); }
-
         void HeavyTick();
 
-        ActionResult place();
+        ActionResult place(Player *player, bool replaceAirOnly);
 
-        inline ActionResult clear() {
-            auto num = this->hsaList.size();
-            this->hsaList.clear();
-            return {std::to_string(num), true};
-        }
+        ActionResult count();
 
         inline ActionResult ShowHsa(bool show) {
             this->showHsa = show;
-            return {"~", true};
+            return trapdoor::OperationSuccess();
         }
     };
 }  // namespace trapdoor

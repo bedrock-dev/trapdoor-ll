@@ -85,6 +85,14 @@ namespace trapdoor {
             return *this;
         }
 
+        inline TextBuilder &removeEndl() {
+            if ((!this->messageBuffer.empty() && !this->messageBuffer.back().empty()) &&
+                this->messageBuffer.back().back() == '\n') {
+                this->messageBuffer.back().pop_back();
+            }
+            return *this;
+        }
+
         TextBuilder &sText(uint8_t style, const std::string &s);
 
         TextBuilder &pos(const TBlockPos &pos);

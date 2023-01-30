@@ -12,12 +12,12 @@ namespace trapdoor {
     class SlimeChunkHelper {
         int showRadius = 5;
         bool showSlime = false;
-        std::set<trapdoor::ChunkPos> posList;
+        std::set<trapdoor::TBlockPos2> posList;
 
        public:
         inline ActionResult ShowSlime(bool show) {
             this->showSlime = show;
-            return {"Slime chunk display is set to "+std::to_string(show), true};
+            return {"Slime chunk display is set to " + std::to_string(show), true};
         }
 
         void updateChunkPosList();
