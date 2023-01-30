@@ -12,10 +12,9 @@ set(CMAKE_BUILD_TYPE Release)
 #set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 string(TIMESTAMP BUILD_TIME "%Y-%m-%d %H:%M:%S")
 set(BUILD_TIME= "${BUILD_TIME}")
-
 #configurations
 option(DEV "Build as developer version" ON)
-
+SET(CommitHash "" CACHE STRING "CommitHash")
 project(Trapdoor VERSION ${TRAPDOOR_VERSION})
 
 #export configure file
@@ -29,9 +28,13 @@ if (${DEV} STREQUAL "ON")
     set(TARGET_NAME trapdoor-dev)
 else ()
     message("Build a release version")
-    set(TARGET_NAME trapdoor-${TRAPDOOR_VERSION}-${GAME_VERSION})
-endif ()
+    if (${CommitHash} STREQUAL "")
+        set(TARGET_NAME trapdoor-${TRAPDOOR_VERSION}-${GAME_VERSION})
+    else ()
+        set(TARGET_NAME trapdoor-${TRAPDOOR_VERSION}-${GAME_VERSION}-${CommitHash})
+    endif ()
 
+endif ()
 
 file(GLOB_RECURSE SRC_FILES_DIR
         ${PROJECT_SOURCE_DIR}/SDK-cpp/Header/*.cpp
@@ -109,11 +112,10 @@ add_definitions(-D"NDEBUG" -D"TEMPLATE_EXPORTS" -D"WIN32_LEAN_AND_MEAN" -D"_CRT_
         -D"_USRDLL" -D"_AMD64_" -D"NOMINMAX" -D"_WINDLL" -D"_UNICODE" -D"UNICODE")
 
 
-
 add_compile_options(
         /utf-8
         /permissive- /GS /GL /W3 /Gy /Zc:wchar_t /Zi /Gm- /sdl /Zc:inline /fp:precise /errorReport:prompt /WX-
-        /Zc:forScope /Gd /Oi /MD /std:c++17 /FC /EHsc /nologo /diagnostics:column
+        /Zc:forScope /Gd /Oi /MD /std:c++17 /FC /EHsc /nologo /diagnostics:column /MP
 )
 
 add_link_options(
