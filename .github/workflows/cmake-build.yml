@@ -12,6 +12,9 @@ jobs:
         run: FetchSDK.cmd
         shell: cmd
 
+      - name: Add SHORT_SHA env property with commit short sha
+        run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+
       - name: Download Server
         run: |
           mkdir D:/BDS
@@ -27,13 +30,12 @@ jobs:
         shell: cmd
 
       - name: Configure CMake
-
         run: |
-          githubSHA1=${{GITHUB_SHA}}
-          cmake -B ${{github.workspace}}/build -DDEV=OFF  -DCommitHash="${githubSHA1:0:7}" 
+          cmake -B ${{github.workspace}}/build -DDEV=OFF  -DCommitHash="${SHORT_SHA}" 
 
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config Release
+
 
       - name: Create Artifact
         run: |
