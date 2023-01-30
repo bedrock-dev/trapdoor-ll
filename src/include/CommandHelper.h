@@ -36,30 +36,21 @@ namespace trapdoor {
 
     ActionResult SuccessMsg(const std::string &msg);
 
+    inline ActionResult ErrorPlayerNeed() { return ErrorMsg("command.error.player-required"); }
 
-    inline ActionResult ErrorPlayerNeed() {
-        return ErrorMsg("command.error.player-required");
-    }
+    inline ActionResult ErrorCreativeNeed() { return ErrorMsg("command.error.creative-required"); }
 
-    inline ActionResult ErrorDimension() {
-        return ErrorMsg("command.error.dimension-required");
-    }
+    inline ActionResult ErrorDimension() { return ErrorMsg("command.error.dimension-required"); }
 
     inline ActionResult ErrorRange(const std::string &name, int begin, int end) {
-        return {fmt::format( tr("command.error.range"), name, begin, end), false};
+        return {fmt::format(tr("command.error.range"), name, begin, end), false};
     }
 
-    inline  ActionResult OperationSuccess(){
-        return SuccessMsg("command.operation.success");
-    }
+    inline ActionResult OperationSuccess() { return SuccessMsg("command.operation.success"); }
 
-    inline ActionResult ErrorPosition() {
-        return ErrorMsg("command.error.position-required");
-    }
+    inline ActionResult ErrorPosition() { return ErrorMsg("command.error.position-required"); }
 
-    inline ActionResult ErrorDeveloping() {
-        return ErrorMsg("command.error.developing");
-    }
+    inline ActionResult ErrorDeveloping() { return ErrorMsg("command.error.developing"); }
 
     void registerShortcutCommand(const std::string &shortcut,
                                  const std::vector<std::string> &actions);

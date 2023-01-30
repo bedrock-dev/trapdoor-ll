@@ -35,7 +35,7 @@ namespace trapdoor {
 
     void drawChunkSurface(const TBlockPos2&, int dimType);
 
-    void spawnSlimeChunkParticle(const ChunkPos& p);
+    void spawnSlimeChunkParticle(const TBlockPos2& p);
 
     void spawnNumParticle(const TVec3& v, int num, PCOLOR color, int dimType);
 
