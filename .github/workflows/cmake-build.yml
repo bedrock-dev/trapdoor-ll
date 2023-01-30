@@ -15,9 +15,11 @@ jobs:
       - name: Set outputs
         id: vars
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        shell: bash
 
       - name: Check outputs
         run: echo ${{ steps.vars.outputs.sha_short }}
+        shell: bash
 
       - name: Download Server
         run: |
