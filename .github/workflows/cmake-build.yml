@@ -74,6 +74,6 @@ jobs:
         with:
           body_path: ${{ github.workspace }}/release_note
           files: |
-            release.zip
+            ${{steps.vars2.outputs.sha_short}}.zip
         env:
           GITHUB_REPOSITORY: bedrock-dev/trapdoor-ll
