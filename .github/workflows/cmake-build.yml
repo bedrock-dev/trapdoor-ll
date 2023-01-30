@@ -12,14 +12,11 @@ jobs:
         run: FetchSDK.cmd
         shell: cmd
 
-      - name: Set outputs
+      - name: Get Commit short hash
         id: vars
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
         shell: bash
 
-      - name: Check outputs
-        run: echo ${{ steps.vars.outputs.sha_short }}
-        shell: bash
 
       - name: Download Server
         run: |
@@ -44,6 +41,7 @@ jobs:
 
 
       - name: Create Artifact
+        id: vars2
         run: |
           mkdir out
           mkdir out/plugins
@@ -55,7 +53,9 @@ jobs:
           cp ./installer.exe ./out
           cp ./changelog.md ./out
           cp ./README.md ./out
+          echo "archive_name=$(ls ./out/plugins/*.dll  | awk '{split($0,n,".dll"); print n[1]}')" >> $GITHUB_OUTPUT
         shell: bash
+
 
       - name: Upload Actions File
         uses: actions/upload-artifact@v1.0.0
@@ -63,13 +63,10 @@ jobs:
           name: release
           path: ${{github.workspace}}/out
 
-      #create release
       - name: Prepare Release
         run: |
-          archiveName=$(ls ./out/plugins/*.dll  | awk '{split($0,n,".dll"); print n[1]}')
-          zip -r ${archiveName}.zip ${{github.workspace}}/out
+          7z a ${{steps.vars2.outputs.sha_short}}.zip ${{github.workspace}}/out
           python create_release_note.py
-        shell: bash
 
       - name: Publish Release
         uses: softprops/action-gh-release@v1
