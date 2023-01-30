@@ -52,6 +52,7 @@ jobs:
           cp ./src/base/lang.json ./out/plugins/trapdoor/
           cp ./installer.exe ./out
           cp ./changelog.md ./out
+          cp ./metadata ./out
           cp ./README.md ./out
           echo "archive_name=$(ls ./out/plugins/*.dll  | awk '{split($0,n,".dll"); print n[1]}')" >> $GITHUB_OUTPUT
         shell: bash
