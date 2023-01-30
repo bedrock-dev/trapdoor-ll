@@ -67,8 +67,9 @@ jobs:
       - name: Prepare Release
         run: |
           archiveName=$(ls ./out/plugins/*.dll  | awk '{split($0,n,".dll"); print n[1]}')
-          7z a ${archiveName}.zip ${{github.workspace}}/out
+          zip -r ${archiveName}.zip ${{github.workspace}}/out
           python create_release_note.py
+        shell: bash
 
       - name: Publish Release
         uses: softprops/action-gh-release@v1
