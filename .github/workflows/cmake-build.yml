@@ -65,7 +65,7 @@ jobs:
 
       - name: Prepare Release
         run: |
-          7z a ${{steps.vars2.outputs.sha_short}}.zip ${{github.workspace}}/out
+          7z a ${{steps.vars2.outputs.archive_name}}.zip ${{github.workspace}}/out
           python create_release_note.py
 
       - name: Publish Release
@@ -74,6 +74,6 @@ jobs:
         with:
           body_path: ${{ github.workspace }}/release_note
           files: |
-            ${{steps.vars2.outputs.sha_short}}.zip
+            ${{steps.vars2.outputs.archive_name}}.zip
         env:
           GITHUB_REPOSITORY: bedrock-dev/trapdoor-ll
