@@ -60,7 +60,7 @@ configuration file.
 
 ## Donation
 
-<img src="https://afdian.net/static/img/logo/logo.png" alt="drawing" style="display:inline; width: 25px"/> **<a href="https://afdian.net/@hhhxiao">https://afdian.net/@hhhxiao</a>**
+<img src="https://afdian.net/static/img/logo/logo.png" alt="drawing" style="display:inline; width: 20px"/> **<a href="https://afdian.net/@hhhxiao">https://afdian.net/@hhhxiao</a>**
 
-<img src="./imgs/patreon.svg" alt="drawing" style="display:inline; width: 25px"/> **<a href="patreon.com/hhhxiao">patreon.com/hhhxiao</a>**
+<img src="./imgs/patreon.svg" alt="drawing" style="display:inline; width: 20px"/> **<a href="https://patreon.com/hhhxiao">patreon.com/hhhxiao</a>**
 
