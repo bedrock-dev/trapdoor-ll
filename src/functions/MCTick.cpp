@@ -108,13 +108,12 @@ namespace trapdoor {
         auto &info = getTickingInfo();
         if (info.status == TickingStatus::Normal) {
             if (times < 2 || times > 64) {
-                return ErrorMsg(fmt::format(tr("tick.slow.error-range"),2,256));
+                return ErrorMsg(fmt::format(tr("tick.slow.error-range"), 2, 256));
             }
 
             info.status = TickingStatus::SlowDown;
             info.slowDownTime = times;
-            trapdoor::broadcastMessage(fmt::format(tr("tick.slow.broadcast"), times),
-                                       -1);
+            trapdoor::broadcastMessage(fmt::format(tr("tick.slow.broadcast"), times), -1);
 
             return {"", true};
         } else {
@@ -126,23 +125,21 @@ namespace trapdoor {
         auto &info = getTickingInfo();
         if (info.status == TickingStatus::Normal) {
             if (times < 2 || times > 100) {
-                return ErrorMsg(fmt::format(tr("tick.acc.error-range"),2,100));
+                return ErrorMsg(fmt::format(tr("tick.acc.error-range"), 2, 100));
             }
 
             info.accTime = times;
             info.status = TickingStatus::Acc;
-            trapdoor::broadcastMessage(fmt::format(tr("tick.acc.broadcast"), times),
-                                       -1);
+            trapdoor::broadcastMessage(fmt::format(tr("tick.acc.broadcast"), times), -1);
             return {"", true};
         } else {
             return ErrorMsg("tick.acc.error");
-
         }
     }
 
     ActionResult startProfiler(int rounds, SimpleProfiler::Type type) {
         if (rounds <= 0 || rounds > 12000) {
-            return ErrorMsg(fmt::format(tr("prof.error.range"),1,12000));
+            return ErrorMsg(fmt::format(tr("prof.error.range"), 1, 12000));
         }
 
         auto &info = getTickingInfo();
@@ -238,7 +235,18 @@ namespace trapdoor {
 
         return {b.get(), true};
     }
-
+    void printTickMsg(const std::string &s) {
+#ifdef DEV
+        if (!trapdoor::normalProfiler().profiling) return;
+        static std::unordered_set<std::string> set;
+        auto tick = Global<Level>->getCurrentTick().t;
+        auto msg = fmt::format("{} --> {}", tick, s);
+        if (!set.count(msg)) {
+            trapdoor::logger().debug("{} -> {}", tick, s);
+            set.insert(msg);
+        }
+#endif
+    }
 }  // namespace trapdoor
 
 /*
@@ -258,6 +266,7 @@ ServerLevel::tick
 */
 
 THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
+    trapdoor::printTickMsg("ServerLevel.tick");
     auto &info = trapdoor::getTickingInfo();
     auto &mod = trapdoor::mod();
     if (info.status == trapdoor::TickingStatus::Normal) {
@@ -332,6 +341,7 @@ THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
 
 THook(void, "?tick@LevelChunk@@QEAAXAEAVBlockSource@@AEBUTick@@@Z", LevelChunk *chunk, void *bs,
       void *tick) {
+    trapdoor::printTickMsg("LevelChunk.tick");
     auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
         TIMER_START
@@ -348,6 +358,7 @@ THook(void, "?tick@LevelChunk@@QEAAXAEAVBlockSource@@AEBUTick@@@Z", LevelChunk *
 }
 
 THook(void, "?tickBlocks@LevelChunk@@QEAAXAEAVBlockSource@@@Z", LevelChunk *chunk, void *bs) {
+    trapdoor::printTickMsg("LevelChunk.tickBlocks");
     auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
         TIMER_START
@@ -360,6 +371,7 @@ THook(void, "?tickBlocks@LevelChunk@@QEAAXAEAVBlockSource@@@Z", LevelChunk *chun
 }
 
 THook(void, "?tickBlockEntities@LevelChunk@@QEAAXAEAVBlockSource@@@Z", void *chunk, void *bs) {
+    trapdoor::printTickMsg("LevelChunk.tickBlockEntities");
     auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
         TIMER_START
@@ -376,6 +388,7 @@ THook(bool,
       "N@Z",
       trapdoor::TBlockTickingQueue *queue, BlockSource *bs, uint64_t until, int max,
       bool instalTick) {
+    trapdoor::printTickMsg("LevelChunk.tickPendingTicks");
     max = trapdoor::mod().getConfig().getTweakConfig().maxPendingTickSize;
     auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
@@ -400,6 +413,7 @@ THook(bool,
 }
 
 THook(void, "?tick@Dimension@@UEAAXXZ", void *dim) {
+    trapdoor::printTickMsg("Dimension.tick");
     auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
         TIMER_START
@@ -412,6 +426,7 @@ THook(void, "?tick@Dimension@@UEAAXXZ", void *dim) {
 }
 
 THook(void, "?tick@EntitySystems@@QEAAXAEAVEntityRegistry@@@Z", void *es, void *arg) {
+    trapdoor::printTickMsg("EntitySystem.tick");
     auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
         TIMER_START
@@ -426,6 +441,7 @@ THook(void, "?tick@EntitySystems@@QEAAXAEAVEntityRegistry@@@Z", void *es, void *
 
 // signal update
 THook(void, "?tickRedstone@Dimension@@UEAAXXZ", void *dim) {
+    trapdoor::printTickMsg("Dimension.tickRedstone");
     auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
         TIMER_START
@@ -439,6 +455,7 @@ THook(void, "?tickRedstone@Dimension@@UEAAXXZ", void *dim) {
 
 // pending update
 THook(void, "?processPendingAdds@CircuitSceneGraph@@AEAAXXZ", void *c) {
+    trapdoor::printTickMsg("CircuitSceneGraph.processPendingAdds");
     auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
         TIMER_START
@@ -464,6 +481,7 @@ THook(void, "?removeComponent@CircuitSceneGraph@@AEAAXAEBVBlockPos@@@Z", void *c
 }
 
 THook(void, "?tick@Actor@@QEAA_NAEAVBlockSource@@@Z", Actor *actor, void *bs) {
+    trapdoor::printTickMsg("Actor.tick");
     auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
         TIMER_START
