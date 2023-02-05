@@ -11,6 +11,8 @@
 #include <string>
 #include <vector>
 
+#include "FMT/format.h"
+
 #define PH_DARK_RED "§4{}§r"
 #define PH_RED "§c{}§r"
 #define PH_GOLD "§6{}§r"
@@ -109,6 +111,15 @@ namespace trapdoor {
                     sText(WHITE | BOLD, std::to_string(x));
                 }
             }
+            return *this;
+        }
+
+        template <typename T>
+        inline TextBuilder item(const std::string &key, T value) {
+            sText(GRAY, " - ");
+            sTextF(WHITE, "%s :", key.c_str());
+            sTextF(GREEN | BOLD, "%s", fmt::format("{}", value).c_str());
+            endl();
             return *this;
         }
 

@@ -15,8 +15,11 @@
 #include <mc/Block.hpp>
 #include <mc/BlockActor.hpp>
 #include <mc/Brightness.hpp>
+#include <mc/ConsumerComponent.hpp>
 #include <mc/Dimension.hpp>
 #include <mc/Material.hpp>
+#include <mc/ProducerComponent.hpp>
+#include <mc/TransporterComponent.hpp>
 #include <unordered_map>
 #include <vector>
 
@@ -24,6 +27,7 @@
 #include "Msg.h"
 #include "Particle.h"
 #include "TBlockPos.h"
+#include "TVec3.h"
 #include "TrAPI.h"
 namespace trapdoor {
     namespace {
@@ -164,7 +168,41 @@ namespace trapdoor {
             }
             return {builder.get(), true};
         }
+        if (type == "info") {
+            trapdoor::TextBuilder b;
+            auto base =
+                b.item("Strength", comp->getStrength())
+                    .item("SecondaryPowered", comp->isSecondaryPowered())
+                    .item("CanConsumePower", comp->canConsumerPower())
+                    .item("CanStopPower", comp->canStopPower())
+                    .item("IsHalfPulse", comp->isHalfPulse())
+                    .item("Direction",
+                          trapdoor::facingToString(static_cast<TFACING>(comp->getDirection())))
+                    .removeEndl()
+                    .get();
 
+            return {base, true};
+
+            //            if (comp->getCircuitComponentGroupType() ==
+            //            CircuitComponentType::PRODUCER) {
+            //                auto *c = reinterpret_cast<ProducerComponent *>(comp);
+            //
+            //            }
+            //            auto t = comp->getCircuitComponentGroupType();
+            //            if (t == CircuitComponentType::PRODUCER) {  // consumer
+            //                auto *c = reinterpret_cast<ProducerComponent *>(comp);
+            //                if (c) {
+            //                }
+            //            } else if (t == CircuitComponentType::CONSUMER) {
+            //                auto *c = reinterpret_cast<ConsumerComponent *>(comp);
+            //                if (c) {
+            //                    builder.item("Can consumer power:", c->canConsumerPower())
+            //                        .item("IsSecondaryPowered", c->isSecondaryPowered());
+            //                }
+            //            }
+
+            return {"", true};
+        }
         //        if (type == "torch") {
         //            return {"", true};
         //        }

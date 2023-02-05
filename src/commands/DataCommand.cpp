@@ -22,7 +22,7 @@ namespace trapdoor {
         auto &redstoneSubCommand = command->setEnum("redstoneSubCommand", {"redstone"});
         auto nbtEnum = command->setEnum("nbt", {"nbt"});
 
-        auto redstoneEnum = command->setEnum("redstone", {"chunk", "conn", "signal"});
+        auto redstoneEnum = command->setEnum("redstone", {"chunk", "conn", "signal", "info"});
 
         // 给根命令+enum提示信息
         command->mandatory("data", ParamType::Enum, blockSubCommandEnum,
@@ -74,7 +74,6 @@ namespace trapdoor {
                         trapdoor::displayRedstoneCompInfo(
                             origin.getDimension(), results["blockPos"].get<BlockPos>(), redstoneOpt)
                             .sendTo(output);
-
                     } else {
                         if (!origin.getPlayer()) {
                             ErrorPlayerNeed().sendTo(output);

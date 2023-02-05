@@ -1,11 +1,11 @@
 {
     "en_US": {
         "command.error.creative-required": "Creative mode required",
-        "command.error.developing": "Function is developing",
+        "command.error.developing": "Function is in developing",
         "command.error.dimension-required": "Can not find a dimension instance, please run this command in game",
         "command.error.player-required": "This command can only be executed by player",
-        "command.error.position-required": "A position required",
-        "command.error.range": "Error value {}，it should within {} to {}",
+        "command.error.position-required": "Position required",
+        "command.error.range": "Error value {}，it should be within {} to {}",
         "command.operation.success": "Success",
         "data.error.no-actor": "No entity found",
         "data.error.no-block": "No block found",
