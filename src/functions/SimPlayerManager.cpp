@@ -459,36 +459,39 @@ namespace trapdoor {
                                              int gameMode, Player* origin) {
         auto iter = this->simPlayers.find(name);
         if (iter != simPlayers.end() && iter->second.simPlayer) {
+            // 玩家已经存在
             return ErrorMsg("player.error.existed");
         }
-
-        if (iter != simPlayers.end()) {
-            iter->second.task.cancel();
-        }
-        auto* sim = SimulatedPlayer::create(name, p, dimID);
-
+        trapdoor::logger().debug("SPAWN SIM PLAYER: position = {} dim = {} game mode = {}",
+                                 p.toString(), dimID, gameMode);
+        auto* sim = SimulatedPlayer::create(name, p, AutomaticID<Dimension, int>(dimID));
         if (!sim) {
             return ErrorMsg("player.error.spawn");
         }
+        trapdoor::logger().debug("PLAYER DIM: {}", sim->getDimensionId().operator int());
         if (origin) {
             // 是玩家召唤的
             auto rot = origin->getRotation();
+
             // sim->teleport(origin->getPos(), dimID, rot.x, rot.y);
         }
+
         sim->setPlayerGameType(static_cast<GameType>(gameMode));
         this->simPlayers[name] = {name, sim, ScheduleTask()};
         tryReadInvFromFile(sim->getInventory(), name);
         this->refreshCommandSoftEnum();
-        //  this->syncPlayerListToFile();
 
-        //        if (!sim->hasOwnedChunkSource()) {
-        //            // sim->_createChunkSource();
-        //            trapdoor::logger().debug("try prepare region");
-        //            auto dim_ref = Global<Level>->getDimension(dimID).mHandle.lock();
-        //            auto* d = trapdoor::unwrap_shard_ptr_ref(dim_ref.get());
-        //            auto cs = sim->_createChunkSource(d->getChunkSource());
-        //        }
-        return {"", true};
+        return OperationSuccess();
+        //        //  this->syncPlayerListToFile();
+        //
+        //        //        if (!sim->hasOwnedChunkSource()) {
+        //        //            // sim->_createChunkSource();
+        //        //            trapdoor::logger().debug("try prepare region");
+        //        //            auto dim_ref = Global<Level>->getDimension(dimID).mHandle.lock();
+        //        //            auto* d = trapdoor::unwrap_shard_ptr_ref(dim_ref.get());
+        //        //            auto cs = sim->_createChunkSource(d->getChunkSource());
+        //        //        }
+        //        return {"", true};
     }
 
     // 定时做垃圾回收，解决数据不同步问题
