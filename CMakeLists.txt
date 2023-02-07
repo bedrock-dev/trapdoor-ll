@@ -75,6 +75,7 @@ file(GLOB_RECURSE SRC_FILES_DIR
         src/base/Utils.cpp
         src/base/TrAPI.cpp
         src/base/LoggerHelper.cpp
+        src/base/UserConfig.cpp
 
 
         src/functions/RedstoneTool.cpp

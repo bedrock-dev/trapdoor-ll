@@ -10,13 +10,13 @@
 #include <mc/SimulatedPlayer.hpp>
 #include <mc/StackResultStorageEntity.hpp>
 
+#include "CommandHelper.h"
 #include "Msg.h"
 #include "Nlohmann/json.hpp"
 #include "ScheduleAPI.h"
 #include "SimPlayerHelper.h"
 #include "TrapdoorMod.h"
 #include "Utils.h"
-#include "CommandHelper.h"
 
 // from liteloaderBDS
 // https://github.com/LiteLDev/LiteLoaderBDS/blob
@@ -52,9 +52,9 @@ class OwnerPtrT<struct EntityRefTraits> {
 namespace trapdoor {
     namespace {
 
-#define GET_FREE_PLAYER(sim)                                       \
-    auto*(sim) = this->tryFetchSimPlayer(name, true);              \
-    if (!(sim)) {                                                  \
+#define GET_FREE_PLAYER(sim)                             \
+    auto*(sim) = this->tryFetchSimPlayer(name, true);    \
+    if (!(sim)) {                                        \
         return ErrorMsg("player.error.schedule-failed"); \
     }
 
@@ -450,7 +450,7 @@ namespace trapdoor {
         it->second.task.cancel();
         if (it->second.simPlayer) it->second.simPlayer->simulateDisconnect();
         simPlayers.erase(name);
-        this->syncPlayerListToFile();
+        // this->syncPlayerListToFile();
         this->refreshCommandSoftEnum();
         return {"", true};
     }
@@ -479,7 +479,7 @@ namespace trapdoor {
         this->simPlayers[name] = {name, sim, ScheduleTask()};
         tryReadInvFromFile(sim->getInventory(), name);
         this->refreshCommandSoftEnum();
-        this->syncPlayerListToFile();
+        //  this->syncPlayerListToFile();
 
         //        if (!sim->hasOwnedChunkSource()) {
         //            // sim->_createChunkSource();
@@ -611,8 +611,7 @@ namespace trapdoor {
         auto uid = playerActor->getUniqueID();
         auto* target = playerActor->getActorFromViewVector(5.25);
         if (target) uid = target->getUniqueID();
-        if (uid == sim->getUniqueID())
-            return ErrorMsg("player.error.follow");
+        if (uid == sim->getUniqueID()) return ErrorMsg("player.error.follow");
         auto task = [this, sim, name, uid]() {
             CHECK_SURVIVAL
             auto t = Global<Level>->fetchEntity(uid, true);
@@ -666,6 +665,7 @@ namespace trapdoor {
         //        return {"", false};
         //
     }
+
     ActionResult SimPlayerManager::swapBackpack(const string& name, Player* origin) {
         GET_FREE_PLAYER(sim)
         if (!origin) return ErrorPlayerNeed();
