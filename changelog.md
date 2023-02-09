@@ -1,3 +1,25 @@
+### trapdoor-ll-0.26.0-1.19.61.01
+
+#### 依赖和版本支持
+
+- 需要LiteLoader 2.10.0(-beta) 或以上版本
+- 支持1.19.61.01
+
+#### 更新日志
+
+- 支持1.19.61.01
+
+----
+
+#### Dependencies and Version Support
+
+- Requires LiteLoader 2.10.0(-beta) or above
+- Supports 1.19.61.01
+
+#### Changelog
+
+- Supports 1.19.61.01
+
 ### trapdoor-ll-0.25.0-1.19.50.02
 
 #### 依赖和版本支持
