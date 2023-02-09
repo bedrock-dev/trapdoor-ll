@@ -39,7 +39,7 @@ namespace trapdoor {
 
         ActionResult behavior(const std::string& name, const std::string& behType, const Vec3& vec);
 
-        ActionResult addPlayer(const std::string& name, const BlockPos& p, int dimID, int gameMode,
+        ActionResult addPlayer(const std::string& name, const Vec3& p, int dimID, int gameMode,
                                Player* origin);
 
         ActionResult removePlayer(const std::string& name);

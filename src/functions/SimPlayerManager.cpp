@@ -3,6 +3,9 @@
 #include <mc/ChunkSource.hpp>
 #include <mc/Container.hpp>
 #include <mc/Dimension.hpp>
+#include <mc/GameRule.hpp>
+#include <mc/GameRuleId.hpp>
+#include <mc/GameRules.hpp>
 #include <mc/ItemStack.hpp>
 #include <mc/OwnerStorageEntity.hpp>
 #include <mc/ServerNetworkHandler.hpp>
@@ -72,9 +75,12 @@ namespace trapdoor {
     }
 
         bool enableKeepInventory() {
-            auto res = Level::runcmdEx("gamerule keepinventory").second;
-            trapdoor::logger().debug("gamerule result: {}", res);
-            return res.find("true") != std::string::npos;
+            auto& rules = Global<Level>->getGameRules();
+            auto* rule = rules.getRule(rules.nameToGameRuleIndex("keepinventory"));
+            if (rule == nullptr) {
+                return false;
+            }
+            return rule->getBool();
         }
 
         BlockPos getTargetPos(Player* p, BlockPos pos) {
@@ -455,7 +461,7 @@ namespace trapdoor {
         return {"", true};
     }
 
-    ActionResult SimPlayerManager::addPlayer(const std::string& name, const BlockPos& p, int dimID,
+    ActionResult SimPlayerManager::addPlayer(const std::string& name, const Vec3& p, int dimID,
                                              int gameMode, Player* origin) {
         auto iter = this->simPlayers.find(name);
         if (iter != simPlayers.end() && iter->second.simPlayer) {
@@ -473,7 +479,7 @@ namespace trapdoor {
             // 是玩家召唤的
             auto rot = origin->getRotation();
 
-            // sim->teleport(origin->getPos(), dimID, rot.x, rot.y);
+            sim->teleport(origin->getPos() - Vec3(0.0f, 1.62001f, 0.0f), dimID, rot.x, rot.y);
         }
 
         sim->setPlayerGameType(static_cast<GameType>(gameMode));

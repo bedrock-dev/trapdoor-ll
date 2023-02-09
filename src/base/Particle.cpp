@@ -14,8 +14,6 @@
 namespace trapdoor {
     namespace {
 
-        const std::string PARTICLE_BASE_NAME = "trapdoor::line";
-
         std::array<std::string, 6>& lineParticleFacing() {
             static std::array<std::string, 6> facing{"pY", "mY", "pZ", "mZ", "pX", "mX"};
             return facing;
@@ -171,10 +169,10 @@ namespace trapdoor {
     }
     void drawChunkSurface(const TBlockPos2& p, int dimType) {
         //        bool isSlime = p.isSlimeChunk();
-        //        std::string pName2 = isSlime ? "trapdoor:chunkslimep" : "trapdoor:chunkp";
-        //        std::string pName1 = isSlime ? "trapdoor:chunkslimem" : "trapdoor:chunkm";
-        std::string pName2 = "trapdoor:chunkp";
-        std::string pName1 = "trapdoor:chunkm";
+        //        std::string pName2 = isSlime ? "ll:chunkslimep" : "ll:chunkp";
+        //        std::string pName1 = isSlime ? "ll:chunkslimem" : "ll:chunkm";
+        std::string pName2 = "ll:chunkp";
+        std::string pName1 = "ll:chunkm";
 
         auto x = static_cast<float>(p.x) * 16.0f;
         auto z = static_cast<float>(p.z) * 16.0f;
@@ -196,9 +194,9 @@ namespace trapdoor {
         TVec3 p3{x + 8.0f, 0.0f, z + 0.01f};
         TVec3 p4{x + 8.0f, 0.0f, z + 15.99f};
         TVec3 top{x + 8.0f, 128.0f, z + 8.0f};
-        std::string pName1 = "trapdoor:slime_side1";
-        std::string pName2 = "trapdoor:slime_side2";
-        std::string pName3 = "trapdoor:slime_top";
+        std::string pName1 = "ll:slime_side1";
+        std::string pName2 = "ll:slime_side2";
+        std::string pName3 = "ll:slime_top";
         spawnParticle(p1, pName1);
         spawnParticle(p2, pName1);
         spawnParticle(p3, pName2);

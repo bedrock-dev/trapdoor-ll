@@ -158,7 +158,9 @@ namespace trapdoor {
                         .getSimPlayerManager()
                         .addPlayer(
                             trapdoor::mod().getConfig().getBasicConfig().simPlayerPrefix + name,
-                            origin.getBlockPosition(), origin.getDimension()->getDimensionId(),
+                            origin.getWorldPosition() -
+                                Vec3(0.0f, origin.getPlayer() != nullptr ? 1.62001f : 0.0f, 0.0f),
+                            origin.getDimension()->getDimensionId(),
                             static_cast<int>(origin.getPlayer()->getPlayerGameType()),
                             origin.getPlayer())
                         .sendTo(output);
@@ -245,6 +247,7 @@ namespace trapdoor {
                         .getSimPlayerManager()
                         .destroySchedule(name, rep, interval, times)
                         .sendTo(output);
+                    break;
 
                 case do_hash("backpack"):
                     trapdoor::mod().getSimPlayerManager().getBackpack(name, 0).sendTo(output);
