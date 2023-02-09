@@ -114,12 +114,14 @@ namespace trapdoor {
             return *this;
         }
 
+        inline TextBuilder itemStyle(uint8_t key, uint8_t value) { return *this; }
+
         template <typename T>
-        inline TextBuilder item(const std::string &key, T value) {
-            sText(GRAY, " - ");
-            sTextF(WHITE, "%s :", key.c_str());
-            sTextF(GREEN | BOLD, "%s", fmt::format("{}", value).c_str());
-            endl();
+        inline TextBuilder &item(const std::string &key, const T &value) {
+            sText(GRAY, " - ")
+                .sTextF(WHITE, "%s: ", key.c_str())
+                .sTextF(GREEN | BOLD, "%s", fmt::format("{}", value).c_str())
+                .endl();
             return *this;
         }
 

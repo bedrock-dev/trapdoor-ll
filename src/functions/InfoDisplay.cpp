@@ -45,18 +45,35 @@ namespace trapdoor {
             return getNBTString(a->getNbt(), path);
         }
 
-        builder.sText(TextBuilder::AQUA, "Base: \n")
-            .text(" - type / UID: ")
-            .sTextF(TextBuilder::GREEN, "%s    %llx\n", a->getTypeName().c_str(),
-                    a->getUniqueID().get())
-            .text(" - Position: ")
-            .sTextF(TextBuilder::GREEN, "%s\n", fromVec3(a->getPos()).toDetailString().c_str())
-            .text(" - DeltaPos: ")
-            .sTextF(TextBuilder::GREEN, "%s\n", fromVec3(a->getPosDelta()).toDetailString().c_str())
-            .text(" - AABB: ")
-            .sTextF(TextBuilder::GREEN, "%s\n", fromAABB(a->getAABB()).ToString().c_str())
-            .text(" - Surface: ")
-            .sTextF(TextBuilder::GREEN, "%d\n", a->isSurfaceMob());
+        // actorID info;
+#ifdef DEV
+        auto &id = a->getActorIdentifier();
+        builder.item("CanonicalHash", id.getCanonicalHash().getString())
+            .item("CanonicalName", id.getCanonicalName() + "?")
+            .item("FullName", id.getFullName() + "?")
+            .item("Identifier", id.getIdentifier() + "?")
+            .item("Event", id.getInitEvent() + "?")
+            .item("LegacyActorType", static_cast<int>(id._getLegacyActorType()));
+#endif
+
+        builder.item("TypeName", a->getTypeName())
+            .item("Uid", a->getUniqueID().get())
+            .item("Position", fromVec3(a->getPos()).toDetailString())
+            .item("DeltaPosition", fromVec3(a->getPosDelta()).toDetailString())
+            .item("Surface", a->isSurfaceMob());
+
+        //        builder.sText(TextBuilder::AQUA, "Base: \n")
+        //            .text(" - type / UID: ")
+        //            .sTextF(TextBuilder::GREEN, "%s    %llx\n", a->getTypeName().c_str(),
+        //                    a->getUniqueID().get())
+        //            .text(" - Position: ")
+        //            .sTextF(TextBuilder::GREEN, "%s\n",
+        //            fromVec3(a->getPos()).toDetailString().c_str()) .text(" - DeltaPos: ")
+        //            .sTextF(TextBuilder::GREEN, "%s\n",
+        //            fromVec3(a->getPosDelta()).toDetailString().c_str()) .text(" - AABB: ")
+        //            .sTextF(TextBuilder::GREEN, "%s\n", fromAABB(a->getAABB()).ToString().c_str())
+        //            .text(" - Surface: ")
+        //            .sTextF(TextBuilder::GREEN, "%d\n", a->isSurfaceMob());
         return {builder.get(), true};
     }
 
