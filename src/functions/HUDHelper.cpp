@@ -100,7 +100,7 @@ namespace trapdoor {
                 b.text("Block: None\n");
             }
             auto& biome = bs.getBiome(pos);
-            b.textF("Biome: %s (%d)\n", getBiomeName(&biome).c_str(), biome.getBiomeType());
+            b.textF("Biome: %s (%d)\n", getBiomeName(&biome).c_str(), biome.getId());
             return b.get();
         }
 
