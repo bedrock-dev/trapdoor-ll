@@ -6,12 +6,11 @@
 #include "TrapdoorMod.h"
 
 namespace trapdoor {
+
     void setup_playerCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand("player", "sapwn simPlayer player",
-                                                     static_cast<CommandPermissionLevel>(level));
-
+        auto command = CREATE_CMD(player, level);
         // 我知道dropall放这里很不好，但是凑合用吧
         auto spawnOpt =
             command->setEnum("spawnOpt", {"spawn", "despawn", "dropall", "info", "swap"});

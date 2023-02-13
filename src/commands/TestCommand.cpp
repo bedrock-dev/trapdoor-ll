@@ -27,8 +27,8 @@ namespace trapdoor {
     void setup_testCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand("test", "Command for developing",
-                                                     static_cast<CommandPermissionLevel>(level));
+
+        auto command = CREATE_CMD(test, level);
 
         auto &optOpenHome = command->setEnum("openHome", {"home"});
         command->mandatory("test", ParamType::Enum, optOpenHome,

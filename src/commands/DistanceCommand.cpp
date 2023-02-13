@@ -11,8 +11,8 @@ namespace trapdoor {
     void setup_disCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand("dis", "Calculate distance between two point",
-                                                     static_cast<CommandPermissionLevel>(level));
+
+        auto command = CREATE_CMD(dis, level);
 
         auto &selectPos = command->setEnum("setPos", {"set"});
 

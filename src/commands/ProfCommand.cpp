@@ -12,9 +12,7 @@ namespace trapdoor {
     void setup_profCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand("prof", "profile world health",
-                                                     static_cast<CommandPermissionLevel>(level));
-
+        auto command = CREATE_CMD(prof, level);
         auto &optContinue = command->setEnum("opt", {"normal", "chunk", "pt", "entity"});
         command->mandatory("prof", ParamType::Enum, optContinue,
                            CommandParameterOption::EnumAutocompleteExpansion);

@@ -13,8 +13,8 @@ namespace trapdoor {
     void setup_spawnCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand("spawn", "print spawn info",
-                                                     static_cast<CommandPermissionLevel>(level));
+
+        auto command = CREATE_CMD(spawn, level);
 
         // set enum就是给这个命令加一些enum值，不会产生任何意义
         auto &optCount = command->setEnum("Countcmd", {"count"});

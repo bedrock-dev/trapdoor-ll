@@ -11,9 +11,7 @@
 namespace trapdoor {
     void setup_hsaCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
-        auto command = DynamicCommand::createCommand("hsa", "show hardcoded spawn area",
-                                                     static_cast<CommandPermissionLevel>(level));
-
+        auto command = CREATE_CMD(hsa, level);
         auto &showEnum = command->setEnum("showSubCommand", {"show"});
         auto &countEnum = command->setEnum("countSubCommand", {"count"});
         auto &placeEnum = command->setEnum("placeSubCommand", {"place"});

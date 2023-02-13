@@ -8,10 +8,7 @@
 namespace trapdoor {
     void setup_villageCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
-        // create a dynamic command
-        auto command = DynamicCommand::createCommand("village", "village helper",
-                                                     static_cast<CommandPermissionLevel>(level));
-
+        auto command = CREATE_CMD(village, level);
         auto &optSwitch =
             command->setEnum("optSwitch", {"bound", "spawn", "center", "poi", "head"});
         auto &optList = command->setEnum("optList", {"list"});

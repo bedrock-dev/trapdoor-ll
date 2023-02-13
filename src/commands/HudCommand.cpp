@@ -10,9 +10,7 @@ namespace trapdoor {
     void setup_hudCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand("hud", "Display extra HUD on player's screen",
-                                                     static_cast<CommandPermissionLevel>(level));
-
+        auto command = CREATE_CMD(hud, level);
         auto &modifyOpt = command->setEnum("modify", {"add", "remove"});
         //  auto &showOpt = command->setEnum("show", {"show"});
 

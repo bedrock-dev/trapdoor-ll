@@ -14,8 +14,8 @@ namespace trapdoor {
     void setup_randCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand("rand", "tweak random numbers",
-                                                     static_cast<CommandPermissionLevel>(level));
+        auto command = CREATE_CMD(rand, level);
+
         auto &optType = command->setEnum("typeCmd", {"normal", "gauss"});
 
         auto &resetSubOpt = command->setEnum("resetOpt", {"reset"});

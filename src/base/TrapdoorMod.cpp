@@ -6,10 +6,10 @@
 #include "BlockRotateHelper.h"
 #include "CommandHelper.h"
 #include "Events.h"
+#include "I18nAPI.h"
 #include "LoggerAPI.h"
 #include "SysInfoHelper.h"
 #include "config.h"
-#include "I18nAPI.h"
 
 #define REG_COMMAND(c)                                         \
     auto cfg_##c = cmdCfg.getCommandConfig(#c);                \

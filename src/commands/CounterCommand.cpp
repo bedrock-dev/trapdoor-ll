@@ -10,8 +10,7 @@ namespace trapdoor {
     void setup_counterCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand("counter", "Print Hopper counter info",
-                                                     static_cast<CommandPermissionLevel>(level));
+        auto command = CREATE_CMD(counter, level);
 
         auto &printOpt = command->setEnum("printCmd", {"print"});
         auto &resetOpt = command->setEnum("resetCmd", {"reset"});

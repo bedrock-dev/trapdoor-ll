@@ -8,9 +8,8 @@
 namespace trapdoor {
     void setup_slimeCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
-        auto command = DynamicCommand::createCommand("slime", "show slime spawn chunk",
-                                                     static_cast<CommandPermissionLevel>(level));
 
+        auto command = CREATE_CMD(slime, level);
         auto &showEnum = command->setEnum("showSubCommand", {"show"});
         auto &cleanEnum = command->setEnum("cleanSubCommand", {"clear"});
         auto &rangeEnum = command->setEnum("rangeSubCommand", {"range"});

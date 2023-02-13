@@ -14,9 +14,7 @@ namespace trapdoor {
     void setup_dataCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand("data", "print some game data",
-                                                     static_cast<CommandPermissionLevel>(level));
-
+        auto command = CREATE_CMD(data, level);
         auto &blockSubCommandEnum = command->setEnum("blockSubCommand", {"block"});
         auto &entitySubCommand = command->setEnum("entitySubCommand", {"entity"});
         auto &redstoneSubCommand = command->setEnum("redstoneSubCommand", {"redstone"});

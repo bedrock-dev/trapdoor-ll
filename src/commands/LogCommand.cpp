@@ -31,8 +31,7 @@ namespace trapdoor {
     void setup_logCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand("log", "print some world info",
-                                                     static_cast<CommandPermissionLevel>(level));
+        auto command = CREATE_CMD(log, level);
 
         auto &optMain = command->setEnum("main", {"mspt", "os"});
         auto &optSeed = command->setEnum("seeds", {"levelseed", "enchantseed"});

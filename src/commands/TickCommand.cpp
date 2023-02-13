@@ -11,8 +11,8 @@ namespace trapdoor {
     void setup_tickCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand("tick", "Change world ticking speed",
-                                                     static_cast<CommandPermissionLevel>(level));
+
+        auto command = CREATE_CMD(tick, level);
 
         auto &optForward = command->setEnum("forward", {"forward", "fw", "warp"});
         command->mandatory("tick", ParamType::Enum, optForward,

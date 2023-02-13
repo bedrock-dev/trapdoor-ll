@@ -38,4 +38,6 @@ namespace trapdoor {
         auto b = reinterpret_cast<Actor *>(player)->getBlockFromViewVector();
         return b.isNull() ? BlockPos::MAX : b.getPosition();
     }
+
+
 }  // namespace trapdoor

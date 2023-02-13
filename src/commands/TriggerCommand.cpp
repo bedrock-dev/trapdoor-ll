@@ -12,8 +12,7 @@ namespace trapdoor {
     void setup_triggerCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
-        auto command = DynamicCommand::createCommand("trigger", "(Un)subscribe a trigger",
-                                                     static_cast<CommandPermissionLevel>(level));
+        auto command = CREATE_CMD(trigger, level);
 
         auto &modifyOpt = command->setEnum("modify", {"sub", "unsub"});
         auto &listOpt = command->setEnum("show", {"list"});

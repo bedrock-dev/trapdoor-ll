@@ -19,28 +19,28 @@ namespace trapdoor {
         }
 
         trapdoor::mod().getConfig().getTweakConfig().maxPendingTickSize = size;
-        return {"Success", true};
+        return trapdoor::OperationSuccess();
     }
 
     ActionResult setForceOpenContainer(bool able) {
         trapdoor::mod().getConfig().getTweakConfig().forceOpenContainer = able;
-        return {"Success", true};
+        return trapdoor::OperationSuccess();
     }
     ActionResult setDropperNoCost(bool able) {
         trapdoor::mod().getConfig().getTweakConfig().dropperNoCost = able;
-        return {"Success", true};
+        return trapdoor::OperationSuccess();
     }
     ActionResult setAutoTools(bool able) {
         trapdoor::mod().getConfig().getTweakConfig().autoSelectTool = able;
-        return {"Success", true};
+        return trapdoor::OperationSuccess();
     }
     ActionResult setSafeExplosion(bool able) {
         trapdoor::mod().getConfig().getTweakConfig().safeExplosion = able;
-        return {"Success", true};
+        return trapdoor::OperationSuccess();
     }
     ActionResult setDisableNCUpdate(bool able) {
         trapdoor::mod().getConfig().getTweakConfig().disableNCUpdate = able;
-        return {"Success", true};
+        return trapdoor::OperationSuccess();
     }
     ActionResult setCreativeNoClip(bool able) {
         trapdoor::mod().getConfig().getTweakConfig().creativeNoClip = able;
@@ -50,14 +50,12 @@ namespace trapdoor {
             }
             return true;
         });
-        return {"Success", true};
+        return trapdoor::OperationSuccess();
     }
 
     void setup_tweakCommand(int level) {
-        auto command = DynamicCommand::createCommand("tweak", "Tweak vanilla features",
-                                                     static_cast<CommandPermissionLevel>(level));
         using ParamType = DynamicCommand::ParameterType;
-
+        auto command = CREATE_CMD(tweak, level);
         auto &forcePlaceOpt = command->setEnum("place", {"fcplace"});
         auto &forceOpenContainer = command->setEnum("open", {"fcopen"});
         auto &dropperNoCost = command->setEnum("cost", {"nocost"});

@@ -15,7 +15,7 @@ namespace trapdoor {
         for (auto &action : actions) {
             trapdoor::logger().debug("        - {}", action);
         }
-
+        
         using ParamType = DynamicCommand::ParameterType;
         auto description = "Shortcut for /" + actions[0] + " ...";
         auto command = DynamicCommand::createCommand(shortcut, description);

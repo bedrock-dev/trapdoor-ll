@@ -17,6 +17,10 @@
 
 //clang-format on
 
+#define CREATE_CMD(cmd, level)                                \
+    DynamicCommand::createCommand(#cmd, getCmdDescI18n(#cmd), \
+                                  static_cast<CommandPermissionLevel>(level))
+
 class CommandOutput;
 namespace trapdoor {
     struct ActionResult {
@@ -54,6 +58,11 @@ namespace trapdoor {
 
     void registerShortcutCommand(const std::string &shortcut,
                                  const std::vector<std::string> &actions);
+
+    inline std::string getCmdDescI18n(const std::string &cmd) {
+        return "§b" + tr("command." + cmd + ".desc");
+    }
+
     void setup_tickCommand(int);
     void setup_profCommand(int);
     void setup_villageCommand(int);
