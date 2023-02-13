@@ -78,7 +78,7 @@ namespace trapdoor {
         messageBuffer.push_back(STYLE_MAP.at(RESET));
         return *this;
     }
-
+    
     void TextBuilder::broadcast() { trapdoor::broadcastMessage(this->get()); }
 
 }  // namespace trapdoor

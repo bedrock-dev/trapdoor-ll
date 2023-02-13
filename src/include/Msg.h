@@ -114,7 +114,10 @@ namespace trapdoor {
             return *this;
         }
 
-        inline TextBuilder itemStyle(uint8_t key, uint8_t value) { return *this; }
+        inline TextBuilder itemStyle(const std::pair<uint8_t, uint8_t> &pair) {
+            this->itemColor = pair;
+            return *this;
+        }
 
         template <typename T>
         inline TextBuilder &item(const std::string &key, const T &value) {
@@ -138,6 +141,7 @@ namespace trapdoor {
         void operator+=(const std::string &str) { this->text(str); }
 
        private:
+        std::pair<uint8_t, uint8_t> itemColor{WHITE, GREEN};
         const static std::map<uint8_t, std::string> STYLE_MAP;
         std::vector<std::string> messageBuffer;
     };

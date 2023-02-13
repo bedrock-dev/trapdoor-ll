@@ -233,7 +233,7 @@ namespace trapdoor {
             trapdoor::logger().warn("Can not open HUD Cache {}", cacheFileName);
             return false;
         }
-
+        
         try {
             nlohmann::json obj;
             f >> obj;
