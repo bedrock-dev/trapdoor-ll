@@ -8,14 +8,15 @@
 namespace trapdoor {
     ActionResult setForcePlaceBlock(int level) {
         if (level < 0 || level > 2) {
-            return {"Level should within [0,2]", false};
+            return trapdoor::ErrorRange("level", 0, 2);
         }
+
         trapdoor::mod().getConfig().getTweakConfig().forcePlaceLevel = level;
         return {"Success", true};
     }
     ActionResult setMaxPendingTickSize(int size) {
         if (size < 0 || size > 0xffffff) {
-            return {"Size should within [0,0xffffff]", false};
+            return trapdoor::ErrorRange("Max Pending tick size", 0, 0xffffff);
         }
 
         trapdoor::mod().getConfig().getTweakConfig().maxPendingTickSize = size;

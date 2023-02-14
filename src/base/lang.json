@@ -83,6 +83,7 @@
         "command.rand.desc": "调整游戏内随机数",
         "command.slime.desc": "史莱姆区块可视化",
         "command.spawn.desc": "刷怪显示和分析",
+        "command.success.set-value": "设置{}的值为{}",
         "command.test.desc": "开发用命令",
         "command.tick.desc": "调整世界运行速度",
         "command.trapdoor.desc": "配置Trapdoor插件",
@@ -140,6 +141,9 @@
         "tick.warp.error": "warp只能在[正常]或者[暂停运行]状态下执行",
         "tick.warp.info.end": "warp结束",
         "tick.warp.info.start": "warp开始",
+        "trapdoor.crash.error": "Token错误,操作失败",
+        "trapdoor.reload.error": "发生错误,无法重载配置文件",
+        "trapdoor.reload.success": "配置文件已重载",
         "tweak.autotool.no-tools": "你没有合适的工具",
         "village.error.no-villager": "找不到村民",
         "village.info.no-village": "没有正在加载的村庄"

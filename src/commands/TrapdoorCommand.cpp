@@ -13,61 +13,48 @@ namespace trapdoor {
     namespace {
         ActionResult setParticlePerformanceLevel(const std::string &level) {
             auto &cfg = trapdoor::mod().getConfig().getBasicConfig();
+            bool success = true;
             if (level == "low") {
                 cfg.particleLevel = 1;
-                return {"Success", true};
             } else if (level == "medium") {
                 cfg.particleLevel = 2;
-                return {"Success", true};
             } else if (level == "high") {
                 cfg.particleLevel = 3;
-                return {"Success", true};
+            } else {
+                success = false;
             }
-            return {"Invalid value", false};
+            return success ? trapdoor::OperationSuccess() : trapdoor::ErrorMsg("unknown error");
         }
 
         ActionResult setParticleViewDistance(int level) {
             if (level <= 0 || level > 4096) {
-                return {"Invalid value,it should be within 1 to 4096", false};
+                return trapdoor::ErrorRange("Particle view distance", 0, 4096);
             }
             trapdoor::mod().getConfig().getBasicConfig().particleViewDistance2D = level * level;
-            return {"Success", true};
+            return trapdoor::OperationSuccess();
         }
 
         ActionResult setHUDFreq(int freq) {
-            if (freq <= 0) {
-                return {"Invalid value, it should be with 0,+inf", false};
+            if (freq <= 0 || freq > 4096) {
+                return trapdoor::ErrorRange("HUD refresh frequency", 0, 4096);
             }
-            trapdoor::mod().getConfig().getBasicConfig().hudRefreshFreq = freq;
 
-            return {"Set freq to " + std::to_string(freq), true};
+            trapdoor::mod().getConfig().getBasicConfig().hudRefreshFreq = freq;
+            return OperationSuccess();
         }
 
         ActionResult reloadConfig() {
-            auto succ = trapdoor::mod().initConfig(true);
-            auto msg = succ ? "Success reload trapdoor config" : "Fail reload trapdoor config";
-            return {msg, succ};
+            return trapdoor::mod().initConfig(true)
+                       ? trapdoor::SuccessMsg("trapdoor.reload.success")
+                       : trapdoor::ErrorMsg("trapdoor.reload.error");
         }
 
         ActionResult crashServer(const std::string &token) {
             if (token == trapdoor::mod().getConfig().getBasicConfig().serverCrashToken) {
-                //                Schedule::repeat(
-                //                    []() {
-                //                        static size_t counter = 10;
-                //                        if (counter == 0) {
-                //                            trapdoor::BroadcastMessage("Crashed!");
-                //                            trapdoor::logger().warn("Server crashed");
-                //                        }
-                //                        auto msg = fmt::format("Sever will crash after {}
-                //                        second(s)", counter); trapdoor::BroadcastMessage(msg, 1);
-                //                        trapdoor::logger().warn(msg);
-                //                        counter--;
-                //                    },
-                //                    20);
                 trapdoor::logger().info("Crashed");
                 abort();
             } else {
-                return {"Error token", false};
+                return trapdoor::ErrorMsg("trapdoor.crash.error");
             }
         }
     }  // namespace

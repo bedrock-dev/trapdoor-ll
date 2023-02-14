@@ -49,7 +49,7 @@ namespace trapdoor {
                           STR(GAME_VERSION));
             logger().info("Build time: {}", STR(BUILD_TIME));
             logger().info(
-                "Visit out github page for more info:  "
+                "Visit our github page for more info:  "
                 "https://github.com/bedrock-dev/trapdoor-ll/");
             logger().info("");
         }
@@ -91,6 +91,7 @@ namespace trapdoor {
 #endif
         logger().debug("mod root path: {}", modRootPath);
         Translation::load(modRootPath + "lang.json");
+
         return this->config.init(modRootPath + "config.json", reload);
     }
 

@@ -50,6 +50,11 @@ namespace trapdoor {
         return {fmt::format(tr("command.error.range"), name, begin, end), false};
     }
 
+    template <typename T>
+    inline ActionResult SetValueMsg(const std::string &key, T value) {
+        return {fmt::format(tr("command.success.set-value"), value), true};
+    }
+
     inline ActionResult OperationSuccess() { return SuccessMsg("command.operation.success"); }
 
     inline ActionResult ErrorPosition() { return ErrorMsg("command.error.position-required"); }

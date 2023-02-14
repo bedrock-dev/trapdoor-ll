@@ -3,6 +3,7 @@
 //
 
 #include <processenv.h>
+
 #include "BlockRotateHelper.h"
 #include "CommandHelper.h"
 #include "Configuration.h"
@@ -51,6 +52,7 @@ namespace trapdoor {
 
     bool Configuration::init(const std::string& fileName, bool reload) {
         if (!readConfigFile(fileName)) return false;
+
         if (!reload) {
             if (!readCommandConfigs()) return false;
         }

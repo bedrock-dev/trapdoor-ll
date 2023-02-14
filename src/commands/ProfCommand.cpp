@@ -16,8 +16,8 @@ namespace trapdoor {
         auto &optContinue = command->setEnum("opt", {"normal", "chunk", "pt", "entity"});
         command->mandatory("prof", ParamType::Enum, optContinue,
                            CommandParameterOption::EnumAutocompleteExpansion);
-        command->optional("numberOfTick", ParamType::Int);
-        command->addOverload({optContinue, "numberOfTick"});
+        command->optional("ticks", ParamType::Int);
+        command->addOverload({optContinue, "ticks"});
         command->addOverload(std::vector<std::string>());
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
@@ -29,8 +29,7 @@ namespace trapdoor {
                 return;
             }
 
-            auto tickTime =
-                results["numberOfTick"].isSet ? results["numberOfTick"].getRaw<int>() : 20;
+            auto tickTime = results["ticks"].isSet ? results["ticks"].getRaw<int>() : 20;
             switch (do_hash(results["prof"].getRaw<std::string>().c_str())) {
                 case do_hash("normal"):
                     trapdoor::startProfiler(tickTime, SimpleProfiler::Normal).sendTo(output);
@@ -43,7 +42,6 @@ namespace trapdoor {
                     break;
                 case do_hash("pt"):
                     trapdoor::startProfiler(tickTime, SimpleProfiler::PendingTick).sendTo(output);
-                    // ErrorMsg("Function is developing by developer").sendTo(output);
                     break;
             }
         };
