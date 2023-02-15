@@ -52,6 +52,50 @@ namespace trapdoor {
     }
 
     void UserConfig::init() {
+        namespace fs = std::filesystem;
+        using namespace nlohmann;
+        for (auto &f: fs::directory_iterator("./plugins/trapdoor/player")) {
+            if (f.is_regular_file() && f.path().extension() == ".json") {
+
+
+                auto playerName = f.path().stem().string();
+
+                trapdoor::logger().debug("Read player[{}] 's config file ", playerName);
+
+                std::ifstream file(f.path());
+                if (!file.is_open()) {
+                    trapdoor::logger().warn("Can not read player [{}]'s config file ", playerName);
+                    continue;
+                }
+
+                try {
+                    json j;
+                    file >> j;
+                    PlayerData data;
+
+                    //读取tweak信息
+                    data.creativeNoClip = j["tweaks"]["creative-no-clip"].get<bool>();
+                    data.enableAutoTool = j["tweaks"]["auto-tool"].get<bool>();
+
+                    //读取
+                    auto &hud_cfg = j["hud"];
+
+                    for (auto &[item, on]: hud_cfg.items()) {
+                        auto type = getHUDTypeFromString(item);
+                        if (type != Unknown) {
+                            data.hud_config[static_cast<int>(type)] = on.get<bool>();
+                        }
+                    }
+                    this->playerData[playerName] = data;
+                } catch (std::exception &e) {
+                    trapdoor::logger().warn("Can not read player [{}]'s config file: {}", f.path().stem().string(),
+                                            e.what());
+                }
+
+
+            }
+
+        }
         //读取配置文件
     }
 }

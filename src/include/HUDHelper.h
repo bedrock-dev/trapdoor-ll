@@ -35,6 +35,7 @@ namespace trapdoor {
             return trapdoor::OperationSuccess();
         }
 
+
         void tick();
 
     public :
