@@ -1,5 +1,7 @@
-#ifndef _TRAPDOOR_TRAPDOOR_H_
-#define _TRAPDOOR_TRAPDOOR_H_
+#ifndef TRAPDOOR_TRAPDOOR_H
+#define TRAPDOOR_TRAPDOOR_H
+
+#include "UserConfig.h"
 #include "Configuration.h"
 #include "EventTrigger.h"
 #include "HUDHelper.h"
@@ -14,7 +16,7 @@
 
 namespace trapdoor {
     class TrapdoorMod {
-       public:
+    public:
         void init();
 
         bool initConfig(bool reload);
@@ -45,7 +47,10 @@ namespace trapdoor {
 
         inline EventTriggerManager &getEventTriggerMgr() { return this->eventTriggerManager; }
 
-       private:
+        inline UserConfig &getUserConfig() { return this->globalUserConfig; }
+
+
+    private:
         VillageHelper villageHelper;
         HsaManager hsaManager;
         Configuration config;
@@ -55,6 +60,9 @@ namespace trapdoor {
         SimPlayerManager simPlayerManager;
         SpawnAnalyzer spawnAnalyzer;
         SlimeChunkHelper slimeChunkHelper;
+
+        //user config cache
+        UserConfig globalUserConfig;
 
         // base path
         std::string baseLevelPath;

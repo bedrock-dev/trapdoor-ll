@@ -5,15 +5,22 @@
 
 inline void CheckProtocolVersion() {}
 
-void prepare() {
+
+void tryCreateFolder(const std::string &folder) {
     namespace fs = std::filesystem;
-    if (!fs::exists("./plugins/trapdoor")) {
-        fs::create_directory("./plugins/trapdoor");
+    if (!fs::exists(folder)) {
+        fs::create_directory(folder);
     }
 
-    if (!fs::exists("./plugins/trapdoor/sim")) {
-        fs::create_directory("./plugins/trapdoor/sim");
-    }
+}
+
+void prepare() {
+
+    tryCreateFolder("./plugins/trapdoor");
+    tryCreateFolder("./plugins/trapdoor/sim");
+    tryCreateFolder("./plugins/trapdoor/player");
+    tryCreateFolder("./plugins/trapdoor/logs");
+
 }
 
 void PluginInit() {

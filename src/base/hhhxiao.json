@@ -1,0 +1,10 @@
+{
+  "name": "hhhxao",
+  "tweaks": {
+    "no-clip": true,
+    "auto-tool": false
+  },
+  "hud-config": {
+    "base": 12
+  }
+}

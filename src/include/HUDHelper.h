@@ -1,12 +1,13 @@
 #ifndef TRAPDOOR_HUD_HELPER_H
 #define TRAPDOOR_HUD_HELPER_H
+
 #include <array>
 #include <unordered_map>
 
 #include "CommandHelper.h"
 
 namespace trapdoor {
-    enum HUDInfoType {
+    enum HUDItemType {
         Unknown = 0,
         Base = 1,
         Mspt = 2,
@@ -15,42 +16,44 @@ namespace trapdoor {
         Counter = 5,
         Chunk = 6,
         Cont = 7,  // 容器，写全名会和原版容器冲突
+        //如果有新的项目请按照这个顺序往后写
+
+
+        //用于记录长度，没有其他意思
+        LEN,
     };
 
-    // 在上面增加子项目后记得修改下面的值，这个值似乎没有使用编译期指令获取
-    constexpr auto HUD_TYPE_NUMBER = 8;
+    HUDItemType getHUDTypeFromString(const std::string &str);
 
-    struct PlayerHudInfo {
-        std::string realName;
-        // bool enable; 删除 HUD show true命令
-        std::vector<int> config;
-    };
+    std::string getStringFromHUDType(HUDItemType t);
 
     class HUDHelper {
-       public:
+    public:
+
         inline ActionResult setAble(bool able) {
             this->enable = able;  // 全局开关
-            return {"Success", true};
+            return trapdoor::OperationSuccess();
         }
 
         void tick();
 
-        ActionResult modifyPlayerInfo(const std::string& playerName, const std::string& item,
-                                      int op);
-
-        // ActionResult setAblePlayer(const std::string& playerName, bool able);
+    public :
+        static ActionResult modifyPlayerInfo(const std::string &playerName, const std::string &item,
+                                             int op);
 
         static std::vector<std::string> getHUDItemStringList();
 
-        void init();
+    private:
+        void tickChunk() const;
 
-       private:
-        void tickChunk();
-        bool readConfigCacheFromFile();
-        bool syncConfigToFile();
-        bool enable = true;
-        std::unordered_map<std::string, PlayerHudInfo> playerInfos;
+        //  bool readConfigCacheFromFile();
+
+        // bool syncConfigToFile();
+
+        bool volatile enable = true;
+        //   std::unordered_map<std::string, PlayerHudInfo> playerInfos;
     };
+
 
 }  // namespace trapdoor
 

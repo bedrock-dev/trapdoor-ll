@@ -49,8 +49,8 @@ namespace trapdoor {
                           STR(GAME_VERSION));
             logger().info("Build time: {}", STR(BUILD_TIME));
             logger().info(
-                "Visit our github page for more info:  "
-                "https://github.com/bedrock-dev/trapdoor-ll/");
+                    "Visit our github page for more info:  "
+                    "https://github.com/bedrock-dev/trapdoor-ll/");
             logger().info("");
         }
 
@@ -62,6 +62,7 @@ namespace trapdoor {
         HUDHelper.tick();
         slimeChunkHelper.HeavyTick();
     }
+
     void TrapdoorMod::lightTick() {
         villageHelper.lightTick();
         hopperChannelManager.tick();
@@ -75,8 +76,10 @@ namespace trapdoor {
 
     void TrapdoorMod::init() {
         printCopyrightInfo();
-        this->initConfig(false);
-        this->HUDHelper.init();
+        this->initConfig(false); //读取配置文件
+        this->globalUserConfig.init(); //读取用户的配置
+
+
         trapdoor::initCPU();
         trapdoor::SubscribeEvents();
         trapdoor::initRotateBlockHelper();
