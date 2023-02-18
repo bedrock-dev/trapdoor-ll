@@ -9,6 +9,7 @@
 #include "Msg.h"
 #include "ScheduleAPI.h"
 #include "TrapdoorMod.h"
+
 namespace trapdoor {
     namespace {
         ActionResult setParticlePerformanceLevel(const std::string &level) {
@@ -45,8 +46,8 @@ namespace trapdoor {
 
         ActionResult reloadConfig() {
             return trapdoor::mod().initConfig(true)
-                       ? trapdoor::SuccessMsg("trapdoor.reload.success")
-                       : trapdoor::ErrorMsg("trapdoor.reload.error");
+                   ? trapdoor::SuccessMsg("trapdoor.reload.success")
+                   : trapdoor::ErrorMsg("trapdoor.reload.error");
         }
 
         ActionResult crashServer(const std::string &token) {
@@ -100,7 +101,7 @@ namespace trapdoor {
             switch (do_hash(results["trapdoor"].getRaw<std::string>().c_str())) {
                 case do_hash("pm"):
                     setParticlePerformanceLevel(results["particleLevelOpt"].getRaw<std::string>())
-                        .sendTo(output);
+                            .sendTo(output);
                     break;
                 case do_hash("pvd"):
                     setParticleViewDistance(results["maxDistance"].get<int>()).sendTo(output);

@@ -24,8 +24,8 @@ namespace trapdoor {
         using namespace nlohmann;
         json j;
         j["name"] = name;
-        j["tweaks"]["creative-no-clip"] = data.creativeNoClip;
-        j["tweaks"]["auto-tool"] = data.enableAutoTool;
+        j["tweaks"]["creative-no-clip"] = data.noclip;
+        j["tweaks"]["auto-tool"] = data.autotool;
         for (int i = 0; i < data.hud_config.size(); i++) {
             auto typeString = trapdoor::getStringFromHUDType(static_cast<HUDItemType>(i));
             if (typeString != "unknown") {
@@ -74,8 +74,8 @@ namespace trapdoor {
                     PlayerData data;
 
                     //读取tweak信息
-                    data.creativeNoClip = j["tweaks"]["creative-no-clip"].get<bool>();
-                    data.enableAutoTool = j["tweaks"]["auto-tool"].get<bool>();
+                    data.noclip = j["tweaks"]["creative-no-clip"].get<bool>();
+                    data.autotool = j["tweaks"]["auto-tool"].get<bool>();
 
                     //读取
                     auto &hud_cfg = j["hud"];
@@ -98,4 +98,6 @@ namespace trapdoor {
         }
         //读取配置文件
     }
+
+
 }

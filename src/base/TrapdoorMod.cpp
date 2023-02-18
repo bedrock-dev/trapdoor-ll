@@ -40,6 +40,7 @@ namespace trapdoor {
             REG_COMMAND(dis)
             REG_COMMAND(slime)
             REG_COMMAND(trigger)
+            REG_COMMAND(self)
             // REG_COMMAND(rand)
         }
 

@@ -12,15 +12,17 @@
 #include "Configuration.h"
 #include "HookAPI.h"
 #include "TrapdoorMod.h"
+
 THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_N@Z", void *bs,
       void *block, void *p, unsigned char face, void *placer, bool ignoreEntity) {
-    auto level = trapdoor::mod().getConfig().getTweakConfig().forcePlaceLevel;
+    auto level = trapdoor::mod().getConfig().getGlobalFunctionConfig().forcePlaceLevel;
     if (level == 1) return original(bs, block, p, face, placer, true);
     if (level == 2) return true;
     return original(bs, block, p, face, placer, ignoreEntity);
 }
+
 THook(bool, "?canOpen@ChestBlockActor@@QEBA_NAEAVBlockSource@@@Z", void *container, void *bs) {
-    if (trapdoor::mod().getConfig().getTweakConfig().forceOpenContainer) {
+    if (trapdoor::mod().getConfig().getGlobalFunctionConfig().forceOpenContainer) {
         return true;
     } else {
         return original(container, bs);
@@ -28,19 +30,19 @@ THook(bool, "?canOpen@ChestBlockActor@@QEBA_NAEAVBlockSource@@@Z", void *contain
 }
 
 THook(void, "?removeItem@Container@@UEAAXHH@Z", void *container, int slot, int count) {
-    if (!trapdoor::mod().getConfig().getTweakConfig().dropperNoCost) {
+    if (!trapdoor::mod().getConfig().getGlobalFunctionConfig().dropperNoCost) {
         original(container, slot, count);
     }
 }
 
 THook(void, "?explode@Explosion@@QEAAXXZ", void *self) {
-    if (!trapdoor::mod().getConfig().getTweakConfig().safeExplosion) {
+    if (!trapdoor::mod().getConfig().getGlobalFunctionConfig().safeExplosion) {
         original(self);
     }
 }
 
 THook(void, "?updateNeighborsAt@BlockSource@@QEAAXAEBVBlockPos@@@Z", void *self, void *pos) {
-    if (!trapdoor::mod().getConfig().getTweakConfig().disableNCUpdate) {
+    if (!trapdoor::mod().getConfig().getGlobalFunctionConfig().disableNCUpdate) {
         original(self, pos);
     }
 }
@@ -49,7 +51,7 @@ THook(void, "?setPlayerGameType@ServerPlayer@@UEAAXW4GameType@@@Z", ServerPlayer
       int mode) {
     original(player, mode);
     if (mode == 1 &&
-        trapdoor::mod().getConfig().getTweakConfig().creativeNoClip) {  // 如果切到了创造模式
+        trapdoor::mod().getConfig().getGlobalFunctionConfig().creativeNoClip) {  // 如果切到了创造模式
         trapdoor::logger().debug("player {} change game mode to {}", player->getRealName(), mode);
         player->setAbility(static_cast<AbilitiesIndex>(17), true);
     }

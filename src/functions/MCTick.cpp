@@ -15,6 +15,7 @@
 #include "SimpleProfiler.h"
 #include "TrapdoorMod.h"
 #include "Utils.h"
+
 namespace trapdoor {
     namespace {
 
@@ -58,6 +59,7 @@ namespace trapdoor {
                 return ErrorMsg("tick.status.unknown");
         }
     }
+
     ActionResult freezeWorld() {
         auto &info = getTickingInfo();
         if (info.status == TickingStatus::Frozen) {
@@ -92,6 +94,7 @@ namespace trapdoor {
             return ErrorMsg("tick.forward.error");
         }
     }
+
     ActionResult warpWorld(int gt) {
         auto &info = getTickingInfo();
         if (info.status == TickingStatus::Normal || info.status == TickingStatus::Frozen) {
@@ -164,11 +167,11 @@ namespace trapdoor {
 
         trapdoor::TextBuilder builder;
         builder.text(" - MSPT / TPS: ")
-            .sTextF(TextBuilder::DARK_GREEN, "%.3f / %.1f\n", trapdoor::micro_to_mill(mspt), tps)
-            .text(" - MIN / MAX: ")
-            .sTextF(TextBuilder::DARK_GREEN, "%.3f / %.3f \n", trapdoor::micro_to_mill(min),
-                    trapdoor::micro_to_mill(max))
-            .text(" - Normal / Redstone: ");
+                .sTextF(TextBuilder::DARK_GREEN, "%.3f / %.1f\n", trapdoor::micro_to_mill(mspt), tps)
+                .text(" - MIN / MAX: ")
+                .sTextF(TextBuilder::DARK_GREEN, "%.3f / %.3f \n", trapdoor::micro_to_mill(min),
+                        trapdoor::micro_to_mill(max))
+                .text(" - Normal / Redstone: ");
         auto pair = getMSPTinfo().pairs();
         builder.sTextF(TextBuilder::DARK_GREEN, "%.3f / %.3f \n",
                        trapdoor::micro_to_mill(pair.first), trapdoor::micro_to_mill(pair.second));
@@ -181,6 +184,7 @@ namespace trapdoor {
         auto tps = 1000.0 / trapdoor::getMeanMSPT();
         return tps > 20.0 ? 20.0 : tps;
     }
+
     ActionResult getPendingTickInfo(Player *player, const BlockPos &position) {
         if (!player) return trapdoor::ErrorPlayerNeed();
         bool printAll = false;
@@ -205,14 +209,14 @@ namespace trapdoor {
         auto buildPtItem = [](const trapdoor::TBlockTick &pt, size_t currentTick) -> std::string {
             trapdoor::TextBuilder b;
             b.text(" - ")
-                .sTextF(trapdoor::TB::AQUA, "[%d %d %d]", pt.data.pos.x, pt.data.pos.y,
-                        pt.data.pos.z)
-                .textF(" %s ", trapdoor::rmmc(pt.data.block->getName().getString()).c_str())
-                .sTextF(trapdoor::TB::GREEN, " %zu / %d ", pt.data.tick, pt.data.tick - currentTick)
-                .text(" p: ")
-                .sTextF(trapdoor::TB::GREEN, "%d", pt.data.priorityOffset)
-                .text(" v: ")
-                .sTextF(trapdoor::TB::GREEN, "%d", !pt.removed);
+                    .sTextF(trapdoor::TB::AQUA, "[%d %d %d]", pt.data.pos.x, pt.data.pos.y,
+                            pt.data.pos.z)
+                    .textF(" %s ", trapdoor::rmmc(pt.data.block->getName().getString()).c_str())
+                    .sTextF(trapdoor::TB::GREEN, " %zu / %d ", pt.data.tick, pt.data.tick - currentTick)
+                    .text(" p: ")
+                    .sTextF(trapdoor::TB::GREEN, "%d", pt.data.priorityOffset)
+                    .text(" v: ")
+                    .sTextF(trapdoor::TB::GREEN, "%d", !pt.removed);
             return b.get();
         };
 
@@ -220,12 +224,12 @@ namespace trapdoor {
         if (printAll) {
             b.sTextF(trapdoor::TB::AQUA, "-- [%d %d] Tick = %zu, Total %d Pts--\n", chunkPos.x,
                      chunkPos.z, queue->currentTick, queue->next.queue.size());
-            for (auto &pt : queue->next.queue) {
+            for (auto &pt: queue->next.queue) {
                 b.textF("%s\n", buildPtItem(pt, queue->currentTick).c_str());
             }
 
         } else {
-            for (auto &pt : queue->next.queue) {
+            for (auto &pt: queue->next.queue) {
                 if (pt.data.pos == p) {
                     b.textF("%s\n", buildPtItem(pt, queue->currentTick).c_str());
                     break;
@@ -235,6 +239,7 @@ namespace trapdoor {
 
         return {b.get(), true};
     }
+
     void printTickMsg(const std::string &s) {
 #ifdef DEV
         if (!trapdoor::normalProfiler().profiling) return;
@@ -389,7 +394,7 @@ THook(bool,
       trapdoor::TBlockTickingQueue *queue, BlockSource *bs, uint64_t until, int max,
       bool instalTick) {
     trapdoor::printTickMsg("LevelChunk.tickPendingTicks");
-    max = trapdoor::mod().getConfig().getTweakConfig().maxPendingTickSize;
+    max = trapdoor::mod().getConfig().getGlobalFunctionConfig().maxPendingTickSize;
     auto &prof = trapdoor::normalProfiler();
     if (prof.profiling) {
         TIMER_START
@@ -489,7 +494,7 @@ THook(void, "?tick@Actor@@QEAA_NAEAVBlockSource@@@Z", Actor *actor, void *bs) {
         TIMER_END
 
         prof.actorInfo[static_cast<int>(actor->getDimensionId())][actor->getTypeName()].time +=
-            timeResult;
+                timeResult;
         prof.actorInfo[static_cast<int>(actor->getDimensionId())][actor->getTypeName()].count++;
     } else {
         original(actor, bs);

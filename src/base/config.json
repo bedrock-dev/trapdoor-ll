@@ -1,4 +1,8 @@
 {
+  "commands tips": {
+    "enable": "If enable = false, then this directive will not be registered(如果enable = false,那么指令不会被注册)",
+    "permission-level": "1 <==> operator only  |  0 <==> everyone (1表示仅管理员可用，0表示所有人可用)"
+  },
   "commands": {
     "tick": {
       "enable": true,
@@ -52,9 +56,9 @@
       "enable": true,
       "permission-level": 0
     },
-    "tweak": {
+    "self": {
       "enable": true,
-      "permission-level": 1
+      "permission-level": 0
     },
     "dis": {
       "enable": true,
@@ -83,19 +87,19 @@
     "sim-player-prefix": "",
     "use-client-level": false
   },
-  "default-enable-functions": {
-    "hud": true,
-    "hopper-counter": false,
-    "block-rotate": false
-  },
-  "default-enable-tweaks": {
+  "default-functions-config": {
+    "[FOR GLOBAL]": "If the following settings are enabled then these features are enabled globally",
     "force-place-level": 0,
-    "max-pending-tick-size": 100,
-    "force-open-container": false,
     "dropper-no-cost": false,
-    "auto-select-tool": false,
+    "hopper-counter": false,
     "safe-explosion": false,
-    "creative-no-clip": false
+    "max-pending-tick-size": 100,
+    "[FOR SINGLE]": "The following features are enabled only when both the following settings and the player's own settings(/self command) are enabled",
+    "hud": true,
+    "creative-no-clip": false,
+    "block-rotate": false,
+    "auto-select-tool": false,
+    "force-open-container": false
   },
   "shortcuts": [
     {

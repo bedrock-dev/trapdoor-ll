@@ -38,43 +38,71 @@ namespace trapdoor {
     //        bool hud = false;
     //    };
 
-    struct TweakConfig {
+
+    /**
+
+
+     "default-functions-config": {
+    "hud": true,
+    "creative-no-clip": false,
+    "block-rotate": false,
+    "auto-select-tool": false,
+    "force-open-container": false,
+    "force-place-level": 0,
+    "dropper-no-cost": false,
+    "hopper-counter": false,
+    "safe-explosion": false,
+    "max-pending-tick-size": 100
+    },
+    */
+
+
+    //所有功能的全局开关,后面不再在功能内部设定开关
+    struct GlobalFunctionConfig {
+        //全局的
         int forcePlaceLevel = 0;
-        bool forceOpenContainer = false;
         bool dropperNoCost = false;
-        bool autoSelectTool = false;
+        bool hopperCounter = false;
         bool safeExplosion = false;
         bool disableNCUpdate = false;
-        bool creativeNoClip = false;
         int maxPendingTickSize = 100;
+        //个人的
+        bool hud = false;
+        bool creativeNoClip = false;
+        bool blockRotate = false;
+        bool autoSelectTool = false;
+        bool forceOpenContainer = false;
+
     };
 
     class Configuration {
-       public:
-        CommandConfig getCommandConfig(const std::string& command);
-        inline std::vector<Shortcut>& getShortcuts() { return this->shortcuts; }
-        inline BasicConfig& getBasicConfig() { return this->basicConfig; }
-        inline TweakConfig& getTweakConfig() { return this->tweakConfig; }
+    public:
+        CommandConfig getCommandConfig(const std::string &command);
 
-        bool init(const std::string& fileName, bool reload);
+        inline std::vector<Shortcut> &getShortcuts() { return this->shortcuts; }
+
+        inline BasicConfig &getBasicConfig() { return this->basicConfig; }
+
+        inline GlobalFunctionConfig &getGlobalFunctionConfig() { return this->globalFunctionConfig; }
+
+        bool init(const std::string &fileName, bool reload);
 
         std::string dumpConfigInfo();
 
-       private:
-        bool readConfigFile(const std::string& path);
+    private:
+        bool readConfigFile(const std::string &path);
+
+        bool readGlobalFunctionConfig();
 
         bool readBasicConfigs();
-
-        bool readTweakConfigs();
 
         bool readCommandConfigs();
 
         bool readShortcutConfigs();
 
-        bool readDefaultEnableFunctions();
 
         BasicConfig basicConfig;
-        TweakConfig tweakConfig;
+        GlobalFunctionConfig globalFunctionConfig;
         std::unordered_map<std::string, CommandConfig> commandsConfigs;
         std::vector<Shortcut> shortcuts;
         nlohmann::json config;

@@ -50,7 +50,7 @@ namespace trapdoor {
         return {fmt::format(tr("command.error.range"), name, begin, end), false};
     }
 
-    template <typename T>
+    template<typename T>
     inline ActionResult SetValueMsg(const std::string &key, T value) {
         return {fmt::format(tr("command.success.set-value"), value), true};
     }
@@ -68,27 +68,50 @@ namespace trapdoor {
         return "§b" + tr("command." + cmd + ".desc");
     }
 
+
+    //Command setup
+
+
     void setup_tickCommand(int);
+
     void setup_profCommand(int);
+
     void setup_villageCommand(int);
+
     void setup_logCommand(int);
+
     void setup_testCommand(int);
+
     void setup_spawnCommand(int);
+
     void setup_dataCommand(int);
+
     void setup_hsaCommand(int);
+
     void setup_trapdoorCommand(int);
+
     void setup_counterCommand(int);
+
     void setup_funcCommand(int);
+
     void setup_playerCommand(int);
+
     void setup_hudCommand(int);
+
     void setup_tweakCommand(int);
+
     void setup_CalCommand(int);
+
     void setup_disCommand(int);
+
     // void setup_seedCommand(int);
     void setup_slimeCommand(int);
+
     void setup_triggerCommand(int);
 
     void setup_randCommand(int);
+
+    void setup_selfCommand(int);
 
 }  // namespace trapdoor
 
