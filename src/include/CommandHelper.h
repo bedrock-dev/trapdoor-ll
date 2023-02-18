@@ -52,7 +52,12 @@ namespace trapdoor {
 
     template<typename T>
     inline ActionResult SetValueMsg(const std::string &key, T value) {
-        return {fmt::format(tr("command.success.set-value"), value), true};
+        return {fmt::format(tr("command.success.set-value"), key, value), true};
+    }
+
+    template<typename T>
+    inline ActionResult GetValueMsg(const std::string &key, T value) {
+        return {fmt::format(tr("command.success.get-value"), key, value), true};
     }
 
     inline ActionResult OperationSuccess() { return SuccessMsg("command.operation.success"); }

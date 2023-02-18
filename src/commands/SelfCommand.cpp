@@ -33,9 +33,7 @@ namespace trapdoor {
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
-            int value = results["value"].isSet ? results["value"].get<int>() : -1;
             bool onoroff = results["onoroff"].isSet ? results["value"].get<int>() : -1;
-
             if (!origin.getPlayer())return trapdoor::ErrorPlayerNeed();
             auto playerName = origin.getPlayer()->getRealName();
             switch (do_hash(results["self"].getRaw<std::string>().c_str())) {
@@ -47,7 +45,10 @@ FUNC_NAME(name)(playerName, onoroff).sendTo(output); break
                 ADD_CASE(blockrotate);
                 ADD_CASE(autotool);
                 ADD_CASE(fcopen);
+                default:
+                    break;
             }
+
 
         };
         command->setCallback(cb);
