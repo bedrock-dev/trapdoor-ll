@@ -49,7 +49,6 @@ namespace trapdoor {
 
         inline UserConfig &getUserConfig() { return this->globalUserConfig; }
 
-
     private:
         VillageHelper villageHelper;
         HsaManager hsaManager;

@@ -36,7 +36,6 @@ namespace trapdoor {
             REG_COMMAND(player)
             REG_COMMAND(hud)
             REG_COMMAND(hsa)
-            REG_COMMAND(tweak)
             REG_COMMAND(dis)
             REG_COMMAND(slime)
             REG_COMMAND(trigger)

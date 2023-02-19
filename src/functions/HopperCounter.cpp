@@ -28,7 +28,7 @@ namespace trapdoor {
         }
     }
 
-    ActionResult HopperChannelManager::modifyChannel(size_t channel, int opt) {
+    ActionResult HopperChannelManager::modifyChannel(Player *player, int channel, int opt) {
         if (!this->isEnable()) {
             return ErrorMsg("hopper.error.disable");
         }
@@ -36,6 +36,11 @@ namespace trapdoor {
         if (channel < 0 || channel > 15) {
             return ErrorMsg("hopper.error.invalid-channel");
         } else {
+            if (player) {
+                //添加到用户缓存中
+                trapdoor::mod().getUserConfig().setActiveHopperChannel(player->getRealName(), channel);
+            }
+
             auto &ch = this->getChannel(channel);
             if (opt == 0) {
                 return {ch.info(), true};
@@ -58,16 +63,17 @@ namespace trapdoor {
         }
 
         auto ch = b.getVariant();
-        return modifyChannel(ch, opt);
+        return modifyChannel(player, ch, opt);
     }
 
-    std::string HopperChannelManager::getHUDData(size_t channel) {
-        if (channel > 15) return "";
+    std::string HopperChannelManager::getHUDData(int channel) {
+        if (channel < 0 || channel > 15) return "";
         auto &ch = this->getChannel(channel);
         return ch.info();
     }
 
-    bool HopperChannelManager::isEnable() const { return trapdoor::mod().getConfig().getGlobalFunctionConfig().hopperCounter; }
+    bool
+    HopperChannelManager::isEnable() const { return trapdoor::mod().getConfig().getGlobalFunctionConfig().hopperCounter; }
 
     void CounterChannel::add(const std::string &itemName, size_t num) {
         counterList[itemName] += num;

@@ -55,17 +55,15 @@ namespace trapdoor {
         }
 
         std::string buildHopperCounter(Player *player) {
-            auto &hcm = trapdoor::mod().getHopperChannelManager();
-            if (!hcm.isEnable()) return "";
-            TextBuilder b;
-            auto pointBlock = reinterpret_cast<Actor *>(player)->getBlockFromViewVector();
-            if (pointBlock.isNull()) return "";
-            auto *block = pointBlock.getBlock();
-            if (block->getId() == HopperChannelManager::HOPPER_COUNTER_BLOCK) {
-                return trapdoor::mod().getHopperChannelManager().getHUDData(block->getVariant());
-            }
-
-            return "";
+//            auto &hcm = trapdoor::mod().getHopperChannelManager();
+//            if (!hcm.isEnable()) return "";
+//            TextBuilder b;
+//            auto pointBlock = reinterpret_cast<Actor *>(player)->getBlockFromViewVector();
+//            if (pointBlock.isNull()) return "";
+//            auto *block = pointBlock.getBlock();
+//            if (block->getId() == HopperChannelManager::HOPPER_COUNTER_BLOCK) {
+            return trapdoor::mod().getHopperChannelManager().getHUDData(
+                    trapdoor::mod().getUserConfig().getActiveHopperChannel(player->getRealName()));
         }
 
         std::string buildContainerInfo(Player *player) {

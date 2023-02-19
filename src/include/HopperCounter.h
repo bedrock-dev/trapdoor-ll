@@ -48,11 +48,11 @@ namespace trapdoor {
         isEnable() const;
 
 
-        ActionResult modifyChannel(size_t channel, int opt);
+        ActionResult modifyChannel(Player *player, int channel, int opt);
 
         ActionResult quickModifyChannel(Player *player, const BlockPos &pos, int opt);
 
-        std::string getHUDData(size_t channel);
+        std::string getHUDData(int channel);
 
         inline void clearAllData() {
             for (auto &ch: this->channels) {

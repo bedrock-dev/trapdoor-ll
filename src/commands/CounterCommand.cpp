@@ -6,6 +6,7 @@
 #include "DynamicCommandAPI.h"
 #include "SpawnHelper.h"
 #include "TrapdoorMod.h"
+
 namespace trapdoor {
     void setup_counterCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
@@ -32,30 +33,30 @@ namespace trapdoor {
                 case do_hash("print"):
                     if (results["channel"].isSet) {
                         trapdoor::mod()
-                            .getHopperChannelManager()
-                            .modifyChannel(results["channel"].getRaw<int>(), 0)
-                            .sendTo(output);
+                                .getHopperChannelManager()
+                                .modifyChannel(origin.getPlayer(), results["channel"].getRaw<int>(), 0)
+                                .sendTo(output);
                     } else {
                         trapdoor::mod()
-                            .getHopperChannelManager()
-                            .quickModifyChannel(origin.getPlayer(),
-                                                getLookAtPos(origin.getPlayer()), 0)
-                            .sendTo(output);
+                                .getHopperChannelManager()
+                                .quickModifyChannel(origin.getPlayer(),
+                                                    getLookAtPos(origin.getPlayer()), 0)
+                                .sendTo(output);
                     }
 
                     break;
                 case do_hash("reset"):
                     if (results["channel"].isSet) {
                         trapdoor::mod()
-                            .getHopperChannelManager()
-                            .modifyChannel(results["channel"].getRaw<int>(), 1)
-                            .sendTo(output);
+                                .getHopperChannelManager()
+                                .modifyChannel(origin.getPlayer(), results["channel"].getRaw<int>(), 1)
+                                .sendTo(output);
                     } else {
                         trapdoor::mod()
-                            .getHopperChannelManager()
-                            .quickModifyChannel(origin.getPlayer(),
-                                                getLookAtPos(origin.getPlayer()), 1)
-                            .sendTo(output);
+                                .getHopperChannelManager()
+                                .quickModifyChannel(origin.getPlayer(),
+                                                    getLookAtPos(origin.getPlayer()), 1)
+                                .sendTo(output);
                     }
                     break;
             }

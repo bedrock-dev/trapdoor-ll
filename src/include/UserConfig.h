@@ -29,8 +29,10 @@ namespace trapdoor {
             bool autotool{true};
             bool fcopen{true};
             std::array<bool, HUDItemType::LEN> hud_config{};
-        };
 
+            //内存数据,不会持久化
+            int lastActiveChannel = -1;
+        };
 
     public:
 
@@ -73,6 +75,12 @@ namespace trapdoor {
         // 暴露给外部的接口
 
         ActionResult dumpAllSelfConfig(const std::string &name);
+
+
+        int getActiveHopperChannel(const std::string &name) { return this->playerData[name].lastActiveChannel; }
+
+        void setActiveHopperChannel(const std::string &name,
+                                    int channel) { this->playerData[name].lastActiveChannel = channel; }
 
     private:
         void syncConfigToDisk(const std::string &name);

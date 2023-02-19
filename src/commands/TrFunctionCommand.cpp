@@ -26,7 +26,7 @@ namespace trapdoor {
 
         ADD_BOOL_CONFIG(blockrotate)
         ADD_BOOL_CONFIG(hud)
-        ADD_BOOL_CONFIG(hoppercountert)
+        ADD_BOOL_CONFIG(hoppercounter)
 
         ADD_INT_CONFIG(fcplace)
         ADD_BOOL_CONFIG(fcopen)

@@ -105,8 +105,6 @@ namespace trapdoor {
 
     void setup_hudCommand(int);
 
-    void setup_tweakCommand(int);
-
     void setup_CalCommand(int);
 
     void setup_disCommand(int);
