@@ -58,6 +58,7 @@ namespace trapdoor {
         cont.setItem(s2, i1);
     }
 
+
     bool onStartDestroyBlock(Player *player, const BlockInstance &instance) {
         if (!trapdoor::mod().getConfig().getGlobalFunctionConfig().autoSelectTool) {
             return true;

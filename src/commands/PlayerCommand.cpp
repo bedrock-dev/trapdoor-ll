@@ -13,7 +13,7 @@ namespace trapdoor {
         auto command = CREATE_CMD(player, level);
         // 我知道dropall放这里很不好，但是凑合用吧
         auto spawnOpt =
-            command->setEnum("spawnOpt", {"spawn", "despawn", "dropall", "info", "swap"});
+                command->setEnum("spawnOpt", {"spawn", "despawn", "dropall", "info", "swap"});
         auto behOpt = command->setEnum("behOpt", {"lookat", "moveto", "navto"});
         auto intOpt = command->setEnum("intOpt", {"interact"});
         auto destroyOpt = command->setEnum("destroyOpt", {"destroy"});
@@ -104,7 +104,7 @@ namespace trapdoor {
         // move and lookat
         command->addOverload({"name", behOpt, "vec3"});
         //和方块/实体交互
-        command->addOverload({"name", intOpt, "repeatType", "interval","times"});
+        command->addOverload({"name", intOpt, "repeatType", "interval", "times"});
         // destroy
         command->addOverload({"name", destroyOnOpt, "blockPos", "repeatType", "interval", "times"});
 
@@ -120,7 +120,7 @@ namespace trapdoor {
         command->addOverload({"name", jumpOpt, "repeatType", "interval", "times"});
 
         //执行命令
-        command->addOverload({"name", cmdOpt,"command","repeatType", "interval", "times"});
+        command->addOverload({"name", cmdOpt, "command", "repeatType", "interval", "times"});
 
         command->addOverload(std::vector<std::string>());
 
@@ -144,25 +144,25 @@ namespace trapdoor {
             int times = results["times"].isSet ? results["times"].get<int>() : -1;
             int rep = results["repeatType"].isSet ? 1 : 0;
             int itemId =
-                results["itemId"].isSet ? results["itemId"].getRaw<CommandItem>().getId() : 0;
+                    results["itemId"].isSet ? results["itemId"].getRaw<CommandItem>().getId() : 0;
             int slot = results["slot"].isSet ? results["slot"].get<int>() : -1;
             auto blockPos =
-                results["blockPos"].isSet ? results["blockPos"].get<BlockPos>() : BlockPos::MAX;
+                    results["blockPos"].isSet ? results["blockPos"].get<BlockPos>() : BlockPos::MAX;
 
             auto vec3 = results["vec3"].isSet ? results["vec3"].get<Vec3>() : Vec3::MAX;
 
             switch (do_hash(results["player"].getRaw<std::string>().c_str())) {
                 case do_hash("spawn"):
                     trapdoor::mod()
-                        .getSimPlayerManager()
-                        .addPlayer(
-                            trapdoor::mod().getConfig().getBasicConfig().simPlayerPrefix + name,
-                            origin.getWorldPosition() -
-                                Vec3(0.0f, origin.getPlayer() != nullptr ? 1.62001f : 0.0f, 0.0f),
-                            origin.getDimension()->getDimensionId(),
-                            static_cast<int>(origin.getPlayer()->getPlayerGameType()),
-                            origin.getPlayer())
-                        .sendTo(output);
+                            .getSimPlayerManager()
+                            .addPlayer(
+                                    trapdoor::mod().getConfig().getBasicConfig().simPlayerPrefix + name,
+                                    origin.getWorldPosition() -
+                                    Vec3(0.0f, origin.getPlayer() != nullptr ? 1.62001f : 0.0f, 0.0f),
+                                    origin.getDimension()->getDimensionId(),
+                                    static_cast<int>(origin.getPlayer()->getPlayerGameType()),
+                                    origin.getPlayer())
+                            .sendTo(output);
                     break;
                 case do_hash("despawn"):
                     trapdoor::mod().getSimPlayerManager().removePlayer(name).sendTo(output);
@@ -172,18 +172,18 @@ namespace trapdoor {
                     break;
                 case do_hash("lookat"):
                     trapdoor::mod()
-                        .getSimPlayerManager()
-                        .behavior(name, "lookat",
-                                  results["vec3"].isSet ? results["vec3"].get<Vec3>()
-                                                        : getLookAtVec3(origin.getPlayer()))
-                        .sendTo(output);
+                            .getSimPlayerManager()
+                            .behavior(name, "lookat",
+                                      results["vec3"].isSet ? results["vec3"].get<Vec3>()
+                                                            : getLookAtVec3(origin.getPlayer()))
+                            .sendTo(output);
                     break;
 
                 case do_hash("set"):
                     trapdoor::mod()
-                        .getSimPlayerManager()
-                        .setItem(name, itemId, slot)
-                        .sendTo(output);
+                            .getSimPlayerManager()
+                            .setItem(name, itemId, slot)
+                            .sendTo(output);
                     break;
                 case do_hash("drop"):
                     trapdoor::mod().getSimPlayerManager().dropItem(name, itemId).sendTo(output);
@@ -193,85 +193,85 @@ namespace trapdoor {
                     break;
                 case do_hash("dropall"):
                     trapdoor::mod()
-                        .getSimPlayerManager()
-                        .dropAllItems(name, INT_MAX)
-                        .sendTo(output);
+                            .getSimPlayerManager()
+                            .dropAllItems(name, INT_MAX)
+                            .sendTo(output);
                     break;
                 case do_hash("moveto"):
                     trapdoor::mod()
-                        .getSimPlayerManager()
-                        .behavior(name, "moveto",
-                                  results["vec3"].isSet ? results["vec3"].get<Vec3>()
-                                                        : getLookAtVec3(origin.getPlayer()))
-                        .sendTo(output);
+                            .getSimPlayerManager()
+                            .behavior(name, "moveto",
+                                      results["vec3"].isSet ? results["vec3"].get<Vec3>()
+                                                            : getLookAtVec3(origin.getPlayer()))
+                            .sendTo(output);
                     break;
                 case do_hash("navto"):
                     trapdoor::mod()
-                        .getSimPlayerManager()
-                        .behavior(name, "navto",
-                                  results["vec3"].isSet ? results["vec3"].get<Vec3>()
-                                                        : getLookAtVec3(origin.getPlayer()))
-                        .sendTo(output);
+                            .getSimPlayerManager()
+                            .behavior(name, "navto",
+                                      results["vec3"].isSet ? results["vec3"].get<Vec3>()
+                                                            : getLookAtVec3(origin.getPlayer()))
+                            .sendTo(output);
                     break;
 
                 case do_hash("interact"):
                     trapdoor::mod()
-                        .getSimPlayerManager()
-                        .interactSchedule(name, origin.getPlayer(), rep, interval, times)
-                        .sendTo(output);
+                            .getSimPlayerManager()
+                            .interactSchedule(name, origin.getPlayer(), rep, interval, times)
+                            .sendTo(output);
                     break;
 
                 case do_hash("attack"):
                     trapdoor::mod()
-                        .getSimPlayerManager()
-                        .attackSchedule(name, origin.getPlayer(), rep, interval, times)
-                        .sendTo(output);
+                            .getSimPlayerManager()
+                            .attackSchedule(name, origin.getPlayer(), rep, interval, times)
+                            .sendTo(output);
                     break;
 
                 case do_hash("jump"):
                     trapdoor::mod()
-                        .getSimPlayerManager()
-                        .jumpSchedule(name, rep, interval, times)
-                        .sendTo(output);
+                            .getSimPlayerManager()
+                            .jumpSchedule(name, rep, interval, times)
+                            .sendTo(output);
                     break;
 
                 case do_hash("destroyon"):
                     trapdoor::mod()
-                        .getSimPlayerManager()
-                        .destroyOnSchedule(name, blockPos, origin.getPlayer(), rep, interval, times)
-                        .sendTo(output);
+                            .getSimPlayerManager()
+                            .destroyOnSchedule(name, blockPos, origin.getPlayer(), rep, interval, times)
+                            .sendTo(output);
                     break;
                 case do_hash("destroy"):
                     trapdoor::mod()
-                        .getSimPlayerManager()
-                        .destroySchedule(name, rep, interval, times)
-                        .sendTo(output);
+                            .getSimPlayerManager()
+                            .destroySchedule(name, rep, interval, times)
+                            .sendTo(output);
                     break;
 
                 case do_hash("backpack"):
                     trapdoor::mod().getSimPlayerManager().getBackpack(name, 0).sendTo(output);
                     break;
 
-                // use
+                    // use
                 case do_hash("use"):
                     trapdoor::mod()
-                        .getSimPlayerManager()
-                        .useSchedule(name, itemId, rep, interval, times)
-                        .sendTo(output);
+                            .getSimPlayerManager()
+                            .useSchedule(name, itemId, rep, interval, times)
+                            .sendTo(output);
                     break;
                 case do_hash("useon"):
                     if (results["blockPos"].isSet) {
                         trapdoor::mod()
-                            .getSimPlayerManager()
-                            .useOnBlockSchedule(name, itemId, results["blockPos"].get<BlockPos>(),
-                                                nullptr, rep, interval, times)
-                            .sendTo(output);
+                                .getSimPlayerManager()
+                                .useOnBlockSchedule(name, itemId, results["blockPos"].get<BlockPos>(),
+                                                    nullptr, rep, interval, times)
+                                .sendTo(output);
                     } else {
                         trapdoor::mod()
-                            .getSimPlayerManager()
-                            .useOnBlockSchedule(name, itemId, BlockPos(0, 0, 0), origin.getPlayer(),
-                                                rep, interval, times)
-                            .sendTo(output);
+                                .getSimPlayerManager()
+                                .useOnBlockSchedule(name, itemId, BlockPos(0, 0, 0), origin.getPlayer(),
+                                                    rep, interval, times)
+                                .sendTo(output);
                     }
 
                     break;
@@ -283,10 +283,10 @@ namespace trapdoor {
                     break;
                 case do_hash("runcmd"):
                     trapdoor::mod()
-                        .getSimPlayerManager()
-                        .runCmdSchedule(name, results["command"].get<std::string>(), rep, interval,
-                                        times)
-                        .sendTo(output);
+                            .getSimPlayerManager()
+                            .runCmdSchedule(name, results["command"].get<std::string>(), rep, interval,
+                                            times)
+                            .sendTo(output);
                 case do_hash("follow"):
                     trapdoor::mod().getSimPlayerManager().followActor(name, origin.getPlayer());
                     break;
@@ -294,12 +294,11 @@ namespace trapdoor {
                     trapdoor::mod().getSimPlayerManager().teleportTo(name, vec3).sendTo(output);
                     break;
                 case do_hash("swap"):
-                    ErrorDeveloping().sendTo(output);
+                    trapdoor::mod()
+                            .getSimPlayerManager()
+                            .swapBackpack(name, origin.getPlayer())
+                            .sendTo(output);
                     break;
-                    //                    trapdoor::mod()
-                    //                        .getSimPlayerManager()
-                    //                        .swapBackpack(name, origin.getPlayer())
-                    //                        .sendTo(output);
             }
         };
 

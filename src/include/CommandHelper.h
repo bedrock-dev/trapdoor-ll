@@ -46,6 +46,8 @@ namespace trapdoor {
 
     inline ActionResult ErrorDimension() { return ErrorMsg("command.error.dimension-required"); }
 
+    inline ActionResult ErrorUnexpected(const std::string &msg) { return ErrorMsg("Unexpected error" + msg); }
+
     inline ActionResult ErrorRange(const std::string &name, int begin, int end) {
         return {fmt::format(tr("command.error.range"), name, begin, end), false};
     }

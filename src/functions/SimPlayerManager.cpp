@@ -25,32 +25,7 @@
 // https://github.com/LiteLDev/LiteLoaderBDS/blob
 // /9b0c794d05d98ed3c9a920d7923e9bd6a5d08e91/LiteLoader/src/llapi/SimulatedPlayerAPI.cpp#L40
 
-template <>
-class OwnerPtrT<struct EntityRefTraits> {
-    char filler[24];
 
-   public:
-    MCAPI ~OwnerPtrT();
-
-    inline OwnerPtrT(OwnerPtrT&& right) noexcept {
-        void (OwnerPtrT::*rv)(OwnerPtrT && right);
-        *((void**)&rv) = dlsym("??0OwnerStorageEntity@@IEAA@$$QEAV0@@Z");
-        (this->*rv)(std::move(right));
-    }
-    inline OwnerPtrT& operator=(OwnerPtrT&& right) noexcept {
-        void (OwnerPtrT::*rv)(OwnerPtrT && right);
-        *((void**)&rv) = dlsym("??4OwnerStorageEntity@@IEAAAEAV0@$$QEAV0@@Z");
-        (this->*rv)(std::move(right));
-    }
-
-    inline SimulatedPlayer* tryGetSimulatedPlayer(bool b = false) {
-        auto& context = dAccess<StackResultStorageEntity, 0>(this).getStackRef();
-        return SimulatedPlayer::tryGetFromEntity(context, b);
-    }
-
-    inline bool hasValue() const { return dAccess<bool, 16>(this); }
-    // inline bool isValid()
-};
 
 namespace trapdoor {
     namespace {
@@ -75,17 +50,17 @@ namespace trapdoor {
     }
 
         bool enableKeepInventory() {
-            auto& rules = Global<Level>->getGameRules();
-            auto* rule = rules.getRule(rules.nameToGameRuleIndex("keepinventory"));
+            auto &rules = Global<Level>->getGameRules();
+            auto *rule = rules.getRule(rules.nameToGameRuleIndex("keepinventory"));
             if (rule == nullptr) {
                 return false;
             }
             return rule->getBool();
         }
 
-        BlockPos getTargetPos(Player* p, BlockPos pos) {
+        BlockPos getTargetPos(Player *p, BlockPos pos) {
             if (!p) return pos;
-            auto* a = reinterpret_cast<Actor*>(p);
+            auto *a = reinterpret_cast<Actor *>(p);
             auto ins = a->getBlockFromViewVector();
             if (!ins.isNull()) {
                 return ins.getPosition();
@@ -94,13 +69,13 @@ namespace trapdoor {
             }
         }  // namespace
 
-        ItemStack* getItemInInv(SimulatedPlayer* sim, int itemID, int& slot) {
+        ItemStack *getItemInInv(SimulatedPlayer *sim, int itemID, int &slot) {
             if (!sim) return nullptr;
             slot = -1;
-            auto& inv = sim->getInventory();
+            auto &inv = sim->getInventory();
             int sz = inv.getSize();
             for (int i = 0; i < sz; i++) {
-                auto* item = inv.getSlot(i);
+                auto *item = inv.getSlot(i);
                 if (item && item->getId() == itemID) {
                     slot = i;
                     return item;
@@ -109,10 +84,10 @@ namespace trapdoor {
             return nullptr;
         }
 
-        void writeEmptyInvToFile(const std::string& playerName) {
+        void writeEmptyInvToFile(const std::string &playerName) {
             trapdoor::logger().debug("Clear player {}' inventory due to death");
             const std::string path =
-                "./plugins/trapdoor/sim/" + std::to_string(do_hash(playerName.c_str()));
+                    "./plugins/trapdoor/sim/" + std::to_string(do_hash(playerName.c_str()));
             namespace fs = std::filesystem;
             fs::remove(path);
         }
@@ -122,22 +97,23 @@ namespace trapdoor {
          * @param cont
          * @param playerName
          */
-        void writeInvToFile(Container& cont, const std::string& playerName) {
+        void writeInvToFile(Container &cont, const std::string &playerName) {
             if (!trapdoor::mod().getConfig().getBasicConfig().keepSimPlayerInv) return;
             const std::string path =
-                "./plugins/trapdoor/sim/" + std::to_string(do_hash(playerName.c_str()));
+                    "./plugins/trapdoor/sim/" + std::to_string(do_hash(playerName.c_str()));
             trapdoor::logger().debug("Inventory Write path is {}", path);
 
             nlohmann::json obj;
             auto array = nlohmann::json::array();
             for (auto i = 0; i < cont.getSize(); i++) {
-                auto* item = cont.getSlot(i);
+                auto *item = cont.getSlot(i);
                 std::string sNbt;
                 if (item) {
                     sNbt = item->getNbt()->toSNBT();
                 }
                 nlohmann::json j;
-                j = {{"slot", i}, {"nbt", sNbt}};
+                j = {{"slot", i},
+                     {"nbt",  sNbt}};
                 array.push_back(j);
             }
 
@@ -153,10 +129,10 @@ namespace trapdoor {
             f.close();
         }
 
-        void tryReadInvFromFile(Container& cont, const std::string& playerName) {
+        void tryReadInvFromFile(Container &cont, const std::string &playerName) {
             if (!trapdoor::mod().getConfig().getBasicConfig().keepSimPlayerInv) return;
             const std::string path =
-                "./plugins/trapdoor/sim/" + std::to_string(do_hash(playerName.c_str()));
+                    "./plugins/trapdoor/sim/" + std::to_string(do_hash(playerName.c_str()));
             std::ifstream f(path);
             if (!f.is_open()) {
                 return;
@@ -165,25 +141,37 @@ namespace trapdoor {
             f >> obj;
             try {
                 auto invInfo = obj["inventory"];
-                for (auto& item : invInfo) {
+                for (auto &item: invInfo) {
                     auto slot = item["slot"].get<int>();
-                    auto* it = ItemStack::create(CompoundTag::fromSNBT(item["nbt"]));
+                    auto *it = ItemStack::create(CompoundTag::fromSNBT(item["nbt"]));
                     cont.setItem(slot, *it);
                 }
-            } catch (const std::exception&) {
+            } catch (const std::exception &) {
             }
         }
 
         constexpr auto DEFAULT_FACING = static_cast<ScriptModuleMinecraft::ScriptFacing>(1);
+
+
+        void swapItemInContainer(Container &cont, int s1, int s2) {
+            auto i1 = cont.getItem(s1).clone();
+            auto i2 = cont.getItem(s2).clone();
+            cont.removeItem(s1, 64);
+            cont.removeItem(s2, 64);
+            cont.setItem(s1, i2);
+            cont.setItem(s2, i1);
+        }
+
+
     }  // namespace
 
-    bool SimPlayerManager::checkSurvival(const std::string& name) {
+    bool SimPlayerManager::checkSurvival(const std::string &name) {
         auto it = this->simPlayers.find(name);
         if (it == this->simPlayers.end()) return false;
         return it->second.simPlayer != nullptr;
     }
 
-    void SimPlayerManager::cancel(const std::string& name) {
+    void SimPlayerManager::cancel(const std::string &name) {
         trapdoor::logger().debug("Cancel task of sim player {}", name);
         auto it = this->simPlayers.find(name);
         if (it != this->simPlayers.end()) {
@@ -191,8 +179,8 @@ namespace trapdoor {
         }
     }
 
-    void SimPlayerManager::stopAction(const std::string& name) {
-        auto* sim = this->tryFetchSimPlayer(name, false);
+    void SimPlayerManager::stopAction(const std::string &name) {
+        auto *sim = this->tryFetchSimPlayer(name, false);
         if (sim) {
             sim->simulateStopUsingItem();
             sim->simulateStopMoving();
@@ -205,41 +193,41 @@ namespace trapdoor {
         }
     }
 
-    SimulatedPlayer* SimPlayerManager::tryFetchSimPlayer(const std::string& name, bool needFree) {
+    SimulatedPlayer *SimPlayerManager::tryFetchSimPlayer(const std::string &name, bool needFree) {
         auto it = simPlayers.find(name);
         if (it == simPlayers.end()) {
             return nullptr;
         }
-        auto& simInfo = it->second;
+        auto &simInfo = it->second;
         if (!simInfo.simPlayer) return nullptr;
         if (needFree) return simInfo.task.isFinished() ? simInfo.simPlayer : nullptr;
         return simInfo.simPlayer;
     }
 
-    ActionResult SimPlayerManager::getBackpack(const std::string& name, int slot) {
+    ActionResult SimPlayerManager::getBackpack(const std::string &name, int slot) {
         GET_FREE_PLAYER(sim)
         TextBuilder builder;
         size_t ctr = 0;
-        auto& inv = sim->getInventory();
+        auto &inv = sim->getInventory();
         for (int i = 0; i < inv.getSize(); i++) {
-            auto* itemStack = inv.getSlot(i);
+            auto *itemStack = inv.getSlot(i);
             if (itemStack && (!itemStack->getName().empty())) {
                 ctr++;
                 auto c = itemStack->getColor();
                 builder.sText(TB::GRAY, " - ")
-                    .textF("[%d] ", i)
-                    .textF(" %s  ", itemStack->getName().c_str())
-                    .text(" x ")
-                    .num(itemStack->getCount())
-                    .text("\n");
+                        .textF("[%d] ", i)
+                        .textF(" %s  ", itemStack->getName().c_str())
+                        .text(" x ")
+                        .num(itemStack->getCount())
+                        .text("\n");
             }
         }
         if (ctr == 0) builder.text(tr("player.info.empty-inv"));
         return {builder.get(), true};
     }
 
-    ActionResult SimPlayerManager::destroyOnSchedule(const std::string& name, const BlockPos& p,
-                                                     Player* origin, int repType, int interval,
+    ActionResult SimPlayerManager::destroyOnSchedule(const std::string &name, const BlockPos &p,
+                                                     Player *origin, int repType, int interval,
                                                      int times) {
         GET_FREE_PLAYER(sim)
         auto pos = p;
@@ -255,7 +243,8 @@ namespace trapdoor {
         ADD_TASK
         return {"", true};
     }
-    ActionResult SimPlayerManager::runCmdSchedule(const string& name, const string& command,
+
+    ActionResult SimPlayerManager::runCmdSchedule(const string &name, const string &command,
                                                   int repType, int interval, int times) {
         GET_FREE_PLAYER(sim)
         auto task = [name, this, sim, command]() {
@@ -266,7 +255,8 @@ namespace trapdoor {
         ADD_TASK
         return {"", true};
     }
-    ActionResult SimPlayerManager::destroySchedule(const std::string& name, int repType,
+
+    ActionResult SimPlayerManager::destroySchedule(const std::string &name, int repType,
                                                    int interval, int times) {
         GET_FREE_PLAYER(sim)
         auto task = [name, this, sim]() {
@@ -282,14 +272,14 @@ namespace trapdoor {
         return {"", true};
     }
 
-    ActionResult SimPlayerManager::interactSchedule(const std::string& name, Player* origin,
+    ActionResult SimPlayerManager::interactSchedule(const std::string &name, Player *origin,
                                                     int repType, int interval, int times) {
         if (!origin) {
             return ErrorPlayerNeed();
         }
         GET_FREE_PLAYER(sim)
-        auto* playerActor = reinterpret_cast<Actor*>(origin);
-        auto* target = playerActor->getActorFromViewVector(5.25);
+        auto *playerActor = reinterpret_cast<Actor *>(origin);
+        auto *target = playerActor->getActorFromViewVector(5.25);
         auto ins = playerActor->getBlockFromViewVector();
         auto pos = ins.isNull() ? BlockPos::MAX : ins.getPosition();
         auto task = [this, sim, name, pos, target]() {
@@ -308,13 +298,13 @@ namespace trapdoor {
         return {"", true};
     }
 
-    ActionResult SimPlayerManager::attackSchedule(const std::string& name, Player* origin,
+    ActionResult SimPlayerManager::attackSchedule(const std::string &name, Player *origin,
                                                   int repType, int interval, int times) {
         GET_FREE_PLAYER(sim)
-        Actor* target{nullptr};
+        Actor *target{nullptr};
         ActorUniqueID uid;
         if (origin) {
-            auto* playerActor = reinterpret_cast<Actor*>(origin);
+            auto *playerActor = reinterpret_cast<Actor *>(origin);
             target = playerActor->getActorFromViewVector(5.25);
             if (target) {
                 uid = target->getUniqueID();
@@ -334,13 +324,13 @@ namespace trapdoor {
         return {"", true};
     }
 
-    ActionResult SimPlayerManager::useSchedule(const std::string& name, int itemId, int repType,
+    ActionResult SimPlayerManager::useSchedule(const std::string &name, int itemId, int repType,
                                                int interval, int times) {
         GET_FREE_PLAYER(sim)
         auto task = [this, name, sim, itemId]() {
             CHECK_SURVIVAL
             int slot = -1;
-            auto* item = getItemInInv(sim, itemId, slot);
+            auto *item = getItemInInv(sim, itemId, slot);
             this->stopAction(name);
             if (item) {
                 sim->simulateSetItem(*item, true, 0);
@@ -353,7 +343,7 @@ namespace trapdoor {
         return {"", true};
     }
 
-    ActionResult SimPlayerManager::jumpSchedule(const std::string& name, int repType, int interval,
+    ActionResult SimPlayerManager::jumpSchedule(const std::string &name, int repType, int interval,
                                                 int times) {
         GET_FREE_PLAYER(sim)
         auto task = [this, name, sim]() {
@@ -364,8 +354,8 @@ namespace trapdoor {
         return {"", true};
     }
 
-    ActionResult SimPlayerManager::useOnBlockSchedule(const std::string& name, int itemId,
-                                                      const BlockPos& p, Player* ori, int repType,
+    ActionResult SimPlayerManager::useOnBlockSchedule(const std::string &name, int itemId,
+                                                      const BlockPos &p, Player *ori, int repType,
                                                       int interval, int times) {
         GET_FREE_PLAYER(sim)
         auto pos = getTargetPos(ori, p);
@@ -373,7 +363,7 @@ namespace trapdoor {
             CHECK_SURVIVAL
             auto v = Vec3(0.5, 1.0, 0.5);
             int slot = 0;
-            auto* item = getItemInInv(sim, itemId, slot);
+            auto *item = getItemInInv(sim, itemId, slot);
             if (item) {
                 sim->simulateUseItemOnBlock(*item, pos, DEFAULT_FACING, v);
             }
@@ -381,30 +371,35 @@ namespace trapdoor {
         ADD_TASK
         return {"", true};
     }
-    ActionResult SimPlayerManager::setItem(const string& name, int itemId, int slot) {
+
+    ActionResult SimPlayerManager::setItem(const string &name, int itemId, int slot) {
         GET_FREE_PLAYER(sim)
-        ItemStack* item{nullptr};
-        if (slot == -1) {
-            item = getItemInInv(sim, itemId, slot);
-        } else {
-            // 需要检查是否会有溢出
-            if (slot >= sim->getInventory().getSize()) {
-                return ErrorRange("slot number", 0, sim->getInventorySize());
-            }
-            item = sim->getInventory().getSlot(slot);
+        if (slot == -1) { //等于-1，itemID有效，搜索背包
+            getItemInInv(sim, itemId, slot);
         }
 
-        if (item) {
-            sim->simulateSetItem(*item, true, 0);
-            sim->sendInventory(true);
+        if (slot < 0 || slot >= sim->getInventory().getSize()) {
+            return ErrorRange("slot number", 0, sim->getInventorySize());
         }
+
+        //slot是搜索到的物品的槽位，直接和0进行交换
+        //正好是手持物品，无事发生
+        if (slot == sim->getSelectedItemSlot()) {
+            return {"", true};
+        }
+        //如果不是手持物品，和手持物品交换
+        swapItemInContainer(sim->getInventory(), slot, sim->getSelectedItemSlot());
+        sim->sendInventory(true);
+
         return {"", true};
     }
-    ActionResult SimPlayerManager::dropItem(const string& name, int itemId) {
+
+
+    ActionResult SimPlayerManager::dropItem(const string &name, int itemId) {
         // TODO drop item
         GET_FREE_PLAYER(sim)
         int slot = -1;
-        auto* item = getItemInInv(sim, itemId, slot);
+        auto *item = getItemInInv(sim, itemId, slot);
         if (item) {
             // 丢完物品后手动删除
             sim->drop(*item, false);
@@ -419,12 +414,12 @@ namespace trapdoor {
      * @param itemID  物品id
      * @return
      */
-    ActionResult SimPlayerManager::dropAllItems(const string& name, int itemID) {
+    ActionResult SimPlayerManager::dropAllItems(const string &name, int itemID) {
         GET_FREE_PLAYER(sim)
-        auto& inv = sim->getInventory();
+        auto &inv = sim->getInventory();
         int sz = inv.getSize();
         for (int i = 0; i < sz; i++) {
-            auto* item = inv.getSlot(i);
+            auto *item = inv.getSlot(i);
             if (item && (itemID == INT_MAX || item->getId() == itemID)) {
                 sim->drop(*item, false);
                 sim->getInventory().removeItem(i, 64);
@@ -433,8 +428,8 @@ namespace trapdoor {
         return {"", true};
     }
 
-    ActionResult SimPlayerManager::behavior(const std::string& name, const std::string& behType,
-                                            const Vec3& vec) {
+    ActionResult SimPlayerManager::behavior(const std::string &name, const std::string &behType,
+                                            const Vec3 &vec) {
         GET_FREE_PLAYER(sim)
         if (behType == "lookat") {
             sim->simulateLookAt(vec + Vec3(0.5, 0.5, 0.5));
@@ -447,7 +442,8 @@ namespace trapdoor {
 
         return {"", true};
     }
-    ActionResult SimPlayerManager::removePlayer(const std::string& name) {
+
+    ActionResult SimPlayerManager::removePlayer(const std::string &name) {
         auto it = this->simPlayers.find(name);
         if (it == this->simPlayers.end()) {
             return ErrorMsg("player.error.not-exists");
@@ -461,8 +457,8 @@ namespace trapdoor {
         return {"", true};
     }
 
-    ActionResult SimPlayerManager::addPlayer(const std::string& name, const Vec3& p, int dimID,
-                                             int gameMode, Player* origin) {
+    ActionResult SimPlayerManager::addPlayer(const std::string &name, const Vec3 &p, int dimID,
+                                             int gameMode, Player *origin) {
         auto iter = this->simPlayers.find(name);
         if (iter != simPlayers.end() && iter->second.simPlayer) {
             // 玩家已经存在
@@ -470,7 +466,7 @@ namespace trapdoor {
         }
         trapdoor::logger().debug("SPAWN SIM PLAYER: position = {} dim = {} game mode = {}",
                                  p.toString(), dimID, gameMode);
-        auto* sim = SimulatedPlayer::create(name, p, AutomaticID<Dimension, int>(dimID));
+        auto *sim = SimulatedPlayer::create(name, p, AutomaticID<Dimension, int>(dimID));
         if (!sim) {
             return ErrorMsg("player.error.spawn");
         }
@@ -502,13 +498,14 @@ namespace trapdoor {
 
     // 定时做垃圾回收，解决数据不同步问题
     void SimPlayerManager::tick() {}
+
     ActionResult SimPlayerManager::listAll() {
         if (this->simPlayers.empty()) {
             return ErrorMsg("player.error.no-players");
         }
 
         TextBuilder builder;
-        for (const auto& i : this->simPlayers) {
+        for (const auto &i: this->simPlayers) {
             builder.text(" - ").textF("%s   ", i.first.c_str());
             if (!i.second.simPlayer) {
                 builder.sText(TB::RED | TB::BOLD, "Not exist\n");
@@ -525,7 +522,8 @@ namespace trapdoor {
         }
         return {builder.get(), true};
     }
-    void SimPlayerManager::processDieEvent(const string& name) {
+
+    void SimPlayerManager::processDieEvent(const string &name) {
         trapdoor::logger().debug("player {} try disconnect", name);
         auto iter = this->simPlayers.find(name);
         if (iter == this->simPlayers.end()) return;
@@ -541,7 +539,7 @@ namespace trapdoor {
     void SimPlayerManager::refreshCommandSoftEnum() {
         if (!this->cmdInstance) return;
         std::vector<std::string> names;
-        for (auto& sp : this->simPlayers) {
+        for (auto &sp: this->simPlayers) {
             names.push_back(sp.first);
         }
         cmdInstance->setSoftEnum("name", names);
@@ -550,15 +548,15 @@ namespace trapdoor {
     void SimPlayerManager::syncPlayerListToFile() {
         const std::string path = "./plugins/trapdoor/sim/cache.json";
         nlohmann::json obj;
-        for (auto& sim : this->simPlayers) {
-            auto* p = sim.second.simPlayer;
+        for (auto &sim: this->simPlayers) {
+            auto *p = sim.second.simPlayer;
             if (p) {
                 auto pos = p->getPos();
-                nlohmann::json j = {{"x", pos.x},
-                                    {"y", pos.y - 1},
-                                    {"z", pos.z},
-                                    {"dim", (int)p->getDimensionId()},
-                                    {"mode", (int)p->getPlayerGameType()}
+                nlohmann::json j = {{"x",    pos.x},
+                                    {"y",    pos.y - 1},
+                                    {"z",    pos.z},
+                                    {"dim",  (int) p->getDimensionId()},
+                                    {"mode", (int) p->getPlayerGameType()}
 
                 };
                 obj[sim.first] = j;
@@ -582,9 +580,9 @@ namespace trapdoor {
         }
         i >> obj;
         try {
-            for (const auto& item : obj.items()) {
+            for (const auto &item: obj.items()) {
                 const auto name = item.key();
-                const auto& value = item.value();
+                const auto &value = item.value();
                 auto dim = value["dim"].get<int>();
                 auto x = value["x"].get<float>();
                 auto y = value["y"].get<float>();
@@ -595,30 +593,30 @@ namespace trapdoor {
                                         z, dim);
                 //    tempConfig.enable = value["enable"].get<bool>();
             }
-        } catch (const std::exception& e) {
+        } catch (const std::exception &e) {
             trapdoor::logger().error("error read sim player cache: {}", e.what());
         }
 
         i.close();
     }
+
     void SimPlayerManager::savePlayerInventoryToFile() {
-        //  trapdoor::logger().debug("Save inventory file");
-        for (auto& kv : this->simPlayers) {
+        for (auto &kv: this->simPlayers) {
             if (kv.second.simPlayer) {
                 writeInvToFile(kv.second.simPlayer->getInventory(), kv.first);
             }
         }
     }
 
-    ActionResult SimPlayerManager::followActor(const std::string& name, Player* player) {
+    ActionResult SimPlayerManager::followActor(const std::string &name, Player *player) {
         if (!player) {
             return ErrorPlayerNeed();
         }
         GET_FREE_PLAYER(sim)
 
-        auto* playerActor = reinterpret_cast<Actor*>(player);
+        auto *playerActor = reinterpret_cast<Actor *>(player);
         auto uid = playerActor->getUniqueID();
-        auto* target = playerActor->getActorFromViewVector(5.25);
+        auto *target = playerActor->getActorFromViewVector(5.25);
         if (target) uid = target->getUniqueID();
         if (uid == sim->getUniqueID()) return ErrorMsg("player.error.follow");
         auto task = [this, sim, name, uid]() {
@@ -634,40 +632,28 @@ namespace trapdoor {
         ADD_TASK
         return {"", true};
     }
-    ActionResult SimPlayerManager::getSimPlayerInfo(const string& name) {
+
+    ActionResult SimPlayerManager::getSimPlayerInfo(const string &name) {
         GET_FREE_PLAYER(sim)
         trapdoor::TextBuilder builder;
         builder.textF("- Name: %s\n", sim->getName().c_str())
-            .textF("- Xuid: %s\n", sim->getXuid().c_str())
-            .textF("- Uid: %ld\n", sim->getUniqueID().get())
-            .textF("- Game mode: %d\n", static_cast<int>(sim->getPlayerGameType()))
-            .textF("- Command Permission level: %d\n",
-                   static_cast<int>(sim->getCommandPermissionLevel()))
-            .textF("- Input speed: %.2f\n", sim->_getInputSpeed())
-            .textF("- Spawn chunk limit: %d\n", sim->_getSpawnChunkLimit())
-            .textF("- Has owned chunk source: %d\n", sim->hasOwnedChunkSource())
-            .textF("- Chunk radius: %d\n", sim->getChunkRadius())
-            .textF("- Block source %p\n", &sim->getRegion())
-            .textF("- Has level: %d", sim->hasLevel());
+                .textF("- Xuid: %s\n", sim->getXuid().c_str())
+                .textF("- Uid: %ld\n", sim->getUniqueID().get())
+                .textF("- Game mode: %d\n", static_cast<int>(sim->getPlayerGameType()))
+                .textF("- Command Permission level: %d\n",
+                       static_cast<int>(sim->getCommandPermissionLevel()))
+                .textF("- Input speed: %.2f\n", sim->_getInputSpeed())
+                .textF("- Spawn chunk limit: %d\n", sim->_getSpawnChunkLimit())
+                .textF("- Has owned chunk source: %d\n", sim->hasOwnedChunkSource())
+                .textF("- Chunk radius: %d\n", sim->getChunkRadius())
+                .textF("- Block source %p\n", &sim->getRegion())
+                .textF("- Has level: %d", sim->hasLevel());
         // .textF("- Has",sim->_updateChunkPublisherView())
         return {builder.get(), true};
     }
 
-    // 独立于LLAPI之外的假人生成函数
-    SimulatedPlayer* SimPlayerManager::createSimPlayer(const string& name) {
-        return nullptr;
-        //        auto ownerPtr = Global<ServerNetworkHandler>->createSimulatedPlayer(name, "");
-        //        auto player = ownerPtr.tryGetSimulatedPlayer();
-        //        if (!player) return nullptr;
-        //        player->postLoad(false);
-        //        auto& level = player->getLevel();
-        //        level.addUser(std::move(ownerPtr));
-        //        // player->setSpawnBlockRespawnPosition(position, dimensionId);
-        //        player->setLocalPlayerAsInitialized();
-        //        player->doInitialSpawn();
-        //        return player;
-    }
-    ActionResult SimPlayerManager::teleportTo(const string& name, const Vec3& position) {
+
+    ActionResult SimPlayerManager::teleportTo(const string &name, const Vec3 &position) {
         return ErrorDeveloping();
         //        GET_FREE_PLAYER(sim)
         //        sim->teleportTo(position, true, 0, 0, true);
@@ -675,15 +661,22 @@ namespace trapdoor {
         //
     }
 
-    ActionResult SimPlayerManager::swapBackpack(const string& name, Player* origin) {
-        GET_FREE_PLAYER(sim)
+    ActionResult SimPlayerManager::swapBackpack(const string &name, Player *origin) {
         if (!origin) return ErrorPlayerNeed();
-        if (origin->getInventorySize() != sim->getInventorySize()) {
-            return {"Backpack size error", false};
+        GET_FREE_PLAYER(sim)
+
+
+        auto *actor = origin->getActorFromViewVector(5.25);
+        if (actor != sim) {
+            return trapdoor::ErrorMsg("player.error.point-to-needed");
         }
 
-        auto& simInv = sim->getInventory();
-        auto& playerInv = origin->getInventory();
+        if (origin->getInventorySize() != sim->getInventorySize()) {
+            return trapdoor::ErrorUnexpected("Invalid backpack size");
+        }
+
+        auto &simInv = sim->getInventory();
+        auto &playerInv = origin->getInventory();
         // 备份玩家数据
         auto size = playerInv.getSize();
 
@@ -695,6 +688,7 @@ namespace trapdoor {
             playerInv.setItem(i, iSim);
             simInv.setItem(i, iPlayer);
         }
+
         sim->sendInventory(true);
         origin->sendInventory(true);
         return OperationSuccess();
@@ -715,7 +709,20 @@ namespace trapdoor {
 /*
  * 定时保存备背包数据(同步)
  */
-THook(void, "?savePlayers@Level@@UEAAXXZ", Level* self) {
-    trapdoor::mod().getSimPlayerManager().savePlayerInventoryToFile();
+THook(void,
+
+      "?savePlayers@Level@@UEAAXXZ",
+      Level * self
+) {
+    trapdoor::mod()
+
+            .
+
+                    getSimPlayerManager()
+
+            .
+
+                    savePlayerInventoryToFile();
+
     original(self);
 }

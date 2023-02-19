@@ -19,6 +19,7 @@ namespace trapdoor {
 
     ActionResult SuccessMsg(const string &msg) { return {tr(msg), true}; }
 
+
     Vec3 getLookAtVec3(Player *player) {
         if (!player) {
             return Vec3::MAX;
