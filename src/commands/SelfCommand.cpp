@@ -16,7 +16,8 @@
 #define  ADD_INT_CONFIG(name) ADD_CONFIG(name,value)
 #define  ADD_BOOL_CONFIG(name) ADD_CONFIG(name,onoroff)
 
-#define  FUNC_NAME(item) set_##item
+#define  SET_FUNC_NAME(item) set_##item
+#define  GET_FUNC_NAME(item) get_##item
 
 //可只对个人生效的配置项目，默认全部开启(不需要自动关闭即可)
 namespace trapdoor {
@@ -29,27 +30,44 @@ namespace trapdoor {
         ADD_BOOL_CONFIG(noclip)
         ADD_BOOL_CONFIG(blockrotate)
         ADD_BOOL_CONFIG(autotool)
-        ADD_BOOL_CONFIG(fcopen)
+
+        auto &dumpOpt = command->setEnum("dump", {"dump"}); \
+        command->mandatory("self", ParamType::Enum, dumpOpt, CommandParameterOption::EnumAutocompleteExpansion);
+        command->addOverload({dumpOpt});
+
+        // ADD_BOOL_CONFIG(fcopen)
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
-            bool onoroff = results["onoroff"].isSet ? results["value"].get<int>() : -1;
-            if (!origin.getPlayer())return trapdoor::ErrorPlayerNeed();
+
+            if (!origin.getPlayer()) {
+                trapdoor::ErrorPlayerNeed().sendTo(output);
+                return;
+            }
+            auto iValue = results["value"];
+            auto bValue = results["onoroff"];
+
+            [[maybe_unused]] auto i = iValue.isSet ? iValue.get<int>() : -1; //-1 is invalid value
+            auto b = bValue.isSet && bValue.get<bool>();
+
             auto playerName = origin.getPlayer()->getRealName();
             switch (do_hash(results["self"].getRaw<std::string>().c_str())) {
 
-#define ADD_CASE(name) case do_hash(#name): trapdoor::mod().getUserConfig(). \
-FUNC_NAME(name)(playerName, onoroff).sendTo(output); break
-                ADD_CASE(hud);
-                ADD_CASE(noclip);
-                ADD_CASE(blockrotate);
-                ADD_CASE(autotool);
-                ADD_CASE(fcopen);
+#define ADD_BOOL_CASE(name)   case do_hash(#name): if (bValue.isSet) {trapdoor::mod(). \
+                        getUserConfig().SET_FUNC_NAME(name)(playerName, b).sendTo(output);\
+                        } else {trapdoor::mod().getUserConfig().GET_FUNC_NAME(name)(playerName).sendTo(output);}break;
+                //TODO 等有整数型再设置
+#define ADD_INT_CASE
+                ADD_BOOL_CASE(hud)
+                ADD_BOOL_CASE(noclip);
+                ADD_BOOL_CASE(blockrotate);
+                ADD_BOOL_CASE(autotool);
+                //          ADD_BOOL_CASE(fcopen);
+                case do_hash("dump"):
+                    trapdoor::mod().getUserConfig().dumpAllSelfConfig(playerName).sendTo(output);
                 default:
                     break;
             }
-
-
         };
         command->setCallback(cb);
         DynamicCommand::setup(std::move(command));

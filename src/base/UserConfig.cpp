@@ -6,6 +6,7 @@
 #include "TrapdoorMod.h"
 #include "Nlohmann/json.hpp"
 #include "HUDHelper.h"
+#include "Msg.h"
 
 
 namespace trapdoor {
@@ -19,13 +20,16 @@ namespace trapdoor {
             trapdoor::logger().error("Can not find player config data in memory");
         }
 
-        auto &data = it->second;
 
+        auto &data = it->second;
         using namespace nlohmann;
         json j;
-        j["name"] = name;
-        j["tweaks"]["creative-no-clip"] = data.noclip;
-        j["tweaks"]["auto-tool"] = data.autotool;
+
+#define  WRITE_SELF_CFG(item) j["self"][#item] = data.item;
+        WRITE_SELF_CFG(hud)
+        WRITE_SELF_CFG(blockrotate)
+        WRITE_SELF_CFG(noclip)
+        WRITE_SELF_CFG(autotool)
         for (int i = 0; i < data.hud_config.size(); i++) {
             auto typeString = trapdoor::getStringFromHUDType(static_cast<HUDItemType>(i));
             if (typeString != "unknown") {
@@ -51,12 +55,12 @@ namespace trapdoor {
         this->syncConfigToDisk(name);
     }
 
+
     void UserConfig::init() {
         namespace fs = std::filesystem;
         using namespace nlohmann;
         for (auto &f: fs::directory_iterator("./plugins/trapdoor/player")) {
             if (f.is_regular_file() && f.path().extension() == ".json") {
-
 
                 auto playerName = f.path().stem().string();
 
@@ -74,8 +78,12 @@ namespace trapdoor {
                     PlayerData data;
 
                     //读取tweak信息
-                    data.noclip = j["tweaks"]["creative-no-clip"].get<bool>();
-                    data.autotool = j["tweaks"]["auto-tool"].get<bool>();
+                    auto &self_cfg = j["self"];
+#define  READ_SELF_CFG(item, type) data.item = self_cfg[#item].get<type>();
+                    READ_SELF_CFG(hud, bool)
+                    READ_SELF_CFG(blockrotate, bool)
+                    READ_SELF_CFG(noclip, bool)
+                    READ_SELF_CFG(autotool, bool)
 
                     //读取
                     auto &hud_cfg = j["hud"];
@@ -99,5 +107,23 @@ namespace trapdoor {
         //读取配置文件
     }
 
+    ActionResult UserConfig::dumpAllSelfConfig(const string &name) {
+        trapdoor::TextBuilder builder;
+        auto &d = this->playerData[name];
+        builder.sText(TB::BOLD | TB::WHITE, "Self Configs:\n")
+                .item("Creative No Clip", d.noclip)
+                .item("Block rotate", d.blockrotate)
+                .item("Auto select tool", d.autotool)
+                .item("HUD", d.hud);
+        builder.sText(TB::BOLD | TB::WHITE, "HUDs :\n");
 
+        for (int i = 0; i < d.hud_config.size(); i++) {
+            auto typeString = trapdoor::getStringFromHUDType(static_cast<HUDItemType>(i));
+            if (typeString != "unknown") {
+                builder.item(typeString, d.hud_config[i]);
+            }
+        }
+
+        return trapdoor::SuccessMsg(builder.get());
+    }
 }

@@ -24,19 +24,21 @@ namespace trapdoor {
         struct UseOnAction {
             uint64_t gameTick = 0;
             BlockPos pos;
-            bool operator==(const UseOnAction& rhs) const {
+
+            bool operator==(const UseOnAction &rhs) const {
                 if (pos != rhs.pos) return false;
                 return (gameTick - rhs.gameTick) <= 3;
             }
-            bool operator!=(const UseOnAction& rhs) const { return !(rhs == *this); }
+
+            bool operator!=(const UseOnAction &rhs) const { return !(rhs == *this); }
         };
 
-        std::unordered_map<std::string, UseOnAction>& getUseOnCache() {
+        std::unordered_map<std::string, UseOnAction> &getUseOnCache() {
             static std::unordered_map<std::string, UseOnAction> cache;
             return cache;
         }
 
-        bool antiShake(const std::string& playerName, const BlockPos& pos) {
+        bool antiShake(const std::string &playerName, const BlockPos &pos) {
             uint64_t gt = Global<Level>->getCurrentServerTick().t;
             auto useOnAction = UseOnAction{gt, pos};
             auto lastUseOnAction = getUseOnCache()[playerName];
@@ -48,13 +50,13 @@ namespace trapdoor {
             return true;
         }
 
-        void resetAntiShakeCache(const std::string& name) { getUseOnCache().erase(name); }
+        void resetAntiShakeCache(const std::string &name) { getUseOnCache().erase(name); }
 
     }  // namespace
 
     void subscribeItemUseEvent() {
-        Event::PlayerUseItemEvent::subscribe([&](const Event::PlayerUseItemEvent& ev) {
-            auto& shortcuts = trapdoor::mod().getConfig().getShortcuts();
+        Event::PlayerUseItemEvent::subscribe([&](const Event::PlayerUseItemEvent &ev) {
+            auto &shortcuts = trapdoor::mod().getConfig().getShortcuts();
             if (shortcuts.empty()) {
                 return true;
             }
@@ -63,7 +65,7 @@ namespace trapdoor {
             shortcut.type = USE;
             shortcut.itemAux = ev.mItemStack->getAux();
             shortcut.itemName = trapdoor::rmmc(ev.mItemStack->getTypeName());
-            for (auto& sh : shortcuts) {
+            for (auto &sh: shortcuts) {
                 if (sh.match(shortcut)) {
                     trapdoor::logger().debug("trigger: {}", sh.getDescription());
                     sh.runUse(ev.mPlayer, ev.mItemStack);
@@ -76,20 +78,20 @@ namespace trapdoor {
     }
 
     void subscribeItemUseOnEvent() {
-        Event::PlayerUseItemOnEvent::subscribe([&](const Event::PlayerUseItemOnEvent& ev) {
-            auto* bi = const_cast<BlockInstance*>(&ev.mBlockInstance);
+        Event::PlayerUseItemOnEvent::subscribe([&](const Event::PlayerUseItemOnEvent &ev) {
+            auto *bi = const_cast<BlockInstance *>(&ev.mBlockInstance);
             if (bi->isNull()) {
                 return true;
             }
 
-            auto* block = bi->getBlock();
+            auto *block = bi->getBlock();
             if (ev.mItemStack->getTypeName() == "minecraft:cactus" &&
                 antiShake(ev.mPlayer->getRealName(), bi->getPosition())) {
-                trapdoor::rotateBlock(bi->getBlockSource(), bi, ev.mClickPos, ev.mFace);
+                trapdoor::rotateBlock(ev.mPlayer, bi->getBlockSource(), bi, ev.mClickPos, ev.mFace);
                 resetAntiShakeCache(ev.mPlayer->getRealName());
             }
 
-            auto& shortcuts = trapdoor::mod().getConfig().getShortcuts();
+            auto &shortcuts = trapdoor::mod().getConfig().getShortcuts();
             if (shortcuts.empty()) {
                 return true;
             }
@@ -100,7 +102,7 @@ namespace trapdoor {
             shortcut.itemName = trapdoor::rmmc(ev.mItemStack->getTypeName());
             shortcut.blockAux = block->getVariant();
             shortcut.blockName = trapdoor::rmmc(block->getName().getString());
-            for (auto sh : shortcuts) {
+            for (auto sh: shortcuts) {
                 if (sh.match(shortcut)) {
                     if (antiShake(ev.mPlayer->getRealName(), bi->getPosition())) {
                         trapdoor::logger().debug("Trigger event: {}", sh.getDescription());
@@ -115,19 +117,19 @@ namespace trapdoor {
     }
 
     void subscribePlayerDieEvent() {
-        Event::PlayerDieEvent::subscribe([&](const Event::PlayerDieEvent& ev) {
+        Event::PlayerDieEvent::subscribe([&](const Event::PlayerDieEvent &ev) {
             trapdoor::mod().getSimPlayerManager().processDieEvent(ev.mPlayer->getRealName());
             return true;
         });
     }
 
     void subscribePlayerStartDestroyBlockEvent() {
-        Event::PlayerDestroyBlockEvent::subscribe([&](const Event::PlayerDestroyBlockEvent& ev) {
-            auto* bi = const_cast<BlockInstance*>(&ev.mBlockInstance);
+        Event::PlayerDestroyBlockEvent::subscribe([&](const Event::PlayerDestroyBlockEvent &ev) {
+            auto *bi = const_cast<BlockInstance *>(&ev.mBlockInstance);
             if (bi->isNull()) {
                 return true;
             }
-            auto* block = bi->getBlock();
+            auto *block = bi->getBlock();
             Shortcut shortcut;
             shortcut.type = DESTROY;
             shortcut.itemAux = ev.mPlayer->getSelectedItem().getAux();
@@ -135,8 +137,8 @@ namespace trapdoor {
 
             shortcut.blockAux = block->getVariant();
             shortcut.blockName = trapdoor::rmmc(block->getName().getString());
-            auto& shortcuts = trapdoor::mod().getConfig().getShortcuts();
-            for (auto& sh : shortcuts) {
+            auto &shortcuts = trapdoor::mod().getConfig().getShortcuts();
+            for (auto &sh: shortcuts) {
                 if (sh.match(shortcut)) {
                     sh.runUseDestroy(ev.mPlayer, &ev.mPlayer->getSelectedItem(), block,
                                      bi->getPosition());
@@ -148,29 +150,29 @@ namespace trapdoor {
         });
 
         Event::PlayerStartDestroyBlockEvent::subscribe(
-            [&](const Event::PlayerStartDestroyBlockEvent& ev) {
-                return onStartDestroyBlock(ev.mPlayer, ev.mBlockInstance);
-            });
+                [&](const Event::PlayerStartDestroyBlockEvent &ev) {
+                    return onStartDestroyBlock(ev.mPlayer, ev.mBlockInstance);
+                });
     }
 
     void subscribePlayerPlaceBlockEvent() {}
 
     void subscribeServerStartEvent() {
-        Event::ServerStartedEvent::subscribe([&](const Event::ServerStartedEvent& ev) {
+        Event::ServerStartedEvent::subscribe([&](const Event::ServerStartedEvent &ev) {
             // trapdoor::mod().getSimPlayerManager().addPlayersInCache();
             return true;
         });
 
-        Event::EntityExplodeEvent::subscribe([&](const Event::EntityExplodeEvent& ev) {
+        Event::EntityExplodeEvent::subscribe([&](const Event::EntityExplodeEvent &ev) {
             trapdoor::TextBuilder builder;
             auto p = ev.mPos;
             builder
-                .sTextF(TB::BOLD | TB::WHITE, "%s",
-                        trapdoor::rmmc(ev.mActor->getTypeName()).c_str())
-                .text(" explode at ")
-                .sTextF(TB::WHITE, "[%.5f, %.5f,  %.5f]", p.x, p.y, p.z)
-                .text(" with radius ")
-                .num(ev.mRadius);
+                    .sTextF(TB::BOLD | TB::WHITE, "%s",
+                            trapdoor::rmmc(ev.mActor->getTypeName()).c_str())
+                    .text(" explode at ")
+                    .sTextF(TB::WHITE, "[%.5f, %.5f,  %.5f]", p.x, p.y, p.z)
+                    .text(" with radius ")
+                    .num(ev.mRadius);
             trapdoor::mod().getEventTriggerMgr().broadcastMessage(EntityExplode, builder.get());
             return true;
         });

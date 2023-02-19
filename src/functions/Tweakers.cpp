@@ -48,11 +48,14 @@ THook(void, "?updateNeighborsAt@BlockSource@@QEAAXAEBVBlockPos@@@Z", void *self,
 }
 
 THook(void, "?setPlayerGameType@ServerPlayer@@UEAAXW4GameType@@@Z", ServerPlayer *player,
-      int mode) {
+      GameType mode) {
     original(player, mode);
-    if (mode == 1 &&
-        trapdoor::mod().getConfig().getGlobalFunctionConfig().creativeNoClip) {  // 如果切到了创造模式
-        trapdoor::logger().debug("player {} change game mode to {}", player->getRealName(), mode);
+    if (
+            player &&
+            mode == GameType::GameTypeCreative
+            && trapdoor::mod().getConfig().getGlobalFunctionConfig().creativeNoClip
+            && trapdoor::mod().getUserConfig().noclip(player->getRealName())
+            ) {
         player->setAbility(static_cast<AbilitiesIndex>(17), true);
     }
 }

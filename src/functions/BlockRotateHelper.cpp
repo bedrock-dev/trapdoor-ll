@@ -12,6 +12,7 @@
 #include "CommandHelper.h"
 #include "TrapdoorMod.h"
 #include "Utils.h"
+
 namespace trapdoor {
     namespace {
         struct RotateRule {
@@ -24,7 +25,6 @@ namespace trapdoor {
             return rules;
         }
 
-        bool enableRotation = false;
     }  // namespace
 
 #define ADD_RULE(pattern, func)    \
@@ -49,8 +49,10 @@ namespace trapdoor {
         ADD_RULE(hopper, (v % 8 + 1) % 6 + (v / 8) * 8);
     }
 
-    bool rotateBlock(BlockSource *bs, BlockInstance *bi, const Vec3 &clickPos, unsigned char face) {
-        if (!enableRotation) return true;
+    bool rotateBlock(Player *player, BlockSource *bs, BlockInstance *bi, const Vec3 &clickPos, unsigned char face) {
+        if (!trapdoor::mod().getConfig().getGlobalFunctionConfig().blockRotate) return true;
+        if (!player || !trapdoor::mod().getUserConfig().blockrotate(player->getRealName()))return true;
+
         if (!bi || bi->isNull()) return true;
         auto block = bi->getBlock();
         auto variant = dAccess<unsigned short, 8>(block);
@@ -63,10 +65,10 @@ namespace trapdoor {
                                  static_cast<int>(face));
 
         auto it =
-            std::find_if(globalRotateRules().begin(), globalRotateRules().end(),
-                         [&typeName](const RotateRule &rule) {
-                             return std::regex_search(typeName, std::regex(rule.namePatterns));
-                         });
+                std::find_if(globalRotateRules().begin(), globalRotateRules().end(),
+                             [&typeName](const RotateRule &rule) {
+                                 return std::regex_search(typeName, std::regex(rule.namePatterns));
+                             });
         if (it != globalRotateRules().end()) {
             auto newVariant = it->func(variant, clickPos, face);
             if (!bi->hasContainer()) {
@@ -116,8 +118,8 @@ namespace trapdoor {
                 if (abs(mClickPos.x) + abs(mClickPos.y) + abs(mClickPos.z) < 0.75) {
                     mFace = (mFace > 1 && (typeName == "piston" || typeName == "observer" ||
                                            typeName == "sticky_piston"))
-                                ? (mFace / 2) * 2 + (mFace + 1) % 2
-                                : mFace;
+                            ? (mFace / 2) * 2 + (mFace + 1) % 2
+                            : mFace;
                     if (direction == mFace) {
                         direction = (mFace / 2) * 2 + (mFace + 1) % 2;
                     } else {
@@ -161,8 +163,8 @@ namespace trapdoor {
                     }
                     direction = (direction > 1 && (typeName == "piston" || typeName == "observer" ||
                                                    typeName == "sticky_piston"))
-                                    ? (direction / 2) * 2 + (direction + 1) % 2
-                                    : direction;
+                                ? (direction / 2) * 2 + (direction + 1) % 2
+                                : direction;
                 }
                 statesNbt->putInt("facing_direction", direction);
                 hasRule = true;
@@ -185,9 +187,6 @@ namespace trapdoor {
 
         return false;
     }
-    ActionResult setBlockRotationAble(bool able) {
-        enableRotation = able;
-        return  OperationSuccess();
-    }
+
 }  // namespace trapdoor
 

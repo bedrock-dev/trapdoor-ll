@@ -30,12 +30,6 @@ namespace trapdoor {
     class HUDHelper {
     public:
 
-        inline ActionResult setAble(bool able) {
-            this->enable = able;  // 全局开关
-            return trapdoor::OperationSuccess();
-        }
-
-
         void tick();
 
     public :
@@ -47,12 +41,6 @@ namespace trapdoor {
     private:
         void tickChunk() const;
 
-        //  bool readConfigCacheFromFile();
-
-        // bool syncConfigToFile();
-
-        bool volatile enable = true;
-        //   std::unordered_map<std::string, PlayerHudInfo> playerInfos;
     };
 
 

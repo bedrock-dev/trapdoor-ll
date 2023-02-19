@@ -27,7 +27,7 @@ namespace trapdoor {
         int searchBestToolInInv(Container &inv, int currentSlot, const Block *b) {
             auto curItem = inv.getSlot(currentSlot);
             ToolInfo curInfo{curItem->getDestroySpeed(*b), currentSlot,
-                             (short)(curItem->getMaxDamage() - curItem->getDamageValue())};
+                             (short) (curItem->getMaxDamage() - curItem->getDamageValue())};
             auto sz = inv.getSize();
             for (int i = 0; i < sz; i++) {
                 auto *item = inv.getSlot(i);
@@ -40,7 +40,7 @@ namespace trapdoor {
                         trapdoor::mod().getConfig().getBasicConfig().toolDamageThreshold)
                         continue;
                     if (speed > curInfo.speed) {
-                        curInfo = {speed, i, (short)remainDamage};
+                        curInfo = {speed, i, (short) remainDamage};
                     }
                 }
             }
@@ -57,13 +57,18 @@ namespace trapdoor {
         cont.setItem(s1, i2);
         cont.setItem(s2, i1);
     }
+
     bool onStartDestroyBlock(Player *player, const BlockInstance &instance) {
         if (!trapdoor::mod().getConfig().getGlobalFunctionConfig().autoSelectTool) {
             return true;
         }
 
+        if (!player || !trapdoor::mod().getUserConfig().autotool(player->getRealName()) || player->isCreative()) {
+            return true;
+        }
+
         auto *ins = const_cast<BlockInstance *>(&instance);
-        if (!player || player->isCreative() || !ins || ins->isNull()) return true;
+        if (!ins || ins->isNull()) return true;
         auto curSlot = player->getSelectedItemSlot();
         auto bestSlot = searchBestToolInInv(player->getInventory(), curSlot, ins->getBlock());
         if (bestSlot == curSlot) {

@@ -167,7 +167,6 @@ namespace trapdoor {
     }
 
     void HUDHelper::tickChunk() const {
-        if (!this->enable)return;
         static int refresh_time = 0;
         refresh_time = (refresh_time + 1) % 15;
         if (refresh_time != 1) return;
@@ -175,7 +174,10 @@ namespace trapdoor {
         auto &playerCfg = trapdoor::mod().getUserConfig().getPlayerData();
         for (auto &info: playerCfg) {
             auto *p = Global<Level>->getPlayer(info.first);
-            if (p && /*info.second.enable &&*/ info.second.hud_config[HUDItemType::Chunk]) {
+            if (p &&
+                info.second.hud &&
+                info.second.hud_config[HUDItemType::Chunk]
+                    ) {
                 auto pos = p->getPos().toBlockPos();
                 trapdoor::drawChunkSurface(fromBlockPos(pos).toChunkPos(),
                                            (int) p->getDimension().getDimensionId());
@@ -184,18 +186,17 @@ namespace trapdoor {
     }
 
     void HUDHelper::tick() {
-        if (!this->enable) return;
+        if (!trapdoor::mod().getConfig().getGlobalFunctionConfig().hud)return;
         this->tickChunk();
         static int refresh_time = 0;
         refresh_time =
                 (refresh_time + 1) % trapdoor::mod().getConfig().getBasicConfig().hudRefreshFreq;
         if (refresh_time != 1) return;
-
-
+        //遍历所有的有配置文件的信息（想有显示就必须add，add就会创建表项，因此不会出现玩家不在列表的选项）
         auto playerInfos = trapdoor::mod().getUserConfig().getPlayerData();
         for (auto &info: playerInfos) {
             auto *p = Global<Level>->getPlayer(info.first);
-            if (p /* && info.second.enable*/) {
+            if (p && info.second.hud) {
                 std::string s;
                 auto &cfg = info.second.hud_config;
                 if (cfg[HUDItemType::Base]) {
@@ -233,60 +234,5 @@ namespace trapdoor {
         trapdoor::mod().getUserConfig().setHUD(playerName, type, op == 1);
         return OperationSuccess();
     }
-
-
-
-//    bool HUDHelper::readConfigCacheFromFile() {
-//        const std::string cacheFileName = "./plugins/trapdoor/HUDCache";
-//        std::ifstream f(cacheFileName);
-//        if (!f.is_open()) {
-//            trapdoor::logger().warn("Can not open HUD Cache {}", cacheFileName);
-//            return false;
-//        }
-//
-//        try {
-//            nlohmann::json obj;
-//            f >> obj;
-//            for (auto &[key, value]: obj.items()) {
-//                PlayerHudInfo info;
-//                info.realName = key;
-//                info.config.resize(HUD_TYPE_NUMBER);
-//                for (auto &[item, on]: value.items()) {
-//                    auto type = getHUDTypeFromString(item);
-//                    if (type != Unknown) {
-//                        info.config[static_cast<int>(type)] = on.get<bool>();
-//                    }
-//                }
-//                this->playerInfos[info.realName] = info;
-//            }
-//        } catch (const std::exception &) {
-//            trapdoor::logger().error("Can not parse HUDCache");
-//            return false;
-//        }
-//        return true;
-//    }
-
-
-//    bool HUDHelper::syncConfigToFile() {
-//        const std::string cacheFileName = "./plugins/trapdoor/HUDCache";
-//        nlohmann::json j;
-//        for (auto &info: this->playerInfos) {
-//            auto items = nlohmann::json();
-//            for (int i = 1; i < HUD_TYPE_NUMBER; i++) {  // 同样不缓存unknown的
-//                items[getStringFromHUDType(static_cast<HUDItemType>(i))] =
-//                        info.second.config[i] == 1;
-//            }
-//            j[info.first] = items;
-//        }
-//
-//        std::ofstream f(cacheFileName);
-//        if (!f) {
-//            trapdoor::logger().error("Can not write file {} to disk", cacheFileName);
-//            return false;
-//        }
-//        f << j;
-//        f.close();
-//        return true;
-//    }
 
 }  // namespace trapdoor

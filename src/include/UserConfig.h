@@ -19,6 +19,7 @@ namespace trapdoor {
     - 强制开容 fcopen
      */
 
+
     class UserConfig {
     public:
         struct PlayerData {
@@ -36,21 +37,32 @@ namespace trapdoor {
         //set user data
 
 
-#define  FUNC_NAME(item) set_##item
+#define  SET_FUNC_NAME(item) set_##item
+#define  GET_FUNC_NAME(item) get_##item
 
-#define  ADD_SET_FUNC(item, type) ActionResult FUNC_NAME(item) (const std::string &player, type value) \
-        {this->playerData[player].item = value;  return trapdoor::OperationSuccess(); }
+#define  VALUE_FUNC_NAME(item) item
 
-        ADD_SET_FUNC(hud, bool)
+#define  ADD_SET_FUNC(item, type) ActionResult SET_FUNC_NAME(item) (const std::string &player, type value) \
+        {this->playerData[player].item = value; this->syncConfigToDisk(player);  return trapdoor::SetValueMsg(#item,value); }
 
-        ADD_SET_FUNC(noclip, bool)
+#define  ADD_GET_FUNC(item) ActionResult GET_FUNC_NAME(item) (const std::string &player) \
+        { return trapdoor::GetValueMsg(#item,this->playerData[player].item); }
 
-        ADD_SET_FUNC(blockrotate, bool)
+#define  ADD_VALUE_FUNC(item) auto VALUE_FUNC_NAME(item) (const std::string &player) \
+        {return this->playerData[player].item;}
 
-        ADD_SET_FUNC(autotool, bool)
 
-        ADD_SET_FUNC(fcopen, bool)
+#define  ADD_FUNC(item, type)  ADD_SET_FUNC(item,type)   ADD_GET_FUNC(item) ADD_VALUE_FUNC(item)
 
+        ADD_FUNC(hud, bool)
+
+        ADD_FUNC(noclip, bool)
+
+        ADD_FUNC(blockrotate, bool)
+
+        ADD_FUNC(autotool, bool)
+
+        // ADD_FUNC(fcopen, bool)
 
         void setHUD(const std::string &name, int item, bool value);
 
@@ -60,7 +72,7 @@ namespace trapdoor {
 
         // 暴露给外部的接口
 
-
+        ActionResult dumpAllSelfConfig(const std::string &name);
 
     private:
         void syncConfigToDisk(const std::string &name);

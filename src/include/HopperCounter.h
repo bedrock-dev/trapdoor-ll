@@ -16,7 +16,7 @@ namespace trapdoor {
         const size_t channel;                       // 频道号
         std::map<std::string, size_t> counterList;  // 数据
         size_t gameTick = 0;                        // 游戏刻
-       public:
+    public:
         explicit CounterChannel(size_t ch) : channel(ch), gameTick(0) {}
 
         ActionResult reset();
@@ -31,10 +31,10 @@ namespace trapdoor {
     // 漏斗频道管理器
     class HopperChannelManager {
         std::vector<CounterChannel> channels;
-        bool enable = false;
 
-       public:
+    public:
         static const size_t HOPPER_COUNTER_BLOCK;
+
         HopperChannelManager() {
             for (int i = 0; i < 16; i++) channels.emplace_back(i);
         }
@@ -44,18 +44,9 @@ namespace trapdoor {
         // 更新计数器
         void tick();
 
-        [[nodiscard]] inline bool isEnable() const { return this->enable; }
+        [[nodiscard]] inline bool
+        isEnable() const;
 
-        inline ActionResult setAble(bool able) {
-            this->enable = able;
-            if (this->enable) {
-                return {"Hopper counter is enable", true};
-            } else {
-                this->clearAllData();
-                // TODO: 清楚数据
-                return {"Hopper counter is disable", true};
-            }
-        }
 
         ActionResult modifyChannel(size_t channel, int opt);
 
@@ -64,7 +55,7 @@ namespace trapdoor {
         std::string getHUDData(size_t channel);
 
         inline void clearAllData() {
-            for (auto &ch : this->channels) {
+            for (auto &ch: this->channels) {
                 ch.reset();
             }
         }

@@ -14,6 +14,7 @@
 #include "Msg.h"
 #include "Particle.h"
 #include "Utils.h"
+
 namespace trapdoor {
     namespace {
         TAABB getSpawnAreaFromHSA(const BoundingBox &aabb) {
@@ -75,7 +76,7 @@ namespace trapdoor {
                         auto chunk = p.getRegion().getChunk(cp.x + i, cp.z + j);
                         if (chunk && chunk->isFullyLoaded()) {
                             auto &HSAs = chunk->getSpawningAreas();
-                            for (auto &hsa : HSAs) {
+                            for (auto &hsa: HSAs) {
                                 // 同一个右下角应该只有一个
                                 globalAreas[hsa.aabb.min] = hsa;
                             }
@@ -88,7 +89,7 @@ namespace trapdoor {
             // trapdoor::logger().debug("Total {} hsa found", globalAreas.size());
             // 缓存完成后开始显示
             auto color = PCOLOR::WHITE;
-            for (const auto &hsa : globalAreas) {
+            for (const auto &hsa: globalAreas) {
                 switch (hsa.second.type) {
                     case LevelChunk::HardcodedSpawnAreaType::PILLAGER_OUTPOST:
                         color = PCOLOR::VATBLUE;
@@ -107,7 +108,7 @@ namespace trapdoor {
                 }
 
                 auto dimId =
-                    hsa.second.type == LevelChunk::HardcodedSpawnAreaType::NETHER_FORTRESS ? 1 : 0;
+                        hsa.second.type == LevelChunk::HardcodedSpawnAreaType::NETHER_FORTRESS ? 1 : 0;
                 trapdoor::drawAABB(getSpawnAreaFromHSA(hsa.second.aabb), color, true, dimId);
             }
         }
@@ -122,7 +123,7 @@ namespace trapdoor {
         auto block = player->getHandSlot()->getBlock();
         if (!block) return trapdoor::OperationSuccess();
         trapdoor::logger().debug("Use block: {}", block->getName().getString());
-        for (const auto &hsa : globalAreas) {
+        for (const auto &hsa: globalAreas) {
             trapdoor::logger().debug("hsa!");
             auto &aabb = hsa.second.aabb;
             auto startY = aabb.min.y;
@@ -138,18 +139,19 @@ namespace trapdoor {
         }
         return OperationSuccess();
     }
+
     ActionResult HsaManager::count() {
         std::unordered_map<LevelChunk::HardcodedSpawnAreaType, int> counter;
-        for (auto &kv : this->globalAreas) {
+        for (auto &kv: this->globalAreas) {
             counter[kv.second.type]++;
         }
 
         trapdoor::TextBuilder builder;
-        for (auto &kv : counter) {
+        for (auto &kv: counter) {
             builder.sText(TB::GRAY, " - ")
-                .text(hsaTypeToStr(kv.first))
-                .textF(" %d\n", kv.second)
-                .endl();
+                    .text(hsaTypeToStr(kv.first))
+                    .textF(" %d\n", kv.second)
+                    .endl();
         }
         return SuccessMsg(builder.removeEndl().get());
     }

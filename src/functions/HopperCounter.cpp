@@ -15,20 +15,21 @@
 #include "HookAPI.h"
 #include "Msg.h"
 #include "TrapdoorMod.h"
+
 namespace trapdoor {
 
     const size_t HopperChannelManager::HOPPER_COUNTER_BLOCK = 236;
 
     void HopperChannelManager::tick() {
-        if (this->enable) {
-            for (auto &channel : channels) {
+        if (this->isEnable()) {
+            for (auto &channel: channels) {
                 channel.tick();
             }
         }
     }
 
     ActionResult HopperChannelManager::modifyChannel(size_t channel, int opt) {
-        if (!this->enable) {
+        if (!this->isEnable()) {
             return ErrorMsg("hopper.error.disable");
         }
 
@@ -46,7 +47,7 @@ namespace trapdoor {
 
     ActionResult HopperChannelManager::quickModifyChannel(Player *player, const BlockPos &pos,
                                                           int opt) {
-        if (!this->enable) {
+        if (!this->isEnable()) {
             return ErrorMsg("hopper.error.disable");
         }
         if (!player) return ErrorPlayerNeed();
@@ -66,6 +67,8 @@ namespace trapdoor {
         return ch.info();
     }
 
+    bool HopperChannelManager::isEnable() const { return trapdoor::mod().getConfig().getGlobalFunctionConfig().hopperCounter; }
+
     void CounterChannel::add(const std::string &itemName, size_t num) {
         counterList[itemName] += num;
     }
@@ -78,7 +81,7 @@ namespace trapdoor {
 
     std::string CounterChannel::info(bool simple) {
         size_t n = 0;
-        for (const auto &i : this->counterList) {
+        for (const auto &i: this->counterList) {
             n += i.second;
         }
 
@@ -92,31 +95,31 @@ namespace trapdoor {
         if (!simple) {
             builder.text("Channel: ").sTextF(TB::BOLD | TB::WHITE, "%d \n", channel);
             builder
-                .text("Total ")
-                // total items number
-                .num(n)
-                // total speed
-                .text(" items (")
-                .num(static_cast<float>(n) * 1.0f / static_cast<float>(gameTick) * 72000)
-                .text("/h)")
-                // time
-                .text(" in ")
-                .num(gameTick)
-                // time in hour
-                .text(" gt (")
-                .num(static_cast<float>(gameTick) / 72000.0f)
-                .text(" h)\n");
+                    .text("Total ")
+                            // total items number
+                    .num(n)
+                            // total speed
+                    .text(" items (")
+                    .num(static_cast<float>(n) * 1.0f / static_cast<float>(gameTick) * 72000)
+                    .text("/h)")
+                            // time
+                    .text(" in ")
+                    .num(gameTick)
+                            // time in hour
+                    .text(" gt (")
+                    .num(static_cast<float>(gameTick) / 72000.0f)
+                    .text(" h)\n");
         } else {
             builder.textF("%d,(%.1f h))\n", n, static_cast<float>(gameTick) / 72000.0f);
         }
 
-        for (const auto &i : counterList) {
+        for (const auto &i: counterList) {
             builder.sText(TB::GRAY, " - ");
             builder.textF("%s:   ", i.first.c_str())
-                .num(i.second)
-                .text(" (")
-                .num(static_cast<float>(i.second) * 1.0f / static_cast<float>(gameTick) * 72000)
-                .text("/h)\n");
+                    .num(i.second)
+                    .text(" (")
+                    .num(static_cast<float>(i.second) * 1.0f / static_cast<float>(gameTick) * 72000)
+                    .text("/h)\n");
         }
 
         return builder.get();
