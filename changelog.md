@@ -1,3 +1,39 @@
+### trapdoor-ll-0.30.0-1.19.61.01
+
+**由于`installer.exe`会自动判别LL版本，因此此后不再标出LL版本信息**
+
+#### 更新日志
+
+- 支持1.19.61.01
+- 合并`func`和`tweak`
+  指令的内的功能并移除`tweak`
+  功能，且将其分为全局功能和个人功能，细节参考[这里](https://github.com/bedrock-dev/trapdoor-ll/blob/1.19.61.01/docs/func.md)
+- 修改配置文件格式，且**不和之前的版本兼容**，请手动替换和编辑
+- 添加`player <name> swap`功能，可交换玩家和其面向的假人的背包
+- 更完善的多语言支持（包括中文和英文）
+- 修复`player set`会修改假人背包内物品的bug
+- 现在`hud hopper`不需要指向混凝土也能使用（自动显示玩家上一次交互的频道的信息）
+
+---
+
+
+**Due to `installer.exe` will automatically identify the LL version, so the changelog won't display LL version
+information**
+
+#### update log
+
+- support 1.9.61.01
+- Merge the features in the `func` and `tweak` command, remove `tweak command`, and divide them into global features
+  and individual functions. For details, refer
+  to [here](https://github.com/bedrock-dev/trapdoor-ll/blob/1.19.61.01/docs/func.md)
+- Modify the configuration file format, and **not compatible with the previous version**, please replace and edit
+  manually
+- Add `player <name> swap` function, which can swap the backpack of the player and the fakeplayer
+- More perfect I18N support (including Chinese and English)
+- Fixed the bug that `player set` would modify the items in the fake player's backpack
+- Now `hud hopper` can be used without pointing to concrete (automatically displays the information of the channel the
+  player interacted with last time)
+
 ### trapdoor-ll-0.26.0-1.19.61.01
 
 #### 依赖和版本支持
