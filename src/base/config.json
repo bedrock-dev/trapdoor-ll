@@ -1,6 +1,6 @@
 {
   "commands tips": {
-    "enable": "If enable = false, then this directive will not be registered(如果enable = false,那么指令不会被注册)",
+    "enable": "If enable = false, then this command will not be registered(如果enable = false,那么指令不会被注册)",
     "permission-level": "1 <==> operator only  |  0 <==> everyone (1表示仅管理员可用，0表示所有人可用)"
   },
   "commands": {
