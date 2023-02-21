@@ -9,6 +9,7 @@
 
 #include <filesystem>
 #include "HUDHelper.h"
+#include <mc/Level.hpp>
 
 namespace trapdoor {
 
@@ -58,13 +59,22 @@ namespace trapdoor {
 
         ADD_FUNC(hud, bool)
 
-        ADD_FUNC(noclip, bool)
+//        ADD_FUNC(noclip, bool)
 
         ADD_FUNC(blockrotate, bool)
 
         ADD_FUNC(autotool, bool)
 
         // ADD_FUNC(fcopen, bool)
+
+        ActionResult set_noclip(const std::string &name, bool value);
+
+        ActionResult get_noclip(const std::string &player) {
+            return trapdoor::GetValueMsg("noclip", this->playerData[player].noclip);
+        }
+
+        auto noclip(const std::string &player) { return this->playerData[player].noclip; }
+
 
         void setHUD(const std::string &name, int item, bool value);
 

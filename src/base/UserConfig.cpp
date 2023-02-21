@@ -36,7 +36,6 @@ namespace trapdoor {
                 j["hud"][typeString] = data.hud_config[i];
             }
         }
-
         const auto fileName = "./plugins/trapdoor/player/" + name + ".json";
         std::ofstream f(fileName);
         if (!f) {
@@ -125,5 +124,20 @@ namespace trapdoor {
         }
 
         return trapdoor::SuccessMsg(builder.get());
+    }
+
+    //重写
+    ActionResult UserConfig::set_noclip(const string &name, bool value) {
+        this->playerData[name].noclip = value;
+        //自动更新玩家状态
+        auto *p = Global<Level>->getPlayer(name);
+        if (p && p->getPlayerGameType() == GameType::GameTypeCreative) {
+            //只有两个都开启才会更换模式，已在穿墙模式的则强制变回来（有冗余逻辑但是不重要）
+            p->setAbility(static_cast<AbilitiesIndex>(17),
+                          value && trapdoor::mod().getConfig().getGlobalFunctionConfig().creativeNoClip);
+        }
+
+        this->syncConfigToDisk(name);
+        return trapdoor::SetValueMsg("noclip", value);
     }
 }

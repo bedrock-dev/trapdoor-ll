@@ -51,6 +51,7 @@ namespace trapdoor {
             switch (do_hash(results["func"].getRaw<std::string>().c_str())) {
 #define ADD_BOOL_CASE(cmd, var) case do_hash(#cmd): if (bValue.isSet) {             \
         trapdoor::mod().getConfig().getGlobalFunctionConfig().var = b;              \
+        trapdoor::mod().getConfig().globalFunctionChangeListener(#cmd,b);           \
         trapdoor::SetValueMsg(#var, b).sendTo(output);} else {                      \
         trapdoor::GetValueMsg(#var, trapdoor::mod().getConfig().                    \
         getGlobalFunctionConfig().var).sendTo(output);} break;

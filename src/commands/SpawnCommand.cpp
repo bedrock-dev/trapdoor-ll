@@ -9,6 +9,7 @@
 #include "SpawnHelper.h"
 #include "TBlockPos.h"
 #include "TrapdoorMod.h"
+
 namespace trapdoor {
     void setup_spawnCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
@@ -20,11 +21,13 @@ namespace trapdoor {
         auto &optCount = command->setEnum("Countcmd", {"count"});
         auto &prob = command->setEnum("probilitycmd", {"prob"});
         auto &forcesp = command->setEnum("forcecmd", {"forcesp"});
+        auto &clusterCmd = command->setEnum("clusterCmd", {"cluster"});
+
         auto &optCountType = command->setEnum("counter options", {"chunk", "all", "density"});
 
         auto &analyzeOpt = command->setEnum("analyze", {"analyze"});
         auto &analyzeSubOpt =
-            command->setEnum("analyze options", {"start", "stop", "print", "clear"});
+                command->setEnum("analyze options", {"start", "stop", "print", "clear"});
 
         // mandatory/options就是给enum增加后置参数类型的,mandatory就是必填,optional是选填
         command->mandatory("spawn", ParamType::Enum, optCount,
@@ -36,8 +39,12 @@ namespace trapdoor {
         command->mandatory("spawn", ParamType::Enum, forcesp,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
+        command->mandatory("spawn", ParamType::Enum, clusterCmd,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+
         command->mandatory("countType", ParamType::Enum, optCountType,
                            CommandParameterOption::EnumAutocompleteExpansion);
+
 
         command->mandatory("spawn", ParamType::Enum, analyzeOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
@@ -49,9 +56,15 @@ namespace trapdoor {
 
         command->optional("blockPos", ParamType::BlockPos);
 
+        command->mandatory("surface", ParamType::Bool);
+
         // 添加子命令并进行类型绑定
         command->addOverload({prob, "blockPos"});
+
+        command->addOverload({clusterCmd, "blockPos"});
+
         command->addOverload({forcesp, "actorType", "blockPos"});
+
         // add
         // overload就是增加一些子命令，子命令需要Enum；并设定后面需要接什么类型的参数
         command->addOverload({optCount, "countType"});
@@ -63,28 +76,29 @@ namespace trapdoor {
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
             auto countParam = std::string();
             auto subOpt =
-                results["analyzeSub"].isSet ? results["analyzeSub"].getRaw<std::string>() : "";
+                    results["analyzeSub"].isSet ? results["analyzeSub"].getRaw<std::string>() : "";
+
             switch (do_hash(results["spawn"].getRaw<std::string>().c_str())) {
                 case do_hash("count"):
                     trapdoor::countActors(reinterpret_cast<Player *>(origin.getPlayer()),
                                           results["countType"].getRaw<std::string>())
-                        .sendTo(output);
+                            .sendTo(output);
                     break;
                 case do_hash("forcesp"):
                     trapdoor::forceSpawn(
-                        reinterpret_cast<Player *>(origin.getPlayer()),
-                        results["actorType"].get<const ActorDefinitionIdentifier *>(),
-                        results["blockPos"].isSet ? results["blockPos"].get<BlockPos>()
-                                                  : BlockPos::MAX)
-                        .sendTo(output);
+                            reinterpret_cast<Player *>(origin.getPlayer()),
+                            results["actorType"].get<const ActorDefinitionIdentifier *>(),
+                            results["blockPos"].isSet ? results["blockPos"].get<BlockPos>()
+                                                      : BlockPos::MAX)
+                            .sendTo(output);
                     break;
                 case do_hash("analyze"):
                     if (subOpt == "start") {
                         trapdoor::mod()
-                            .getSpawnAnalyzer()
-                            .start(origin.getDimension()->getDimensionId(),
-                                   fromBlockPos(origin.getBlockPosition()).toChunkPos())
-                            .sendTo(output);
+                                .getSpawnAnalyzer()
+                                .start(origin.getDimension()->getDimensionId(),
+                                       fromBlockPos(origin.getBlockPosition()).toChunkPos())
+                                .sendTo(output);
                     } else if (subOpt == "stop") {
                         trapdoor::mod().getSpawnAnalyzer().stop().sendTo(output);
                     } else if (subOpt == "print") {
@@ -96,17 +110,33 @@ namespace trapdoor {
                 case do_hash("prob"):
                     if (results["blockPos"].isSet) {
                         trapdoor::printSpawnProbability(
-                            reinterpret_cast<Player *>(origin.getPlayer()),
-                            results["blockPos"].get<BlockPos>())
-                            .sendTo(output);
+                                reinterpret_cast<Player *>(origin.getPlayer()),
+                                results["blockPos"].get<BlockPos>())
+                                .sendTo(output);
                     } else {
                         trapdoor::printSpawnProbability(
-                            reinterpret_cast<Player *>(origin.getPlayer()),
-                            reinterpret_cast<Actor *>(origin.getPlayer())
-                                ->getBlockFromViewVector()
-                                .getPosition())
-                            .sendTo(output);
+                                reinterpret_cast<Player *>(origin.getPlayer()),
+                                reinterpret_cast<Actor *>(origin.getPlayer())
+                                        ->getBlockFromViewVector()
+                                        .getPosition())
+                                .sendTo(output);
                     }
+                    break;
+                case do_hash("cluster"):
+                    if (results["blockPos"].isSet) {
+                        trapdoor::spawnCluster(
+                                reinterpret_cast<Player *>(origin.getPlayer()),
+                                results["blockPos"].get<BlockPos>())
+                                .sendTo(output);
+                    } else {
+                        trapdoor::spawnCluster(
+                                reinterpret_cast<Player *>(origin.getPlayer()),
+                                reinterpret_cast<Actor *>(origin.getPlayer())
+                                        ->getBlockFromViewVector()
+                                        .getPosition())
+                                .sendTo(output);
+                    }
+                    break;
             }
         };
 
