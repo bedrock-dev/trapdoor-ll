@@ -98,8 +98,11 @@ namespace trapdoor {
             } else {
                 b.text("Block: None\n");
             }
+            auto &delta = player->getPosDeltaNonConst();
+            b.textF("Speed: %.4lf (%.2lf %.2lf %.2lf)\n", delta.length() * 20, delta.x * 20, delta.y * 20,
+                    delta.z * 20);
             auto &biome = bs.getBiome(pos);
-            b.textF("Biome: %s (%d)\n", getBiomeName(&biome).c_str(), biome.getId());
+            b.textF("Biome: %s (%d)\n", biome.getName().c_str(), biome.getId());
             return b.get();
         }
 

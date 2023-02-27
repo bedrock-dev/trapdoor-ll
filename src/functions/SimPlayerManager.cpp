@@ -481,19 +481,10 @@ namespace trapdoor {
         sim->setPlayerGameType(static_cast<GameType>(gameMode));
         this->simPlayers[name] = {name, sim, ScheduleTask()};
         tryReadInvFromFile(sim->getInventory(), name);
-        this->refreshCommandSoftEnum();
 
+        // sim->updateSkin(origin->getSkin(), 0);
+        this->refreshCommandSoftEnum();
         return OperationSuccess();
-        //        //  this->syncPlayerListToFile();
-        //
-        //        //        if (!sim->hasOwnedChunkSource()) {
-        //        //            // sim->_createChunkSource();
-        //        //            trapdoor::logger().debug("try prepare region");
-        //        //            auto dim_ref = Global<Level>->getDimension(dimID).mHandle.lock();
-        //        //            auto* d = trapdoor::unwrap_shard_ptr_ref(dim_ref.get());
-        //        //            auto cs = sim->_createChunkSource(d->getChunkSource());
-        //        //        }
-        //        return {"", true};
     }
 
     // 定时做垃圾回收，解决数据不同步问题
