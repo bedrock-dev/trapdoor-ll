@@ -10,6 +10,7 @@
 #include "LoggerAPI.h"
 #include "SysInfoHelper.h"
 #include "config.h"
+#include "TrapdoorAPI.h"
 
 #define REG_COMMAND(c)                                         \
     auto cfg_##c = cmdCfg.getCommandConfig(#c);                \
@@ -79,11 +80,11 @@ namespace trapdoor {
         this->initConfig(false); //读取配置文件
         this->globalUserConfig.init(); //读取用户的配置
 
-
         trapdoor::initCPU();
         trapdoor::SubscribeEvents();
         trapdoor::initRotateBlockHelper();
         trapdoor::setupCommands();
+        trapdoor::exportAPI();
     }
 
     bool TrapdoorMod::initConfig(bool reload) {

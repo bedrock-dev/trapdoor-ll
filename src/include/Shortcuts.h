@@ -20,12 +20,12 @@ namespace trapdoor {
         bool operator==(const Shortcut& rhs) const;
         bool operator!=(const Shortcut& rhs) const;
         bool operator<(const Shortcut& rhs) const;
-        std::string getDescription() const;
+        [[nodiscard]] std::string getDescription() const;
         void runUse(Player* player, ItemStack* item);
         void runUseOn(Player* player, const ItemStack* item, Block* block, const BlockPos& p);
         void runUseDestroy(Player* player, const ItemStack* item, Block* block, const BlockPos& p);
 
-        bool match(const Shortcut& shortcut) const;
+        [[nodiscard]] bool match(const Shortcut& shortcut) const;
     };
 
 }  // namespace trapdoor
