@@ -50,7 +50,7 @@ namespace trapdoor {
             return true;
         }
 
-        void resetAntiShakeCache(const std::string &name) { getUseOnCache().erase(name); }
+        // void resetAntiShakeCache(const std::string &name) { getUseOnCache().erase(name); }
 
     }  // namespace
 
@@ -88,7 +88,7 @@ namespace trapdoor {
             if (ev.mItemStack->getTypeName() == "minecraft:cactus" &&
                 antiShake(ev.mPlayer->getRealName(), bi->getPosition())) {
                 trapdoor::rotateBlock(ev.mPlayer, bi->getBlockSource(), bi, ev.mClickPos, ev.mFace);
-                resetAntiShakeCache(ev.mPlayer->getRealName());
+                // resetAntiShakeCache(ev.mPlayer->getRealName());
             }
 
             auto &shortcuts = trapdoor::mod().getConfig().getShortcuts();

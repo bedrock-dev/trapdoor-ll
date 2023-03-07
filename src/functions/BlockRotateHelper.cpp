@@ -9,6 +9,7 @@
 #include <mc/IntTag.hpp>
 #include <mc/StringTag.hpp>
 #include <regex>
+
 #include "CommandHelper.h"
 #include "TrapdoorMod.h"
 #include "Utils.h"
@@ -17,7 +18,7 @@ namespace trapdoor {
     namespace {
         struct RotateRule {
             std::string namePatterns;
-            std::function<int(int, Vec3 const &, unsigned char)> func;
+            std::function<int(int, unsigned char)> func;
         };
 
         std::vector<RotateRule> &globalRotateRules() {
@@ -27,9 +28,8 @@ namespace trapdoor {
 
     }  // namespace
 
-#define ADD_RULE(pattern, func)    \
-    globalRotateRules().push_back( \
-        {#pattern, [](int v, Vec3 const &clickPos, unsigned char face) { return func; }})
+#define ADD_RULE(pattern, func) \
+    globalRotateRules().push_back({#pattern, [](int v, unsigned char face) { return func; }})
 
     void initRotateBlockHelper() {
         ADD_RULE(stonecutter_block, v < 4 ? 4 : v);
@@ -49,77 +49,65 @@ namespace trapdoor {
         ADD_RULE(hopper, (v % 8 + 1) % 6 + (v / 8) * 8);
     }
 
-    bool rotateBlock(Player *player, BlockSource *bs, BlockInstance *bi, const Vec3 &clickPos, unsigned char face) {
-        if (!trapdoor::mod().getConfig().getGlobalFunctionConfig().blockRotate) return true;
-        if (!player || !trapdoor::mod().getUserConfig().blockrotate(player->getRealName()))return true;
-
-        if (!bi || bi->isNull()) return true;
-        auto block = bi->getBlock();
-        auto variant = dAccess<unsigned short, 8>(block);
+    Block *tryGetRotatedBlock(Block *block, BlockSource *blockSource, BlockPos const &pos,
+                              const Vec3 &clickPos, unsigned char face) {
         auto rawTypeName = block->getTypeName();
-        auto pos = bi->getPosition();
+        auto variant = block->getVariant();
         auto typeName = trapdoor::rmmc(rawTypeName);
-
-        trapdoor::logger().debug("Block: {}, Data: {}, Position: {}, Click: {} Face: {}", typeName,
-                                 variant, pos.toString(), clickPos.toString(),
-                                 static_cast<int>(face));
-
         auto it =
-                std::find_if(globalRotateRules().begin(), globalRotateRules().end(),
-                             [&typeName](const RotateRule &rule) {
-                                 return std::regex_search(typeName, std::regex(rule.namePatterns));
-                             });
+            std::find_if(globalRotateRules().begin(), globalRotateRules().end(),
+                         [&typeName](const RotateRule &rule) {
+                             return std::regex_search(typeName, std::regex(rule.namePatterns));
+                         });
         if (it != globalRotateRules().end()) {
-            auto newVariant = it->func(variant, clickPos, face);
-            if (!bi->hasContainer()) {
-                CommandUtils::clearBlockEntityContents(*bs, pos);
-                auto *exBlock = &bs->getExtraBlock(pos);
-                bs->setExtraBlock(pos, *BedrockBlocks::mAir, 18);
-                bs->setBlock(pos, *BedrockBlocks::mAir, 2, nullptr, nullptr);
-                bs->setExtraBlock(pos, *exBlock, 18);
-            }
-            bs->setBlock(pos, *Block::create(rawTypeName, newVariant), 2, nullptr, nullptr);
-        } else {
-            auto blockNbt = block->getNbt();
-            auto *statesNbt = blockNbt->operator[]("states")->asCompoundTag();
-            auto *states = &statesNbt->value();
-            bool hasRule = false;
-            if (states->find("pillar_axis") != states->end()) {
-                auto *tag = statesNbt->operator[]("pillar_axis")->asStringTag();
-                char axis = tag->get()[0];
-                axis -= 'x';
-                axis = (axis + 1) % 3;
-                axis += 'x';
-                statesNbt->putString("pillar_axis", std::string(1, axis));
-                hasRule = true;
-            } else if (states->find("upside_down_bit") != states->end() && face < 2) {
-                auto *tag = statesNbt->operator[]("upside_down_bit")->asByteTag();
-                auto bit = tag->get();
-                bit = 1 - bit;
-                statesNbt->putByte("upside_down_bit", bit);
-                hasRule = true;
-            } else if (states->find("weirdo_direction") != states->end() && face > 1) {
-                auto *tag = statesNbt->operator[]("weirdo_direction")->asIntTag();
-                auto direction = tag->get();
-                direction = (direction + 1) % 4;
-                statesNbt->putInt("weirdo_direction", direction);
-                hasRule = true;
-            } else if (states->find("top_slot_bit") != states->end()) {
-                auto *tag = statesNbt->operator[]("top_slot_bit")->asByteTag();
-                auto bit = tag->get();
-                bit = 1 - bit;
-                statesNbt->putByte("top_slot_bit", bit);
-                hasRule = true;
-            } else if (states->find("facing_direction") != states->end()) {
-                auto *tag = statesNbt->operator[]("facing_direction")->asIntTag();
-                auto direction = tag->get();
-                auto mFace = face;
+            return Block::create(rawTypeName, it->func(variant, face));
+        }
+        auto blockNbt = block->getNbt();
+        if (!blockNbt->contains("states")) {
+            return block;
+        }
+        auto *statesNbt = blockNbt->getCompound("states");
+        bool hasRule = false;
+        if (statesNbt->contains("ground_sign_direction") &&
+            (!statesNbt->contains("attached_bit") || statesNbt->getByte("attached_bit") == 1)) {
+            auto direction = statesNbt->getInt("ground_sign_direction");
+            direction = (direction + 1) % 16;
+            statesNbt->putInt("ground_sign_direction", direction);
+            hasRule = true;
+        } else if (statesNbt->contains("pillar_axis")) {
+            char axis = statesNbt->getString("pillar_axis")[0];
+            axis -= 'x';
+            axis = (axis + 1) % 3;
+            axis += 'x';
+            statesNbt->putString("pillar_axis", std::string(1, axis));
+            hasRule = true;
+        } else if (statesNbt->contains("upside_down_bit") && face < 2) {
+            auto bit = statesNbt->getByte("upside_down_bit");
+            bit = 1 - bit;
+            statesNbt->putByte("upside_down_bit", bit);
+            hasRule = true;
+        } else if (statesNbt->contains("weirdo_direction") && face > 1) {
+            auto direction = statesNbt->getInt("weirdo_direction");
+            direction = (direction + 1) % 4;
+            statesNbt->putInt("weirdo_direction", direction);
+            hasRule = true;
+        } else if (statesNbt->contains("top_slot_bit")) {
+            auto bit = statesNbt->getByte("top_slot_bit");
+            bit = 1 - bit;
+            statesNbt->putByte("top_slot_bit", bit);
+            hasRule = true;
+        } else if (statesNbt->contains("facing_direction")) {
+            auto direction = statesNbt->getInt("facing_direction");
+            if (typeName.find("_sign") != string::npos) {
+                direction = (direction + 1) % 6;
+            } else {
                 Vec3 mClickPos = (clickPos - pos.toVec3()) - 0.5;
                 if (abs(mClickPos.x) + abs(mClickPos.y) + abs(mClickPos.z) < 0.75) {
+                    auto mFace = face;
                     mFace = (mFace > 1 && (typeName == "piston" || typeName == "observer" ||
                                            typeName == "sticky_piston"))
-                            ? (mFace / 2) * 2 + (mFace + 1) % 2
-                            : mFace;
+                                ? (mFace / 2) * 2 + (mFace + 1) % 2
+                                : mFace;
                     if (direction == mFace) {
                         direction = (mFace / 2) * 2 + (mFace + 1) % 2;
                     } else {
@@ -163,30 +151,96 @@ namespace trapdoor {
                     }
                     direction = (direction > 1 && (typeName == "piston" || typeName == "observer" ||
                                                    typeName == "sticky_piston"))
-                                ? (direction / 2) * 2 + (direction + 1) % 2
-                                : direction;
+                                    ? (direction / 2) * 2 + (direction + 1) % 2
+                                    : direction;
                 }
-                statesNbt->putInt("facing_direction", direction);
-                hasRule = true;
             }
-            if (hasRule) {
-                if (!bi->hasContainer()) {
-                    CommandUtils::clearBlockEntityContents(*bs, pos);
-                    auto *exBlock = &bs->getExtraBlock(pos);
-                    bs->setExtraBlock(pos, *BedrockBlocks::mAir, 18);
-                    bs->setBlock(pos, *BedrockBlocks::mAir, 2, nullptr, nullptr);
-                    bs->setExtraBlock(pos, *exBlock, 18);
+            statesNbt->putInt("facing_direction", direction);
+            hasRule = true;
+        } else if (statesNbt->contains("direction")) {
+            auto direction = statesNbt->getInt("direction");
+            Vec3 mClickPos = (clickPos - pos.toVec3()) - 0.5;
+            if (abs(mClickPos.x) + abs(mClickPos.y) + abs(mClickPos.z) < 0.75 && face > 1) {
+                int mFace = std::array{2, 0, 1, 3}[face - 2];
+                if (direction == mFace) {
+                    direction = std::array{0, 2, 3, 1}[face - 2];
+                } else {
+                    direction = mFace;
                 }
-                bs->setBlock(pos, *Block::create(blockNbt.get()), 2, nullptr, nullptr);
             } else {
-                trapdoor::logger().debug("rotateBlock: no rule for {}", typeName);
-                return true;
+                switch (face / 2) {
+                    case 0:
+                        if (abs(mClickPos.x) + mClickPos.z <= 0) {
+                            direction = 2;
+                        } else if (abs(mClickPos.x) - mClickPos.z <= 0) {
+                            direction = 0;
+                        } else if (abs(mClickPos.z) + mClickPos.x <= 0) {
+                            direction = 1;
+                        } else if (abs(mClickPos.z) - mClickPos.x <= 0) {
+                            direction = 3;
+                        }
+                        break;
+                    case 1:
+                        if (mClickPos.x <= 0) {
+                            direction = 1;
+                        } else if (mClickPos.x >= 0) {
+                            direction = 3;
+                        }
+                        break;
+                    case 2:
+                        if (mClickPos.z <= 0) {
+                            direction = 2;
+                        } else if (mClickPos.z >= 0) {
+                            direction = 0;
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
+            statesNbt->putInt("direction", direction);
+            hasRule = true;
+        }
+        if (hasRule) {
+            return Block::create(blockNbt.get());
+        }
+        return block;
+    }
+
+    bool rotateBlock(Player *player, BlockSource *bs, BlockInstance *bi, const Vec3 &clickPos,
+                     unsigned char face) {
+        if (!trapdoor::mod().getConfig().getGlobalFunctionConfig().blockRotate) return true;
+        if (!player || !trapdoor::mod().getUserConfig().blockrotate(player->getRealName()))
+            return true;
+
+        if (!bi || bi->isNull()) return true;
+        auto *originalBlock = bi->getBlock();
+        // auto *block = originalBlock;
+        auto rawTypeName = originalBlock->getTypeName();
+        auto pos = bi->getPosition();
+        auto typeName = trapdoor::rmmc(rawTypeName);
+        // int i = 0;
+        // do {
+        //     block = tryGetRotatedBlock(block, bs, pos, clickPos, face);
+        //     i += 1;
+        // } while (block != originalBlock && (!block->mayPlace(*bs, pos)) && i < 32);
+
+        auto *block = tryGetRotatedBlock(originalBlock, bs, pos, clickPos, face);
+
+        if (block != originalBlock) {
+            if (typeName == "piston" || typeName == "sticky_piston" || !bi->hasBlockEntity()) {
+                CommandUtils::clearBlockEntityContents(*bs, pos);
+                auto *exBlock = &bs->getExtraBlock(pos);
+                bs->setExtraBlock(pos, *BedrockBlocks::mAir, 2);
+                bs->setBlock(pos, *BedrockBlocks::mAir, 2, nullptr, nullptr);
+                bs->setExtraBlock(pos, *exBlock, 2);
+            }
+            bs->setBlock(pos, *block, 2, nullptr, nullptr);
+        } else {
+            trapdoor::logger().debug("rotateBlock: no rule for {}", typeName);
             return true;
         }
-
         return false;
     }
 
 }  // namespace trapdoor
-
