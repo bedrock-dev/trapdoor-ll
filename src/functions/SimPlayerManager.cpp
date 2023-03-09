@@ -226,9 +226,9 @@ namespace trapdoor {
         return {builder.get(), true};
     }
 
-    ActionResult SimPlayerManager::destroyOnSchedule(const std::string &name, const BlockPos &p,
-                                                     Player *origin, int repType, int interval,
-                                                     int times) {
+    ActionResult SimPlayerManager::destroyPositionSchedule(const std::string &name, const BlockPos &p,
+                                                           Player *origin, int repType, int interval,
+                                                           int times) {
         GET_FREE_PLAYER(sim)
         auto pos = p;
         if (pos == BlockPos::MAX) {
@@ -354,18 +354,35 @@ namespace trapdoor {
         return {"", true};
     }
 
-    ActionResult SimPlayerManager::useOnBlockSchedule(const std::string &name, int itemId,
-                                                      const BlockPos &p, Player *ori, int repType,
-                                                      int interval, int times) {
+    ActionResult SimPlayerManager::useOnPositionSchedule(const std::string &name, int itemID,
+                                                         const BlockPos &p, Player *ori, int repType,
+                                                         int interval, int times) {
         GET_FREE_PLAYER(sim)
         auto pos = getTargetPos(ori, p);
-        auto task = [this, name, pos, itemId, sim]() {
+        auto task = [this, name, pos, itemID, sim]() {
             CHECK_SURVIVAL
             auto v = Vec3(0.5, 1.0, 0.5);
             int slot = 0;
-            auto *item = getItemInInv(sim, itemId, slot);
+            auto *item = getItemInInv(sim, itemID, slot);
             if (item) {
                 sim->simulateUseItemOnBlock(*item, pos, DEFAULT_FACING, v);
+            }
+        };
+        ADD_TASK
+        return {"", true};
+    }
+
+    ActionResult
+    SimPlayerManager::useOnSchedule(const string &name, int itemID, Player *ori, int repType, int interval, int times) {
+        GET_FREE_PLAYER(sim)
+        auto task = [name, this, sim, itemID]() {
+            CHECK_SURVIVAL
+            int slot = 0;
+            auto v = Vec3(0.5, 1.0, 0.5);
+            auto *item = getItemInInv(sim, itemID, slot);
+            auto bi = sim->getBlockFromViewVector();
+            if ((!bi.isNull()) && item) {
+                sim->simulateUseItemOnBlock(*item, bi.getPosition(), DEFAULT_FACING, v);
             }
         };
         ADD_TASK
@@ -684,6 +701,7 @@ namespace trapdoor {
         origin->sendInventory(true);
         return OperationSuccess();
     }
+
 
 }  // namespace trapdoor
 

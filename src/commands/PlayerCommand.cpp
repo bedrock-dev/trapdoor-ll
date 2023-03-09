@@ -16,14 +16,17 @@ namespace trapdoor {
                 command->setEnum("spawnOpt", {"spawn", "despawn", "dropall", "info", "swap"});
         auto behOpt = command->setEnum("behOpt", {"lookat", "moveto", "navto"});
         auto intOpt = command->setEnum("intOpt", {"interact"});
+
         auto destroyOpt = command->setEnum("destroyOpt", {"destroy"});
-        auto destroyOnOpt = command->setEnum("destroyonOpt", {"destroyon"});
+        auto destroyPosOpt = command->setEnum("destroyPos", {"destroypos"});
 
         auto attackOpt = command->setEnum("attack", {"attack"});
         auto jumpOpt = command->setEnum("jump", {"jump"});
         auto repeatOpt = command->setEnum("repeatOpt", {"repeat"});
         auto useOpt = command->setEnum("useOpt", {"use"});
         auto useOnOpt = command->setEnum("useOnOpt", {"useon"});
+        auto useOnPosOpt = command->setEnum("useOnPosOpt", {"useonpos"});
+
         auto backpackOpt = command->setEnum("backpackOpt", {"backpack"});
         auto stopOpt = command->setEnum("stopOpt", {"stop", "cancel"});
         auto setOpt = command->setEnum("setOpt", {"set"});
@@ -41,7 +44,7 @@ namespace trapdoor {
 
         command->mandatory("player", ParamType::Enum, destroyOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
-        command->mandatory("player", ParamType::Enum, destroyOnOpt,
+        command->mandatory("player", ParamType::Enum, destroyPosOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
         command->mandatory("player", ParamType::Enum, attackOpt,
@@ -50,6 +53,8 @@ namespace trapdoor {
                            CommandParameterOption::EnumAutocompleteExpansion);
 
         command->mandatory("player", ParamType::Enum, useOnOpt,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+        command->mandatory("player", ParamType::Enum, useOnPosOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("player", ParamType::Enum, useOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
@@ -80,7 +85,6 @@ namespace trapdoor {
         command->mandatory("itemId", ParamType::Item);
         command->mandatory("vec3", ParamType::Vec3);
         command->optional("blockPos", ParamType::BlockPos);
-
         command->optional("repeatType", ParamType::Enum, repeatOpt,
                           CommandParameterOption::EnumAutocompleteExpansion);
         command->optional("interval", ParamType::Int);
@@ -105,27 +109,37 @@ namespace trapdoor {
         command->addOverload({"name", behOpt, "vec3"});
         //和方块/实体交互
         command->addOverload({"name", intOpt, "repeatType", "interval", "times"});
-        // destroy
-        command->addOverload({"name", destroyOnOpt, "blockPos", "repeatType", "interval", "times"});
 
+
+        // destroy
+        //挖指定位置的方块
+        command->addOverload({"name", destroyPosOpt, "blockPos", "repeatType", "interval", "times"});
+        //挖假人看向的方块
         command->addOverload({"name", destroyOpt, "repeatType", "interval", "times"});
 
-        // use item
-        command->addOverload({"name", useOnOpt, "itemId", "blockPos", "repeatType", "interval", "times"});
-        //use item on
+
+        // use item 使用物品
         command->addOverload({"name", useOpt, "itemId", "repeatType", "interval", "times"});
-        //attack
+        //use item on ,物品右键方块
+        command->addOverload({"name", useOnPosOpt, "itemId", "blockPos", "repeatType", "interval", "times"});
+        command->addOverload({"name", useOnOpt, "itemId", "repeatType", "interval", "times"});
+
+
+        //attack 攻击实体
         command->addOverload({"name", attackOpt, "repeatType", "interval", "times"});
-        //jump
+        //jump 跳
         command->addOverload({"name", jumpOpt, "repeatType", "interval", "times"});
 
         //执行命令
         command->addOverload({"name", cmdOpt, "command", "repeatType", "interval", "times"});
 
+        //假人列表
         command->addOverload(std::vector<std::string>());
 
+        //跟随
         command->addOverload({"name", followOpt});
 
+        //传送
         command->addOverload({"name", tpOpt, "vec3"});
         // clang-format on
 
@@ -235,10 +249,10 @@ namespace trapdoor {
                             .sendTo(output);
                     break;
 
-                case do_hash("destroyon"):
+                case do_hash("destroypos"):
                     trapdoor::mod()
                             .getSimPlayerManager()
-                            .destroyOnSchedule(name, blockPos, origin.getPlayer(), rep, interval, times)
+                            .destroyPositionSchedule(name, blockPos, origin.getPlayer(), rep, interval, times)
                             .sendTo(output);
                     break;
                 case do_hash("destroy"):
@@ -259,21 +273,23 @@ namespace trapdoor {
                             .useSchedule(name, itemId, rep, interval, times)
                             .sendTo(output);
                     break;
-                case do_hash("useon"):
+                case do_hash("useonpos"):
                     if (results["blockPos"].isSet) {
                         trapdoor::mod()
                                 .getSimPlayerManager()
-                                .useOnBlockSchedule(name, itemId, results["blockPos"].get<BlockPos>(),
-                                                    nullptr, rep, interval, times)
+                                .useOnPositionSchedule(name, itemId, results["blockPos"].get<BlockPos>(),
+                                                       nullptr, rep, interval, times)
                                 .sendTo(output);
                     } else {
                         trapdoor::mod()
                                 .getSimPlayerManager()
-                                .useOnBlockSchedule(name, itemId, BlockPos(0, 0, 0), origin.getPlayer(),
-                                                    rep, interval, times)
+                                .useOnPositionSchedule(name, itemId, BlockPos(0, 0, 0), origin.getPlayer(),
+                                                       rep, interval, times)
                                 .sendTo(output);
                     }
-
+                case do_hash("useon"):
+                    trapdoor::mod().getSimPlayerManager().useOnSchedule(name, itemId, origin.getPlayer(), rep, interval,
+                                                                        times);
                     break;
                 case do_hash("cancel"):
                     trapdoor::mod().getSimPlayerManager().cancel(name);
