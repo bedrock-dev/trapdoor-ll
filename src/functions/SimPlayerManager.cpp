@@ -21,11 +21,6 @@
 #include "TrapdoorMod.h"
 #include "Utils.h"
 
-// from liteloaderBDS
-// https://github.com/LiteLDev/LiteLoaderBDS/blob
-// /9b0c794d05d98ed3c9a920d7923e9bd6a5d08e91/LiteLoader/src/llapi/SimulatedPlayerAPI.cpp#L40
-
-
 
 namespace trapdoor {
     namespace {
@@ -175,6 +170,7 @@ namespace trapdoor {
         auto it = this->simPlayers.find(name);
         if (it != this->simPlayers.end()) {
             it->second.task.cancel();
+            it->second.driver.stop();
         }
     }
 
@@ -199,7 +195,8 @@ namespace trapdoor {
         }
         auto &simInfo = it->second;
         if (!simInfo.simPlayer) return nullptr;
-        if (needFree) return simInfo.task.isFinished() ? simInfo.simPlayer : nullptr;
+        //既没有在调度，也没有在执行脚本
+        if (needFree) return (simInfo.task.isFinished() && (!simInfo.driver.isRunning())) ? simInfo.simPlayer : nullptr;
         return simInfo.simPlayer;
     }
 
@@ -521,10 +518,12 @@ namespace trapdoor {
             if (!i.second.simPlayer) {
                 builder.sText(TB::RED | TB::BOLD, "Not exist\n");
             } else {
-                if (i.second.task.isFinished()) {
+                if (i.second.task.isFinished() && (!i.second.driver.isRunning())) {
                     builder.sText(TB::GREEN | TB::BOLD, "Free      ");
+                } else if (i.second.driver.isRunning()) {
+                    builder.sText(TB::BLUE | TB::BOLD, "Running Script   ");
                 } else {
-                    builder.sText(TB::YELLOW | TB::BOLD, "Working   ");
+                    builder.sText(TB::YELLOW | TB::BOLD, "Task scheduling   ");
                 }
                 auto pos = i.second.simPlayer->getPosition().toBlockPos();
                 auto dim = i.second.simPlayer->getDimensionId();
@@ -555,6 +554,12 @@ namespace trapdoor {
         }
         cmdInstance->setSoftEnum("name", names);
     }
+
+    void SimPlayerManager::refreshCommandScriptSoftEnum(const std::vector<std::string> &scripts) {
+        trapdoor::logger().debug("Set soft enums");
+        cmdInstance->setSoftEnum("file", scripts);
+    }
+
 
     void SimPlayerManager::syncPlayerListToFile() {
         const std::string path = "./plugins/trapdoor/sim/cache.json";
@@ -705,20 +710,20 @@ namespace trapdoor {
         return OperationSuccess();
     }
 
-    ActionResult SimPlayerManager::runScript(const std::string &name, const std::string &scriptName, int interval) {
+    ActionResult
+    SimPlayerManager::runScript(const std::string &name, const std::string &scriptName, int interval,
+                                bool stopWhenError) {
         auto path = "./plugins/trapdoor/scripts/" + scriptName;
         auto it = this->simPlayers.find(name);
         if (it == this->simPlayers.end() || !(it->second.task.isFinished())) {
             return ErrorMsg("player.error.schedule-failed");
         }
         auto &driver = it->second.driver;
-        if (driver.init(path, it->second.simPlayer)) {
+        if (driver.init(path, it->second.simPlayer, interval, stopWhenError)) {
             return trapdoor::ErrorMsg("Init Script Engine failure, please check the script name");
         }
-
         return {"", true};
     }
-
 
 }  // namespace trapdoor
 
@@ -740,15 +745,6 @@ THook(void,
       "?savePlayers@Level@@UEAAXXZ",
       Level * self
 ) {
-    trapdoor::mod()
-
-            .
-
-                    getSimPlayerManager()
-
-            .
-
-                    savePlayerInventoryToFile();
-
+    trapdoor::mod().getSimPlayerManager().savePlayerInventoryToFile();
     original(self);
 }

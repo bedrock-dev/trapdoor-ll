@@ -89,13 +89,16 @@ namespace trapdoor {
 
         ActionResult swapBackpack(const std::string &name, Player *origin);
 
-        ActionResult runScript(const std::string &name, const std::string &scriptPath, int interval);
+        ActionResult runScript(const std::string &name, const std::string &scriptPath, int interval, bool stopOnError);
 
         void cancel(const std::string &name);
 
         void stopAction(const std::string &name);
 
         bool checkSurvival(const std::string &name);
+
+        void refreshCommandScriptSoftEnum(const std::vector<std::string> &scripts);
+
 
     private:
         void refreshCommandSoftEnum();

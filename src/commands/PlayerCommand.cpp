@@ -7,6 +7,7 @@
 
 namespace trapdoor {
 
+
     void setup_playerCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
@@ -87,6 +88,7 @@ namespace trapdoor {
 
         command->mandatory("name", ParamType::SoftEnum, command->setSoftEnum("name", {}));
 
+        command->mandatory("file", ParamType::SoftEnum, command->setSoftEnum("file", {}));
 
         command->mandatory("command", ParamType::String);
         command->mandatory("itemId", ParamType::Item);
@@ -99,7 +101,7 @@ namespace trapdoor {
 
         command->mandatory("slot", ParamType::Int);
 
-        command->mandatory("script", ParamType::String);
+        command->optional("errorstop", ParamType::Bool);
 
         // clang-format off
         //  cancel task and stop action
@@ -151,7 +153,7 @@ namespace trapdoor {
         //传送
         command->addOverload({"name", tpOpt, "vec3"});
 
-        command->addOverload({"name", scriptOpt, "script", "interval"});
+        command->addOverload({"name", scriptOpt, "file", "interval", "errorstop"});
 
         // clang-format on
 
@@ -177,7 +179,9 @@ namespace trapdoor {
 
             auto vec3 = results["vec3"].isSet ? results["vec3"].get<Vec3>() : Vec3::MAX;
 
-            auto script = results["script"].isSet ? results["script"].get<std::string>() : "";
+            auto scriptFile = results["file"].isSet ? results["file"].get<std::string>() : "";
+
+            auto errorStop = results["errorstop"].isSet ? results["errorstop"].get<bool>() : true;
 
 
             switch (do_hash(results["player"].getRaw<std::string>().c_str())) {
@@ -331,7 +335,7 @@ namespace trapdoor {
                             .sendTo(output);
                     break;
                 case do_hash("script"):
-                    trapdoor::mod().getSimPlayerManager().runScript(name, script, interval);
+                    trapdoor::mod().getSimPlayerManager().runScript(name, scriptFile, interval, errorStop);
 
             }
         };

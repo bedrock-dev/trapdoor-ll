@@ -15,7 +15,7 @@ namespace trapdoor {
 
     public:
         //BOT API
-        struct Bot {
+        struct BotProxy {
             void say(const std::string &msg) const {
                 trapdoor::broadcastMessage(fmt::format(" <{}> {}", this->player->getRealName(), msg));
             }
@@ -41,9 +41,12 @@ namespace trapdoor {
             float z;
         };
 
-        bool init(const std::string &fileName, SimulatedPlayer *p);
+
+        bool init(const string &fileName, SimulatedPlayer *p, int interval, bool errorStop);
 
         void tick();
+
+        [[nodiscard]] inline bool isRunning() const { return this->running; }
 
         void stop();
 
@@ -51,8 +54,11 @@ namespace trapdoor {
 
     private:
         sol::state engine; //engine
-        Bot bot; //for data binding
+        BotProxy bot; //for data binding
         bool running{false};
+        bool errorStop{true};
+        int interval{1};
+        uint64_t counter{0};
     };
 }
 
