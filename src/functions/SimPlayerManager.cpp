@@ -162,7 +162,6 @@ namespace trapdoor {
             cont.setItem(s2, i1);
         }
 
-
     }  // namespace
 
     bool SimPlayerManager::checkSurvival(const std::string &name) {
@@ -504,8 +503,12 @@ namespace trapdoor {
         return OperationSuccess();
     }
 
-    // 定时做垃圾回收，解决数据不同步问题
-    void SimPlayerManager::tick() {}
+
+    void SimPlayerManager::tick() {
+        for (auto &bot: this->simPlayers) {
+            bot.second.driver.tick();
+        }
+    }
 
     ActionResult SimPlayerManager::listAll() {
         if (this->simPlayers.empty()) {
@@ -700,6 +703,20 @@ namespace trapdoor {
         sim->sendInventory(true);
         origin->sendInventory(true);
         return OperationSuccess();
+    }
+
+    ActionResult SimPlayerManager::runScript(const std::string &name, const std::string &scriptName, int interval) {
+        auto path = "./plugins/trapdoor/scripts/" + scriptName;
+        auto it = this->simPlayers.find(name);
+        if (it == this->simPlayers.end() || !(it->second.task.isFinished())) {
+            return ErrorMsg("player.error.schedule-failed");
+        }
+        auto &driver = it->second.driver;
+        if (driver.init(path, it->second.simPlayer)) {
+            return trapdoor::ErrorMsg("Init Script Engine failure, please check the script name");
+        }
+
+        return {"", true};
     }
 
 

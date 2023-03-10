@@ -45,6 +45,10 @@ file(GLOB_RECURSE SRC_FILES_DIR
 include_directories(SDK-cpp/include)
 include_directories(SDK-cpp/include/llapi)
 include_directories(${PROJECT_SOURCE_DIR}/src/include)
+include_directories(${PROJECT_SOURCE_DIR}/src/include/3rd)
+include_directories(${PROJECT_SOURCE_DIR}/src/include/3rd/sol)
+include_directories(${PROJECT_SOURCE_DIR}/src/include/3rd/lua)
+
 link_directories(.)
 
 add_definitions(-D"NDEBUG" -D"TEMPLATE_EXPORTS" -D"WIN32_LEAN_AND_MEAN" -D"_CRT_SECURE_NO_WARNINGS" -D"_WINDOWS"
@@ -64,7 +68,8 @@ add_link_options(
 
 add_library(${TARGET_NAME} SHARED ${SRC_FILES_DIR})
 
-target_link_libraries(${TARGET_NAME} Pdh)
+#后面LUA可以调整成dll
+target_link_libraries(${TARGET_NAME} Pdh ${PROJECT_SOURCE_DIR}/src/include/3rd/lua54.lib)
 
 add_custom_command(TARGET ${TARGET_NAME} PRE_BUILD
         COMMAND cmd /c ${PROJECT_SOURCE_DIR}/prepareLib.cmd ${PROJECT_SOURCE_DIR}

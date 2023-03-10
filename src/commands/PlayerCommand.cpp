@@ -35,6 +35,8 @@ namespace trapdoor {
         auto followOpt = command->setEnum("followOpt", {"follow"});
         auto tpOpt = command->setEnum("tpOpt", {"tp"});
 
+        auto scriptOpt = command->setEnum("scriptOpt", {"script"});
+
         command->mandatory("player", ParamType::Enum, spawnOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->mandatory("player", ParamType::Enum, behOpt,
@@ -79,7 +81,12 @@ namespace trapdoor {
         command->mandatory("player", ParamType::Enum, tpOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
+        command->mandatory("player", ParamType::Enum, scriptOpt,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+
+
         command->mandatory("name", ParamType::SoftEnum, command->setSoftEnum("name", {}));
+
 
         command->mandatory("command", ParamType::String);
         command->mandatory("itemId", ParamType::Item);
@@ -91,6 +98,8 @@ namespace trapdoor {
         command->optional("times", ParamType::Int);
 
         command->mandatory("slot", ParamType::Int);
+
+        command->mandatory("script", ParamType::String);
 
         // clang-format off
         //  cancel task and stop action
@@ -141,6 +150,9 @@ namespace trapdoor {
 
         //传送
         command->addOverload({"name", tpOpt, "vec3"});
+
+        command->addOverload({"name", scriptOpt, "script", "interval"});
+
         // clang-format on
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
@@ -164,6 +176,9 @@ namespace trapdoor {
                     results["blockPos"].isSet ? results["blockPos"].get<BlockPos>() : BlockPos::MAX;
 
             auto vec3 = results["vec3"].isSet ? results["vec3"].get<Vec3>() : Vec3::MAX;
+
+            auto script = results["script"].isSet ? results["script"].get<std::string>() : "";
+
 
             switch (do_hash(results["player"].getRaw<std::string>().c_str())) {
                 case do_hash("spawn"):
@@ -315,6 +330,9 @@ namespace trapdoor {
                             .swapBackpack(name, origin.getPlayer())
                             .sendTo(output);
                     break;
+                case do_hash("script"):
+                    trapdoor::mod().getSimPlayerManager().runScript(name, script, interval);
+
             }
         };
 

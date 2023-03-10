@@ -61,6 +61,7 @@ namespace trapdoor {
         villageHelper.heavyTick();
         hsaManager.HeavyTick();
         HUDHelper.tick();
+        simPlayerManager.tick();
         slimeChunkHelper.HeavyTick();
     }
 
