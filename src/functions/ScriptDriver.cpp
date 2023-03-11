@@ -121,6 +121,7 @@ namespace trapdoor {
 
     bool BotProxy::runCommand(const string &cmd) const {
         player->runcmd(cmd);
+        return true;
     }
 
     std::string BlockSourceProxy::getBlockName(int x, int y, int z) {

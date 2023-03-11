@@ -45,7 +45,9 @@ namespace trapdoor {
         }
 
         ActionResult reloadConfig() {
-            trapdoor::mod().getConfig().readBotScripts(); //刷新脚本
+            //trapdoor::mod().getConfig().readBotScripts(); //刷新脚本
+            trapdoor::mod().getSimPlayerManager().refreshCommandScriptSoftEnum(
+                    trapdoor::Configuration::readBotScripts());
             return trapdoor::mod().initConfig(true)
                    ? trapdoor::SuccessMsg("trapdoor.reload.success")
                    : trapdoor::ErrorMsg("trapdoor.reload.error");

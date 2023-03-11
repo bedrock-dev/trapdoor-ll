@@ -85,7 +85,6 @@ namespace trapdoor {
         trapdoor::SubscribeEvents();
         trapdoor::initRotateBlockHelper();
         trapdoor::setupCommands();
-        this->config.readBotScripts();
         trapdoor::exportAPI();
     }
 

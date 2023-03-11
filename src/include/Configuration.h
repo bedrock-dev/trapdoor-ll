@@ -114,7 +114,7 @@ namespace trapdoor {
 
         }
 
-        void readBotScripts();
+        static std::vector<std::string> readBotScripts();
 
     private:
         bool readConfigFile(const std::string &path);

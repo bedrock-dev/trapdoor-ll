@@ -88,7 +88,8 @@ namespace trapdoor {
 
         command->mandatory("name", ParamType::SoftEnum, command->setSoftEnum("name", {}));
 
-        command->mandatory("file", ParamType::SoftEnum, command->setSoftEnum("file", {}));
+        command->mandatory("file", ParamType::SoftEnum,
+                           command->setSoftEnum("file", trapdoor::Configuration::readBotScripts()));
 
         command->mandatory("command", ParamType::String);
         command->mandatory("itemId", ParamType::Item);
@@ -181,7 +182,7 @@ namespace trapdoor {
 
             auto scriptFile = results["file"].isSet ? results["file"].get<std::string>() : "";
 
-            auto errorStop = results["errorstop"].isSet ? results["errorstop"].get<bool>() : true;
+            auto errorStop = !results["errorstop"].isSet || results["errorstop"].get<bool>();
 
 
             switch (do_hash(results["player"].getRaw<std::string>().c_str())) {
