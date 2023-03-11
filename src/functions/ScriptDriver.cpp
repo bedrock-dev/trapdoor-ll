@@ -29,20 +29,23 @@ namespace trapdoor {
 
         this->engine.open_libraries(sol::lib::base, sol::lib::string, sol::lib::math);
         //type and function binding
-        this->engine.new_usertype<BotProxy>("BotProxy",
 
+#define  BIND(func) #func,&BotProxy::##func
+
+        this->engine.new_usertype<BotProxy>("BotProxy",
                                             "getPosition", &BotProxy::getPosition,
                                             "getStandBlockPos", &BotProxy::getStandBlockPos,
                                             "getViewVector", &BotProxy::getViewVector,
                                             "getBlockPosFromView", &BotProxy::getBlockPosFromView,
                                             "say", &BotProxy::say,
                                             "destroyPosition", &BotProxy::destroyPosition,
+                                            "lookAtVec3", &BotProxy::lookAtVec3,
                 //the api below need test !!
                                             "moveto", &BotProxy::moveto,
                                             "jump", &BotProxy::jump,
-                                            "runcmd", &BotProxy::runCommand,
-
+                                            "runCommand", &BotProxy::runCommand
         );
+
 
         this->engine.new_usertype<LevelProxy>("LevelProxy",
                                               "getTick", &LevelProxy::getTick,
@@ -55,7 +58,8 @@ namespace trapdoor {
                                             "x", &BlockPos::x,
                                             "y", &BlockPos::y, "z", &BlockPos::z);
 
-        this->engine.new_usertype<Vec3>("Vec3", "x", &Vec3::x, "y", &Vec3::y, "z", &Vec3::z);
+        this->engine.new_usertype<Vec3>("Vec3", sol::constructors<Vec3(), Vec3(float, float, float)>(), "x", &Vec3::x,
+                                        "y", &Vec3::y, "z", &Vec3::z);
         this->engine.new_usertype<BlockInfo>("BlockInfo", "id", &BlockInfo::id, "variant", &BlockInfo::variant, "name",
                                              &BlockInfo::name);
         this->engine.new_usertype<BlockSourceProxy>("BlockSourceProxy", "getBlockInfo",
@@ -163,6 +167,10 @@ namespace trapdoor {
     int BotProxy::getHungry() const {
 
         return 0;
+    }
+
+    void BotProxy::lookAtVec3(const Vec3 &v) const {
+        this->player->simulateLookAt(v);
     }
 
 

@@ -50,6 +50,11 @@ namespace trapdoor {
         //破坏方块
         void destroyPosition(const BlockPos &pos) const;
 
+        void lookAtVec3(const Vec3 &v) const;
+
+        // void useOnPosition();
+        //
+
         void moveto(float px, float py, float pz) const;
 
 
