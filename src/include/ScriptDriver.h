@@ -8,43 +8,75 @@
 #include "sol.hpp"
 #include "MCTick.h"
 #include <mc/SimulatedPlayer.hpp>
+#include <mc/BlockInstance.hpp>
+
 #include "Msg.h"
 
 namespace trapdoor {
     constexpr auto DF = static_cast<ScriptModuleMinecraft::ScriptFacing>(1);
 
     //BOT API
+
+
+
     struct BotProxy {
+
+        //getStandardPosition
+        [[nodiscard]] BlockPos getStandBlockPos() const;
+
+
+        //获取坐标
+        [[nodiscard]] Vec3 getPosition() const;
+
+        //获取视角
+        [[nodiscard]] Vec3 getViewVector() const;
+
+        //获取看向的方块
+        [[nodiscard]] BlockPos getBlockPosFromView() const;
+
+
+        //获取自身的饥饿度
+        int getHungry() const;
+
+        //获取血量
+        int getHealth() const;
+
+        //向服务器广播消息
         void say(const std::string &msg) const;
 
-        inline void jump() const;
+        //跳跃
+        void jump() const;
 
-        inline void moveto(float px, float py, float pz) const;
+        //破坏方块
+        void destroyPosition(const BlockPos &pos) const;
 
-        inline void update();
+        void moveto(float px, float py, float pz) const;
 
 
-        inline void destroyPosition(int px, int py, int pz) const;
+        void update();
 
-        inline void interact() const;
 
-        inline void attack() const;
+        void interact() const;
+
+        void attack() const;
 
         [[nodiscard]] bool runCommand(const std::string &cmd) const;
 
         SimulatedPlayer *player{nullptr};
-        float x;
-        float y;
-        float z;
+
     };
 
+
+    struct BlockInfo {
+        int id;
+        int variant;
+        const std::string name;
+    };
 
     struct BlockSourceProxy {
         inline void setRegion(BlockSource *bs) { this->region = bs; }
 
-        std::string getBlockName(int x, int y, int z);
-
-        int getBlockID(int x, int y, int z);
+        [[nodiscard]] BlockInfo getBlockInfo(const BlockPos &pos) const;
 
         BlockSource *region;
 
@@ -77,7 +109,7 @@ namespace trapdoor {
     private:
         sol::state engine; //engine
         BotProxy bot; //for data binding
-        BlockSourceProxy bs;
+        BlockSourceProxy bs{};
         LevelProxy level;
         bool running{false};
         bool errorStop{true};

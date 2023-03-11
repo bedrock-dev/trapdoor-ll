@@ -9,6 +9,7 @@
 #include <mc/Dimension.hpp>
 #include <mc/Level.hpp>
 #include "TrapdoorMod.h"
+#include <mc/BlockInstance.hpp>
 
 namespace trapdoor {
 
@@ -25,25 +26,40 @@ namespace trapdoor {
         this->bot.player = p;
         this->bs.region = &p->getRegion();
 
-        //function binding
-        this->engine.new_usertype<BotProxy>("Bot",
-                                            "x", &BotProxy::x,
-                                            "y", &BotProxy::y,
-                                            "z", &BotProxy::z,
+
+        this->engine.open_libraries(sol::lib::base, sol::lib::string, sol::lib::math);
+        //type and function binding
+        this->engine.new_usertype<BotProxy>("BotProxy",
+
+                                            "getPosition", &BotProxy::getPosition,
+                                            "getStandBlockPos", &BotProxy::getStandBlockPos,
+                                            "getViewVector", &BotProxy::getViewVector,
+                                            "getBlockPosFromView", &BotProxy::getBlockPosFromView,
                                             "say", &BotProxy::say,
+                                            "destroyPosition", &BotProxy::destroyPosition,
+                //the api below need test !!
                                             "moveto", &BotProxy::moveto,
                                             "jump", &BotProxy::jump,
                                             "runcmd", &BotProxy::runCommand,
-                                            "destroyPosition", &BotProxy::destroyPosition
+
         );
 
-        this->engine.new_usertype<LevelProxy>("Level",
+        this->engine.new_usertype<LevelProxy>("LevelProxy",
                                               "getTick", &LevelProxy::getTick,
                                               "getTime", &LevelProxy::getTime,
                                               "getMeanMspt", &LevelProxy::getMSPT
 
         );
 
+        this->engine.new_usertype<BlockPos>("BlockPos", sol::constructors<BlockPos(), BlockPos(int, int, int)>(),
+                                            "x", &BlockPos::x,
+                                            "y", &BlockPos::y, "z", &BlockPos::z);
+
+        this->engine.new_usertype<Vec3>("Vec3", "x", &Vec3::x, "y", &Vec3::y, "z", &Vec3::z);
+        this->engine.new_usertype<BlockInfo>("BlockInfo", "id", &BlockInfo::id, "variant", &BlockInfo::variant, "name",
+                                             &BlockInfo::name);
+        this->engine.new_usertype<BlockSourceProxy>("BlockSourceProxy", "getBlockInfo",
+                                                    &BlockSourceProxy::getBlockInfo);
 
         this->engine.set("Bot", std::ref(this->bot));
 
@@ -60,13 +76,14 @@ namespace trapdoor {
         counter++;
         if (counter % interval != 0)return;
         try {
-            this->engine.script("Tick()");
+            this->engine.safe_script("Tick()");
         } catch (std::exception &e) {
             this->stop();
             trapdoor::broadcastMessage(
                     fmt::format("Script running error for sim player {}, visit the console for more info",
                                 this->bot.player->getRealName()));
-            trapdoor::logger().error("LUA run error:{} with player {}", e.what(), this->bot.player->getRealName());
+            trapdoor::logger().error("LUA run error:\n {} \nwith player {}", e.what(),
+                                     this->bot.player->getRealName());
         }
     }
 
@@ -76,7 +93,6 @@ namespace trapdoor {
         this->engine = sol::state(nullptr);
         this->running = false;
     }
-
 
     //API -- Level
     int LevelProxy::getTime() { return Global<Level>->getTime(); }
@@ -102,14 +118,12 @@ namespace trapdoor {
 
     void BotProxy::update() {
         auto pos = player->getPos();
-        x = pos.x;
-        y = pos.y;
-        z = pos.z;
     }
 
-    void BotProxy::destroyPosition(int px, int py, int pz) const {
-        player->simulateDestroyBlock({px, py, pz}, DF);
+    void BotProxy::destroyPosition(const BlockPos &pos) const {
+        player->simulateDestroyBlock(pos, DF);
     }
+
 
     void BotProxy::interact() const {
         player->simulateInteract();
@@ -124,13 +138,40 @@ namespace trapdoor {
         return true;
     }
 
-    std::string BlockSourceProxy::getBlockName(int x, int y, int z) {
-        return this->region->getBlock(x, y, z).getTypeName();
+    BlockPos BotProxy::getStandBlockPos() const {
+        return this->player->getBlockStandingOn().getPosition();
     }
 
-    int BlockSourceProxy::getBlockID(int x, int y, int z) {
-        return this->region->getBlock(x, y, z).getId();
+    Vec3 BotProxy::getPosition() const {
+        return this->player->getPosition();
+    }
+
+    Vec3 BotProxy::getViewVector() const {
+        return this->player->getViewVector(1.0f);
+    }
+
+    BlockPos BotProxy::getBlockPosFromView() const {
+        return this->player->getBlockFromViewVector().getPosition();
+    }
+
+    int BotProxy::getHealth() const {
+        return this->player->getHealth();
     }
 
 
+    //todo
+    int BotProxy::getHungry() const {
+
+        return 0;
+    }
+
+
+    BlockInfo BlockSourceProxy::getBlockInfo(const BlockPos &pos) const {
+        auto &b = this->region->getBlock(pos);
+        return {
+                b.getId(),
+                b.getVariant(),
+                b.getTypeName(),
+        };
+    }
 }
