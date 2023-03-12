@@ -641,15 +641,15 @@ namespace trapdoor {
                                 bool stopWhenError) {
         auto path = "./plugins/trapdoor/scripts/" + scriptName;
         auto it = this->simPlayers.find(name);
-        if (it == this->simPlayers.end() || !(it->second.task.isFinished()) || !it->second.driver.isRunning()) {
-            return ErrorMsg("player.error.schedule-failed");
+        if (it == this->simPlayers.end() || !(it->second.task.isFinished()) || it->second.driver.isRunning()) {
+            return trapdoor::ErrorMsg("player.error.schedule-failed");
         }
 
         auto &driver = it->second.driver;
         if (driver.init(path, it->second.simPlayer, interval, stopWhenError)) {
             return trapdoor::ErrorMsg("Init Script Engine failure, please check the script name");
         }
-        return {"", true};
+        return trapdoor::OperationSuccess();
     }
 
 }  // namespace trapdoor

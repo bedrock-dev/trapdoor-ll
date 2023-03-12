@@ -34,12 +34,13 @@ namespace trapdoor {
         //获取看向的方块
         [[nodiscard]] BlockPos getBlockPosFromView() const;
 
-
         //获取自身的饥饿度
-        int getHungry() const;
+        int getHunger() const;
 
         //获取血量
         int getHealth() const;
+
+        int getDirection() const;
 
         //向服务器广播消息
         void say(const std::string &msg) const;
@@ -50,8 +51,21 @@ namespace trapdoor {
         //破坏方块
         void destroyPosition(const BlockPos &pos) const;
 
+
+        //看着某个地方
         void lookAtVec3(const Vec3 &v) const;
 
+
+        //使用某物品右键某个方块
+        bool useOnPosition(const std::string &name, const BlockPos &pos, int face) const;
+
+
+        [[nodiscard]] bool interactPosition(const BlockPos &pos, int face) const;
+
+        //使用某物品
+        [[nodiscard]] bool useItem(const std::string &name) const;
+
+        bool attack() const;
         // void useOnPosition();
         //
 
@@ -62,6 +76,7 @@ namespace trapdoor {
 
 
         void interact() const;
+
 
         void attack() const;
 
@@ -83,8 +98,7 @@ namespace trapdoor {
 
         [[nodiscard]] BlockInfo getBlockInfo(const BlockPos &pos) const;
 
-        BlockSource *region;
-
+        BlockSource *region{nullptr};
     };
 
     struct LevelProxy {

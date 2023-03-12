@@ -10,10 +10,12 @@
 #include <mc/Level.hpp>
 #include "TrapdoorMod.h"
 #include <mc/BlockInstance.hpp>
+#include "SimulateAPIWrapper.h"
 
 namespace trapdoor {
 
     bool ScriptDriver::init(const string &fileName, SimulatedPlayer *p, int inter, bool err) {
+        trapdoor::logger().debug("Init script Engine");
         this->errorStop = err;
         this->interval = inter;
         this->counter = 0;
@@ -30,20 +32,22 @@ namespace trapdoor {
         this->engine.open_libraries(sol::lib::base, sol::lib::string, sol::lib::math);
         //type and function binding
 
-#define  BIND(func) #func,&BotProxy::##func
-
         this->engine.new_usertype<BotProxy>("BotProxy",
                                             "getPosition", &BotProxy::getPosition,
                                             "getStandBlockPos", &BotProxy::getStandBlockPos,
                                             "getViewVector", &BotProxy::getViewVector,
                                             "getBlockPosFromView", &BotProxy::getBlockPosFromView,
+                                            "getHealth", &BotProxy::getHealth,
+                                            "getDirection", &BotProxy::getDirection,
                                             "say", &BotProxy::say,
                                             "destroyPosition", &BotProxy::destroyPosition,
                                             "lookAtVec3", &BotProxy::lookAtVec3,
-                //the api below need test !!
+                                            "useOnPosition", &BotProxy::useOnPosition,
                                             "moveto", &BotProxy::moveto,
                                             "jump", &BotProxy::jump,
-                                            "runCommand", &BotProxy::runCommand
+                                            "runCommand", &BotProxy::runCommand,
+                                            "useItem", &BotProxy::useItem
+
         );
 
 
@@ -70,6 +74,19 @@ namespace trapdoor {
         this->engine.set("Level", std::ref(this->level));
 
         this->engine.set("Region", std::ref(this->bs));
+        trapdoor::logger().debug("Script init finished");
+
+        try {
+            this->engine.safe_script("Init()");
+        } catch (std::exception &e) {
+            this->stop();
+            trapdoor::broadcastMessage(
+                    fmt::format("Script Init error for sim player {}, visit the console for more info",
+                                this->bot.player->getRealName()));
+            trapdoor::logger().error("LUA run error:\n {} \nwith player {}", e.what(),
+                                     this->bot.player->getRealName());
+        }
+
 
         this->running = true;
         return true;
@@ -84,7 +101,7 @@ namespace trapdoor {
         } catch (std::exception &e) {
             this->stop();
             trapdoor::broadcastMessage(
-                    fmt::format("Script running error for sim player {}, visit the console for more info",
+                    fmt::format("Script Tick error for sim player {}, visit the console for more info",
                                 this->bot.player->getRealName()));
             trapdoor::logger().error("LUA run error:\n {} \nwith player {}", e.what(),
                                      this->bot.player->getRealName());
@@ -133,6 +150,7 @@ namespace trapdoor {
         player->simulateInteract();
     }
 
+
     void BotProxy::attack() const {
         player->simulateAttack();
     }
@@ -164,8 +182,7 @@ namespace trapdoor {
 
 
     //todo
-    int BotProxy::getHungry() const {
-
+    int BotProxy::getHunger() const {
         return 0;
     }
 
@@ -173,6 +190,34 @@ namespace trapdoor {
         this->player->simulateLookAt(v);
     }
 
+    bool BotProxy::useOnPosition(const string &name, const BlockPos &pos, int face) const {
+        if (bot::switchItemToHandByName(this->player, name)) {
+            return this->player->simulateUseItemOnBlock(*bot::getSelectItem(this->player), pos,
+                                                        static_cast<ScriptModuleMinecraft::ScriptFacing>(face),
+                                                        {0.5, 0.5, 0.5});
+
+        }
+
+        return false;
+    }
+
+    bool BotProxy::useItem(const string &name) const {
+        if (bot::switchItemToHandByName(this->player, name)) {
+            return this->player->simulateUseItem(*bot::getSelectItem(this->player));
+        }
+    }
+
+    bool BotProxy::interactPosition(const BlockPos &pos, int face) const {
+        return this->player->simulateInteract(pos, static_cast<ScriptModuleMinecraft::ScriptFacing>(face));
+    }
+
+    int BotProxy::getDirection() const {
+        return this->player->getDirection();
+    }
+
+    bool BotProxy::attack() const {
+        return this->player->simulateAttack();
+    }
 
     BlockInfo BlockSourceProxy::getBlockInfo(const BlockPos &pos) const {
         auto &b = this->region->getBlock(pos);

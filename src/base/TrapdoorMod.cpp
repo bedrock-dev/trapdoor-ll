@@ -11,6 +11,8 @@
 #include "SysInfoHelper.h"
 #include "config.h"
 #include "TrapdoorAPI.h"
+#include <mc/SimulatedPlayer.hpp>
+
 
 #define REG_COMMAND(c)                                         \
     auto cfg_##c = cmdCfg.getCommandConfig(#c);                \
@@ -89,6 +91,8 @@ namespace trapdoor {
     }
 
     bool TrapdoorMod::initConfig(bool reload) {
+
+
         auto modRootPath = std::string("./plugins/trapdoor/");
 #ifdef DEV
         modRootPath = "C:/Users/xhy/dev/trapdoor-ll/src/base/";

@@ -11,6 +11,7 @@
 
 namespace trapdoor {
     ActionResult::ActionResult(std::string m, bool su) : msg(std::move(m)), success(su) {}
+
     void ActionResult::sendTo(CommandOutput &output) const {
         success ? output.success(msg) : output.error(msg);
     }
