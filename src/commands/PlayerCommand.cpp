@@ -30,7 +30,7 @@ namespace trapdoor {
 
         auto backpackOpt = command->setEnum("backpackOpt", {"backpack"});
         auto stopOpt = command->setEnum("stopOpt", {"stop", "cancel"});
-        auto setOpt = command->setEnum("setOpt", {"set"});
+        auto selectOpt = command->setEnum("selectOpt", {"select"});
         auto dropOpt = command->setEnum("dropOpt", {"drop", "droptype"});
         auto cmdOpt = command->setEnum("cmdOpt", {"runcmd"});
         auto followOpt = command->setEnum("followOpt", {"follow"});
@@ -67,7 +67,7 @@ namespace trapdoor {
         command->mandatory("player", ParamType::Enum, stopOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
-        command->mandatory("player", ParamType::Enum, setOpt,
+        command->mandatory("player", ParamType::Enum, selectOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
         // 丢一组 丢一种
@@ -110,8 +110,8 @@ namespace trapdoor {
         // check inv
         command->addOverload({"name", backpackOpt});
         //set
-        command->addOverload({"name", setOpt, "itemId"});
-        command->addOverload({"name", setOpt, "slot"});
+        command->addOverload({"name", selectOpt, "itemId"});
+        command->addOverload({"name", selectOpt, "slot"});
         //drop
         command->addOverload({"name", dropOpt, "itemId"});
 
@@ -213,7 +213,7 @@ namespace trapdoor {
                             .sendTo(output);
                     break;
 
-                case do_hash("set"):
+                case do_hash("select"):
                     trapdoor::mod()
                             .getSimPlayerManager()
                             .setItem(name, itemId, slot)
@@ -336,7 +336,8 @@ namespace trapdoor {
                             .sendTo(output);
                     break;
                 case do_hash("script"):
-                    trapdoor::mod().getSimPlayerManager().runScript(name, scriptFile, interval, errorStop);
+                    trapdoor::mod().getSimPlayerManager().runScript(name, scriptFile, interval, errorStop).sendTo(
+                            output);
 
             }
         };

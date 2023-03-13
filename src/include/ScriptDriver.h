@@ -18,12 +18,24 @@ namespace trapdoor {
     //BOT API
 
 
+    struct BlockInfo {
+        int id{0};
+        int variant{0};
+        const std::string name;
+    };
+
+    struct ItemStackInfo {
+        int id{0};
+        const std::string name;
+        int aux{0};
+        short damage{0};
+        int count{0};
+    };
 
     struct BotProxy {
 
         //getStandardPosition
         [[nodiscard]] BlockPos getStandBlockPos() const;
-
 
         //获取坐标
         [[nodiscard]] Vec3 getPosition() const;
@@ -34,8 +46,12 @@ namespace trapdoor {
         //获取看向的方块
         [[nodiscard]] BlockPos getBlockPosFromView() const;
 
-        //获取自身的饥饿度
-        int getHunger() const;
+
+        //是否饿了
+        [[nodiscard]] bool isHungry() const;
+
+
+        bool selectItem(const std::string &name) const;
 
         //获取血量
         int getHealth() const;
@@ -55,30 +71,27 @@ namespace trapdoor {
         //看着某个地方
         void lookAtVec3(const Vec3 &v) const;
 
+        // std::vector<std::string> getInventoryItems() const;
+
+        [[nodiscard]] ItemStackInfo getItemStackInfoInSlot(int slot) const;
 
         //使用某物品右键某个方块
-        bool useOnPosition(const std::string &name, const BlockPos &pos, int face) const;
-
+        [[nodiscard]] bool useItemOnPosition(const std::string &name, const BlockPos &pos, int face) const;
 
         [[nodiscard]] bool interactPosition(const BlockPos &pos, int face) const;
 
         //使用某物品
         [[nodiscard]] bool useItem(const std::string &name) const;
 
-        bool attack() const;
-        // void useOnPosition();
-        //
+        [[nodiscard]] bool attack() const;
+
+        void dropItemInSlot(int slot) const;
 
         void moveto(float px, float py, float pz) const;
 
 
-        void update();
-
-
         void interact() const;
 
-
-        void attack() const;
 
         [[nodiscard]] bool runCommand(const std::string &cmd) const;
 
@@ -86,12 +99,6 @@ namespace trapdoor {
 
     };
 
-
-    struct BlockInfo {
-        int id;
-        int variant;
-        const std::string name;
-    };
 
     struct BlockSourceProxy {
         inline void setRegion(BlockSource *bs) { this->region = bs; }
