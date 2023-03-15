@@ -240,7 +240,9 @@ namespace trapdoor {
 
     bool BotProxy::useItem(const string &name) const {
         if (bot::switchItemToHandByName(this->player, name)) {
-            return this->player->simulateUseItem(*bot::getSelectItem(this->player));
+            return this->player->simulateUseItem(*bot::getSelectItem(this->player)) ? 0 : 1
+        } else {
+            return -1;
         }
     }
 
