@@ -10,6 +10,8 @@
 #include <mc/Level.hpp>
 #include "TrapdoorMod.h"
 #include <mc/BlockInstance.hpp>
+#include <mc/Actor.hpp>
+#include <mc/AttributeInstance.hpp>
 #include "SimulateAPIWrapper.h"
 
 namespace trapdoor {
@@ -32,25 +34,31 @@ namespace trapdoor {
         this->engine.open_libraries(sol::lib::base, sol::lib::string, sol::lib::math);
         //type and function binding
 
+
         this->engine.new_usertype<BotProxy>("BotProxy",
-                                            "getPosition", &BotProxy::getPosition,
-                                            "getStandBlockPos", &BotProxy::getStandBlockPos,
+                /*information getter*/
+                                            "getPos", &BotProxy::getPos,
+                                            "getStandOn", &BotProxy::getStandOn,
                                             "getViewVector", &BotProxy::getViewVector,
                                             "getBlockPosFromView", &BotProxy::getBlockPosFromView,
                                             "getHealth", &BotProxy::getHealth,
                                             "getDirection", &BotProxy::getDirection,
-                                            "say", &BotProxy::say,
-                                            "destroyPosition", &BotProxy::destroyPosition,
-                                            "lookAtVec3", &BotProxy::lookAtVec3,
-                                            "useItemOnPosition", &BotProxy::useItemOnPosition,
-                                            "moveto", &BotProxy::moveto,
-                                            "jump", &BotProxy::jump,
-                                            "runCommand", &BotProxy::runCommand,
-                                            "useItem", &BotProxy::useItem,
-                                            "attack", &BotProxy::attack,
-                                            "selectItem", &BotProxy::selectItem,
-                                            "getItemStackInfoInSlot", &BotProxy::getItemStackInfoInSlot
+                                            "getItemStackInfoInSlot", &BotProxy::getItemStackInfoInSlot,
+                                            "getHungry", &BotProxy::getHungry,
 
+                /*Action*/
+                                            "say", &BotProxy::say,
+                                            "jump", &BotProxy::jump,
+                                            "lookAt", &BotProxy::lookAt,
+                                            "selectItem", &BotProxy::selectItem,
+                                            "destroyPosition", &BotProxy::destroyPosition,
+                                            "useItemOnPosition", &BotProxy::useItemOnPosition,
+                                            "interactPosition", &BotProxy::interactPosition,
+                                            "useItem", &BotProxy::useItem,
+                                            "dropItemInSlot", &BotProxy::dropItemInSlot,
+                                            "moveTo", &BotProxy::moveTo,
+                                            "runCommand", &BotProxy::runCommand,
+                                            "attack", &BotProxy::attack
         );
 
         this->engine.new_usertype<LevelProxy>("LevelProxy",
@@ -129,47 +137,42 @@ namespace trapdoor {
 
     double LevelProxy::getMSPT() { return trapdoor::getMeanMSPT(); }
 
+    //API -- BlockSource
+    BlockInfo BlockSourceProxy::getBlockInfo(const BlockPos &pos) const {
+        auto &b = this->region->getBlock(pos);
+        return {
+                b.getId(),
+                b.getVariant(),
+                b.getTypeName(),
+        };
+    }
 
     //API -- Bot
-    void BotProxy::say(const string &msg) const {
-        trapdoor::broadcastMessage(fmt::format(" <{}> {}", this->player->getRealName(), msg));
+    /*getter functions*/
+
+    int BotProxy::getDirection() const {
+        return this->player->getDirection();
     }
 
 
-    void BotProxy::jump() const {
-        player->simulateJump();
-    }
-
-    void BotProxy::moveto(float px, float py, float pz) const {
-        player->simulateMoveToLocation({px, py, pz}, 1.0f);
+    float BotProxy::getHungry() const {
+        return this->player->getAttribute(SimulatedPlayer::HUNGER).getCurrentValue();
     }
 
 
-    void BotProxy::destroyPosition(const BlockPos &pos) const {
-        player->simulateDestroyBlock(pos, DF);
+    ItemStackInfo BotProxy::getItemStackInfoInSlot(int slot) const {
+        auto &inv = this->player->getInventory();
+        if (slot >= inv.getSize() || slot < 0)return {};
+        auto *item = inv.getSlot(slot);
+        if (!item)return {};
+        return {item->getId(), item->getTypeName(), item->getAux(), item->getDamageValue(), item->getCount()};
     }
 
-
-    void BotProxy::interact() const {
-        player->simulateInteract();
-    }
-
-
-    bool BotProxy::attack() const {
-        return player->simulateAttack();
-    }
-
-
-    bool BotProxy::runCommand(const string &cmd) const {
-        player->runcmd(cmd);
-        return true;
-    }
-
-    BlockPos BotProxy::getStandBlockPos() const {
+    BlockPos BotProxy::getStandOn() const {
         return this->player->getBlockStandingOn().getPosition();
     }
 
-    Vec3 BotProxy::getPosition() const {
+    Vec3 BotProxy::getPos() const {
         return this->player->getPosition();
     }
 
@@ -185,20 +188,54 @@ namespace trapdoor {
         return this->player->getHealth();
     }
 
+    /********************************Actions********************************/
 
-    void BotProxy::lookAtVec3(const Vec3 &v) const {
+    void BotProxy::say(const string &msg) const {
+        trapdoor::broadcastMessage(fmt::format(" <{}> {}", this->player->getRealName(), msg));
+    }
+
+
+    bool BotProxy::jump() const {
+        return player->simulateJump();
+    }
+
+    void BotProxy::moveTo(const Vec3 &pos) const {
+        player->simulateMoveToLocation(pos, 1.0f);
+    }
+
+    bool BotProxy::selectItem(const string &name) const {
+        return bot::switchItemToHandByName(this->player, name);
+    }
+
+
+    bool BotProxy::destroyPosition(const BlockPos &pos) const {
+        return player->simulateDestroyBlock(pos, DF);
+    }
+
+
+    bool BotProxy::attack() const {
+        return player->simulateAttack();
+    }
+
+
+    bool BotProxy::runCommand(const string &cmd) const {
+        player->runcmd(cmd);
+        return true;
+    }
+
+
+    void BotProxy::lookAt(const Vec3 &v) const {
         this->player->simulateLookAt(v);
     }
 
-    bool BotProxy::useItemOnPosition(const string &name, const BlockPos &pos, int face) const {
+    int BotProxy::useItemOnPosition(const string &name, const BlockPos &pos, int face) const {
         if (bot::switchItemToHandByName(this->player, name)) {
             return this->player->simulateUseItemOnBlock(*bot::getSelectItem(this->player), pos,
                                                         static_cast<ScriptModuleMinecraft::ScriptFacing>(face),
-                                                        {0.5, 0.5, 0.5});
-
+                                                        {0.5, 0.5, 0.5}) ? 0 : 1;
+        } else {
+            return -1;
         }
-
-        return false;
     }
 
     bool BotProxy::useItem(const string &name) const {
@@ -211,40 +248,6 @@ namespace trapdoor {
         return this->player->simulateInteract(pos, static_cast<ScriptModuleMinecraft::ScriptFacing>(face));
     }
 
-    int BotProxy::getDirection() const {
-        return this->player->getDirection();
-    }
-
-    bool BotProxy::isHungry() const {
-        return this->player->isHungry();
-    }
-
-    bool BotProxy::selectItem(const string &name) const {
-        return bot::switchItemToHandByName(this->player, name);
-    }
-//
-//    std::vector<std::string> BotProxy::getInventoryItems() const {
-//        std::vector<std::string> res;
-//        auto sz = this->player->getInventory().getSize();
-//        for (auto i = 0; i < sz; i++) {
-//            auto *item = this->player->getInventory().getSlot(i);
-//            if (item) {
-//                res.push_back(trapdoor::rmmc(item->getTypeName()));
-//            } else {
-//                res.emplace_back("");
-//            }
-//        }
-//        return res;
-//    }
-
-    ItemStackInfo BotProxy::getItemStackInfoInSlot(int slot) const {
-        auto &inv = this->player->getInventory();
-        if (slot >= inv.getSize() || slot < 0)return {};
-        auto *item = inv.getSlot(slot);
-        if (!item)return {};
-        return {item->getId(), item->getTypeName(), item->getAux(), item->getDamageValue(), item->getCount()};
-    }
-
     void BotProxy::dropItemInSlot(int slot) const {
         auto &inv = this->player->getInventory();
         if (slot >= inv.getSize() || slot < 0) return;
@@ -254,12 +257,4 @@ namespace trapdoor {
         this->player->sendInventory(true);
     }
 
-    BlockInfo BlockSourceProxy::getBlockInfo(const BlockPos &pos) const {
-        auto &b = this->region->getBlock(pos);
-        return {
-                b.getId(),
-                b.getVariant(),
-                b.getTypeName(),
-        };
-    }
 }
