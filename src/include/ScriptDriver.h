@@ -87,7 +87,7 @@ namespace trapdoor {
 
 
         // 右键某物品（吃东西等）,返回操作是否成功
-        [[nodiscard]] bool useItem(const std::string &name) const;
+        [[nodiscard]] int useItem(const std::string &name) const;
 
         //攻击 返回操作是否成功
         [[nodiscard]] bool attack() const;
@@ -136,6 +136,9 @@ namespace trapdoor {
         ScriptDriver() = default;
 
     private:
+
+        bool runFunction(const std::string &name);
+
         sol::state engine;  // engine
         BotProxy bot;       // for data binding
         BlockSourceProxy bs{};

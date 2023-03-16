@@ -21,8 +21,15 @@ namespace trapdoor {
         this->errorStop = err;
         this->interval = inter;
         this->counter = 0;
-        auto res = this->engine.script_file(fileName);
+
+        auto res = this->engine.safe_script_file(fileName, [](lua_State *, sol::protected_function_result pfr) {
+            return pfr;
+        });
+
         if (!res.valid()) {
+            sol::error loadErr = res;
+            trapdoor::logger().error("error load script with error {}", loadErr.what());
+            this->stop();
             return false;
         }
 
@@ -91,17 +98,9 @@ namespace trapdoor {
         this->engine.set("Region", std::ref(this->bs));
         trapdoor::logger().debug("Script init finished");
 
-        try {
-            this->engine.safe_script("Init()");
-        } catch (std::exception &e) {
-            this->stop();
-            trapdoor::broadcastMessage(
-                    fmt::format("Script Init error for sim player {}, visit the console for more info",
-                                this->bot.player->getRealName()));
-            trapdoor::logger().error("LUA run error:\n {} \nwith player {}", e.what(),
-                                     this->bot.player->getRealName());
+        if (!this->runFunction("Init()")) {
+            if (this->errorStop)this->stop();
         }
-
 
         this->running = true;
         return true;
@@ -111,16 +110,11 @@ namespace trapdoor {
         if (!running)return;
         counter++;
         if (counter % interval != 0)return;
-        try {
-            this->engine.safe_script("Tick()");
-        } catch (std::exception &e) {
-            this->stop();
-            trapdoor::broadcastMessage(
-                    fmt::format("Script Tick error for sim player {}, visit the console for more info",
-                                this->bot.player->getRealName()));
-            trapdoor::logger().error("LUA run error:\n {} \nwith player {}", e.what(),
-                                     this->bot.player->getRealName());
+
+        if (!this->runFunction("Tick()")) {
+            if (this->errorStop)this->stop();
         }
+
     }
 
 
@@ -128,6 +122,19 @@ namespace trapdoor {
         //删除所有东西
         this->engine = sol::state(nullptr);
         this->running = false;
+    }
+
+    bool ScriptDriver::runFunction(const string &name) {
+        auto res = this->engine.script(name, [](lua_State *, sol::protected_function_result pfr) {
+            return pfr;
+        });
+        if (!res.valid()) {
+            sol::error runErr = res;
+            trapdoor::logger().error("Error in execute function {}:\n{}\n\nIn Bot {}", name, runErr.what(),
+                                     this->bot.player->getRealName());
+            return false;
+        }
+        return true;
     }
 
     //API -- Level
@@ -165,7 +172,8 @@ namespace trapdoor {
         if (slot >= inv.getSize() || slot < 0)return {};
         auto *item = inv.getSlot(slot);
         if (!item)return {};
-        return {item->getId(), item->getTypeName(), item->getAux(), item->getDamageValue(), item->getCount()};
+        return {item->getId(), trapdoor::rmmc(item->getTypeName()), item->getAux(), item->getDamageValue(),
+                item->getCount()};
     }
 
     BlockPos BotProxy::getStandOn() const {
@@ -238,9 +246,9 @@ namespace trapdoor {
         }
     }
 
-    bool BotProxy::useItem(const string &name) const {
+    int BotProxy::useItem(const string &name) const {
         if (bot::switchItemToHandByName(this->player, name)) {
-            return this->player->simulateUseItem(*bot::getSelectItem(this->player)) ? 0 : 1
+            return this->player->simulateUseItem(*bot::getSelectItem(this->player)) ? 0 : 1;
         } else {
             return -1;
         }

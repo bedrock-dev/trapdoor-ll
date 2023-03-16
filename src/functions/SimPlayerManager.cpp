@@ -394,6 +394,7 @@ namespace trapdoor {
         }
 
         it->second.task.cancel();
+        it->second.driver.stop();
         if (it->second.simPlayer) it->second.simPlayer->simulateDisconnect();
         simPlayers.erase(name);
         // this->syncPlayerListToFile();
@@ -646,8 +647,8 @@ namespace trapdoor {
         }
 
         auto &driver = it->second.driver;
-        if (driver.init(path, it->second.simPlayer, interval, stopWhenError)) {
-            return trapdoor::ErrorMsg("Init Script Engine failure, please check the script name");
+        if (!driver.init(path, it->second.simPlayer, interval, stopWhenError)) {
+            return trapdoor::ErrorMsg("Init Script Engine failure, please check the script");
         }
         return trapdoor::OperationSuccess();
     }
@@ -657,7 +658,6 @@ namespace trapdoor {
  * 定时保存备背包数据(同步)
  */
 THook(void,
-
       "?savePlayers@Level@@UEAAXXZ",
       Level * self
 ) {
