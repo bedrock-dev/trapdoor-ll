@@ -1,3 +1,19 @@
+### trapdoor-ll-0.35.0-1.19.63.01
+
+#### 更新日志
+
+- 修复假人部分刷物品的bug
+- 调整假人的相关命令(`useonpos`,`useon`,`destroypos`,`destroy`)
+- 为假人增加脚本执行功能，具体见[假人脚本API & 教程](https://bedrock-dev.github.io/tr-wiki/scripts.html)
+
+---
+
+- Fixed the bug of simulated player can duplicate items
+- Adjust some `player` subcommands (`useonpos`,`useon`,`destroypos`,`destroy`)
+- Add script execution features for simulated player,
+  see [Dummy Script API & Tutorial](https://bedrock-dev.github.io/tr-wiki/scripts.html) for details
+  (Due to limited time, the English document is suspended)
+
 ### trapdoor-ll-0.30.0-1.19.61.01
 
 **由于`installer.exe`会自动判别LL版本，因此此后不再标出LL版本信息**

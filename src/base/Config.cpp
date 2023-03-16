@@ -276,5 +276,16 @@ namespace trapdoor {
         return builder.get();
     }
 
+    std::vector<std::string> Configuration::readBotScripts() {
+        std::vector<std::string> scripts;
+        namespace fs = std::filesystem;
+        for (auto &f: fs::directory_iterator("./plugins/trapdoor/scripts")) {
+            if (f.is_regular_file() && f.path().extension() == ".lua") {
+                trapdoor::logger().debug("Find script file: {} Found", f.path().filename().string());
+                scripts.push_back(f.path().filename().string());
 
-}  // namespace trapdoor
+            }
+        }
+        return scripts;
+    }  // namespace trapdoor
+}

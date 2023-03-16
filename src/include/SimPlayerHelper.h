@@ -9,6 +9,7 @@
 #include "CommandHelper.h"
 #include "DynamicCommandAPI.h"
 #include "ScheduleAPI.h"
+#include "ScriptDriver.h"
 
 namespace trapdoor {
     class SimPlayerManager {
@@ -16,6 +17,7 @@ namespace trapdoor {
             std::string name;
             SimulatedPlayer *simPlayer;
             ScheduleTask task;
+            ScriptDriver driver;
         };
 
         void syncPlayerListToFile();
@@ -24,6 +26,7 @@ namespace trapdoor {
         inline void setupCommandInstance(const DynamicCommandInstance *instance) {
             this->cmdInstance = instance;
         }
+
 
         void savePlayerInventoryToFile();
 
@@ -86,16 +89,21 @@ namespace trapdoor {
 
         ActionResult swapBackpack(const std::string &name, Player *origin);
 
+        ActionResult runScript(const std::string &name, const std::string &scriptPath, int interval, bool stopOnError);
+
         void cancel(const std::string &name);
 
         void stopAction(const std::string &name);
 
         bool checkSurvival(const std::string &name);
 
+        void refreshCommandScriptSoftEnum(const std::vector<std::string> &scripts);
+
+
     private:
         void refreshCommandSoftEnum();
 
-        static SimulatedPlayer *createSimPlayer(const std::string &name);
+        // static SimulatedPlayer *createSimPlayer(const std::string &name);
 
         std::unordered_map<std::string, SimInfo> simPlayers;
         const DynamicCommandInstance *cmdInstance = nullptr;

@@ -87,6 +87,7 @@ namespace trapdoor {
 
         inline GlobalFunctionConfig &getGlobalFunctionConfig() { return this->globalFunctionConfig; }
 
+
         bool init(const std::string &fileName, bool reload);
 
         std::string dumpConfigInfo();
@@ -112,6 +113,8 @@ namespace trapdoor {
             //other options
 
         }
+
+        static std::vector<std::string> readBotScripts();
 
     private:
         bool readConfigFile(const std::string &path);

@@ -20,7 +20,7 @@ void prepare() {
     tryCreateFolder("./plugins/trapdoor/sim");
     tryCreateFolder("./plugins/trapdoor/player");
     tryCreateFolder("./plugins/trapdoor/logs");
-
+    tryCreateFolder("./plugins/trapdoor/scripts");
 }
 
 void PluginInit() {

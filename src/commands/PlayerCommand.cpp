@@ -7,6 +7,7 @@
 
 namespace trapdoor {
 
+
     void setup_playerCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
@@ -29,11 +30,13 @@ namespace trapdoor {
 
         auto backpackOpt = command->setEnum("backpackOpt", {"backpack"});
         auto stopOpt = command->setEnum("stopOpt", {"stop", "cancel"});
-        auto setOpt = command->setEnum("setOpt", {"set"});
+        auto selectOpt = command->setEnum("selectOpt", {"select"});
         auto dropOpt = command->setEnum("dropOpt", {"drop", "droptype"});
         auto cmdOpt = command->setEnum("cmdOpt", {"runcmd"});
         auto followOpt = command->setEnum("followOpt", {"follow"});
         auto tpOpt = command->setEnum("tpOpt", {"tp"});
+
+        auto scriptOpt = command->setEnum("scriptOpt", {"script"});
 
         command->mandatory("player", ParamType::Enum, spawnOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
@@ -64,7 +67,7 @@ namespace trapdoor {
         command->mandatory("player", ParamType::Enum, stopOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
-        command->mandatory("player", ParamType::Enum, setOpt,
+        command->mandatory("player", ParamType::Enum, selectOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
         // 丢一组 丢一种
@@ -79,7 +82,14 @@ namespace trapdoor {
         command->mandatory("player", ParamType::Enum, tpOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
+        command->mandatory("player", ParamType::Enum, scriptOpt,
+                           CommandParameterOption::EnumAutocompleteExpansion);
+
+
         command->mandatory("name", ParamType::SoftEnum, command->setSoftEnum("name", {}));
+
+        command->mandatory("file", ParamType::SoftEnum,
+                           command->setSoftEnum("file", trapdoor::Configuration::readBotScripts()));
 
         command->mandatory("command", ParamType::String);
         command->mandatory("itemId", ParamType::Item);
@@ -92,14 +102,16 @@ namespace trapdoor {
 
         command->mandatory("slot", ParamType::Int);
 
+        command->optional("errorstop", ParamType::Bool);
+
         // clang-format off
         //  cancel task and stop action
         command->addOverload({"name", stopOpt});
         // check inv
         command->addOverload({"name", backpackOpt});
         //set
-        command->addOverload({"name", setOpt, "itemId"});
-        command->addOverload({"name", setOpt, "slot"});
+        command->addOverload({"name", selectOpt, "itemId"});
+        command->addOverload({"name", selectOpt, "slot"});
         //drop
         command->addOverload({"name", dropOpt, "itemId"});
 
@@ -141,6 +153,9 @@ namespace trapdoor {
 
         //传送
         command->addOverload({"name", tpOpt, "vec3"});
+
+        command->addOverload({"name", scriptOpt, "file", "interval", "errorstop"});
+
         // clang-format on
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
@@ -164,6 +179,11 @@ namespace trapdoor {
                     results["blockPos"].isSet ? results["blockPos"].get<BlockPos>() : BlockPos::MAX;
 
             auto vec3 = results["vec3"].isSet ? results["vec3"].get<Vec3>() : Vec3::MAX;
+
+            auto scriptFile = results["file"].isSet ? results["file"].get<std::string>() : "";
+
+            auto errorStop = !results["errorstop"].isSet || results["errorstop"].get<bool>();
+
 
             switch (do_hash(results["player"].getRaw<std::string>().c_str())) {
                 case do_hash("spawn"):
@@ -193,7 +213,7 @@ namespace trapdoor {
                             .sendTo(output);
                     break;
 
-                case do_hash("set"):
+                case do_hash("select"):
                     trapdoor::mod()
                             .getSimPlayerManager()
                             .setItem(name, itemId, slot)
@@ -315,6 +335,10 @@ namespace trapdoor {
                             .swapBackpack(name, origin.getPlayer())
                             .sendTo(output);
                     break;
+                case do_hash("script"):
+                    trapdoor::mod().getSimPlayerManager().runScript(name, scriptFile, interval, errorStop).sendTo(
+                            output);
+
             }
         };
 
