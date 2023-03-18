@@ -255,6 +255,7 @@ namespace trapdoor {
 }  // namespace trapdoor
 
 /*
+GameSession::tick
 ServerLevel::tick
  - Redstone
     - Dimension::tickRedstone(shouldUpdate,cacheValue,evaluate)
@@ -270,7 +271,7 @@ ServerLevel::tick
         - Actor::tick(non global)
 */
 
-THook(void, "?tick@ServerLevel@@UEAAXXZ", void *level) {
+THook(void, "?tick@GameSession@@QEAAXXZ", void *level) {
     trapdoor::printTickMsg("ServerLevel.tick");
     auto &info = trapdoor::getTickingInfo();
     auto &mod = trapdoor::mod();
