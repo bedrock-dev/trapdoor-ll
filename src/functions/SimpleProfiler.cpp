@@ -74,7 +74,7 @@ namespace trapdoor {
         this->type = t;
         this->redstoneInfo.reset();
         this->chunkInfo.reset();
-        this->serverLevelTickTime = 0;
+        this->gameSessionTickTime = 0;
         this->dimensionTickTime = 0;
         this->entitySystemTickTime = 0;
         for (auto &m : this->actorInfo) {
@@ -206,26 +206,30 @@ namespace trapdoor {
         const double divide = 1000.0 * static_cast<double>(totalRound);
         trapdoor::logger().debug("divide = {}", divide);
         auto cf = [divide](microsecond_t time) { return static_cast<float>(time) * 1.0f / divide; };
-        auto mspt = cf(serverLevelTickTime);
+        auto mspt = cf(gameSessionTickTime);
         int tps = mspt <= 50 ? 20 : static_cast<int>(1000.0 / mspt);
         auto res = fmt::format(
             "- MSPT: {:.3f} ms TPS: {} Chunks: {}\n"
+            "- Trapdoor: {:.3f} ms\n"
             "- Redstone: {:.3f} ms\n"
-            "  - Signal: {:.3f} ms\n"
-            "  - Add: {:.3f} ms\n"
-            "  - Update: {:.3f} ms\n"
-            "  - Remove: {:.3f} ms\n"
+            "   - Signal: {:.3f} ms\n"
+            "   - Add: {:.3f} ms\n"
+            "   - Update: {:.3f} ms\n"
+            "   - Remove: {:.3f} ms\n"
             "- EntitySystems: {:.3f} ms\n"
             "- Chunk (un)load & village: {:.3f} ms\n"
             "- Chunk tick: {:.3f} ms\n"
-            "  - BlockEntities: {:.3f} ms\n"
-            "  - RandomTick: {:.3f} ms\n"
-            "  - PendingTick: {:.3f} ms\n",
+            "   - BlockEntities: {:.3f} ms\n"
+            "   - RandomTick: {:.3f} ms\n"
+            "   - PendingTick: {:.3f} ms\n",
 
             /*summary*/
             mspt, tps, this->chunkInfo.getChunkNumber(),
+            /*trapdoor*/
+            cf(trapdoorSessionTickTime),
             /*redstone*/
-            cf(redstoneInfo.sum()), cf(redstoneInfo.signalUpdate),  //
+            cf(redstoneInfo.sum()),
+            cf(redstoneInfo.signalUpdate),  //
             cf(redstoneInfo.pendingAdd), cf(redstoneInfo.pendingUpdate),
             cf(redstoneInfo.pendingRemove),  //
             /*entities system & dimension*/

@@ -19,7 +19,14 @@ typedef int64_t microsecond_t;
     auto elapsed = timer_clock::now() - start; \
     long long timeResult = std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count();
 
+#define PROF_TIMER(label, Codes)                                                 \
+    auto start_##label = std::chrono::high_resolution_clock::now();              \
+    { Codes }                                                                    \
+    auto e_##label = std::chrono::high_resolution_clock ::now() - start_##label; \
+    auto time_##label = std::chrono::duration_cast<std::chrono::microseconds>(e_##label).count();
+
 namespace trapdoor {
+
     using std::chrono::microseconds;
 
     double micro_to_mill(uint64_t v);
@@ -113,8 +120,9 @@ namespace trapdoor {
         ChunkProfileInfo chunkInfo{};
         std::array<std::map<std::string, EntityInfo>, 3> actorInfo{};
         RedstoneProfileInfo redstoneInfo{};
-        microsecond_t serverLevelTickTime = 0;  // mspt
-        microsecond_t dimensionTickTime = 0;    // 区块加载卸载&村庄
+        microsecond_t gameSessionTickTime = 0;      // mspt
+        microsecond_t trapdoorSessionTickTime = 0;  // tr自身占用的mspt
+        microsecond_t dimensionTickTime = 0;        // 区块加载卸载&村庄
         microsecond_t entitySystemTickTime = 0;
 
         std::array<std::map<TBlockPos2, size_t>, 3> ptCounter{};

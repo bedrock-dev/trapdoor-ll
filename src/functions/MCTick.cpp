@@ -167,11 +167,11 @@ namespace trapdoor {
 
         trapdoor::TextBuilder builder;
         builder.text(" - MSPT / TPS: ")
-                .sTextF(TextBuilder::DARK_GREEN, "%.3f / %.1f\n", trapdoor::micro_to_mill(mspt), tps)
-                .text(" - MIN / MAX: ")
-                .sTextF(TextBuilder::DARK_GREEN, "%.3f / %.3f \n", trapdoor::micro_to_mill(min),
-                        trapdoor::micro_to_mill(max))
-                .text(" - Normal / Redstone: ");
+            .sTextF(TextBuilder::DARK_GREEN, "%.3f / %.1f\n", trapdoor::micro_to_mill(mspt), tps)
+            .text(" - MIN / MAX: ")
+            .sTextF(TextBuilder::DARK_GREEN, "%.3f / %.3f \n", trapdoor::micro_to_mill(min),
+                    trapdoor::micro_to_mill(max))
+            .text(" - Normal / Redstone: ");
         auto pair = getMSPTinfo().pairs();
         builder.sTextF(TextBuilder::DARK_GREEN, "%.3f / %.3f \n",
                        trapdoor::micro_to_mill(pair.first), trapdoor::micro_to_mill(pair.second));
@@ -209,14 +209,14 @@ namespace trapdoor {
         auto buildPtItem = [](const trapdoor::TBlockTick &pt, size_t currentTick) -> std::string {
             trapdoor::TextBuilder b;
             b.text(" - ")
-                    .sTextF(trapdoor::TB::AQUA, "[%d %d %d]", pt.data.pos.x, pt.data.pos.y,
-                            pt.data.pos.z)
-                    .textF(" %s ", trapdoor::rmmc(pt.data.block->getName().getString()).c_str())
-                    .sTextF(trapdoor::TB::GREEN, " %zu / %d ", pt.data.tick, pt.data.tick - currentTick)
-                    .text(" p: ")
-                    .sTextF(trapdoor::TB::GREEN, "%d", pt.data.priorityOffset)
-                    .text(" v: ")
-                    .sTextF(trapdoor::TB::GREEN, "%d", !pt.removed);
+                .sTextF(trapdoor::TB::AQUA, "[%d %d %d]", pt.data.pos.x, pt.data.pos.y,
+                        pt.data.pos.z)
+                .textF(" %s ", trapdoor::rmmc(pt.data.block->getName().getString()).c_str())
+                .sTextF(trapdoor::TB::GREEN, " %zu / %d ", pt.data.tick, pt.data.tick - currentTick)
+                .text(" p: ")
+                .sTextF(trapdoor::TB::GREEN, "%d", pt.data.priorityOffset)
+                .text(" v: ")
+                .sTextF(trapdoor::TB::GREEN, "%d", !pt.removed);
             return b.get();
         };
 
@@ -224,12 +224,12 @@ namespace trapdoor {
         if (printAll) {
             b.sTextF(trapdoor::TB::AQUA, "-- [%d %d] Tick = %zu, Total %d Pts--\n", chunkPos.x,
                      chunkPos.z, queue->currentTick, queue->next.queue.size());
-            for (auto &pt: queue->next.queue) {
+            for (auto &pt : queue->next.queue) {
                 b.textF("%s\n", buildPtItem(pt, queue->currentTick).c_str());
             }
 
         } else {
-            for (auto &pt: queue->next.queue) {
+            for (auto &pt : queue->next.queue) {
                 if (pt.data.pos == p) {
                     b.textF("%s\n", buildPtItem(pt, queue->currentTick).c_str());
                     break;
@@ -276,15 +276,17 @@ THook(void, "?tick@GameSession@@QEAAXXZ", void *level) {
     auto &info = trapdoor::getTickingInfo();
     auto &mod = trapdoor::mod();
     if (info.status == trapdoor::TickingStatus::Normal) {
-        TIMER_START
-        original(level);
-        mod.lightTick();
-        mod.heavyTick();
-        TIMER_END
-        trapdoor::getMSPTinfo().push(timeResult);
+        PROF_TIMER(game_session, { original(level); })
+        PROF_TIMER(trapdoor_session, {
+            mod.lightTick();
+            mod.heavyTick();
+        })
+
+        trapdoor::getMSPTinfo().push(time_game_session + time_trapdoor_session);
         auto &prof = trapdoor::normalProfiler();
         if (prof.profiling) {
-            prof.serverLevelTickTime += timeResult;
+            prof.gameSessionTickTime += (time_game_session + time_trapdoor_session);
+            prof.trapdoorSessionTickTime += time_trapdoor_session;
             prof.currentRound++;
             if (prof.currentRound == prof.totalRound) {
                 prof.stop();
@@ -495,7 +497,7 @@ THook(void, "?tick@Actor@@QEAA_NAEAVBlockSource@@@Z", Actor *actor, void *bs) {
         TIMER_END
 
         prof.actorInfo[static_cast<int>(actor->getDimensionId())][actor->getTypeName()].time +=
-                timeResult;
+            timeResult;
         prof.actorInfo[static_cast<int>(actor->getDimensionId())][actor->getTypeName()].count++;
     } else {
         original(actor, bs);
