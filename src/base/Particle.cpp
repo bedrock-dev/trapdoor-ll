@@ -51,11 +51,11 @@ namespace trapdoor {
        // 对外使用tr自己的vec3，调api时使用自己的
     void spawnParticle(const TVec3& pos, const std::string& type, int dimID) {
         Vec3 p(pos.x, pos.y, pos.z);
-        auto dim_ref = Global<Level>->getDimension(dimID).mHandle.lock();
-        auto* d = trapdoor::unwrap_shard_ptr_ref(dim_ref.get());
+        // TODO: rewrite particle
+        auto dim = Global<Level>->getDimension(dimID).mHandle.lock().get();
         auto pvd = trapdoor::mod().getConfig().getBasicConfig().particleViewDistance2D;
-        if (d->distanceToNearestPlayerSqr2D(p) > static_cast<float>(pvd)) return;
-        Global<Level>->spawnParticleEffect(type, p, d);
+        if (dim->distanceToNearestPlayerSqr2D(p) > static_cast<float>(pvd)) return;
+        Global<Level>->spawnParticleEffect(type, p, dim);
     }
 
     std::string buildLienParticleType(int length, TFACING direction, PCOLOR color,

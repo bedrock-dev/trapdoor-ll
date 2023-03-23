@@ -47,23 +47,23 @@ namespace trapdoor {
             auto *block = pointBlock.getBlock();
             if (block && block->hasComparatorSignal()) {
                 container_signal = std::to_string(
-                        block->getComparatorSignal(player->getRegion(), pointBlock.getPosition(),
-                                                   static_cast<unsigned char>(FaceID::East)));
+                    block->getComparatorSignal(player->getRegion(), pointBlock.getPosition(),
+                                               static_cast<unsigned char>(FaceID::East)));
             }
 
             return fmt::format("Signal: {} / {}\n", redstone_signal, container_signal);
         }
 
         std::string buildHopperCounter(Player *player) {
-//            auto &hcm = trapdoor::mod().getHopperChannelManager();
-//            if (!hcm.isEnable()) return "";
-//            TextBuilder b;
-//            auto pointBlock = reinterpret_cast<Actor *>(player)->getBlockFromViewVector();
-//            if (pointBlock.isNull()) return "";
-//            auto *block = pointBlock.getBlock();
-//            if (block->getId() == HopperChannelManager::HOPPER_COUNTER_BLOCK) {
+            //            auto &hcm = trapdoor::mod().getHopperChannelManager();
+            //            if (!hcm.isEnable()) return "";
+            //            TextBuilder b;
+            //            auto pointBlock = reinterpret_cast<Actor
+            //            *>(player)->getBlockFromViewVector(); if (pointBlock.isNull()) return "";
+            //            auto *block = pointBlock.getBlock();
+            //            if (block->getId() == HopperChannelManager::HOPPER_COUNTER_BLOCK) {
             return trapdoor::mod().getHopperChannelManager().getHUDData(
-                    trapdoor::mod().getUserConfig().getActiveHopperChannel(player->getRealName()));
+                trapdoor::mod().getUserConfig().getActiveHopperChannel(player->getRealName()));
         }
 
         std::string buildContainerInfo(Player *player) {
@@ -92,15 +92,15 @@ namespace trapdoor {
             auto pointPos = pointBlock.getPosition();
 
             auto rb = bs.getRawBrightness(pointPos + BlockPos(0, 1, 0), true, true);
-            auto bright = (uint32_t) *reinterpret_cast<unsigned char *>(&rb);
+            auto bright = (uint32_t) * reinterpret_cast<unsigned char *>(&rb);
             if (!pointBlock.isNull()) {
                 b.textF("Block: %d %d %d  Light: %u\n", pointPos.x, pointPos.y, pointPos.z, bright);
             } else {
                 b.text("Block: None\n");
             }
             auto &delta = player->getPosDeltaNonConst();
-            b.textF("Speed: %.4lf (%.2lf %.2lf %.2lf)\n", delta.length() * 20, delta.x * 20, delta.y * 20,
-                    delta.z * 20);
+            b.textF("Speed: %.4lf (%.2lf %.2lf %.2lf)\n", delta.length() * 20, delta.x * 20,
+                    delta.y * 20, delta.z * 20);
             auto &biome = bs.getBiome(pos);
             b.textF("Biome: %s (%d)\n", biome.getName().c_str(), biome.getId());
             return b.get();
@@ -113,14 +113,14 @@ namespace trapdoor {
             if (tps > 20.0) tps = 20.0;
             auto color = mspt <= 50 ? TextBuilder::GREEN : TextBuilder::RED;
             builder.text("MSPT: ")
-                    .sTextF(color, "%.3f", mspt)
-                    .text(" TPS: ")
-                    .sTextF(color, "%.1f", tps)
-                    .text("\n");
+                .sTextF(color, "%.3f", mspt)
+                .text(" TPS: ")
+                .sTextF(color, "%.1f", tps)
+                .text("\n");
             return builder.get();
         }
 
-    }
+    }  // namespace
 
     HUDItemType getHUDTypeFromString(const string &str) {
         if (str == "base") return HUDItemType::Base;
@@ -154,10 +154,10 @@ namespace trapdoor {
             case LEN:
                 return "unknown";
         }
+        return "unknown";
     }
 
-
-// 下面是成员函数
+    // 下面是成员函数
 
     std::vector<std::string> HUDHelper::getHUDItemStringList() {
         std::vector<std::string> hudItems;
@@ -173,29 +173,26 @@ namespace trapdoor {
         if (refresh_time != 1) return;
 
         auto &playerCfg = trapdoor::mod().getUserConfig().getPlayerData();
-        for (auto &info: playerCfg) {
+        for (auto &info : playerCfg) {
             auto *p = Global<Level>->getPlayer(info.first);
-            if (p &&
-                info.second.hud &&
-                info.second.hud_config[HUDItemType::Chunk]
-                    ) {
+            if (p && info.second.hud && info.second.hud_config[HUDItemType::Chunk]) {
                 auto pos = p->getPos().toBlockPos();
                 trapdoor::drawChunkSurface(fromBlockPos(pos).toChunkPos(),
-                                           (int) p->getDimension().getDimensionId());
+                                           (int)p->getDimension().getDimensionId());
             }
         }
     }
 
     void HUDHelper::tick() {
-        if (!trapdoor::mod().getConfig().getGlobalFunctionConfig().hud)return;
+        if (!trapdoor::mod().getConfig().getGlobalFunctionConfig().hud) return;
         this->tickChunk();
         static int refresh_time = 0;
         refresh_time =
-                (refresh_time + 1) % trapdoor::mod().getConfig().getBasicConfig().hudRefreshFreq;
+            (refresh_time + 1) % trapdoor::mod().getConfig().getBasicConfig().hudRefreshFreq;
         if (refresh_time != 1) return;
-        //遍历所有的有配置文件的信息（想有显示就必须add，add就会创建表项，因此不会出现玩家不在列表的选项）
+        // 遍历所有的有配置文件的信息（想有显示就必须add，add就会创建表项，因此不会出现玩家不在列表的选项）
         auto playerInfos = trapdoor::mod().getUserConfig().getPlayerData();
-        for (auto &info: playerInfos) {
+        for (auto &info : playerInfos) {
             auto *p = Global<Level>->getPlayer(info.first);
             if (p && info.second.hud) {
                 std::string s;
@@ -226,7 +223,6 @@ namespace trapdoor {
 
     ActionResult HUDHelper::modifyPlayerInfo(const std::string &playerName, const std::string &item,
                                              int op) {
-
         auto type = getHUDTypeFromString(item);
         if (type == HUDItemType::Unknown) {
             return ErrorMsg("hud.error.unknown-type");
