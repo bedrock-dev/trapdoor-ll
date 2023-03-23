@@ -92,7 +92,9 @@ namespace trapdoor {
     bool TrapdoorMod::initConfig(bool reload) {
         auto modRootPath = std::string("./plugins/trapdoor/");
 #ifdef DEV
-        modRootPath = "C:/Users/xhy/dev/trapdoor-ll/src/base/";
+
+        // modRootPath = "C:/Users/xhy/dev/trapdoor-ll/src/base/";
+        modRootPath = ::getenv("TR_CFG_PATH");
         logger().consoleLevel = 8;
 #endif
         logger().debug("mod root path: {}", modRootPath);
