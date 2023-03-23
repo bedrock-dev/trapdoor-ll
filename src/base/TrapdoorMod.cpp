@@ -2,6 +2,7 @@
 
 #include <cstdlib>
 #include <mc/MapItem.hpp>
+#include <mc/SimulatedPlayer.hpp>
 
 #include "BlockRotateHelper.h"
 #include "CommandHelper.h"
@@ -9,10 +10,8 @@
 #include "I18nAPI.h"
 #include "LoggerAPI.h"
 #include "SysInfoHelper.h"
-#include "config.h"
 #include "TrapdoorAPI.h"
-#include <mc/SimulatedPlayer.hpp>
-
+#include "config.h"
 
 #define REG_COMMAND(c)                                         \
     auto cfg_##c = cmdCfg.getCommandConfig(#c);                \
@@ -52,8 +51,8 @@ namespace trapdoor {
                           STR(GAME_VERSION));
             logger().info("Build time: {}", STR(BUILD_TIME));
             logger().info(
-                    "Visit our github page for more info:  "
-                    "https://github.com/bedrock-dev/trapdoor-ll/");
+                "Visit our github page for more info:  "
+                "https://github.com/bedrock-dev/trapdoor-ll/");
             logger().info("");
         }
 
@@ -80,8 +79,8 @@ namespace trapdoor {
 
     void TrapdoorMod::init() {
         printCopyrightInfo();
-        this->initConfig(false); //读取配置文件
-        this->globalUserConfig.init(); //读取用户的配置
+        this->initConfig(false);        // 读取配置文件
+        this->globalUserConfig.init();  // 读取用户的配置
 
         trapdoor::initCPU();
         trapdoor::SubscribeEvents();
@@ -91,8 +90,6 @@ namespace trapdoor {
     }
 
     bool TrapdoorMod::initConfig(bool reload) {
-
-
         auto modRootPath = std::string("./plugins/trapdoor/");
 #ifdef DEV
         modRootPath = "C:/Users/xhy/dev/trapdoor-ll/src/base/";
