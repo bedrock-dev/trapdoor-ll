@@ -1,3 +1,13 @@
+### trapdoor-ll-0.35.0-1.19.72.01
+#### 更新日志
+- 支持1.19.72.01
+- 为`prof`添加`Trapdoor`子项以测量插件自身的tick开销
+
+--- 
+
+- Support 1.19.72.01
+- Add `Trapdoor` items to the outputs of `prof` command to measure the tick overhead of mod itself.
+
 ### trapdoor-ll-0.35.0-1.19.63.01
 
 #### 更新日志

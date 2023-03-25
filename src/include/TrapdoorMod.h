@@ -27,6 +27,8 @@ namespace trapdoor {
 
         void lightTick();
 
+        std::string getVersionString() const;
+
         inline VillageHelper &getVillageHelper() { return this->villageHelper; }
 
         inline HsaManager &getHsaManager() { return this->hsaManager; }

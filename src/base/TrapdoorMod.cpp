@@ -9,6 +9,7 @@
 #include "Events.h"
 #include "I18nAPI.h"
 #include "LoggerAPI.h"
+#include "Msg.h"
 #include "SysInfoHelper.h"
 #include "TrapdoorAPI.h"
 #include "config.h"
@@ -47,9 +48,9 @@ namespace trapdoor {
 
         void printCopyrightInfo() {
             logger().info("");
-            logger().info("Trapdoor : {}-{} Under AGPL License", STR(TRAPDOOR_VERSION),
-                          STR(GAME_VERSION));
-            logger().info("Build time: {}", STR(BUILD_TIME));
+            logger().info("Trapdoor : {}-{} Under AGPL License", STRING(TRAPDOOR_VERSION),
+                          STRING(GAME_VERSION));
+            logger().info("Build time: {}", STRING(BUILD_TIME));
             logger().info(
                 "Visit our github page for more info:  "
                 "https://github.com/bedrock-dev/trapdoor-ll/");
@@ -115,6 +116,13 @@ namespace trapdoor {
         //
     }
 
+    std::string TrapdoorMod::getVersionString() const {
+        trapdoor::TextBuilder tb;
+        tb.sTextF(TB::BOLD | TB::AQUA, "Tapdoor v%s\n", STRING(TRAPDOOR_VERSION));
+        tb.sTextF(TB::BOLD | TB::WHITE, "Developed by %s %s", "hhhxiao", "OEOTYAN");
+        tb.textF("Build time: %s\n", STRING(BUILD_TIME));
+        return tb.get();
+    }
     TrapdoorMod &mod() {
         static TrapdoorMod mod;
         return mod;
