@@ -119,7 +119,7 @@ namespace trapdoor {
     std::string TrapdoorMod::getVersionString() const {
         trapdoor::TextBuilder tb;
         tb.sTextF(TB::BOLD | TB::AQUA, "Tapdoor v%s\n", STRING(TRAPDOOR_VERSION));
-        tb.sTextF(TB::BOLD | TB::WHITE, "Developed by %s %s", "hhhxiao", "OEOTYAN");
+        tb.sTextF(TB::BOLD | TB::WHITE, "Developed by %s %s\n", "hhhxiao", "OEOTYAN");
         tb.textF("Build time: %s\n", STRING(BUILD_TIME));
         return tb.get();
     }
