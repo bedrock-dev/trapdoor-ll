@@ -1,7 +1,6 @@
 #ifndef TRAPDOOR_TRAPDOOR_H
 #define TRAPDOOR_TRAPDOOR_H
 
-#include "UserConfig.h"
 #include "Configuration.h"
 #include "EventTrigger.h"
 #include "HUDHelper.h"
@@ -11,12 +10,13 @@
 #include "SimPlayerHelper.h"
 #include "SlimeChunkHelper.h"
 #include "SpawnAnalyzer.h"
+#include "UserConfig.h"
 #include "VillageHelper.h"
 #include "Windows.h"
 
 namespace trapdoor {
     class TrapdoorMod {
-    public:
+       public:
         void init();
 
         bool initConfig(bool reload);
@@ -49,7 +49,7 @@ namespace trapdoor {
 
         inline UserConfig &getUserConfig() { return this->globalUserConfig; }
 
-    private:
+       private:
         VillageHelper villageHelper;
         HsaManager hsaManager;
         Configuration config;
@@ -60,12 +60,13 @@ namespace trapdoor {
         SpawnAnalyzer spawnAnalyzer;
         SlimeChunkHelper slimeChunkHelper;
 
-        //user config cache
+        // user config cache
         UserConfig globalUserConfig;
 
         // base path
         std::string baseLevelPath;
         std::string levelName;
+        std::string modRootPath;
     };
 
     Logger &logger();

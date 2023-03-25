@@ -13,12 +13,18 @@
 #include "HookAPI.h"
 #include "TrapdoorMod.h"
 
-THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_N@Z", void *bs,
-      void *block, void *p, unsigned char face, void *placer, bool ignoreEntity) {
+/**
+ * bool BlockSource::mayPlace(class Block const &, class BlockPos const &, unsigned char, class
+Actor *, bool, class Vec3)
+[21338400]?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_NVVec3@@@Z
+*/
+THook(bool, "?mayPlace@BlockSource@@QEAA_NAEBVBlock@@AEBVBlockPos@@EPEAVActor@@_NVVec3@@@Z",
+      void *bs, void *block, void *p, unsigned char face, void *placer, bool ignoreEntity,
+      void *vec3) {
     auto level = trapdoor::mod().getConfig().getGlobalFunctionConfig().forcePlaceLevel;
-    if (level == 1) return original(bs, block, p, face, placer, true);
+    if (level == 1) return original(bs, block, p, face, placer, true, vec3);
     if (level == 2) return true;
-    return original(bs, block, p, face, placer, ignoreEntity);
+    return original(bs, block, p, face, placer, ignoreEntity, vec3);
 }
 
 THook(bool, "?canOpen@ChestBlockActor@@QEBA_NAEAVBlockSource@@@Z", void *container, void *bs) {
@@ -50,12 +56,9 @@ THook(void, "?updateNeighborsAt@BlockSource@@QEAAXAEBVBlockPos@@@Z", void *self,
 THook(void, "?setPlayerGameType@ServerPlayer@@UEAAXW4GameType@@@Z", ServerPlayer *player,
       GameType mode) {
     original(player, mode);
-    if (
-            player &&
-            mode == GameType::GameTypeCreative
-            && trapdoor::mod().getConfig().getGlobalFunctionConfig().creativeNoClip
-            && trapdoor::mod().getUserConfig().noclip(player->getRealName())
-            ) {
+    if (player && mode == GameType::GameTypeCreative &&
+        trapdoor::mod().getConfig().getGlobalFunctionConfig().creativeNoClip &&
+        trapdoor::mod().getUserConfig().noclip(player->getRealName())) {
         player->setAbility(static_cast<AbilitiesIndex>(17), true);
     }
 }
