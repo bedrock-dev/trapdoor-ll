@@ -3,29 +3,26 @@
 //
 
 #include "UserConfig.h"
-#include "TrapdoorMod.h"
-#include "Nlohmann/json.hpp"
+
 #include "HUDHelper.h"
 #include "Msg.h"
-
+#include "Nlohmann/json.hpp"
+#include "TrapdoorMod.h"
 
 namespace trapdoor {
 
-
     void UserConfig::syncConfigToDisk(const std::string &name) {
-
         auto it = this->playerData.find(name);
         if (it == this->playerData.end()) {
-            //这里理论上不可能找不到
+            // 这里理论上不可能找不到
             trapdoor::logger().error("Can not find player config data in memory");
         }
-
 
         auto &data = it->second;
         using namespace nlohmann;
         json j;
 
-#define  WRITE_SELF_CFG(item) j["self"][#item] = data.item;
+#define WRITE_SELF_CFG(item) j["self"][#item] = data.item;
         WRITE_SELF_CFG(hud)
         WRITE_SELF_CFG(blockrotate)
         WRITE_SELF_CFG(noclip)
@@ -36,7 +33,7 @@ namespace trapdoor {
                 j["hud"][typeString] = data.hud_config[i];
             }
         }
-        const auto fileName = "./plugins/trapdoor/player/" + name + ".json";
+        const auto fileName = trapdoor::mod().rootPath() + "/player/" + name + ".json";
         std::ofstream f(fileName);
         if (!f) {
             trapdoor::logger().warn("Can not write file {} to disk", fileName);
@@ -48,19 +45,17 @@ namespace trapdoor {
     void UserConfig::setHUD(const string &name, int item, bool value) {
         auto &data = this->playerData[name];
         if (item < 0 || item >= data.hud_config.size()) {
-            trapdoor::logger().error("Unknown error"); //理论上这里不会执行，以防万一还是加上
+            trapdoor::logger().error("Unknown error");  // 理论上这里不会执行，以防万一还是加上
         }
         data.hud_config[item] = value;
         this->syncConfigToDisk(name);
     }
 
-
     void UserConfig::init() {
         namespace fs = std::filesystem;
         using namespace nlohmann;
-        for (auto &f: fs::directory_iterator("./plugins/trapdoor/player")) {
+        for (auto &f : fs::directory_iterator(trapdoor::mod().rootPath() + "/player")) {
             if (f.is_regular_file() && f.path().extension() == ".json") {
-
                 auto playerName = f.path().stem().string();
 
                 trapdoor::logger().debug("Read player[{}] 's config file ", playerName);
@@ -76,18 +71,18 @@ namespace trapdoor {
                     file >> j;
                     PlayerData data;
 
-                    //读取tweak信息
+                    // 读取tweak信息
                     auto &self_cfg = j["self"];
-#define  READ_SELF_CFG(item, type) data.item = self_cfg[#item].get<type>();
+#define READ_SELF_CFG(item, type) data.item = self_cfg[#item].get<type>();
                     READ_SELF_CFG(hud, bool)
                     READ_SELF_CFG(blockrotate, bool)
                     READ_SELF_CFG(noclip, bool)
                     READ_SELF_CFG(autotool, bool)
 
-                    //读取
+                    // 读取
                     auto &hud_cfg = j["hud"];
 
-                    for (auto &[item, on]: hud_cfg.items()) {
+                    for (auto &[item, on] : hud_cfg.items()) {
                         auto type = getHUDTypeFromString(item);
                         if (type != Unknown) {
                             data.hud_config[static_cast<int>(type)] = on.get<bool>();
@@ -95,25 +90,22 @@ namespace trapdoor {
                     }
                     this->playerData[playerName] = data;
                 } catch (std::exception &e) {
-                    trapdoor::logger().warn("Can not read player [{}]'s config file: {}", f.path().stem().string(),
-                                            e.what());
+                    trapdoor::logger().warn("Can not read player [{}]'s config file: {}",
+                                            f.path().stem().string(), e.what());
                 }
-
-
             }
-
         }
-        //读取配置文件
+        // 读取配置文件
     }
 
     ActionResult UserConfig::dumpAllSelfConfig(const string &name) {
         trapdoor::TextBuilder builder;
         auto &d = this->playerData[name];
         builder.sText(TB::BOLD | TB::WHITE, "Self Configs:\n")
-                .item("Creative No Clip", d.noclip)
-                .item("Block rotate", d.blockrotate)
-                .item("Auto select tool", d.autotool)
-                .item("HUD", d.hud);
+            .item("Creative No Clip", d.noclip)
+            .item("Block rotate", d.blockrotate)
+            .item("Auto select tool", d.autotool)
+            .item("HUD", d.hud);
         builder.sText(TB::BOLD | TB::WHITE, "HUDs :\n");
 
         for (int i = 0; i < d.hud_config.size(); i++) {
@@ -126,18 +118,19 @@ namespace trapdoor {
         return trapdoor::SuccessMsg(builder.get());
     }
 
-    //重写
+    // 重写
     ActionResult UserConfig::set_noclip(const string &name, bool value) {
         this->playerData[name].noclip = value;
-        //自动更新玩家状态
+        // 自动更新玩家状态
         auto *p = Global<Level>->getPlayer(name);
         if (p && p->getPlayerGameType() == GameType::GameTypeCreative) {
-            //只有两个都开启才会更换模式，已在穿墙模式的则强制变回来（有冗余逻辑但是不重要）
-            p->setAbility(static_cast<AbilitiesIndex>(17),
-                          value && trapdoor::mod().getConfig().getGlobalFunctionConfig().creativeNoClip);
+            // 只有两个都开启才会更换模式，已在穿墙模式的则强制变回来（有冗余逻辑但是不重要）
+            p->setAbility(
+                static_cast<AbilitiesIndex>(17),
+                value && trapdoor::mod().getConfig().getGlobalFunctionConfig().creativeNoClip);
         }
 
         this->syncConfigToDisk(name);
         return trapdoor::SetValueMsg("noclip", value);
     }
-}
+}  // namespace trapdoor

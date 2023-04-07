@@ -23,11 +23,13 @@ namespace trapdoor {
 
         void getLevelNameFromUser();
 
+        std::string rootPath() const;
+
         void heavyTick();
 
         void lightTick();
 
-        std::string getVersionString() const;
+        [[nodiscard]] std::string getVersionString() const;
 
         inline VillageHelper &getVillageHelper() { return this->villageHelper; }
 

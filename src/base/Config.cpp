@@ -30,23 +30,23 @@ namespace trapdoor {
             trapdoor::logger().debug(tr("Set [{}] to {}"), name, key);
         }
 
-        template<typename T>
+        template <typename T>
         std::string createItem(const std::string &name, T value) {
             trapdoor::TextBuilder builder;
             return builder.sText(TB::GRAY, " - ")
-                    .text(name)
-                    .text(":")
-                    .sTextF(TB::GREEN | TB::BOLD, " %s\n", std::to_string(value).c_str())
-                    .get();
+                .text(name)
+                .text(":")
+                .sTextF(TB::GREEN | TB::BOLD, " %s\n", std::to_string(value).c_str())
+                .get();
         }
 
         std::string createStringItem(const std::string &name, const std::string &value) {
             trapdoor::TextBuilder builder;
             return builder.sText(TB::GRAY, " - ")
-                    .text(name)
-                    .text(":")
-                    .sTextF(TB::GREEN | TB::BOLD, " %s\n", value.c_str())
-                    .get();
+                .text(name)
+                .text(":")
+                .sTextF(TB::GREEN | TB::BOLD, " %s\n", value.c_str())
+                .get();
         }
 
     }  // namespace
@@ -81,7 +81,7 @@ namespace trapdoor {
         auto cc = this->config["commands"];
         CommandConfig tempConfig;
         try {
-            for (const auto &i: cc.items()) {
+            for (const auto &i : cc.items()) {
                 const auto &value = i.value();
                 tempConfig.enable = value["enable"].get<bool>();
                 tempConfig.permissionLevel = value["permission-level"].get<int>();
@@ -129,12 +129,12 @@ namespace trapdoor {
         try {
             this->shortcuts.clear();
             auto cc = this->config["shortcuts"];
-            for (const auto &i: cc.items()) {
+            for (const auto &i : cc.items()) {
                 Shortcut sh;
                 const auto &value = i.value();
                 auto type = value["type"].get<std::string>();
                 auto actions = value["actions"];
-                for (const auto &act: actions) {
+                for (const auto &act : actions) {
                     sh.actions.push_back(act.get<std::string>());
                 }
                 if (sh.actions.empty()) {
@@ -189,22 +189,18 @@ namespace trapdoor {
     bool Configuration::readGlobalFunctionConfig() {
         /**
          *
-    "[FOR GLOBAL]": "If the following settings are enabled then these features are enabled globally",
-    "force-place-level": 0,
-    "dropper-no-cost": false,
-    "hopper-counter": false,
+    "[FOR GLOBAL]": "If the following settings are enabled then these features are enabled
+    globally", "force-place-level": 0, "dropper-no-cost": false, "hopper-counter": false,
     "safe-explosion": false,
     "max-pending-tick-size": 100,
-    "[FOR SINGLE]": "The following features are enabled only when both the following settings and the player's own settings(/self command) are enabled",
-    "hud": true,
-    "creative-no-clip": false,
+    "[FOR SINGLE]": "The following features are enabled only when both the following settings and
+    the player's own settings(/self command) are enabled", "hud": true, "creative-no-clip": false,
     "block-rotate": false,
     "auto-select-tool": false,
     "force-open-container": false
          */
 
         try {
-
             auto d = this->config["default-functions-config"];
             auto forcePlaceLevel = d["force-place-level"].get<int>();
             auto dropperNoCost = d["dropper-no-cost"].get<bool>();
@@ -238,39 +234,37 @@ namespace trapdoor {
         return true;
     }
 
-
     std::string Configuration::dumpConfigInfo()  // NOLINT
     {
-
         TextBuilder builder;
         auto basicCfg = this->basicConfig;
-        builder.sText(TB::BOLD | TB::WHITE, "Basic Configs:\n")
+        builder
+            .sText(TB::BOLD | TB::WHITE, "Basic Configs:\n")
 
-                .item("HUD refresh frequency", basicCfg.hudRefreshFreq)
-                .item("Particle display level", basicCfg.particleLevel)
-                .item("Particle view distance", sqrt(basicCfg.particleViewDistance2D))
-                .item("Tool damage threshold", basicCfg.toolDamageThreshold)
-                .item("Keep sim player Inv", basicCfg.keepSimPlayerInv)
-                .item("Sim player name prefix", basicCfg.simPlayerPrefix);
-
+            .item("HUD refresh frequency", basicCfg.hudRefreshFreq)
+            .item("Particle display level", basicCfg.particleLevel)
+            .item("Particle view distance", sqrt(basicCfg.particleViewDistance2D))
+            .item("Tool damage threshold", basicCfg.toolDamageThreshold)
+            .item("Keep sim player Inv", basicCfg.keepSimPlayerInv)
+            .item("Sim player name prefix", basicCfg.simPlayerPrefix);
 
         auto func = this->globalFunctionConfig;
         builder.sText(TB::BOLD | TB::WHITE, "Global Function Configs:\n")
-                .item("Force place level", func.forcePlaceLevel)
-                .item("Dropper no cost", func.dropperNoCost)
-                .item("Hopper counter", func.hopperCounter)
-                .item("Safe explosion", func.safeExplosion)
-                .item("Max pending tick size ", func.maxPendingTickSize)
-                        //For self
-                .item("HUD", func.hud)
-                .item("Creative no clip", func.creativeNoClip)
-                .item("Block rotate", func.blockRotate)
-                .item("Auto select tool", func.autoSelectTool)
-                .item("Force open container", func.forceOpenContainer);
+            .item("Force place level", func.forcePlaceLevel)
+            .item("Dropper no cost", func.dropperNoCost)
+            .item("Hopper counter", func.hopperCounter)
+            .item("Safe explosion", func.safeExplosion)
+            .item("Max pending tick size ", func.maxPendingTickSize)
+            // For self
+            .item("HUD", func.hud)
+            .item("Creative no clip", func.creativeNoClip)
+            .item("Block rotate", func.blockRotate)
+            .item("Auto select tool", func.autoSelectTool)
+            .item("Force open container", func.forceOpenContainer);
 
         builder.sText(TB::BOLD | TB::WHITE, "Shortcuts:\n");
         auto &scs = this->shortcuts;
-        for (auto &sh: scs) {
+        for (auto &sh : scs) {
             builder.sText(TB::GRAY, " - ").textF("%s\n", sh.getDescription().c_str());
         }
         return builder.get();
@@ -279,13 +273,13 @@ namespace trapdoor {
     std::vector<std::string> Configuration::readBotScripts() {
         std::vector<std::string> scripts;
         namespace fs = std::filesystem;
-        for (auto &f: fs::directory_iterator("./plugins/trapdoor/scripts")) {
+        for (auto &f : fs::directory_iterator(trapdoor::mod().rootPath() + "/scripts")) {
             if (f.is_regular_file() && f.path().extension() == ".lua") {
-                trapdoor::logger().debug("Find script file: {} Found", f.path().filename().string());
+                trapdoor::logger().debug("Find script file: {} Found",
+                                         f.path().filename().string());
                 scripts.push_back(f.path().filename().string());
-
             }
         }
         return scripts;
     }  // namespace trapdoor
-}
+}  // namespace trapdoor

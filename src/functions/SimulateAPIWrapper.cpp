@@ -3,8 +3,8 @@
 //
 
 #include "SimulateAPIWrapper.h"
-#include "TrapdoorMod.h"
 
+#include "TrapdoorMod.h"
 
 namespace trapdoor::bot {
 
@@ -24,7 +24,6 @@ namespace trapdoor::bot {
         return nullptr;
     }
 
-
     ItemStack *searchFirstItemInInvByName(SimulatedPlayer *sim, int &slot, const string &name) {
         return searchFirstItemInInv(sim, slot, [&](const ItemStack *item) -> bool {
             return rmmc(item->getTypeName()) == rmmc(name);
@@ -32,14 +31,13 @@ namespace trapdoor::bot {
     }
 
     ItemStack *searchFirstItemInInvById(SimulatedPlayer *sim, int &slot, int id) {
-        return searchFirstItemInInv(sim, slot, [&](const ItemStack *item) -> bool {
-            return item->getId() == id;
-        });
+        return searchFirstItemInInv(
+            sim, slot, [&](const ItemStack *item) -> bool { return item->getId() == id; });
     }
 
     void swapTwoSlotInInventory(Container &cont, int s1, int s2) {
-        if (s1 < 0 || s2 < 0 || s1 > cont.getSize() || s2 > cont.getSize())return;
-        if (s1 == s2)return;
+        if (s1 < 0 || s2 < 0 || s1 > cont.getSize() || s2 > cont.getSize()) return;
+        if (s1 == s2) return;
 
         auto i1 = cont.getItem(s1).clone();
         auto i2 = cont.getItem(s2).clone();
@@ -53,17 +51,16 @@ namespace trapdoor::bot {
         int slot = -1;
         auto select = player->getSelectedItemSlot();
         auto *item = searchFirstItemInInvByName(player, slot, name);
-        if (slot < 0)return false;
+        if (slot < 0) return false;
         swapTwoSlotInInventory(player->getInventory(), slot, select);
         return true;
     }
-
 
     bool switchItemToHandById(SimulatedPlayer *player, int itemId) {
         int slot = -1;
         auto select = player->getSelectedItemSlot();
         auto *item = searchFirstItemInInvById(player, slot, itemId);
-        if (slot < 0)return false;
+        if (slot < 0) return false;
         swapTwoSlotInInventory(player->getInventory(), slot, select);
         return true;
     }
@@ -71,15 +68,15 @@ namespace trapdoor::bot {
     //=========================序列化======================
 
     /**
-      * 序列化背包内容到文件
-      * @param cont
-      * @param playerName
-      */
+     * 序列化背包内容到文件
+     * @param cont
+     * @param playerName
+     */
 
     void writeInvToFile(Container &cont, const string &playerName) {
         if (!trapdoor::mod().getConfig().getBasicConfig().keepSimPlayerInv) return;
         const std::string path =
-                "./plugins/trapdoor/sim/" + std::to_string(do_hash(playerName.c_str()));
+            trapdoor::mod().rootPath() + "/sim/" + std::to_string(do_hash(playerName.c_str()));
         trapdoor::logger().debug("Inventory Write path is {}", path);
 
         nlohmann::json obj;
@@ -91,8 +88,7 @@ namespace trapdoor::bot {
                 sNbt = item->getNbt()->toSNBT();
             }
             nlohmann::json j;
-            j = {{"slot", i},
-                 {"nbt",  sNbt}};
+            j = {{"slot", i}, {"nbt", sNbt}};
             array.push_back(j);
         }
 
@@ -108,11 +104,10 @@ namespace trapdoor::bot {
         f.close();
     }
 
-
     void tryReadInvFromFile(Container &cont, const string &playerName) {
         if (!trapdoor::mod().getConfig().getBasicConfig().keepSimPlayerInv) return;
         const std::string path =
-                "./plugins/trapdoor/sim/" + std::to_string(do_hash(playerName.c_str()));
+            trapdoor::mod().rootPath() + "/sim/" + std::to_string(do_hash(playerName.c_str()));
         std::ifstream f(path);
         if (!f.is_open()) {
             return;
@@ -121,7 +116,7 @@ namespace trapdoor::bot {
         f >> obj;
         try {
             auto invInfo = obj["inventory"];
-            for (auto &item: invInfo) {
+            for (auto &item : invInfo) {
                 auto slot = item["slot"].get<int>();
                 auto *it = ItemStack::create(CompoundTag::fromSNBT(item["nbt"]));
                 cont.setItem(slot, *it);
@@ -131,8 +126,8 @@ namespace trapdoor::bot {
     }
 
     ItemStack *getSelectItem(SimulatedPlayer *sim) {
-        if (!sim)return nullptr;
+        if (!sim) return nullptr;
         return sim->getInventory().getSlot(sim->getSelectedItemSlot());
     }
 
-}
+}  // namespace trapdoor::bot

@@ -48,8 +48,8 @@ jobs:
           mkdir out/plugins/trapdoor
           cp ./build/Release/trapdoor*.dll ./out/plugins/
           cp ./build/Release/trapdoor*.pdb ./out/plugins/
-          cp ./src/base/config.json ./out/plugins/trapdoor/
-          cp ./src/base/lang.json ./out/plugins/trapdoor/
+          cp ./src/root/config.json ./out/plugins/trapdoor/
+          cp ./src/root/lang.json ./out/plugins/trapdoor/
           cp ./installer.exe ./out
           cp ./changelog.md ./out
           cp ./metadata ./out

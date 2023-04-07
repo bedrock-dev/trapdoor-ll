@@ -18,15 +18,15 @@
 #include "Nlohmann/json.hpp"
 #include "ScheduleAPI.h"
 #include "SimPlayerHelper.h"
+#include "SimulateAPIWrapper.h"
 #include "TrapdoorMod.h"
 #include "Utils.h"
-#include "SimulateAPIWrapper.h"
 
 namespace trapdoor {
     namespace {
 
 #define GET_FREE_PLAYER(sim)                             \
-    auto*(sim) = this->tryFetchSimPlayer(name, true);    \
+    auto *(sim) = this->tryFetchSimPlayer(name, true);   \
     if (!(sim)) {                                        \
         return ErrorMsg("player.error.schedule-failed"); \
     }
@@ -54,25 +54,24 @@ namespace trapdoor {
         }
 
         //
-//        BlockPos getTargetPos(Player *p, const BlockPos &pos) {
-//            if (!p) return pos;
-//            auto *a = reinterpret_cast<Actor *>(p);
-//            auto ins = a->getBlockFromViewVector();
-//            if (!ins.isNull()) {
-//                return ins.getPosition();
-//            } else {
-//                return BlockPos::MAX;
-//            }
-//        }  // namespace
+        //        BlockPos getTargetPos(Player *p, const BlockPos &pos) {
+        //            if (!p) return pos;
+        //            auto *a = reinterpret_cast<Actor *>(p);
+        //            auto ins = a->getBlockFromViewVector();
+        //            if (!ins.isNull()) {
+        //                return ins.getPosition();
+        //            } else {
+        //                return BlockPos::MAX;
+        //            }
+        //        }  // namespace
 
         void writeEmptyInvToFile(const std::string &playerName) {
             trapdoor::logger().debug("Clear player {}' inventory due to death");
             const std::string path =
-                    "./plugins/trapdoor/sim/" + std::to_string(do_hash(playerName.c_str()));
+                trapdoor::mod().rootPath() + "/sim/" + std::to_string(do_hash(playerName.c_str()));
             namespace fs = std::filesystem;
             fs::remove(path);
         }
-
 
         constexpr auto DEFAULT_FACING = static_cast<ScriptModuleMinecraft::ScriptFacing>(1);
 
@@ -114,13 +113,14 @@ namespace trapdoor {
         }
         auto &simInfo = it->second;
         if (!simInfo.simPlayer) return nullptr;
-        //既没有在调度，也没有在执行脚本
-        if (needFree) return (simInfo.task.isFinished() && (!simInfo.driver.isRunning())) ? simInfo.simPlayer : nullptr;
+        // 既没有在调度，也没有在执行脚本
+        if (needFree)
+            return (simInfo.task.isFinished() && (!simInfo.driver.isRunning())) ? simInfo.simPlayer
+                                                                                : nullptr;
         return simInfo.simPlayer;
     }
 
     ActionResult SimPlayerManager::getBackpack(const std::string &name, int slot) {
-
         auto it = this->simPlayers.find(name);
         if (it == this->simPlayers.end()) return trapdoor::ErrorMsg("player.error.not-exist");
         auto *sim = it->second.simPlayer;
@@ -133,23 +133,23 @@ namespace trapdoor {
                 ctr++;
                 auto c = itemStack->getColor();
                 builder.sText(TB::GRAY, " - ")
-                        .textF("[%d] ", i)
-                        .textF(" %s  ", itemStack->getName().c_str())
-                        .text(" x ")
-                        .num(itemStack->getCount())
-                        .text("\n");
+                    .textF("[%d] ", i)
+                    .textF(" %s  ", itemStack->getName().c_str())
+                    .text(" x ")
+                    .num(itemStack->getCount())
+                    .text("\n");
             }
         }
         if (ctr == 0) builder.text(tr("player.info.empty-inv"));
         return {builder.get(), true};
     }
 
-
-    /**********************************destroy position /  destroy(lookat position) ******************************************/
-    //挖掘指定坐标
-    ActionResult SimPlayerManager::destroyPositionSchedule(const std::string &name, const BlockPos &p,
-                                                           Player *origin, int repType, int interval,
-                                                           int times) {
+    /**********************************destroy position /  destroy(lookat position)
+     * ******************************************/
+    // 挖掘指定坐标
+    ActionResult SimPlayerManager::destroyPositionSchedule(const std::string &name,
+                                                           const BlockPos &p, Player *origin,
+                                                           int repType, int interval, int times) {
         GET_FREE_PLAYER(sim)
         auto pos = p;
         if (pos == BlockPos::MAX) {
@@ -167,7 +167,7 @@ namespace trapdoor {
         return {"", true};
     }
 
-    //挖掘假人看向的坐标
+    // 挖掘假人看向的坐标
     ActionResult SimPlayerManager::destroySchedule(const std::string &name, int repType,
                                                    int interval, int times) {
         GET_FREE_PLAYER(sim)
@@ -186,8 +186,8 @@ namespace trapdoor {
     /******************************物品右键行为**********************************/
 
     ActionResult SimPlayerManager::useOnPositionSchedule(const std::string &name, int itemID,
-                                                         const BlockPos &p, Player *origin, int repType,
-                                                         int interval, int times) {
+                                                         const BlockPos &p, Player *origin,
+                                                         int repType, int interval, int times) {
         GET_FREE_PLAYER(sim)
         auto pos = p;
         if (pos == BlockPos::MAX) {
@@ -197,7 +197,7 @@ namespace trapdoor {
         auto task = [this, name, pos, itemID, sim]() {
             CHECK_SURVIVAL
             auto v = Vec3(0.5, 1.0, 0.5);
-            ///有位置信息 且背包内有对应的物品
+            /// 有位置信息 且背包内有对应的物品
             if (pos != BlockPos::MAX && bot::switchItemToHandById(sim, itemID)) {
                 sim->simulateUseItemOnBlock(*bot::getSelectItem(sim), pos, DEFAULT_FACING, v);
                 sim->sendInventory(true);
@@ -207,15 +207,16 @@ namespace trapdoor {
         return {"", true};
     }
 
-    ActionResult
-    SimPlayerManager::useOnSchedule(const string &name, int itemID, Player *ori, int repType, int interval, int times) {
+    ActionResult SimPlayerManager::useOnSchedule(const string &name, int itemID, Player *ori,
+                                                 int repType, int interval, int times) {
         GET_FREE_PLAYER(sim)
         auto task = [name, this, sim, itemID]() {
             CHECK_SURVIVAL
             auto v = Vec3(0.5, 1.0, 0.5);
             auto bi = sim->getBlockFromViewVector();
             if (!(bi.isNull()) && bot::switchItemToHandById(sim, itemID)) {
-                sim->simulateUseItemOnBlock(*bot::getSelectItem(sim), bi.getPosition(), DEFAULT_FACING, v);
+                sim->simulateUseItemOnBlock(*bot::getSelectItem(sim), bi.getPosition(),
+                                            DEFAULT_FACING, v);
                 sim->sendInventory(true);
             }
         };
@@ -228,7 +229,7 @@ namespace trapdoor {
         GET_FREE_PLAYER(sim)
         auto task = [this, name, sim, itemId]() {
             CHECK_SURVIVAL
-            if (bot::switchItemToHandById(sim, itemId)) { //交换然后使用就行了
+            if (bot::switchItemToHandById(sim, itemId)) {  // 交换然后使用就行了
                 sim->simulateUseItem(*bot::getSelectItem(sim));
                 sim->sendInventory(true);
             }
@@ -237,7 +238,7 @@ namespace trapdoor {
         return {"", true};
     }
     /**************************************可实体交互的Schedule*****************************************************/
-    //右键行为
+    // 右键行为
     ActionResult SimPlayerManager::interactSchedule(const std::string &name, Player *origin,
                                                     int repType, int interval, int times) {
         if (!origin) {
@@ -268,7 +269,7 @@ namespace trapdoor {
         return {"", true};
     }
 
-    //左键行为
+    // 左键行为
     ActionResult SimPlayerManager::attackSchedule(const std::string &name, Player *origin,
                                                   int repType, int interval, int times) {
         GET_FREE_PLAYER(sim)
@@ -298,7 +299,7 @@ namespace trapdoor {
     }
     /*********************************其他的Schedule*******************************/
 
-    //执行命令
+    // 执行命令
     ActionResult SimPlayerManager::runCmdSchedule(const string &name, const string &command,
                                                   int repType, int interval, int times) {
         GET_FREE_PLAYER(sim)
@@ -312,7 +313,6 @@ namespace trapdoor {
         return {"", true};
     }
 
-
     ActionResult SimPlayerManager::jumpSchedule(const std::string &name, int repType, int interval,
                                                 int times) {
         GET_FREE_PLAYER(sim)
@@ -325,10 +325,9 @@ namespace trapdoor {
         return {"", true};
     }
 
-
     ActionResult SimPlayerManager::setItem(const string &name, int itemId, int slot) {
         GET_FREE_PLAYER(sim)
-        if (slot == -1) { //等于-1，itemID有效，搜索背包
+        if (slot == -1) {  // 等于-1，itemID有效，搜索背包
             bot::searchFirstItemInInvById(sim, slot, itemId);
         }
         bot::swapTwoSlotInInventory(sim->getInventory(), slot, sim->getSelectedItemSlot());
@@ -429,7 +428,7 @@ namespace trapdoor {
     }
 
     void SimPlayerManager::tick() {
-        for (auto &bot: this->simPlayers) {
+        for (auto &bot : this->simPlayers) {
             bot.second.driver.tick();
         }
     }
@@ -440,7 +439,7 @@ namespace trapdoor {
         }
 
         TextBuilder builder;
-        for (const auto &i: this->simPlayers) {
+        for (const auto &i : this->simPlayers) {
             builder.text(" - ").textF("%s   ", i.first.c_str());
             if (!i.second.simPlayer) {
                 builder.sText(TB::RED | TB::BOLD, "Not exist\n");
@@ -476,7 +475,7 @@ namespace trapdoor {
     void SimPlayerManager::refreshCommandSoftEnum() {
         if (!this->cmdInstance) return;
         std::vector<std::string> names;
-        for (auto &sp: this->simPlayers) {
+        for (auto &sp : this->simPlayers) {
             names.push_back(sp.first);
         }
         cmdInstance->setSoftEnum("name", names);
@@ -487,19 +486,18 @@ namespace trapdoor {
         cmdInstance->setSoftEnum("file", scripts);
     }
 
-
     void SimPlayerManager::syncPlayerListToFile() {
         const std::string path = "./plugins/trapdoor/sim/cache.json";
         nlohmann::json obj;
-        for (auto &sim: this->simPlayers) {
+        for (auto &sim : this->simPlayers) {
             auto *p = sim.second.simPlayer;
             if (p) {
                 auto pos = p->getPos();
-                nlohmann::json j = {{"x",    pos.x},
-                                    {"y",    pos.y - 1},
-                                    {"z",    pos.z},
-                                    {"dim",  (int) p->getDimensionId()},
-                                    {"mode", (int) p->getPlayerGameType()}
+                nlohmann::json j = {{"x", pos.x},
+                                    {"y", pos.y - 1},
+                                    {"z", pos.z},
+                                    {"dim", (int)p->getDimensionId()},
+                                    {"mode", (int)p->getPlayerGameType()}
 
                 };
                 obj[sim.first] = j;
@@ -523,7 +521,7 @@ namespace trapdoor {
         }
         i >> obj;
         try {
-            for (const auto &item: obj.items()) {
+            for (const auto &item : obj.items()) {
                 const auto name = item.key();
                 const auto &value = item.value();
                 auto dim = value["dim"].get<int>();
@@ -544,7 +542,7 @@ namespace trapdoor {
     }
 
     void SimPlayerManager::savePlayerInventoryToFile() {
-        for (auto &kv: this->simPlayers) {
+        for (auto &kv : this->simPlayers) {
             if (kv.second.simPlayer) {
                 bot::writeInvToFile(kv.second.simPlayer->getInventory(), kv.first);
             }
@@ -580,21 +578,20 @@ namespace trapdoor {
         GET_FREE_PLAYER(sim)
         trapdoor::TextBuilder builder;
         builder.textF("- Name: %s\n", sim->getName().c_str())
-                .textF("- Xuid: %s\n", sim->getXuid().c_str())
-                .textF("- Uid: %ld\n", sim->getUniqueID().get())
-                .textF("- Game mode: %d\n", static_cast<int>(sim->getPlayerGameType()))
-                .textF("- Command Permission level: %d\n",
-                       static_cast<int>(sim->getCommandPermissionLevel()))
-                .textF("- Input speed: %.2f\n", sim->_getInputSpeed())
-                .textF("- Spawn chunk limit: %d\n", sim->_getSpawnChunkLimit())
-                .textF("- Has owned chunk source: %d\n", sim->hasOwnedChunkSource())
-                .textF("- Chunk radius: %d\n", sim->getChunkRadius())
-                .textF("- Block source %p\n", &sim->getRegion())
-                .textF("- Has level: %d", sim->hasLevel());
+            .textF("- Xuid: %s\n", sim->getXuid().c_str())
+            .textF("- Uid: %ld\n", sim->getUniqueID().get())
+            .textF("- Game mode: %d\n", static_cast<int>(sim->getPlayerGameType()))
+            .textF("- Command Permission level: %d\n",
+                   static_cast<int>(sim->getCommandPermissionLevel()))
+            .textF("- Input speed: %.2f\n", sim->_getInputSpeed())
+            .textF("- Spawn chunk limit: %d\n", sim->_getSpawnChunkLimit())
+            .textF("- Has owned chunk source: %d\n", sim->hasOwnedChunkSource())
+            .textF("- Chunk radius: %d\n", sim->getChunkRadius())
+            .textF("- Block source %p\n", &sim->getRegion())
+            .textF("- Has level: %d", sim->hasLevel());
         // .textF("- Has",sim->_updateChunkPublisherView())
         return {builder.get(), true};
     }
-
 
     ActionResult SimPlayerManager::teleportTo(const string &name, const Vec3 &position) {
         return ErrorDeveloping();
@@ -609,7 +606,7 @@ namespace trapdoor {
         GET_FREE_PLAYER(sim)
         auto *actor = origin->getActorFromViewVector(5.25);
 
-        //创造模式不需要指向
+        // 创造模式不需要指向
         if ((!origin->isCreative()) && (actor != sim)) {
             return trapdoor::ErrorMsg("player.error.point-to-needed");
         }
@@ -637,12 +634,12 @@ namespace trapdoor {
         return OperationSuccess();
     }
 
-    ActionResult
-    SimPlayerManager::runScript(const std::string &name, const std::string &scriptName, int interval,
-                                bool stopWhenError) {
-        auto path = "./plugins/trapdoor/scripts/" + scriptName;
+    ActionResult SimPlayerManager::runScript(const std::string &name, const std::string &scriptName,
+                                             int interval, bool stopWhenError) {
+        auto path = trapdoor::mod().rootPath() + "/scripts/" + scriptName;
         auto it = this->simPlayers.find(name);
-        if (it == this->simPlayers.end() || !(it->second.task.isFinished()) || it->second.driver.isRunning()) {
+        if (it == this->simPlayers.end() || !(it->second.task.isFinished()) ||
+            it->second.driver.isRunning()) {
             return trapdoor::ErrorMsg("player.error.schedule-failed");
         }
 
@@ -657,10 +654,7 @@ namespace trapdoor {
 /*
  * 定时保存备背包数据(同步)
  */
-THook(void,
-      "?savePlayers@Level@@UEAAXXZ",
-      Level * self
-) {
+THook(void, "?savePlayers@Level@@UEAAXXZ", Level *self) {
     trapdoor::mod().getSimPlayerManager().savePlayerInventoryToFile();
     original(self);
 }

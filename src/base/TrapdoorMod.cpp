@@ -57,6 +57,23 @@ namespace trapdoor {
             logger().info("");
         }
 
+        void tryCreateFolder(const std::string &folder) {
+            namespace fs = std::filesystem;
+            if (!fs::exists(folder)) {
+                fs::create_directory(folder);
+            }
+        }
+
+        void createFolders() {
+            auto root = trapdoor::mod().rootPath();
+
+            tryCreateFolder(root);
+            tryCreateFolder(root + "./sim");
+            tryCreateFolder(root + "./player");
+            tryCreateFolder(root + "./logs");
+            tryCreateFolder(root + "./scripts");
+        }
+
     }  // namespace
 
     void TrapdoorMod::heavyTick() {
@@ -93,13 +110,13 @@ namespace trapdoor {
     bool TrapdoorMod::initConfig(bool reload) {
         this->modRootPath = std::string("./plugins/trapdoor/");
 #ifdef DEV
-        // modRootPath = "C:/Users/xhy/dev/trapdoor-ll/src/base/";
-        this->modRootPath = ::getenv("TR_CFG_PATH");
+        this->modRootPath = ::getenv("TR_ROOT_PATH");
         logger().consoleLevel = 8;
 #endif
         logger().debug("Mod config path is : {}", modRootPath);
-        Translation::load(modRootPath + "lang.json");
-        return this->config.init(modRootPath + "config.json", reload);
+        createFolders();
+        Translation::load(this->rootPath() + "lang.json");
+        return this->config.init(this->rootPath() + "config.json", reload);
     }
 
     void TrapdoorMod::getLevelNameFromUser() {
@@ -123,6 +140,8 @@ namespace trapdoor {
         tb.textF("Build time: %s\n", STRING(BUILD_TIME));
         return tb.get();
     }
+
+    std::string TrapdoorMod::rootPath() const { return this->modRootPath + "/"; }
     TrapdoorMod &mod() {
         static TrapdoorMod mod;
         return mod;
