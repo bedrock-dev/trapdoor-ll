@@ -119,7 +119,13 @@ namespace trapdoor {
                 .text("\n");
             return builder.get();
         }
-
+        std::string buildSpawnCap() {
+            auto cap = dAccess<int, 64 * 4>(&Global<Level>->getSpawner());
+            auto color = cap >= 200 ? trapdoor::TextBuilder::RED : trapdoor::TextBuilder::GREEN;
+            TextBuilder builder;
+            builder.text("Global Cap: ").sTextF(color, "%d\n", cap);
+            return builder.get();
+        }
     }  // namespace
 
     HUDItemType getHUDTypeFromString(const string &str) {
@@ -130,6 +136,7 @@ namespace trapdoor {
         if (str == "mspt") return HUDItemType::Mspt;
         if (str == "chunk") return HUDItemType::Chunk;
         if (str == "container") return HUDItemType::Cont;
+        if (str == "cap") return HUDItemType::GlobalCap;
         return HUDItemType::Unknown;
     }
 
@@ -153,6 +160,9 @@ namespace trapdoor {
                 return "container";
             case LEN:
                 return "unknown";
+            case GlobalCap:
+                return "cap";
+                break;
         }
         return "unknown";
     }
@@ -215,6 +225,12 @@ namespace trapdoor {
                 }
                 if (cfg[HUDItemType::Cont]) {
                     s += buildContainerInfo(p);
+                }
+                if (cfg[HUDItemType::GlobalCap]) {
+                    s += buildSpawnCap();
+                }
+                if (s.back() == '\n') {
+                    s.pop_back();
                 }
                 p->sendText(s, TextType::TIP);
             }

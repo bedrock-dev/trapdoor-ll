@@ -26,15 +26,14 @@
 namespace trapdoor {
 
     void printCap() {
-        auto m =
-            dAccess<std::unordered_map<HashedString, int>[7]>(&Global<Level>->getSpawner(), 56);
+        auto cap = dAccess<int, 64 * 4>(&Global<Level>->getSpawner());
+        trapdoor::logger().debug("Global cap is {}", cap);
 
-        for (int i = 0; i < 7; i++) {
-            trapdoor::logger().debug("id = {} --> {}", i, m[i].size());
-            //            for (auto &kv : m[i]) {
-            //                trapdoor::logger().debug(" - {} --> {}", kv.first.getString().c_str(),
-            //                kv.second);
-            //            }
+        auto m =
+            dAccess<std::unordered_map<HashedString, uint64_t>>(&Global<Level>->getSpawner(), 128);
+
+        for (auto &kv : m) {
+            trapdoor::logger().debug(" - {} --> {}", kv.first.getString(), kv.second);
         }
     }
 
