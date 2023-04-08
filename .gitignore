@@ -18,3 +18,6 @@ run_bds.cmd
 src/include/config.h
 dist/*
 dist/create_release.ps1
+src/root/logs/*
+src/root/scripts/*
+src/root/player/*

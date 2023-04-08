@@ -16,10 +16,9 @@ namespace trapdoor {
         Counter = 5,
         Chunk = 6,
         Cont = 7,  // 容器，写全名会和原版容器冲突
-        //如果有新的项目请按照这个顺序往后写
-
-
-        //用于记录长度，没有其他意思
+        GlobalCap = 8,
+        // 如果有新的项目请按照这个顺序往后写
+        // 用于记录长度，没有其他意思
         LEN,
     };
 
@@ -28,21 +27,18 @@ namespace trapdoor {
     std::string getStringFromHUDType(HUDItemType t);
 
     class HUDHelper {
-    public:
-
+       public:
         void tick();
 
-    public :
+       public:
         static ActionResult modifyPlayerInfo(const std::string &playerName, const std::string &item,
                                              int op);
 
         static std::vector<std::string> getHUDItemStringList();
 
-    private:
+       private:
         void tickChunk() const;
-
     };
-
 
 }  // namespace trapdoor
 
