@@ -9,6 +9,7 @@
 #include <mc/Brightness.hpp>
 #include <mc/ChunkSource.hpp>
 #include <mc/Dimension.hpp>
+#include <mc/HashedString.hpp>
 #include <mc/LayeredAbilities.hpp>
 #include <mc/Level.hpp>
 #include <mc/LevelChunk.hpp>
@@ -24,13 +25,26 @@
 
 namespace trapdoor {
 
+    void printCap() {
+        auto m =
+            dAccess<std::unordered_map<HashedString, int>[7]>(&Global<Level>->getSpawner(), 56);
+
+        for (int i = 0; i < 7; i++) {
+            trapdoor::logger().debug("id = {} --> {}", i, m[i].size());
+            //            for (auto &kv : m[i]) {
+            //                trapdoor::logger().debug(" - {} --> {}", kv.first.getString().c_str(),
+            //                kv.second);
+            //            }
+        }
+    }
+
     void setup_testCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
 
         auto command = CREATE_CMD(test, level);
 
-        auto &optOpenHome = command->setEnum("openHome", {"home"});
+        auto &optOpenHome = command->setEnum("openHome", {"home", "spawn"});
         command->mandatory("test", ParamType::Enum, optOpenHome,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->addOverload({optOpenHome});
@@ -40,6 +54,9 @@ namespace trapdoor {
             switch (do_hash(results["test"].getRaw<std::string>().c_str())) {
                 case do_hash("home"):
                     system("explorer.exe .");
+                    break;
+                case do_hash("spawn"):
+                    printCap();
                     break;
             }
         };
