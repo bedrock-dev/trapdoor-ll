@@ -31,7 +31,7 @@ namespace trapdoor {
 
         std::string buildRedstoneInfo(Player *player) {
             auto pointBlock = reinterpret_cast<Actor *>(player)->getBlockFromViewVector();
-            if (pointBlock.isNull()) return "Signal: -\n";
+            if (pointBlock.isNull()) return "Signal: -";
 
             auto &cs = player->getDimension().getCircuitSystem();
             auto &graph = getCircuitSceneGraph(&cs);
@@ -51,17 +51,10 @@ namespace trapdoor {
                                                static_cast<unsigned char>(FaceID::East)));
             }
 
-            return fmt::format("Signal: {} / {}\n", redstone_signal, container_signal);
+            return fmt::format("Signal: {} / {}", redstone_signal, container_signal);
         }
 
         std::string buildHopperCounter(Player *player) {
-            //            auto &hcm = trapdoor::mod().getHopperChannelManager();
-            //            if (!hcm.isEnable()) return "";
-            //            TextBuilder b;
-            //            auto pointBlock = reinterpret_cast<Actor
-            //            *>(player)->getBlockFromViewVector(); if (pointBlock.isNull()) return "";
-            //            auto *block = pointBlock.getBlock();
-            //            if (block->getId() == HopperChannelManager::HOPPER_COUNTER_BLOCK) {
             return trapdoor::mod().getHopperChannelManager().getHUDData(
                 trapdoor::mod().getUserConfig().getActiveHopperChannel(player->getRealName()));
         }
@@ -103,7 +96,7 @@ namespace trapdoor {
                     delta.y * 20, delta.z * 20);
             auto &biome = bs.getBiome(pos);
             b.textF("Biome: %s (%d)\n", biome.getName().c_str(), biome.getId());
-            return b.get();
+            return b.removeEndl().get();
         }
 
         std::string buildMsptHud() {
@@ -117,14 +110,14 @@ namespace trapdoor {
                 .text(" TPS: ")
                 .sTextF(color, "%.1f", tps)
                 .text("\n");
-            return builder.get();
+            return builder.removeEndl().get();
         }
         std::string buildSpawnCap() {
             auto cap = dAccess<int, 64 * 4>(&Global<Level>->getSpawner());
             auto color = cap >= 200 ? trapdoor::TextBuilder::RED : trapdoor::TextBuilder::GREEN;
             TextBuilder builder;
-            builder.text("Global Cap: ").sTextF(color, "%d\n", cap);
-            return builder.get();
+            builder.text("Global Cap: ").sTextF(color, "%d", cap);
+            return builder.removeEndl().get();
         }
     }  // namespace
 
@@ -200,6 +193,7 @@ namespace trapdoor {
         refresh_time =
             (refresh_time + 1) % trapdoor::mod().getConfig().getBasicConfig().hudRefreshFreq;
         if (refresh_time != 1) return;
+        auto ps = [](const std::string &s) { return s.empty() ? s : s + "\n"; };
         // 遍历所有的有配置文件的信息（想有显示就必须add，add就会创建表项，因此不会出现玩家不在列表的选项）
         auto playerInfos = trapdoor::mod().getUserConfig().getPlayerData();
         for (auto &info : playerInfos) {
@@ -208,30 +202,31 @@ namespace trapdoor {
                 std::string s;
                 auto &cfg = info.second.hud_config;
                 if (cfg[HUDItemType::Base]) {
-                    s += buildBaseHud(p);
+                    s += ps(buildBaseHud(p));
                 }
 
                 if (cfg[HUDItemType::Mspt]) {
-                    s += buildMsptHud();
+                    s += ps(buildMsptHud());
                 }
                 if (cfg[HUDItemType::Redstone]) {
-                    s += buildRedstoneInfo(p);
+                    s += ps(buildRedstoneInfo(p));
                 }
                 if (cfg[HUDItemType::Vill]) {
-                    s += buildVillagerInfo(p);
+                    s += ps(buildVillagerInfo(p));
                 }
                 if (cfg[HUDItemType::Counter]) {
-                    s += buildHopperCounter(p);
+                    s += ps(buildHopperCounter(p));
                 }
                 if (cfg[HUDItemType::Cont]) {
-                    s += buildContainerInfo(p);
+                    s += ps(buildContainerInfo(p));
                 }
                 if (cfg[HUDItemType::GlobalCap]) {
-                    s += buildSpawnCap();
+                    s += ps(buildSpawnCap());
                 }
-                if (s.back() == '\n') {
+                while (!s.empty() && s.back() == '\n') {
                     s.pop_back();
                 }
+                //  trapdoor::logger().debug("Send HUD: [{}]", s);
                 p->sendText(s, TextType::TIP);
             }
         }

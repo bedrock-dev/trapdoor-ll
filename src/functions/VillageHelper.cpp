@@ -363,7 +363,7 @@ namespace trapdoor {
                 }
             }
         }
-        return builder.get();
+        return builder.removeEndl().get();
     }
 
     ActionResult VillageHelper::showVillageInfo(Player *p) {
