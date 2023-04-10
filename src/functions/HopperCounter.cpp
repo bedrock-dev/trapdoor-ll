@@ -22,7 +22,7 @@ namespace trapdoor {
 
     void HopperChannelManager::tick() {
         if (this->isEnable()) {
-            for (auto &channel: channels) {
+            for (auto &channel : channels) {
                 channel.tick();
             }
         }
@@ -37,8 +37,9 @@ namespace trapdoor {
             return ErrorMsg("hopper.error.invalid-channel");
         } else {
             if (player) {
-                //添加到用户缓存中
-                trapdoor::mod().getUserConfig().setActiveHopperChannel(player->getRealName(), channel);
+                // 添加到用户缓存中
+                trapdoor::mod().getUserConfig().setActiveHopperChannel(player->getRealName(),
+                                                                       channel);
             }
 
             auto &ch = this->getChannel(channel);
@@ -67,13 +68,15 @@ namespace trapdoor {
     }
 
     std::string HopperChannelManager::getHUDData(int channel) {
+        if (!this->isEnable()) return "";
         if (channel < 0 || channel > 15) return "";
         auto &ch = this->getChannel(channel);
-        return ch.info();
+        return ch.info(true);
     }
 
-    bool
-    HopperChannelManager::isEnable() const { return trapdoor::mod().getConfig().getGlobalFunctionConfig().hopperCounter; }
+    bool HopperChannelManager::isEnable() const {
+        return trapdoor::mod().getConfig().getGlobalFunctionConfig().hopperCounter;
+    }
 
     void CounterChannel::add(const std::string &itemName, size_t num) {
         counterList[itemName] += num;
@@ -87,7 +90,7 @@ namespace trapdoor {
 
     std::string CounterChannel::info(bool simple) {
         size_t n = 0;
-        for (const auto &i: this->counterList) {
+        for (const auto &i : this->counterList) {
             n += i.second;
         }
 
@@ -98,37 +101,41 @@ namespace trapdoor {
         std::string stringBuilder;
         trapdoor::TextBuilder builder;
 
-        if (!simple) {
-            builder.text("Channel: ").sTextF(TB::BOLD | TB::WHITE, "%d \n", channel);
-            builder
-                    .text("Total ")
-                            // total items number
-                    .num(n)
-                            // total speed
-                    .text(" items (")
-                    .num(static_cast<float>(n) * 1.0f / static_cast<float>(gameTick) * 72000)
-                    .text("/h)")
-                            // time
-                    .text(" in ")
-                    .num(gameTick)
-                            // time in hour
-                    .text(" gt (")
-                    .num(static_cast<float>(gameTick) / 72000.0f)
-                    .text(" h)\n");
-        } else {
-            builder.textF("%d,(%.1f h))\n", n, static_cast<float>(gameTick) / 72000.0f);
-        }
+        builder.text("Channel: ").sTextF(TB::BOLD | TB::WHITE, "%d \n", channel);
 
-        for (const auto &i: counterList) {
+        //        if (!simple) {
+        //            builder.text("Total ");
+        //        }
+        //
+        // total items number
+        builder
+            .num(n)
+            // total speed
+            .text(" items (")
+            .num(static_cast<float>(n) * 1.0f / static_cast<float>(gameTick) * 72000)
+            .text("/h)")
+            // time
+            .text(" in ")
+            .num(gameTick)
+            // time in hour
+            .text(" gt (")
+            .num(static_cast<float>(gameTick) / 72000.0f)
+            .text(" h)\n");
+
+        //        } else {
+        //            builder.textF("%d,(%.1f h))\n", n, static_cast<float>(gameTick) / 72000.0f);
+        //        }
+
+        for (const auto &i : counterList) {
             builder.sText(TB::GRAY, " - ");
             builder.textF("%s:   ", i.first.c_str())
-                    .num(i.second)
-                    .text(" (")
-                    .num(static_cast<float>(i.second) * 1.0f / static_cast<float>(gameTick) * 72000)
-                    .text("/h)\n");
+                .num(i.second)
+                .text(" (")
+                .num(static_cast<float>(i.second) * 1.0f / static_cast<float>(gameTick) * 72000)
+                .text("/h)\n");
         }
 
-        return builder.get();
+        return builder.removeEndl().get();
     }
 
 }  // namespace trapdoor
