@@ -1,12 +1,19 @@
-### trapdoor-ll-0.35.0-1.19.72.01
+### trapdoor-ll-0.36.0-1.19.72.01
+
 #### 更新日志
+
 - 支持1.19.72.01
 - 为`prof`添加`Trapdoor`子项以测量插件自身的tick开销
+- 优化配置文件的加载方式（便于多人开发）
+- 为[hud]添加了显示全局生物上限的功能
+- 修复[hud]的漏斗计数器无法正常关闭的bug
 
 --- 
 
 - Support 1.19.72.01
 - Add `Trapdoor` items to the outputs of `prof` command to measure the tick overhead of mod itself.
+- Add global spawn limit to hud command
+- Fix a bug in [hud] command that the counter in hud can not be closed
 
 ### trapdoor-ll-0.35.0-1.19.63.01
 
