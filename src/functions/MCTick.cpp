@@ -286,6 +286,7 @@ THook(void, "?tick@GameSession@@QEAAXXZ", void *level) {
         auto &prof = trapdoor::normalProfiler();
         if (prof.profiling) {
             prof.gameSessionTickTime += (time_game_session + time_trapdoor_session);
+            prof.gameSessionTicksBuffer.push_back(time_game_session + time_trapdoor_session);
             prof.trapdoorSessionTickTime += time_trapdoor_session;
             prof.currentRound++;
             if (prof.currentRound == prof.totalRound) {

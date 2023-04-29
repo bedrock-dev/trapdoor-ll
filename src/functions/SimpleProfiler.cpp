@@ -14,6 +14,22 @@
 #include "Utils.h"
 
 namespace trapdoor {
+
+    namespace {
+
+        double calculateSampleStandardDeviation(const std::vector<double> &vec) {
+            if (vec.empty()) return 0.0;
+            double sum = 0.0, mean, variance = 0.0;
+            auto n = static_cast<double>(vec.size());
+            for (double val : vec) sum += val;
+            mean = sum / n;
+            for (double val : vec) variance += pow(val - mean, 2);
+            variance /= (n - 1.0);
+            return sqrt(variance);
+        }
+
+    }  // namespace
+
     int64_t MSPTInfo::mean() const {
         return this->values.empty() ? 0
                                     : std::accumulate(values.begin(), values.end(), 0ll) /
@@ -75,6 +91,7 @@ namespace trapdoor {
         this->redstoneInfo.reset();
         this->chunkInfo.reset();
         this->gameSessionTickTime = 0;
+        this->gameSessionTicksBuffer.clear();
         this->dimensionTickTime = 0;
         this->entitySystemTickTime = 0;
         for (auto &m : this->actorInfo) {
@@ -114,6 +131,9 @@ namespace trapdoor {
                 break;
             case SimpleProfiler::Chunk:
                 this->printChunks();
+                break;
+            case Mspt:
+                this->printMsptStats();
                 break;
         }
     }
@@ -216,12 +236,12 @@ namespace trapdoor {
             "   - Add: {:.3f} ms\n"
             "   - Update: {:.3f} ms\n"
             "   - Remove: {:.3f} ms\n"
-            "- EntitySystems: {:.3f} ms\n"
             "- Chunk (un)load & village: {:.3f} ms\n"
-            "- Chunk tick: {:.3f} ms\n"
-            "   - BlockEntities: {:.3f} ms\n"
-            "   - RandomTick: {:.3f} ms\n"
-            "   - PendingTick: {:.3f} ms\n",
+            "- EntitySystems: {:.3f} ms\n"
+            "  - Chunk tick: {:.3f} ms\n"
+            "     - BlockEntities: {:.3f} ms\n"
+            "     - RandomTick: {:.3f} ms\n"
+            "     - PendingTick: {:.3f} ms\n",
 
             /*summary*/
             mspt, tps, this->chunkInfo.getChunkNumber(),
@@ -230,14 +250,18 @@ namespace trapdoor {
             /*redstone*/
             cf(redstoneInfo.sum()),
             cf(redstoneInfo.signalUpdate),  //
-            cf(redstoneInfo.pendingAdd), cf(redstoneInfo.pendingUpdate),
+            cf(redstoneInfo.pendingAdd),    //
+            cf(redstoneInfo.pendingUpdate),
             cf(redstoneInfo.pendingRemove),  //
-            /*entities system & dimension*/
-            cf(entitySystemTickTime), cf(dimensionTickTime),  //
+            /*dimension*/
+            cf(dimensionTickTime),  //
+            /*entity system*/
+            cf(entitySystemTickTime),  //
             /*chunks*/
             cf(static_cast<microsecond_t>(chunkInfo.totalTickTime)),
-            cf(chunkInfo.blockEntitiesTickTime), cf(chunkInfo.randomTickTime),
-            cf(chunkInfo.pendingTickTime));
+            cf(chunkInfo.blockEntitiesTickTime),  //
+            cf(chunkInfo.randomTickTime),         //
+            cf(chunkInfo.pendingTickTime));       //
         trapdoor::broadcastMessage(res);
     }
 
@@ -278,5 +302,44 @@ namespace trapdoor {
         TextBuilder bu;
         bu.text("Total ").num(totalTime).text(" ms\n");
         trapdoor::broadcastMessage(bu.get() + builder.get());
-    }  // namespace trapdoor
+    }
+    void SimpleProfiler::printMsptStats() const {
+        // TODO
+        if (this->gameSessionTicksBuffer.empty()) {
+            trapdoor::broadcastMessage("Empty data");
+            return;
+        }
+
+        // 修改： 这里不需要divide
+        const double divide = 1000.0 * static_cast<double>(totalRound);
+        auto cf = [divide](microsecond_t time) { return static_cast<float>(time) * 1.0f / divide; };
+
+        std::vector<double> redstone_queue, normal_queue, total_queue;
+
+        double redstone_sum{0};
+        double normal_sum{0};
+        double total_sum{0};
+
+        for (int i = 0; i < this->gameSessionTicksBuffer.size(); i++) {
+            auto value = cf(gameSessionTicksBuffer[i]);
+            total_sum += value;
+            if (i % 2 == 0) {
+                redstone_queue.push_back(value);
+                redstone_sum += value;
+            } else {
+                normal_queue.push_back(value);
+                normal_sum += value;
+            }
+        }
+
+        if (redstone_sum < normal_sum) {
+            std::swap(redstone_sum, normal_sum);
+            std::swap(redstone_queue, normal_queue);
+        }
+
+        auto redstone_sd = calculateSampleStandardDeviation(redstone_queue);
+        auto normal_sd = calculateSampleStandardDeviation(normal_queue);
+        auto total_sd = calculateSampleStandardDeviation(this->gameSessionTicksBuffer);
+    }
+    // namespace trapdoor
 }  // namespace trapdoor

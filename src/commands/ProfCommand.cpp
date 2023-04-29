@@ -13,7 +13,7 @@ namespace trapdoor {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
         auto command = CREATE_CMD(prof, level);
-        auto &optContinue = command->setEnum("opt", {"normal", "chunk", "pt", "entity"});
+        auto &optContinue = command->setEnum("opt", {"normal", "chunk", "pt", "entity", "mspt"});
         command->mandatory("prof", ParamType::Enum, optContinue,
                            CommandParameterOption::EnumAutocompleteExpansion);
         command->optional("ticks", ParamType::Int);
@@ -42,6 +42,8 @@ namespace trapdoor {
                     break;
                 case do_hash("pt"):
                     trapdoor::startProfiler(tickTime, SimpleProfiler::PendingTick).sendTo(output);
+                case do_hash("mspt"):
+                    trapdoor::startProfiler(tickTime, SimpleProfiler::Mspt).sendTo(output);
                     break;
             }
         };

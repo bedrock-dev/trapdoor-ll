@@ -112,7 +112,7 @@ namespace trapdoor {
         int count;
     };
     struct SimpleProfiler {
-        enum Type { Normal, Chunk, PendingTick, Entity };
+        enum Type { Normal, Chunk, PendingTick, Entity, Mspt };
         SimpleProfiler::Type type = Normal;
         bool profiling = false;
         size_t totalRound = 100;
@@ -120,6 +120,7 @@ namespace trapdoor {
         ChunkProfileInfo chunkInfo{};
         std::array<std::map<std::string, EntityInfo>, 3> actorInfo{};
         RedstoneProfileInfo redstoneInfo{};
+        std::vector<microsecond_t> gameSessionTicksBuffer;
         microsecond_t gameSessionTickTime = 0;      // mspt
         microsecond_t trapdoorSessionTickTime = 0;  // tr自身占用的mspt
         microsecond_t dimensionTickTime = 0;        // 区块加载卸载&村庄
@@ -136,6 +137,8 @@ namespace trapdoor {
         void printBasics() const;
 
         void printActor() const;
+
+        void printMsptStats() const;
 
         void reset(SimpleProfiler::Type type);
 
