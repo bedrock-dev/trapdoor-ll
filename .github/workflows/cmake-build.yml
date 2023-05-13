@@ -29,7 +29,7 @@ jobs:
       - name: Build Bedrock Library
         run: |
           cd SDK-cpp/Tools
-          LibraryBuilder.exe -o ..\Lib D:\BDS
+          PeEditor.exe -l --pdb D:\BDS  -o ..\Lib
         shell: cmd
 
       - name: Configure CMake

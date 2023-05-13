@@ -117,7 +117,7 @@ namespace trapdoor {
 
     ActionResult HsaManager::place(Player *player, bool replaceAirOnly) {
         if (!player) return trapdoor::ErrorPlayerNeed();
-        if (player->getPlayerGameType() != GameType::GameTypeCreative)
+        if (player->getPlayerGameType() != GameType::Creative)
             return trapdoor::ErrorCreativeNeed();
 
         auto block = player->getHandSlot()->getBlock();

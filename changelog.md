@@ -1,3 +1,15 @@
+### trapdoor-ll-0.37.0-1.19.81.01
+
+#### 更新日志
+
+- 支持1.19.81.01
+- 修复低耐久不切换同样不同耐久的工具的情况
+
+--- 
+
+- Support 1.19.81.01
+- Fix Low damage tools can't switch automatically
+
 ### trapdoor-ll-0.36.0-1.19.72.01
 
 #### 更新日志

@@ -277,10 +277,10 @@ namespace trapdoor {
                 auto poi = villager.second[index].lock();
                 if (poi) {
                     auto position = poi->getPosition();
-                    auto cap = poi->getOwnerCapacity();
-                    auto own = poi->getOwnerCount();
+                    auto cap = this->getPOIOwnerCapacity(poi.get());
+                    auto own = this->getPOIOwnerCount(poi.get());
                     auto radius = poi->getRadius();
-                    auto weight = poi->getWeight();
+                    auto weight = this->getPOIWeight(poi.get());
 
                     builder
                         .sTextF(TextBuilder::WHITE, " [%d, %d, %d] %d/%d, %.1f, %lld ", position.x,
@@ -351,10 +351,10 @@ namespace trapdoor {
                     const auto &poi = iter->second[i].lock();
                     if (poi) {
                         builder.textF("%s: [%d %d %d], %d/%d  %.2f  %zu\n",
-                                      poi->getTypeName().c_str(), poi->getPosition().x,
+                                      this->getPOITypeName(poi.get()).c_str(), poi->getPosition().x,
                                       poi->getPosition().y, poi->getPosition().z,
-                                      poi->getOwnerCount(), poi->getOwnerCapacity(),
-                                      poi->getRadius(), poi->getWeight());
+                                      this->getPOIOwnerCount(poi.get()), this->getPOIOwnerCapacity(poi.get()),
+                                      poi->getRadius(), this->getPOIWeight(poi.get()));
                         if (highlight) {
                             trapdoor::shortHighlightBlock(fromBlockPos(poi->getPosition()),
                                                           PCOLOR::TEAL, 0);

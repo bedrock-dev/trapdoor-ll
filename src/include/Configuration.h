@@ -101,7 +101,7 @@ namespace trapdoor {
                     if (!value) { //全局指令关闭，直接强制全部关闭
                         p.setAbility(static_cast<AbilitiesIndex>(17), false);
                     } else { //全局开启且自己开启 且是创造模式就自动更新 这里获取不到 不写了，需要玩家手动刷新
-                        if (p.getPlayerGameType() == GameType::GameTypeCreative) {
+                        if (p.getPlayerGameType() == GameType::Creative) {
                             //TODO
                         }
                     };

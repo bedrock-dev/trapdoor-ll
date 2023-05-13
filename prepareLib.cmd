@@ -4,5 +4,5 @@ goto end
 
 :process
 cd /d %1\SDK-cpp\tools\
-LibraryBuilder.exe -o ..\lib\
+PeEditor.exe -c -l -o ..\lib\
 :end
