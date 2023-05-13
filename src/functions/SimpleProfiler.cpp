@@ -339,7 +339,7 @@ namespace trapdoor {
 
         auto redstone_sd = calculateSampleStandardDeviation(redstone_queue);
         auto normal_sd = calculateSampleStandardDeviation(normal_queue);
-        auto total_sd = calculateSampleStandardDeviation(this->gameSessionTicksBuffer);
+        auto total_sd = calculateSampleStandardDeviation(total_queue);
     }
     // namespace trapdoor
 }  // namespace trapdoor

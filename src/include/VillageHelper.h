@@ -42,6 +42,38 @@ namespace trapdoor {
             this->cmdInstance = cmd;
         }
 
+        // 原函数POIInstance::getOwnerCapacity
+        inline uint64_t getPOIOwnerCapacity(POIInstance *poi){
+            return dAccess<uint64_t>(poi,0xB0);
+        }
+
+        // 原函数POIInstance::getOwnerCount
+        inline uint64_t getPOIOwnerCount(POIInstance *poi){
+            return dAccess<uint64_t>(poi,0xA0);
+        }
+
+        // 原函数POIInstance::getWeight
+        inline uint64_t getPOIWeight(POIInstance *poi){
+            return dAccess<uint64_t>(poi,0xB8);
+        }
+
+        // 原函数POIInstance::getTypeName
+        inline std::string getPOITypeName(POIInstance *poi){
+            auto type = dAccess<int>(poi,0xC4);
+            switch (type){
+                case 0:
+                    return "Bed";
+                case 1:
+                    return "MeetingArea";
+                case 2:
+                    return "Jobsite";
+                case 3:
+                    return "Count";
+                default:
+                    return "InvalidPOI";
+            }
+        }
+
        private:
         std::map<int, Village*> vs_;
         bool showCenter = false;
