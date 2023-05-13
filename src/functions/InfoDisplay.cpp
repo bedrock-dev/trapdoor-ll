@@ -108,7 +108,7 @@ namespace trapdoor {
                 .sTextF(trapdoor::TextBuilder::GREEN, "%p\n", &b)
                 .text(" - Name / Type: ")
                 .sTextF(trapdoor::TextBuilder::GREEN, "%s / %s\n", b.getName().c_str(),
-                        b.getTypeName().c_str())
+                        b.getName().c_str())
 
                 .text(" - ID / RTID: ")
                 .sTextF(trapdoor::TextBuilder::GREEN, "%d / %d\n", b.getId(), b.getRuntimeId())

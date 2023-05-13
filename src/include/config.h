@@ -2,8 +2,8 @@
 #define STR(x) #x
 #define STRING(x) STR(x)
 #define Trapdoor_VERSION_MAJOR 0
-#define Trapdoor_VERSION_MINOR 36
+#define Trapdoor_VERSION_MINOR 37
 #define Trapdoor_VERSION_PATCH 0
-#define TRAPDOOR_VERSION 0.36.0
-#define GAME_VERSION 1.19.72.01
-#define BUILD_TIME 2023-04-07 16:03:20
+#define TRAPDOOR_VERSION 0.37.0
+#define GAME_VERSION 1.19.81.01
+#define BUILD_TIME 2023-05-12 20:29:33

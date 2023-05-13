@@ -51,7 +51,7 @@ namespace trapdoor {
 
     Block *tryGetRotatedBlock(Block *block, BlockSource *blockSource, BlockPos const &pos,
                               const Vec3 &clickPos, unsigned char face) {
-        auto rawTypeName = block->getTypeName();
+        auto rawTypeName = block->getName();
         auto variant = block->getVariant();
         auto typeName = trapdoor::rmmc(rawTypeName);
         auto it =
@@ -216,7 +216,7 @@ namespace trapdoor {
         if (!bi || bi->isNull()) return true;
         auto *originalBlock = bi->getBlock();
         // auto *block = originalBlock;
-        auto rawTypeName = originalBlock->getTypeName();
+        auto rawTypeName = originalBlock->getName();
         auto pos = bi->getPosition();
         auto typeName = trapdoor::rmmc(rawTypeName);
         // int i = 0;
