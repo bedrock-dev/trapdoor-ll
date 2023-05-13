@@ -56,7 +56,7 @@ THook(void, "?updateNeighborsAt@BlockSource@@QEAAXAEBVBlockPos@@@Z", void *self,
 THook(void, "?setPlayerGameType@ServerPlayer@@UEAAXW4GameType@@@Z", ServerPlayer *player,
       GameType mode) {
     original(player, mode);
-    if (player && mode == GameType::GameTypeCreative &&
+    if (player && mode == GameType::Creative &&
         trapdoor::mod().getConfig().getGlobalFunctionConfig().creativeNoClip &&
         trapdoor::mod().getUserConfig().noclip(player->getRealName())) {
         player->setAbility(static_cast<AbilitiesIndex>(17), true);

@@ -150,7 +150,7 @@ namespace trapdoor {
         return {
                 b.getId(),
                 b.getVariant(),
-                b.getTypeName(),
+                b.getName(),
         };
     }
 

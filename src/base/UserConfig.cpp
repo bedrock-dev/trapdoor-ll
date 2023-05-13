@@ -123,7 +123,7 @@ namespace trapdoor {
         this->playerData[name].noclip = value;
         // 自动更新玩家状态
         auto *p = Global<Level>->getPlayer(name);
-        if (p && p->getPlayerGameType() == GameType::GameTypeCreative) {
+        if (p && p->getPlayerGameType() == GameType::Creative) {
             // 只有两个都开启才会更换模式，已在穿墙模式的则强制变回来（有冗余逻辑但是不重要）
             p->setAbility(
                 static_cast<AbilitiesIndex>(17),
