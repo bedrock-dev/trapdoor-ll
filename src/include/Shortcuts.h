@@ -6,6 +6,7 @@
 namespace trapdoor {
     enum ShortcutType { USE = 0, USE_ON = 1, CMD, DESTROY };
     struct Shortcut {
+        bool enable{true};
         ShortcutType type;     // 类型
         std::string itemName;  // 使用的物品
         int itemAux = -1;

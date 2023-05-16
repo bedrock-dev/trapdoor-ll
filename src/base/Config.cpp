@@ -134,6 +134,8 @@ namespace trapdoor {
                 const auto &value = i.value();
                 auto type = value["type"].get<std::string>();
                 auto actions = value["actions"];
+                //                兼容旧版本的配置文件
+                sh.enable = !value.contains("enable") || value["enable"].get<bool>();
                 for (const auto &act : actions) {
                     sh.actions.push_back(act.get<std::string>());
                 }

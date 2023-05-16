@@ -52,6 +52,8 @@ namespace trapdoor {
     }
     std::string Shortcut::getDescription() const {
         std::string str;
+
+        str += "Enable: " + std::to_string(this->enable) + " ";
         switch (this->type) {
             case USE:
                 str += "use [" + itemName + ":" + std::to_string(itemAux) + "] ";

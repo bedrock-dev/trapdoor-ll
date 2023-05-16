@@ -18,7 +18,7 @@
     auto cfg_##c = cmdCfg.getCommandConfig(#c);                \
     if (cfg_##c.enable) {                                      \
         trapdoor::setup_##c##Command(cfg_##c.permissionLevel); \
-        trapdoor::logger().debug("register command " #c);      \
+        trapdoor::logger().debug("Register command " #c);      \
     }
 
 namespace trapdoor {
@@ -42,7 +42,9 @@ namespace trapdoor {
             REG_COMMAND(dis)
             REG_COMMAND(slime)
             REG_COMMAND(trigger)
+            REG_COMMAND(shortcut)
             REG_COMMAND(self)
+
             // REG_COMMAND(rand)
         }
 
