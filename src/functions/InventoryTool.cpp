@@ -39,7 +39,7 @@ namespace trapdoor {
                     if (remainDamage <=
                         trapdoor::mod().getConfig().getBasicConfig().toolDamageThreshold)
                         continue;
-                    if (speed > curInfo.speed) {
+                    if (speed >= curInfo.speed) {
                         curInfo = {speed, i, (short) remainDamage};
                     }
                 }
