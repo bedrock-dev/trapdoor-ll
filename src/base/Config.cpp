@@ -4,6 +4,8 @@
 
 #include <processenv.h>
 
+#include <unordered_set>
+
 #include "BlockRotateHelper.h"
 #include "CommandHelper.h"
 #include "Configuration.h"
@@ -126,51 +128,59 @@ namespace trapdoor {
     }
 
     bool Configuration::readShortcutConfigs() {
+        const std::unordered_set<std::string> validShortCuts{"command", "use", "use-on", "destroy"};
         try {
             this->shortcuts.clear();
             auto cc = this->config["shortcuts"];
-            for (const auto &i : cc.items()) {
-                Shortcut sh;
-                const auto &value = i.value();
+
+            for (auto &[name, value] : cc.items()) {
                 auto type = value["type"].get<std::string>();
-                auto actions = value["actions"];
-                //                兼容旧版本的配置文件
-                sh.enable = !value.contains("enable") || value["enable"].get<bool>();
-                for (const auto &act : actions) {
-                    sh.actions.push_back(act.get<std::string>());
-                }
-                if (sh.actions.empty()) {
-                    trapdoor::logger().error("Shortcut {} has no action", i.key());
+                if (!validShortCuts.count(type)) {
+                    trapdoor::logger().error("Unknown shortcut type: {} in [{}]", type, name);
                     continue;
                 }
+
+                auto enable = !value.contains("enable") || value["enable"].get<bool>();
+                std::vector<std::string> actions;
+                // 命令列表
+                for (const auto &act : value["actions"]) actions.push_back(act.get<std::string>());
+
+                if (actions.empty())
+                    trapdoor::logger().warn("Shortcut {} has no action, Nothing to do.", name);
+
+                // 特殊的command类型
+                if (type == "command") {
+                    auto command = value["command"].get<std::string>();
+                    if (enable) registerShortcutCommand(command, actions);
+                    continue;
+                }
+
+                //                其他的触发器类型
+
+                Shortcut sh;
+                // 公共的配置项
+                sh.actions = actions;
+                sh.enable = enable;
+
                 if (type == "use") {
                     sh.type = ShortcutType::USE;
                     sh.setItem(value["item"].get<std::string>());
                     sh.prevent = value["prevent"].get<bool>();
-                    this->shortcuts.push_back(sh);
-                    trapdoor::logger().debug("Shortcut: {}", sh.getDescription());
                 } else if (type == "use-on") {
                     sh.type = ShortcutType::USE_ON;
                     sh.setItem(value["item"].get<std::string>());
                     sh.setBlock(value["block"].get<std::string>());
                     sh.prevent = value["prevent"].get<bool>();
-                    this->shortcuts.push_back(sh);
-                    trapdoor::logger().debug("Shortcut: {}", sh.getDescription());
                 } else if (type == "destroy") {
                     sh.type = ShortcutType::DESTROY;
                     sh.setItem(value["item"].get<std::string>());
                     sh.setBlock(value["block"].get<std::string>());
                     sh.prevent = value["prevent"].get<bool>();
-                    this->shortcuts.push_back(sh);
-                    trapdoor::logger().debug("Shortcut: {}", sh.getDescription());
-                } else if (type == "command") {
-                    auto command = value["command"].get<std::string>();
-                    registerShortcutCommand(command, actions);
-                    continue;
-                } else {
-                    trapdoor::logger().error("unknown shortcut type: {}", type);
                 }
+                this->shortcuts[name] = sh;
+                trapdoor::logger().debug("Register shortcut [{}] : {}", name, sh.getDescription());
             }
+
         } catch (const std::exception &e) {
             trapdoor::logger().error("error read shortcut getConfig: {}", e.what());
             return false;
@@ -267,7 +277,8 @@ namespace trapdoor {
         builder.sText(TB::BOLD | TB::WHITE, "Shortcuts:\n");
         auto &scs = this->shortcuts;
         for (auto &sh : scs) {
-            builder.sText(TB::GRAY, " - ").textF("%s\n", sh.getDescription().c_str());
+            builder.sText(TB::GRAY, " - ")
+                .textF("%s %s\n", sh.first.c_str(), sh.second.getDescription().c_str());
         }
         return builder.get();
     }

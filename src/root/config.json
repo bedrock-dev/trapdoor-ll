@@ -105,8 +105,8 @@
     "auto-select-tool": false,
     "force-open-container": false
   },
-  "shortcuts": [
-    {
+  "shortcuts": {
+    "hopper_counter_printer": {
       "type": "use-on",
       "item": "cactus",
       "block": "concrete",
@@ -115,7 +115,7 @@
         "counter print {baux}"
       ]
     },
-    {
+    "redstone_debug_stick": {
       "type": "use-on",
       "item": "stick",
       "block": "",
@@ -124,5 +124,5 @@
         "data redstone signal {bx} {by} {bz}"
       ]
     }
-  ]
+  }
 }
