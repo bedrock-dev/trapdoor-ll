@@ -66,7 +66,7 @@ namespace trapdoor {
             shortcut.itemAux = ev.mItemStack->getAux();
             shortcut.itemName = trapdoor::rmmc(ev.mItemStack->getTypeName());
             for (auto &kv : shortcuts) {
-                if (kv.second.match(shortcut)) {
+                if (kv.second.enable && kv.second.match(shortcut)) {
                     trapdoor::logger().debug("trigger: {}", kv.second.getDescription());
                     kv.second.runUse(ev.mPlayer, ev.mItemStack);
                     return !kv.second.prevent;
@@ -103,7 +103,7 @@ namespace trapdoor {
             shortcut.blockAux = block->getVariant();
             shortcut.blockName = trapdoor::rmmc(block->getName().getString());
             for (auto kv : shortcuts) {
-                if (kv.second.match(shortcut)) {
+                if (kv.second.enable && kv.second.match(shortcut)) {
                     if (antiShake(ev.mPlayer->getRealName(), bi->getPosition())) {
                         trapdoor::logger().debug("Trigger event: {}", kv.second.getDescription());
                         kv.second.runUseOn(ev.mPlayer, ev.mItemStack, block, bi->getPosition());
@@ -139,7 +139,7 @@ namespace trapdoor {
             shortcut.blockName = trapdoor::rmmc(block->getName().getString());
             auto &shortcuts = trapdoor::mod().getConfig().getShortcuts();
             for (auto &kv : shortcuts) {
-                if (kv.second.match(shortcut)) {
+                if (kv.second.enable && kv.second.match(shortcut)) {
                     kv.second.runUseDestroy(ev.mPlayer, &ev.mPlayer->getSelectedItem(), block,
                                             bi->getPosition());
                     return !kv.second.prevent;

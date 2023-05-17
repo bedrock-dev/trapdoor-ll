@@ -116,6 +116,7 @@
       ]
     },
     "redstone_debug_stick": {
+      "enable": false,
       "type": "use-on",
       "item": "stick",
       "block": "",

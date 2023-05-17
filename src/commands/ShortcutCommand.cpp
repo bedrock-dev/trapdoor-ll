@@ -8,7 +8,41 @@
 #include "DynamicCommandAPI.h"
 #include "Msg.h"
 #include "TrapdoorMod.h"
+#include "config.h"
 namespace trapdoor {
+
+    ActionResult getShortcutsInfo() {
+        TextBuilder builder;
+        auto &scs = trapdoor::mod().getConfig().getShortcuts();
+        for (auto &sh : scs) {
+            auto color = sh.second.enable ? TextBuilder::GREEN : TextBuilder::RED;
+            builder.sText(TB::GRAY, " - ")
+                .sTextF(color, "[%s] ", sh.first.c_str())
+                .textF("%s\n", sh.second.getDescription().c_str());
+        }
+        return SuccessMsg(builder.get());
+    }
+
+    std::vector<std::string> getShortcutNameList() {
+        std::vector<std::string> res;
+        auto &scs = trapdoor::mod().getConfig().getShortcuts();
+        for (auto &sh : scs) {
+            res.push_back(sh.first);
+        }
+        return res;
+    }
+
+    ActionResult modifyShortcuts(const std::string &name, bool value) {
+        auto &scs = trapdoor::mod().getConfig().getShortcuts();
+        auto it = scs.find(name);
+        if (it == scs.end()) {
+            return ErrorMsg(trapdoor::format("Unknown shortcut: %s", name.c_str()));
+        }
+
+        it->second.enable = value;
+        return trapdoor::SetValueMsg(name, value);
+    }
+
     void registerShortcutCommand(const std::string &shortcut,
                                  const std::vector<std::string> &actions) {
         trapdoor::logger().debug("registerShortcutCommand: {} => ", shortcut);
@@ -53,63 +87,28 @@ namespace trapdoor {
         command->mandatory("shortcut", ParamType::Enum, modifyOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
-        command->mandatory("name", ParamType::SoftEnum, command->setSoftEnum("name", {}));
+        command->mandatory("name", ParamType::SoftEnum,
+                           command->setSoftEnum("name", getShortcutNameList()));
 
         command->addOverload({listOpt});
         command->addOverload({modifyOpt, "name"});
 
-        //        auto &modifyOpt = command->setEnum("modify", {"sub", "unsub"});
-
-        //        auto &listOpt = command->setEnum("show", {"list"});
-        //
-        //        command->mandatory("trigger", ParamType::Enum, modifyOpt,
-        //                           CommandParameterOption::EnumAutocompleteExpansion);
-        //
-        //        command->mandatory("trigger", ParamType::Enum, listOpt,
-        //                           CommandParameterOption::EnumAutocompleteExpansion);
-        //
-        //        auto &showItemsOpt = command->setEnum("showItems",
-        //        trapdoor::collectTrEventsStr());
-        //
-        //        command->mandatory("eventsType", ParamType::Enum, showItemsOpt,
-        //                           CommandParameterOption::EnumAutocompleteExpansion);
-        //
-        //        command->addOverload({modifyOpt, "eventsType"});
-        //        command->addOverload({listOpt});
-        //
-
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
-            //            //  player needed
-            //            if (!origin.getPlayer()) {
-            //                ErrorPlayerNeed().sendTo(output);
-            //                return;
-            //            }
-            //
-            //            auto e = results["eventsType"].get<std::string>();
-            //
-            //            switch (do_hash(results["trigger"].getRaw<std::string>().c_str())) {
-            //                case do_hash("sub"):
-            //                    trapdoor::mod()
-            //                        .getEventTriggerMgr()
-            //                        .eventAction(origin.getName(), e, 0)
-            //                        .sendTo(output);
-            //                    break;
-            //                case do_hash("unsub"):
-            //                    trapdoor::mod()
-            //                        .getEventTriggerMgr()
-            //                        .eventAction(origin.getName(), e, 1)
-            //                        .sendTo(output);
-            //                    // TODO
-            //                    break;
-            //                case do_hash("list"):
-            //                    trapdoor::mod()
-            //                        .getEventTriggerMgr()
-            //                        .listEvents(origin.getName())
-            //                        .sendTo(output);
-            //                    break;
-            //            }
+            auto name = results["name"].isSet ? results["name"].get<std::string>() : std::string();
+            switch (do_hash(results["shortcut"].getRaw<std::string>().c_str())) {
+                case do_hash("list"):
+                    getShortcutsInfo().sendTo(output);
+                    break;
+
+                case do_hash("enable"):
+                    modifyShortcuts(name, true).sendTo(output);
+                    break;
+                case do_hash("disable"):
+                    modifyShortcuts(name, false).sendTo(output);
+                    break;
+            }
         };
         command->setCallback(cb);
         DynamicCommand::setup(std::move(command));

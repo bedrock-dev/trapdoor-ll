@@ -277,8 +277,10 @@ namespace trapdoor {
         builder.sText(TB::BOLD | TB::WHITE, "Shortcuts:\n");
         auto &scs = this->shortcuts;
         for (auto &sh : scs) {
+            auto color = sh.second.enable ? TextBuilder::GREEN : TextBuilder::RED;
             builder.sText(TB::GRAY, " - ")
-                .textF("%s %s\n", sh.first.c_str(), sh.second.getDescription().c_str());
+                .sTextF(color, "[%s] ", sh.first.c_str())
+                .textF("%s\n", sh.second.getDescription().c_str());
         }
         return builder.get();
     }
