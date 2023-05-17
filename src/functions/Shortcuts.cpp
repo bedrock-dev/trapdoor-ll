@@ -52,6 +52,7 @@ namespace trapdoor {
     }
     std::string Shortcut::getDescription() const {
         std::string str;
+
         switch (this->type) {
             case USE:
                 str += "use [" + itemName + ":" + std::to_string(itemAux) + "] ";
@@ -59,7 +60,6 @@ namespace trapdoor {
             case USE_ON:
                 str += "use [" + itemName + ":" + std::to_string(itemAux) + "] on [" + blockName +
                        ":" + std::to_string(blockAux) + "]  ";
-
                 break;
             case CMD:
                 str += "command";
@@ -70,9 +70,10 @@ namespace trapdoor {
         }
 
         str += "prevent: " + std::to_string(prevent) + "  ";
+
         str += "actions: ";
         for (auto& ac : actions) {
-            str += ac + ",";
+            str += ac + ", ";
         }
         return str;
     }

@@ -46,18 +46,20 @@ namespace trapdoor {
 
     inline ActionResult ErrorDimension() { return ErrorMsg("command.error.dimension-required"); }
 
-    inline ActionResult ErrorUnexpected(const std::string &msg) { return ErrorMsg("Unexpected error" + msg); }
+    inline ActionResult ErrorUnexpected(const std::string &msg) {
+        return ErrorMsg("Unexpected error" + msg);
+    }
 
     inline ActionResult ErrorRange(const std::string &name, int begin, int end) {
         return {fmt::format(tr("command.error.range"), name, begin, end), false};
     }
 
-    template<typename T>
+    template <typename T>
     inline ActionResult SetValueMsg(const std::string &key, T value) {
         return {fmt::format(tr("command.success.set-value"), key, value), true};
     }
 
-    template<typename T>
+    template <typename T>
     inline ActionResult GetValueMsg(const std::string &key, T value) {
         return {fmt::format(tr("command.success.get-value"), key, value), true};
     }
@@ -75,9 +77,7 @@ namespace trapdoor {
         return "§b" + tr("command." + cmd + ".desc");
     }
 
-
-    //Command setup
-
+    // Command setup
 
     void setup_tickCommand(int);
 
@@ -117,6 +117,8 @@ namespace trapdoor {
     void setup_randCommand(int);
 
     void setup_selfCommand(int);
+
+    void setup_shortcutCommand(int);
 
 }  // namespace trapdoor
 

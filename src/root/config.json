@@ -75,6 +75,10 @@
     "rand": {
       "enable": false,
       "permission-level": 0
+    },
+    "shortcut": {
+      "enable": true,
+      "permission-level": 0
     }
   },
   "basic-config": {
@@ -101,8 +105,8 @@
     "auto-select-tool": false,
     "force-open-container": false
   },
-  "shortcuts": [
-    {
+  "shortcuts": {
+    "hopper_counter_printer": {
       "type": "use-on",
       "item": "cactus",
       "block": "concrete",
@@ -111,7 +115,8 @@
         "counter print {baux}"
       ]
     },
-    {
+    "redstone_debug_stick": {
+      "enable": false,
       "type": "use-on",
       "item": "stick",
       "block": "",
@@ -120,5 +125,5 @@
         "data redstone signal {bx} {by} {bz}"
       ]
     }
-  ]
+  }
 }

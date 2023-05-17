@@ -20,7 +20,6 @@ namespace trapdoor {
 
     ActionResult SuccessMsg(const string &msg) { return {tr(msg), true}; }
 
-
     Vec3 getLookAtVec3(Player *player) {
         if (!player) {
             return Vec3::MAX;
@@ -40,6 +39,5 @@ namespace trapdoor {
         auto b = reinterpret_cast<Actor *>(player)->getBlockFromViewVector();
         return b.isNull() ? BlockPos::MAX : b.getPosition();
     }
-
 
 }  // namespace trapdoor

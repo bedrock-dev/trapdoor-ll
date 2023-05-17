@@ -6,13 +6,13 @@
 #define TRAPDOOR_SETTINGS_H
 
 #include <map>
+#include <mc/Level.hpp>
 #include <unordered_map>
 
 #include "CommandHelper.h"
 #include "Global.h"
-#include "Msg.h"
-#include <mc/Level.hpp>
 #include "MC/ServerPlayer.hpp"
+#include "Msg.h"
 #include "Nlohmann/json.hpp"
 #include "Shortcuts.h"
 #include "UserConfig.h"
@@ -40,7 +40,6 @@ namespace trapdoor {
     //        bool hud = false;
     //    };
 
-
     /**
 
 
@@ -58,65 +57,62 @@ namespace trapdoor {
     },
     */
 
-
-    //所有功能的全局开关,后面不再在功能内部设定开关
+    // 所有功能的全局开关,后面不再在功能内部设定开关
     struct GlobalFunctionConfig {
-        //全局的
+        // 全局的
         int forcePlaceLevel = 0;
         bool dropperNoCost = false;
         bool hopperCounter = false;
         bool safeExplosion = false;
         bool disableNCUpdate = false;
         int maxPendingTickSize = 100;
-        //个人的
+        // 个人的
         bool hud = false;
         bool creativeNoClip = false;
         bool blockRotate = false;
         bool autoSelectTool = false;
         bool forceOpenContainer = false;
-
     };
 
     class Configuration {
-    public:
+       public:
         CommandConfig getCommandConfig(const std::string &command);
 
-        inline std::vector<Shortcut> &getShortcuts() { return this->shortcuts; }
+        inline std::unordered_map<std::string, Shortcut> &getShortcuts() { return this->shortcuts; }
 
         inline BasicConfig &getBasicConfig() { return this->basicConfig; }
 
-        inline GlobalFunctionConfig &getGlobalFunctionConfig() { return this->globalFunctionConfig; }
-
-
+        inline GlobalFunctionConfig &getGlobalFunctionConfig() {
+            return this->globalFunctionConfig;
+        }
+        
         bool init(const std::string &fileName, bool reload);
 
         std::string dumpConfigInfo();
 
-
-        template<typename T>
+        template <typename T>
         void globalFunctionChangeListener(const std::string &key, T value) {
             trapdoor::broadcastMessage(trapdoor::SetValueMsg(key, value).msg, -1);
             if (key == "noclip") {
                 Global<Level>->forEachPlayer([value](Player &p) {
-                    if (!value) { //全局指令关闭，直接强制全部关闭
+                    if (!value) {  // 全局指令关闭，直接强制全部关闭
                         p.setAbility(static_cast<AbilitiesIndex>(17), false);
-                    } else { //全局开启且自己开启 且是创造模式就自动更新 这里获取不到 不写了，需要玩家手动刷新
+                    } else {  // 全局开启且自己开启 且是创造模式就自动更新 这里获取不到
+                              // 不写了，需要玩家手动刷新
                         if (p.getPlayerGameType() == GameType::Creative) {
-                            //TODO
+                            // TODO
                         }
                     };
 
                     return true;
                 });
-
             }
-            //other options
-
+            // other options
         }
 
         static std::vector<std::string> readBotScripts();
 
-    private:
+       private:
         bool readConfigFile(const std::string &path);
 
         bool readGlobalFunctionConfig();
@@ -130,7 +126,7 @@ namespace trapdoor {
         BasicConfig basicConfig;
         GlobalFunctionConfig globalFunctionConfig;
         std::unordered_map<std::string, CommandConfig> commandsConfigs;
-        std::vector<Shortcut> shortcuts;
+        std::unordered_map<std::string, Shortcut> shortcuts;
         nlohmann::json config;
     };
 
