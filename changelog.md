@@ -4,8 +4,28 @@
 
 - 支持1.19.81.01
 - 修复低耐久不切换同样不同耐久的工具的情况
+- 修改快捷指令的配置文件格式，为每个快捷指令添加名字以及`enable`选项。**因此该版本的配置文件的快捷指令部分不兼容旧版本，请手动替换快捷指令部分的配置**
+- 修复仙人掌转方块和仙人掌右键混凝土的快捷指令冲突的问题
+- 添加`shortcut`命令用于在游戏内开关快捷指令 (#96)
 
---- 
+---
+
+- Support 1.19.81.01
+- Fix low damage tools can't switch automatically
+- Modify the configuration file format of shortcuts, add name as key and `enable` option for each shortcut. Therefore,  **the 
+  configuration file of this version is not compatible with the old version, please replace the configuration of
+  the shortcut command manually**.
+- Fix the issue that the cactus rotation are in conflict with shortcut  "hopper counter printer".
+- Add `shortcut` command for en/disable shortcut in game (#96)
+
+### trapdoor-ll-0.37.0-1.19.81.01
+
+#### 更新日志
+
+- 支持1.19.81.01
+- 修复低耐久不切换同样不同耐久的工具的情况
+
+---
 
 - Support 1.19.81.01
 - Fix Low damage tools can't switch automatically
@@ -20,7 +40,7 @@
 - 为[hud]添加了显示全局生物上限的功能
 - 修复[hud]的漏斗计数器无法正常关闭的bug
 
---- 
+---
 
 - Support 1.19.72.01
 - Add `Trapdoor` items to the outputs of `prof` command to measure the tick overhead of mod itself.
