@@ -9,7 +9,7 @@
 #include "TrapdoorMod.h"
 
 namespace trapdoor {
-    void setup_triggerCommand(int level) {
+    const DynamicCommandInstance * setup_triggerCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
         auto command = CREATE_CMD(trigger, level);
@@ -64,7 +64,7 @@ namespace trapdoor {
             }
         };
         command->setCallback(cb);
-        DynamicCommand::setup(std::move(command));
+       return DynamicCommand::setup(std::move(command));
     }
 
 }  // namespace trapdoor

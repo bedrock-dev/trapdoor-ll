@@ -6,7 +6,7 @@
 #include "TrapdoorMod.h"
 
 namespace trapdoor {
-    void setup_slimeCommand(int level) {
+    const DynamicCommandInstance * setup_slimeCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
 
         auto command = CREATE_CMD(slime, level);
@@ -56,6 +56,6 @@ namespace trapdoor {
         };
 
         command->setCallback(cb);
-        DynamicCommand::setup(std::move(command));
+       return DynamicCommand::setup(std::move(command));
     }
 }  // namespace trapdoor

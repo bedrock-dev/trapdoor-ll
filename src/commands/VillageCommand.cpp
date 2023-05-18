@@ -6,7 +6,7 @@
 #include "VillageHelper.h"
 
 namespace trapdoor {
-    void setup_villageCommand(int level) {
+    const DynamicCommandInstance * setup_villageCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         auto command = CREATE_CMD(village, level);
         auto &optSwitch =
@@ -81,6 +81,8 @@ namespace trapdoor {
         command->setCallback(cb);
         auto *cmd = DynamicCommand::setup(std::move(command));
         trapdoor::mod().getVillageHelper().setupCommandInstance(cmd);
+
+        return  cmd;
     }
 
 }  // namespace trapdoor

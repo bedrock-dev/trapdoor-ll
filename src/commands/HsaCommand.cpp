@@ -9,7 +9,7 @@
 #include "TrapdoorMod.h"
 
 namespace trapdoor {
-    void setup_hsaCommand(int level) {
+    const DynamicCommandInstance * setup_hsaCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         auto command = CREATE_CMD(hsa, level);
         auto &showEnum = command->setEnum("showSubCommand", {"show"});
@@ -52,7 +52,7 @@ namespace trapdoor {
         };
 
         command->setCallback(cb);
-        DynamicCommand::setup(std::move(command));
+       return  DynamicCommand::setup(std::move(command));
     }
 
 }  // namespace trapdoor

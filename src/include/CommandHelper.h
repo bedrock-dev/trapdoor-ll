@@ -13,6 +13,7 @@
 #include <tuple>
 #include <utility>
 
+#include "DynamicCommandAPI.h"
 #include "Global.h"
 
 //clang-format on
@@ -79,47 +80,28 @@ namespace trapdoor {
 
     // Command setup
 
-    void setup_tickCommand(int);
+#define ADD_CMD_DECLARE(name) const DynamicCommandInstance *setup_##name##Command(int);
 
-    void setup_profCommand(int);
-
-    void setup_villageCommand(int);
-
-    void setup_logCommand(int);
-
-    void setup_testCommand(int);
-
-    void setup_spawnCommand(int);
-
-    void setup_dataCommand(int);
-
-    void setup_hsaCommand(int);
-
-    void setup_trapdoorCommand(int);
-
-    void setup_counterCommand(int);
-
-    void setup_funcCommand(int);
-
-    void setup_playerCommand(int);
-
-    void setup_hudCommand(int);
-
-    void setup_CalCommand(int);
-
-    void setup_disCommand(int);
-
-    // void setup_seedCommand(int);
-    void setup_slimeCommand(int);
-
-    void setup_triggerCommand(int);
-
-    void setup_randCommand(int);
-
-    void setup_selfCommand(int);
-
-    void setup_shortcutCommand(int);
-
+    ADD_CMD_DECLARE(cal)
+    ADD_CMD_DECLARE(counter)
+    ADD_CMD_DECLARE(data)
+    ADD_CMD_DECLARE(dis)
+    ADD_CMD_DECLARE(hsa)
+    ADD_CMD_DECLARE(hud)
+    ADD_CMD_DECLARE(log)
+    ADD_CMD_DECLARE(player)
+    ADD_CMD_DECLARE(prof)
+    ADD_CMD_DECLARE(rand)
+    ADD_CMD_DECLARE(self)
+    ADD_CMD_DECLARE(shortcut)
+    ADD_CMD_DECLARE(slime)
+    ADD_CMD_DECLARE(spawn)
+    ADD_CMD_DECLARE(test)
+    ADD_CMD_DECLARE(tick)
+    ADD_CMD_DECLARE(trapdoor)
+    ADD_CMD_DECLARE(func)
+    ADD_CMD_DECLARE(trigger)
+    ADD_CMD_DECLARE(village)
 }  // namespace trapdoor
 
 #endif  // TRAPDOOR_COMMAND_HELPER_H

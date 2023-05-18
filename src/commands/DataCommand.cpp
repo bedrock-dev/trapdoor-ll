@@ -11,7 +11,7 @@
 #include "RedstoneTool.h"
 
 namespace trapdoor {
-    void setup_dataCommand(int level) {
+    const DynamicCommandInstance * setup_dataCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
         auto command = CREATE_CMD(data, level);
@@ -86,6 +86,6 @@ namespace trapdoor {
             }
         };
         command->setCallback(cb);
-        DynamicCommand::setup(std::move(command));
+      return  DynamicCommand::setup(std::move(command));
     }
 }  // namespace trapdoor

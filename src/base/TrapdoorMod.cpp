@@ -6,6 +6,7 @@
 
 #include "BlockRotateHelper.h"
 #include "CommandHelper.h"
+#include "DynamicCommandAPI.h"
 #include "Events.h"
 #include "I18nAPI.h"
 #include "LoggerAPI.h"
@@ -14,11 +15,12 @@
 #include "TrapdoorAPI.h"
 #include "config.h"
 
-#define REG_COMMAND(c)                                         \
-    auto cfg_##c = cmdCfg.getCommandConfig(#c);                \
-    if (cfg_##c.enable) {                                      \
-        trapdoor::setup_##c##Command(cfg_##c.permissionLevel); \
-        trapdoor::logger().debug("Register command " #c);      \
+#define REG_COMMAND(c)                                             \
+    auto cfg_##c = cmdCfg.getCommandConfig(#c);                    \
+    if (cfg_##c.enable) {                                          \
+        trapdoor::mod().getCommandInstanceMap()[#c] =              \
+            trapdoor::setup_##c##Command(cfg_##c.permissionLevel); \
+        trapdoor::logger().debug("Register command " #c);          \
     }
 
 namespace trapdoor {
@@ -144,6 +146,15 @@ namespace trapdoor {
     }
 
     std::string TrapdoorMod::rootPath() const { return this->modRootPath + "/"; }
+    const DynamicCommandInstance *TrapdoorMod::getCmdInstance(const string &name) {
+        auto it = this->cmdInstanceMap.find(name);
+        if (it != this->cmdInstanceMap.end() || (!it->second)) {
+            trapdoor::logger().debug("Can not find instance for command {}", name);
+            return nullptr;
+        }
+
+        return it->second;
+    }
     TrapdoorMod &mod() {
         static TrapdoorMod mod;
         return mod;

@@ -37,7 +37,7 @@ namespace trapdoor {
         }
     }
 
-    void setup_testCommand(int level) {
+    const DynamicCommandInstance * setup_testCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
 
@@ -60,7 +60,7 @@ namespace trapdoor {
             }
         };
         command->setCallback(cb);
-        DynamicCommand::setup(std::move(command));
+      return  DynamicCommand::setup(std::move(command));
     }
 
 }  // namespace trapdoor

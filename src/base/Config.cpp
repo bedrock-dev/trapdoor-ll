@@ -128,6 +128,7 @@ namespace trapdoor {
     }
 
     bool Configuration::readShortcutConfigs() {
+        std::vector<std::string> enums;
         const std::unordered_set<std::string> validShortCuts{"command", "use", "use-on", "destroy"};
         try {
             this->shortcuts.clear();
@@ -178,7 +179,14 @@ namespace trapdoor {
                     sh.prevent = value["prevent"].get<bool>();
                 }
                 this->shortcuts[name] = sh;
+                enums.push_back(name);
                 trapdoor::logger().debug("Register shortcut [{}] : {}", name, sh.getDescription());
+            }
+
+            //            只有在重载配置文件时才触发
+            auto *i = trapdoor::mod().getCmdInstance("shortcut");
+            if (i) {
+                i->setSoftEnum("name", enums);
             }
 
         } catch (const std::exception &e) {

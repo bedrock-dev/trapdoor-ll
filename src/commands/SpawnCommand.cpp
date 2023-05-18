@@ -11,7 +11,7 @@
 #include "TrapdoorMod.h"
 
 namespace trapdoor {
-    void setup_spawnCommand(int level) {
+    const DynamicCommandInstance *setup_spawnCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
 
@@ -27,7 +27,7 @@ namespace trapdoor {
 
         auto &analyzeOpt = command->setEnum("analyze", {"analyze"});
         auto &analyzeSubOpt =
-                command->setEnum("analyze options", {"start", "stop", "print", "clear"});
+            command->setEnum("analyze options", {"start", "stop", "print", "clear"});
 
         // mandatory/options就是给enum增加后置参数类型的,mandatory就是必填,optional是选填
         command->mandatory("spawn", ParamType::Enum, optCount,
@@ -44,7 +44,6 @@ namespace trapdoor {
 
         command->mandatory("countType", ParamType::Enum, optCountType,
                            CommandParameterOption::EnumAutocompleteExpansion);
-
 
         command->mandatory("spawn", ParamType::Enum, analyzeOpt,
                            CommandParameterOption::EnumAutocompleteExpansion);
@@ -76,29 +75,29 @@ namespace trapdoor {
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
             auto countParam = std::string();
             auto subOpt =
-                    results["analyzeSub"].isSet ? results["analyzeSub"].getRaw<std::string>() : "";
+                results["analyzeSub"].isSet ? results["analyzeSub"].getRaw<std::string>() : "";
 
             switch (do_hash(results["spawn"].getRaw<std::string>().c_str())) {
                 case do_hash("count"):
                     trapdoor::countActors(reinterpret_cast<Player *>(origin.getPlayer()),
                                           results["countType"].getRaw<std::string>())
-                            .sendTo(output);
+                        .sendTo(output);
                     break;
                 case do_hash("forcesp"):
                     trapdoor::forceSpawn(
-                            reinterpret_cast<Player *>(origin.getPlayer()),
-                            results["actorType"].get<const ActorDefinitionIdentifier *>(),
-                            results["blockPos"].isSet ? results["blockPos"].get<BlockPos>()
-                                                      : BlockPos::MAX)
-                            .sendTo(output);
+                        reinterpret_cast<Player *>(origin.getPlayer()),
+                        results["actorType"].get<const ActorDefinitionIdentifier *>(),
+                        results["blockPos"].isSet ? results["blockPos"].get<BlockPos>()
+                                                  : BlockPos::MAX)
+                        .sendTo(output);
                     break;
                 case do_hash("analyze"):
                     if (subOpt == "start") {
                         trapdoor::mod()
-                                .getSpawnAnalyzer()
-                                .start(origin.getDimension()->getDimensionId(),
-                                       fromBlockPos(origin.getBlockPosition()).toChunkPos())
-                                .sendTo(output);
+                            .getSpawnAnalyzer()
+                            .start(origin.getDimension()->getDimensionId(),
+                                   fromBlockPos(origin.getBlockPosition()).toChunkPos())
+                            .sendTo(output);
                     } else if (subOpt == "stop") {
                         trapdoor::mod().getSpawnAnalyzer().stop().sendTo(output);
                     } else if (subOpt == "print") {
@@ -110,37 +109,35 @@ namespace trapdoor {
                 case do_hash("prob"):
                     if (results["blockPos"].isSet) {
                         trapdoor::printSpawnProbability(
-                                reinterpret_cast<Player *>(origin.getPlayer()),
-                                results["blockPos"].get<BlockPos>())
-                                .sendTo(output);
+                            reinterpret_cast<Player *>(origin.getPlayer()),
+                            results["blockPos"].get<BlockPos>())
+                            .sendTo(output);
                     } else {
                         trapdoor::printSpawnProbability(
-                                reinterpret_cast<Player *>(origin.getPlayer()),
-                                reinterpret_cast<Actor *>(origin.getPlayer())
-                                        ->getBlockFromViewVector()
-                                        .getPosition())
-                                .sendTo(output);
+                            reinterpret_cast<Player *>(origin.getPlayer()),
+                            reinterpret_cast<Actor *>(origin.getPlayer())
+                                ->getBlockFromViewVector()
+                                .getPosition())
+                            .sendTo(output);
                     }
                     break;
                 case do_hash("cluster"):
                     if (results["blockPos"].isSet) {
-                        trapdoor::spawnCluster(
-                                reinterpret_cast<Player *>(origin.getPlayer()),
-                                results["blockPos"].get<BlockPos>())
-                                .sendTo(output);
+                        trapdoor::spawnCluster(reinterpret_cast<Player *>(origin.getPlayer()),
+                                               results["blockPos"].get<BlockPos>())
+                            .sendTo(output);
                     } else {
-                        trapdoor::spawnCluster(
-                                reinterpret_cast<Player *>(origin.getPlayer()),
-                                reinterpret_cast<Actor *>(origin.getPlayer())
-                                        ->getBlockFromViewVector()
-                                        .getPosition())
-                                .sendTo(output);
+                        trapdoor::spawnCluster(reinterpret_cast<Player *>(origin.getPlayer()),
+                                               reinterpret_cast<Actor *>(origin.getPlayer())
+                                                   ->getBlockFromViewVector()
+                                                   .getPosition())
+                            .sendTo(output);
                     }
                     break;
             }
         };
 
         command->setCallback(cb);
-        DynamicCommand::setup(std::move(command));
+        return DynamicCommand::setup(std::move(command));
     }
 }  // namespace trapdoor

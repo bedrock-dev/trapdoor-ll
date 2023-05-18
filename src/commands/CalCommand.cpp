@@ -4,5 +4,5 @@
 namespace trapdoor {
 
     // 计算器
-    void setup_CalCommand(int) {}
+//    const DynamicCommandInstance * setup_CalCommand(int) {}
 }  // namespace trapdoor

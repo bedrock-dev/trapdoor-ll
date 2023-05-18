@@ -17,7 +17,7 @@
 #define  ADD_BOOL_CONFIG(name) ADD_CONFIG(name,onoroff)
 
 namespace trapdoor {
-    void setup_funcCommand(int level) {
+    const DynamicCommandInstance * setup_funcCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         auto command = CREATE_CMD(func, level);
 
@@ -79,6 +79,6 @@ namespace trapdoor {
             }
         };
         command->setCallback(cb);
-        DynamicCommand::setup(std::move(command));
+       return DynamicCommand::setup(std::move(command));
     }
 }  // namespace trapdoor

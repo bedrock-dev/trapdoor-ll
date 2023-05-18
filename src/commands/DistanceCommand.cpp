@@ -8,7 +8,7 @@
 
 namespace trapdoor {
     // 距离计算
-    void setup_disCommand(int level) {
+    const DynamicCommandInstance * setup_disCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
 
@@ -49,6 +49,6 @@ namespace trapdoor {
             }
         };
         command->setCallback(cb);
-        DynamicCommand::setup(std::move(command));
+      return  DynamicCommand::setup(std::move(command));
     }
 }  // namespace trapdoor

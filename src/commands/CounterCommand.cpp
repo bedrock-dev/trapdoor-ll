@@ -8,7 +8,7 @@
 #include "TrapdoorMod.h"
 
 namespace trapdoor {
-    void setup_counterCommand(int level) {
+    const DynamicCommandInstance *setup_counterCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
         auto command = CREATE_CMD(counter, level);
@@ -33,35 +33,35 @@ namespace trapdoor {
                 case do_hash("print"):
                     if (results["channel"].isSet) {
                         trapdoor::mod()
-                                .getHopperChannelManager()
-                                .modifyChannel(origin.getPlayer(), results["channel"].getRaw<int>(), 0)
-                                .sendTo(output);
+                            .getHopperChannelManager()
+                            .modifyChannel(origin.getPlayer(), results["channel"].getRaw<int>(), 0)
+                            .sendTo(output);
                     } else {
                         trapdoor::mod()
-                                .getHopperChannelManager()
-                                .quickModifyChannel(origin.getPlayer(),
-                                                    getLookAtPos(origin.getPlayer()), 0)
-                                .sendTo(output);
+                            .getHopperChannelManager()
+                            .quickModifyChannel(origin.getPlayer(),
+                                                getLookAtPos(origin.getPlayer()), 0)
+                            .sendTo(output);
                     }
 
                     break;
                 case do_hash("reset"):
                     if (results["channel"].isSet) {
                         trapdoor::mod()
-                                .getHopperChannelManager()
-                                .modifyChannel(origin.getPlayer(), results["channel"].getRaw<int>(), 1)
-                                .sendTo(output);
+                            .getHopperChannelManager()
+                            .modifyChannel(origin.getPlayer(), results["channel"].getRaw<int>(), 1)
+                            .sendTo(output);
                     } else {
                         trapdoor::mod()
-                                .getHopperChannelManager()
-                                .quickModifyChannel(origin.getPlayer(),
-                                                    getLookAtPos(origin.getPlayer()), 1)
-                                .sendTo(output);
+                            .getHopperChannelManager()
+                            .quickModifyChannel(origin.getPlayer(),
+                                                getLookAtPos(origin.getPlayer()), 1)
+                            .sendTo(output);
                     }
                     break;
             }
         };
         command->setCallback(cb);
-        DynamicCommand::setup(std::move(command));
+        return DynamicCommand::setup(std::move(command));
     }
 }  // namespace trapdoor

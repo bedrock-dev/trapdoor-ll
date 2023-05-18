@@ -23,7 +23,7 @@ namespace trapdoor {
 
         void getLevelNameFromUser();
 
-        std::string rootPath() const;
+        [[nodiscard]] std::string rootPath() const;
 
         void heavyTick();
 
@@ -53,6 +53,13 @@ namespace trapdoor {
 
         inline UserConfig &getUserConfig() { return this->globalUserConfig; }
 
+        inline std::unordered_map<std::string, const DynamicCommandInstance *>
+            &getCommandInstanceMap() {
+            return this->cmdInstanceMap;
+        }
+
+        const DynamicCommandInstance *getCmdInstance(const std::string &name);
+
        private:
         VillageHelper villageHelper;
         HsaManager hsaManager;
@@ -63,6 +70,8 @@ namespace trapdoor {
         SimPlayerManager simPlayerManager;
         SpawnAnalyzer spawnAnalyzer;
         SlimeChunkHelper slimeChunkHelper;
+
+        std::unordered_map<std::string, const DynamicCommandInstance *> cmdInstanceMap;
 
         // user config cache
         UserConfig globalUserConfig;

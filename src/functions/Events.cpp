@@ -85,17 +85,8 @@ namespace trapdoor {
             }
 
             auto *block = bi->getBlock();
-            if (ev.mItemStack->getTypeName() == "minecraft:cactus" &&
-                antiShake(ev.mPlayer->getRealName(), bi->getPosition())) {
-                trapdoor::rotateBlock(ev.mPlayer, bi->getBlockSource(), bi, ev.mClickPos, ev.mFace);
-                // resetAntiShakeCache(ev.mPlayer->getRealName());
-            }
 
             auto &shortcuts = trapdoor::mod().getConfig().getShortcuts();
-            if (shortcuts.empty()) {
-                return true;
-            }
-
             Shortcut shortcut;
             shortcut.type = USE_ON;
             shortcut.itemAux = ev.mItemStack->getAux();
@@ -111,7 +102,10 @@ namespace trapdoor {
                     }
                 }
             }
-
+            if (ev.mItemStack->getTypeName() == "minecraft:cactus" &&
+                antiShake(ev.mPlayer->getRealName(), bi->getPosition())) {
+                trapdoor::rotateBlock(ev.mPlayer, bi->getBlockSource(), bi, ev.mClickPos, ev.mFace);
+            }
             return true;
         });
     }

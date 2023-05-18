@@ -8,7 +8,7 @@
 namespace trapdoor {
 
 
-    void setup_playerCommand(int level) {
+    const DynamicCommandInstance * setup_playerCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
         auto command = CREATE_CMD(player, level);
@@ -343,7 +343,8 @@ namespace trapdoor {
         };
 
         command->setCallback(cb);
-        auto cmd = DynamicCommand::setup(std::move(command));
+        auto *cmd = DynamicCommand::setup(std::move(command));
         trapdoor::mod().getSimPlayerManager().setupCommandInstance(cmd);
+        return cmd;
     }
 }  // namespace trapdoor
