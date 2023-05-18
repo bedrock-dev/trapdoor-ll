@@ -139,7 +139,7 @@ namespace trapdoor {
 
     std::string TrapdoorMod::getVersionString() const {
         trapdoor::TextBuilder tb;
-        tb.sTextF(TB::BOLD | TB::AQUA, "Tapdoor v%s\n", STRING(TRAPDOOR_VERSION));
+        tb.sTextF(TB::BOLD | TB::AQUA, "Trapdoor v%s\n", STRING(TRAPDOOR_VERSION));
         tb.sTextF(TB::BOLD | TB::WHITE, "Developed by %s %s\n", "hhhxiao", "OEOTYAN");
         tb.textF("Build time: %s\n", STRING(BUILD_TIME));
         return tb.get();
@@ -148,7 +148,7 @@ namespace trapdoor {
     std::string TrapdoorMod::rootPath() const { return this->modRootPath + "/"; }
     const DynamicCommandInstance *TrapdoorMod::getCmdInstance(const string &name) {
         auto it = this->cmdInstanceMap.find(name);
-        if (it != this->cmdInstanceMap.end() || (!it->second)) {
+        if (it == this->cmdInstanceMap.end() || (!it->second)) {
             trapdoor::logger().debug("Can not find instance for command {}", name);
             return nullptr;
         }

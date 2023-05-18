@@ -107,6 +107,7 @@
   },
   "shortcuts": {
     "hopper_counter_printer": {
+      "enable": true,
       "type": "use-on",
       "item": "cactus",
       "block": "concrete",
@@ -116,7 +117,7 @@
       ]
     },
     "redstone_debug_stick": {
-      "enable": false,
+      "enable": true,
       "type": "use-on",
       "item": "stick",
       "block": "",
