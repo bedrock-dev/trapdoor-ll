@@ -78,7 +78,7 @@
     },
     "shortcut": {
       "enable": true,
-      "permission-level": 0
+      "permission-level": 1
     }
   },
   "basic-config": {
