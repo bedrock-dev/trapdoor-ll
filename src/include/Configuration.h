@@ -7,16 +7,16 @@
 
 #include <map>
 #include <mc/Level.hpp>
+#include <mc/ServerPlayer.hpp>
 #include <unordered_map>
 
 #include "CommandHelper.h"
 #include "Global.h"
-#include "MC/ServerPlayer.hpp"
 #include "Msg.h"
 #include "Nlohmann/json.hpp"
+#include "Particle.h"
 #include "Shortcuts.h"
 #include "UserConfig.h"
-
 namespace trapdoor {
     struct CommandConfig {
         bool enable = true;
@@ -74,6 +74,13 @@ namespace trapdoor {
         bool forceOpenContainer = false;
     };
 
+    struct VillageColor {
+        PCOLOR bound = trapdoor::APRICOT;
+        PCOLOR center = trapdoor::TEAL;
+        PCOLOR poi = trapdoor::WHITE;
+        PCOLOR spawn = trapdoor::VATBLUE;
+    };
+
     class Configuration {
        public:
         CommandConfig getCommandConfig(const std::string &command);
@@ -82,10 +89,12 @@ namespace trapdoor {
 
         inline BasicConfig &getBasicConfig() { return this->basicConfig; }
 
+        inline VillageColor &getVillageColor() { return this->villageColors; }
+
         inline GlobalFunctionConfig &getGlobalFunctionConfig() {
             return this->globalFunctionConfig;
         }
-        
+
         bool init(const std::string &fileName, bool reload);
 
         std::string dumpConfigInfo();
@@ -123,6 +132,9 @@ namespace trapdoor {
 
         bool readShortcutConfigs();
 
+        bool readVillageConfigs();
+
+        VillageColor villageColors;
         BasicConfig basicConfig;
         GlobalFunctionConfig globalFunctionConfig;
         std::unordered_map<std::string, CommandConfig> commandsConfigs;

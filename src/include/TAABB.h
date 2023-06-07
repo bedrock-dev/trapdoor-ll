@@ -4,7 +4,6 @@
 #include <string>
 
 #include "TVec3.h"
-#include "TrapdoorMod.h"
 
 namespace trapdoor {
     struct TAABB {

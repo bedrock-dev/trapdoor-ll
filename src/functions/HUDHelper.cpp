@@ -1,5 +1,7 @@
 #include "HUDHelper.h"
 
+#include <vcruntime.h>
+
 #include <mc/BaseCircuitComponent.hpp>
 #include <mc/Biome.hpp>
 #include <mc/Block.hpp>
@@ -18,6 +20,7 @@
 #include "Particle.h"
 #include "PlayerInfoAPI.h"
 #include "TrAPI.h"
+#include "TrapdoorMod.h"
 #include "Utils.h"
 #include "VillageHelper.h"
 
@@ -211,7 +214,7 @@ namespace trapdoor {
                 if (cfg[HUDItemType::Redstone]) {
                     s += ps(buildRedstoneInfo(p));
                 }
-                if (cfg[HUDItemType::Vill]) {
+                if (cfg[static_cast<size_t>(HUDItemType::Vill)]) {
                     s += ps(buildVillagerInfo(p));
                 }
                 if (cfg[HUDItemType::Counter]) {

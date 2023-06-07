@@ -6,7 +6,7 @@
 #include "TAABB.h"
 #include "TBlockPos.h"
 #include "TVec3.h"
-
+#include "TrapdoorMod.h"
 namespace trapdoor {
     void broadcastMessage(const std::string &msg, int level) {
         auto fmtMsg = msg;
@@ -78,7 +78,7 @@ namespace trapdoor {
         messageBuffer.push_back(STYLE_MAP.at(RESET));
         return *this;
     }
-    
+
     void TextBuilder::broadcast() { trapdoor::broadcastMessage(this->get()); }
 
 }  // namespace trapdoor

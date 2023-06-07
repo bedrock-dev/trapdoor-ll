@@ -15,6 +15,7 @@
 #include "DataConverter.h"
 #include "HookAPI.h"
 #include "Msg.h"
+#include "TrapdoorMod.h"
 #include "Utils.h"
 
 enum class SpawnBlockRequirements;
@@ -43,7 +44,7 @@ namespace trapdoor {
             auto a2water = a2m.isType(static_cast<MaterialType>(5));
             auto a2lava = a2m.isType(static_cast<MaterialType>(6));
             auto rb = bs.getRawBrightness(pos + BlockPos(0, 1, 0), true, true);
-            auto bright = (uint32_t) *reinterpret_cast<unsigned char *>(&rb);
+            auto bright = (uint32_t) * reinterpret_cast<unsigned char *>(&rb);
             TSpawnConditions cond;
             cond.isOnSurface = surface;
             cond.isUnderground = !surface;
@@ -68,7 +69,7 @@ namespace trapdoor {
         auto chPos = fromBlockPos(player->getPos().toBlockPos()).toChunkPos();
         auto entities = Level::getAllEntities();
         std::unordered_map<std::string, size_t> chunkList, allList, densityList;
-        for (auto actor: entities) {
+        for (auto actor : entities) {
             if (!actor || actor->getDimensionId() != player->getDimensionId()) continue;
             auto actorCh = fromBlockPos(actor->getPos().toBlockPos()).toChunkPos();
             auto name = actor->getTypeName();
@@ -84,11 +85,11 @@ namespace trapdoor {
         if (type == "chunk") res = chunkList;
         if (type == "density") res = densityList;
         TextBuilder builder;
-        for (auto &i: res) {
+        for (auto &i : res) {
             builder.sText(TB::GRAY, " - ")
-                    .textF("%s: ", trapdoor::i18ActorName(i.first).c_str())
-                    .num(i.second)
-                    .text("\n");
+                .textF("%s: ", trapdoor::i18ActorName(i.first).c_str())
+                .num(i.second)
+                .text("\n");
         }
         return {builder.get(), true};
     }
@@ -106,9 +107,9 @@ namespace trapdoor {
         auto &bs = player->getRegion();
         Vec3 v(targetPos.x, targetPos.y + 1, targetPos.z);
 
-        //只做碰撞箱和额外条件检查
+        // 只做碰撞箱和额外条件检查
         auto *mob =
-                player->getLevel().getSpawner().spawnMob(bs, *id, nullptr, v, true, false, false);
+            player->getLevel().getSpawner().spawnMob(bs, *id, nullptr, v, true, false, false);
         if (mob) {
             return {"", true};
         } else {
@@ -124,7 +125,7 @@ namespace trapdoor {
         while (topPos.y >= -64) {
             Spawner::findNextSpawnBlockUnder(player->getRegion(), topPos,
                                              static_cast<MaterialType>(52),
-                                             (SpawnBlockRequirements) 0);
+                                             (SpawnBlockRequirements)0);
             if (topPos.y == pos.y) {
                 hasFound = true;
                 break;
@@ -162,7 +163,7 @@ namespace trapdoor {
             if (iter == spawnMap.end()) {
                 auto &mobSpawnRule = dAccess<MobSpawnRules, 184>(mobData);
                 auto ok = Global<Level>->getSpawner().isSpawnPositionOk(
-                        mobSpawnRule, player->getRegion(), topPos + BlockPos(0, 1, 0), false);
+                    mobSpawnRule, player->getRegion(), topPos + BlockPos(0, 1, 0), false);
                 spawnMap[id.getIdentifier()] = {1, ok};
             } else {
                 auto ct = iter->second.first;
@@ -172,31 +173,31 @@ namespace trapdoor {
         }
 
         int totalCount = 0;
-        for (const auto &mob: spawnMap) {
+        for (const auto &mob : spawnMap) {
             totalCount += mob.second.first;
         }
 
         TextBuilder builder;
         builder
-                .sTextF(TextBuilder::BOLD | TextBuilder::WHITE, "-- [%d %d %d] --\n", pos.x, pos.y,
-                        pos.z)
-                .text(" - Bight(Sky + Block): ")
-                .sTextF(TextBuilder::GREEN, "%d\n", cond.rawBrightness)
-                .text(" - Surface / Underground: ")
-                .sTextF(TextBuilder::GREEN, "%d / %d\n", cond.isOnSurface, cond.isUnderground)
-                .text(" - Water / Lava: ")
-                .sTextF(TextBuilder::GREEN, "%d / %d\n", cond.isInWater, cond.isInLava)
-                .text(" - Biome: ")
-                .sTextF(TB::GREEN, "%s\n", player->getRegion().getBiome(topPos).getName().c_str());
-        for (const auto &mob: spawnMap) {
+            .sTextF(TextBuilder::BOLD | TextBuilder::WHITE, "-- [%d %d %d] --\n", pos.x, pos.y,
+                    pos.z)
+            .text(" - Bight(Sky + Block): ")
+            .sTextF(TextBuilder::GREEN, "%d\n", cond.rawBrightness)
+            .text(" - Surface / Underground: ")
+            .sTextF(TextBuilder::GREEN, "%d / %d\n", cond.isOnSurface, cond.isUnderground)
+            .text(" - Water / Lava: ")
+            .sTextF(TextBuilder::GREEN, "%d / %d\n", cond.isInWater, cond.isInLava)
+            .text(" - Biome: ")
+            .sTextF(TB::GREEN, "%s\n", player->getRegion().getBiome(topPos).getName().c_str());
+        for (const auto &mob : spawnMap) {
             auto ok = mob.second.second ? "Yes" : "No";
             auto color = mob.second.second ? TB::DARK_GREEN : TB::DARK_RED;
             builder.sText(TB::GRAY, " - ")
-                    .textF("%s:  ", mob.first.c_str())
-                    .text("will: ")
-                    .num(mob.second.first * 100.0 / totalCount)
-                    .text("%%, can: ")
-                    .sTextF(color | TB::BOLD, "%s\n", ok);
+                .textF("%s:  ", mob.first.c_str())
+                .text("will: ")
+                .num(mob.second.first * 100.0 / totalCount)
+                .text("%%, can: ")
+                .sTextF(color | TB::BOLD, "%s\n", ok);
         }
         return {builder.get(), true};
     }
@@ -208,9 +209,8 @@ namespace trapdoor {
         bool hasFound = false;
         int lastY = topPos.y;
         while (topPos.y >= -64) {
-            Spawner::findNextSpawnBlockUnder(p->getRegion(), topPos,
-                                             static_cast<MaterialType>(52),
-                                             (SpawnBlockRequirements) 0);
+            Spawner::findNextSpawnBlockUnder(p->getRegion(), topPos, static_cast<MaterialType>(52),
+                                             (SpawnBlockRequirements)0);
             if (topPos.y == pos.y) {
                 hasFound = true;
                 break;
@@ -232,7 +232,8 @@ namespace trapdoor {
                                  cond.isUnderground, cond.isInWater, cond.isInLava,
                                  cond.rawBrightness);
         // Global<Level>->getSpawner()._spawnMobInCluster();
-        Global<Level>->getSpawner()._spawnMobCluster(p->getRegion(), pos, *reinterpret_cast<SpawnConditions *>(&cond));
+        Global<Level>->getSpawner()._spawnMobCluster(p->getRegion(), pos,
+                                                     *reinterpret_cast<SpawnConditions *>(&cond));
         return {"", true};
     }
 

@@ -2,14 +2,16 @@
 // Created by xhy on 2022/5/17.
 //
 
+#include "Configuration.h"
+
 #include <processenv.h>
 
 #include <unordered_set>
 
 #include "BlockRotateHelper.h"
 #include "CommandHelper.h"
-#include "Configuration.h"
 #include "Msg.h"
+#include "Particle.h"
 #include "Shortcuts.h"
 #include "TrapdoorMod.h"
 
@@ -62,6 +64,7 @@ namespace trapdoor {
 
         if (!readBasicConfigs()) return false;
         if (!readShortcutConfigs()) return false;
+        if (!readVillageConfigs()) return false;
         if (!readGlobalFunctionConfig()) return false;
         return true;
     }
@@ -126,7 +129,20 @@ namespace trapdoor {
         }
         return true;
     }
-
+    bool Configuration::readVillageConfigs() {
+        // TODO:
+        try {
+            auto v = this->config["village"];
+            this->villageColors.bound = trapdoor::stringToPColor(v["bound"].get<std::string>());
+            this->villageColors.center = trapdoor::stringToPColor(v["center"].get<std::string>());
+            this->villageColors.poi = trapdoor::stringToPColor(v["poi-query"].get<std::string>());
+            this->villageColors.spawn = trapdoor::stringToPColor(v["spawn"].get<std::string>());
+        } catch (const std::exception &e) {
+            trapdoor::logger().error("error read Village Config: {}", e.what());
+            return false;
+        }
+        return true;
+    }
     bool Configuration::readShortcutConfigs() {
         std::vector<std::string> enums;
         const std::unordered_set<std::string> validShortCuts{"command", "use", "use-on", "destroy"};
@@ -304,5 +320,6 @@ namespace trapdoor {
             }
         }
         return scripts;
-    }  // namespace trapdoor
+    }
+    // namespace trapdoor
 }  // namespace trapdoor

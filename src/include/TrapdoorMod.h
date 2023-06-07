@@ -53,8 +53,8 @@ namespace trapdoor {
 
         inline UserConfig &getUserConfig() { return this->globalUserConfig; }
 
-        inline std::unordered_map<std::string, const DynamicCommandInstance *>
-            &getCommandInstanceMap() {
+        inline std::unordered_map<std::string, const DynamicCommandInstance *> &
+        getCommandInstanceMap() {
             return this->cmdInstanceMap;
         }
 

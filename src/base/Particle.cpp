@@ -9,6 +9,7 @@
 #include "Global.h"
 #include "TBlockPos.h"
 #include "TVec3.h"
+#include "TrapdoorMod.h"
 #include "Utils.h"
 
 namespace trapdoor {
@@ -206,5 +207,14 @@ namespace trapdoor {
     void spawnNumParticle(const TVec3& v, int num, PCOLOR color, int dimType) {
         auto name = "ll:num" + std::to_string(num) + lineParticleColor()[color];
         spawnParticle(v, name, dimType);
+    }
+    PCOLOR stringToPColor(const string& name) {
+        static std::unordered_map<string, PCOLOR> cmp{
+            {"black", BLACK},     {"indigo", INDIGO},   {"lavender", LAVENDER}, {"teal", TEAL},
+            {"cocoa", COCOA},     {"dark", DARK},       {"oatmeal", OATMEAL},   {"white", WHITE},
+            {"red", RED},         {"apricot", APRICOT}, {"yellow", YELLOW},     {"green", GREEN},
+            {"vatblue", VATBLUE}, {"slate", SLATE},     {"pink", PINK},         {"fawn", FAWN},
+        };
+        return cmp.count(name) ? cmp[name] : WHITE;
     }
 }  // namespace trapdoor

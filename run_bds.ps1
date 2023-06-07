@@ -1,2 +1,2 @@
-$Env:TR_CFG_PATH = 'C:\Users\xhy\dev\trapdoor-ll\src\base\'
-& "C:\Users\xhy\Games\MC\BDS\bedrock-server-1.19.72.01\bedrock_server_mod.exe"
+$Env:TR_ROOT_PATH = 'C:\Users\xhy\dev\trapdoor-ll\src\root\'
+& "D:\Games\MC\BDS\bedrock-server-1.19.81.01\bedrock_server_mod.exe"

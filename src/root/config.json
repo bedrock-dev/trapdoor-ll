@@ -105,6 +105,12 @@
     "auto-select-tool": false,
     "force-open-container": false
   },
+  "village": {
+    "bound": "apricot",
+    "spawn": "vatblue",
+    "center": "teal",
+    "poi-query": "white"
+  },
   "shortcuts": {
     "hopper_counter_printer": {
       "enable": true,

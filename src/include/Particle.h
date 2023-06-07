@@ -24,6 +24,9 @@ namespace trapdoor {
         PINK = 14,
         FAWN = 15,
     };
+
+    PCOLOR stringToPColor(const std::string& name);
+
     void spawnParticle(const TVec3& pos, const std::string& type, int dimID = 0);
 
     void drawLine(const TVec3& originPoint, TFACING direction, float length, PCOLOR color,

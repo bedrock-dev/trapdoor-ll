@@ -17,6 +17,7 @@
 #include "MC/PrettySnbtFormat.hpp"
 #include "Msg.h"
 #include "TBlockPos.h"
+#include "TrapdoorMod.h"
 #include "Utils.h"
 
 namespace trapdoor {
@@ -50,18 +51,18 @@ namespace trapdoor {
 #ifdef DEV
         auto &id = a->getActorIdentifier();
         builder.item("CanonicalHash", id.getCanonicalHash().getString())
-                .item("CanonicalName", id.getCanonicalName() + "?")
-                .item("FullName", id.getFullName() + "?")
-                .item("Identifier", id.getIdentifier() + "?")
-                .item("Event", id.getInitEvent() + "?")
-                .item("LegacyActorType", static_cast<int>(id._getLegacyActorType()));
+            .item("CanonicalName", id.getCanonicalName() + "?")
+            .item("FullName", id.getFullName() + "?")
+            .item("Identifier", id.getIdentifier() + "?")
+            .item("Event", id.getInitEvent() + "?")
+            .item("LegacyActorType", static_cast<int>(id._getLegacyActorType()));
 #endif
 
         builder.item("TypeName", a->getTypeName())
-                .item("Uid", a->getUniqueID().get())
-                .item("Position", fromVec3(a->getPos()).toDetailString())
-                .item("DeltaPosition", fromVec3(a->getPosDelta()).toDetailString())
-                .item("Surface", a->isSurfaceMob());
+            .item("Uid", a->getUniqueID().get())
+            .item("Position", fromVec3(a->getPos()).toDetailString())
+            .item("DeltaPosition", fromVec3(a->getPosDelta()).toDetailString())
+            .item("Surface", a->isSurfaceMob());
 
         //        builder.sText(TextBuilder::AQUA, "Base: \n")
         //            .text(" - type / UID: ")
@@ -104,34 +105,34 @@ namespace trapdoor {
         }
 
         builder.sText(trapdoor::TextBuilder::AQUA, "Base:\n")
-                .text(" - Ptr: ")
-                .sTextF(trapdoor::TextBuilder::GREEN, "%p\n", &b)
-                .text(" - Name / Type: ")
-                .sTextF(trapdoor::TextBuilder::GREEN, "%s / %s\n", b.getName().c_str(),
-                        b.getName().c_str())
+            .text(" - Ptr: ")
+            .sTextF(trapdoor::TextBuilder::GREEN, "%p\n", &b)
+            .text(" - Name / Type: ")
+            .sTextF(trapdoor::TextBuilder::GREEN, "%s / %s\n", b.getName().c_str(),
+                    b.getName().c_str())
 
-                .text(" - ID / RTID: ")
-                .sTextF(trapdoor::TextBuilder::GREEN, "%d / %d\n", b.getId(), b.getRuntimeId())
-                .text(" - Variant: ")
-                .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", b.getVariant())
-                .text(" - CanInstanceTick: ")
-                .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", b.canInstatick())
-                .text(" - BlockEntity: ")
-                .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", b.hasBlockEntity())
-                .text(" - IsSolid: ")
-                .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", b.isSolid());
+            .text(" - ID / RTID: ")
+            .sTextF(trapdoor::TextBuilder::GREEN, "%d / %d\n", b.getId(), b.getRuntimeId())
+            .text(" - Variant: ")
+            .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", b.getVariant())
+            .text(" - CanInstanceTick: ")
+            .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", b.canInstatick())
+            .text(" - BlockEntity: ")
+            .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", b.hasBlockEntity())
+            .text(" - IsSolid: ")
+            .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", b.isSolid());
         auto &m = b.getMaterial();
         builder.sText(trapdoor::TextBuilder::AQUA, "Material:\n")
-                .text(" - Motion: ")
-                .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", m.getBlocksMotion())
-                .text(" - TopSolid: ")
-                .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", m.isTopSolid(false, false))
-                .text(" - IsSolid: ")
-                .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", m.isSolid())
-                .text(" - IsSolidBlocking: ")
-                .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", m.isSolidBlocking())
-                .text(" - Translucency: ")
-                .sTextF(trapdoor::TextBuilder::GREEN, "%.3f\n", m.getTranslucency());
+            .text(" - Motion: ")
+            .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", m.getBlocksMotion())
+            .text(" - TopSolid: ")
+            .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", m.isTopSolid(false, false))
+            .text(" - IsSolid: ")
+            .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", m.isSolid())
+            .text(" - IsSolidBlocking: ")
+            .sTextF(trapdoor::TextBuilder::GREEN, "%d\n", m.isSolidBlocking())
+            .text(" - Translucency: ")
+            .sTextF(trapdoor::TextBuilder::GREEN, "%.3f\n", m.getTranslucency());
         return {builder.get(), true};
     }
 

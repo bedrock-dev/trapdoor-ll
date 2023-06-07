@@ -38,6 +38,8 @@ else ()
 endif ()
 
 file(GLOB_RECURSE SRC_FILES_DIR
+        src/base/Particle.cpp
+        src/base/Configuration.cpp
         src/*/*.cpp
         src/*.cpp
         )

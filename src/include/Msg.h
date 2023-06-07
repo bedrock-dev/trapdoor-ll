@@ -32,7 +32,7 @@ namespace trapdoor {
     void broadcastMessage(const std::string &msg, int level = 0);
 
     // from stack overflow
-    template<typename... Args>
+    template <typename... Args>
     std::string format(const std::string &format, Args... args) {
         int size = snprintf(nullptr, 0, format.c_str(), args...) + 1;  // Extra space for '\0'
         if (size <= 0) return {};
@@ -46,7 +46,7 @@ namespace trapdoor {
     struct TAABB;
 
     class TextBuilder {
-    public:
+       public:
         static const uint8_t DARK_RED;
         static const uint8_t RED;
         static const uint8_t GOLD;
@@ -66,19 +66,19 @@ namespace trapdoor {
 
         TextBuilder &text(const std::string &s);
 
-        template<typename... Args>
+        template <typename... Args>
         TextBuilder &textF(const std::string &format, Args... args) {
             this->text(trapdoor::format(format, args...));
             return *this;
         }
 
-        template<typename... Args>
+        template <typename... Args>
         TextBuilder &sTextF(uint8_t style, const std::string &format, Args... args) {
             this->sText(style, trapdoor::format(format, args...));
             return *this;
         }
 
-        template<typename... Args>
+        template <typename... Args>
         TextBuilder &boldF(const std::string &format, Args... args) {
             this->sText(TextBuilder::BOLD, trapdoor::format(format, args...));
             return *this;
@@ -101,12 +101,12 @@ namespace trapdoor {
 
         TextBuilder &pos(const TBlockPos &pos);
 
-        template<typename T>
+        template <typename T>
         TextBuilder &num(T x) {
             if (std::is_arithmetic<T>()) {
                 if (std::is_floating_point<T>()) {
                     char buffer[32];
-                    sprintf(buffer, "%.1f", (double) x);
+                    sprintf(buffer, "%.1f", (double)x);
                     std::string s(buffer);
                     sText(WHITE | BOLD, s);
                 } else {
@@ -121,22 +121,22 @@ namespace trapdoor {
             return *this;
         }
 
-        template<typename T>
+        template <typename T>
         inline TextBuilder &item(const std::string &key, T value) {
             sText(GRAY, " - ")
-                    .sTextF(WHITE, "%s: ", key.c_str())
-                    .sTextF(WHITE | BOLD, "%s", fmt::format("{}", value).c_str())
-                    .endl();
+                .sTextF(WHITE, "%s: ", key.c_str())
+                .sTextF(WHITE | BOLD, "%s", fmt::format("{}", value).c_str())
+                .endl();
             return *this;
         }
 
-        template<>
+        template <>
         inline TextBuilder &item(const std::string &key, bool value) {
             auto iColor = value ? GREEN : RED;
             sText(GRAY, " - ")
-                    .sTextF(WHITE, "%s: ", key.c_str())
-                    .sTextF(iColor | BOLD, "%s", fmt::format("{}", value).c_str())
-                    .endl();
+                .sTextF(WHITE, "%s: ", key.c_str())
+                .sTextF(iColor | BOLD, "%s", fmt::format("{}", value).c_str())
+                .endl();
             return *this;
         }
 
@@ -152,7 +152,7 @@ namespace trapdoor {
 
         void operator+=(const std::string &str) { this->text(str); }
 
-    private:
+       private:
         std::pair<uint8_t, uint8_t> itemColor{WHITE, GREEN};
         const static std::map<uint8_t, std::string> STYLE_MAP;
         std::vector<std::string> messageBuffer;

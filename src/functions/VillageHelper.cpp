@@ -126,21 +126,22 @@ namespace trapdoor {
         }
         for (auto kv : this->vs_) {
             auto v = kv.second;
+            auto &vc = trapdoor::mod().getConfig().getVillageColor();
             if (this->showBounds) {
-                trapdoor::drawAABB(fromAABB(v->getBounds()), trapdoor::PCOLOR::RED, false, 0);
+                trapdoor::drawAABB(fromAABB(v->getBounds()), vc.bound, false, 0);
             }
 
             if (this->showIronSpawn) {
-                trapdoor::drawAABB(getIronSpawnArea(v->getCenter()), trapdoor::PCOLOR::VATBLUE,
-                                   false, 0);
+                trapdoor::drawAABB(getIronSpawnArea(v->getCenter()), vc.spawn, false, 0);
             }
             if (this->showCenter) {
-                trapdoor::spawnParticle(fromVec3(v->getCenter()) + TVec3(0.5f, 0.9f, 0.5f),
-                                        "minecraft:heart_particle", 0);
+                auto center = v->getCenter();
+                trapdoor::drawAABB(TAABB({center.x, center.y, center.z},
+                                         {center.x + 1.0f, center.y + 1.0f, center.z + 1.0f}),
+                                   vc.center, true, 0);
             }
             if (this->showPoiQuery) {
-                trapdoor::drawAABB(getPOIQueryRange(fromAABB(v->getBounds())),
-                                   trapdoor::PCOLOR::INDIGO, false, 0);
+                trapdoor::drawAABB(getPOIQueryRange(fromAABB(v->getBounds())), vc.poi, false, 0);
             }
         }
     }
@@ -353,8 +354,9 @@ namespace trapdoor {
                         builder.textF("%s: [%d %d %d], %d/%d  %.2f  %zu\n",
                                       this->getPOITypeName(poi.get()).c_str(), poi->getPosition().x,
                                       poi->getPosition().y, poi->getPosition().z,
-                                      this->getPOIOwnerCount(poi.get()), this->getPOIOwnerCapacity(poi.get()),
-                                      poi->getRadius(), this->getPOIWeight(poi.get()));
+                                      this->getPOIOwnerCount(poi.get()),
+                                      this->getPOIOwnerCapacity(poi.get()), poi->getRadius(),
+                                      this->getPOIWeight(poi.get()));
                         if (highlight) {
                             trapdoor::shortHighlightBlock(fromBlockPos(poi->getPosition()),
                                                           PCOLOR::TEAL, 0);

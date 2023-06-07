@@ -22,11 +22,10 @@ namespace trapdoor {
 
         void syncPlayerListToFile();
 
-    public:
+       public:
         inline void setupCommandInstance(const DynamicCommandInstance *instance) {
             this->cmdInstance = instance;
         }
-
 
         void savePlayerInventoryToFile();
 
@@ -55,8 +54,8 @@ namespace trapdoor {
         ActionResult attackSchedule(const std::string &name, Player *origin, int repType,
                                     int interval, int times);
 
-        ActionResult destroyPositionSchedule(const std::string &name, const BlockPos &p, Player *origin,
-                                             int repType, int interval, int times);
+        ActionResult destroyPositionSchedule(const std::string &name, const BlockPos &p,
+                                             Player *origin, int repType, int interval, int times);
 
         ActionResult destroySchedule(const std::string &name, int repType, int interval, int times);
 
@@ -68,9 +67,8 @@ namespace trapdoor {
         ActionResult useOnPositionSchedule(const std::string &name, int itemID, const BlockPos &p,
                                            Player *ori, int repType, int interval, int times);
 
-        ActionResult
-        useOnSchedule(const std::string &name, int itemID, Player *ori, int repType, int interval, int times);
-
+        ActionResult useOnSchedule(const std::string &name, int itemID, Player *ori, int repType,
+                                   int interval, int times);
 
         ActionResult runCmdSchedule(const std::string &name, const std::string &command,
                                     int repType, int interval, int times);
@@ -89,7 +87,8 @@ namespace trapdoor {
 
         ActionResult swapBackpack(const std::string &name, Player *origin);
 
-        ActionResult runScript(const std::string &name, const std::string &scriptPath, int interval, bool stopOnError);
+        ActionResult runScript(const std::string &name, const std::string &scriptPath, int interval,
+                               bool stopOnError);
 
         void cancel(const std::string &name);
 
@@ -99,8 +98,7 @@ namespace trapdoor {
 
         void refreshCommandScriptSoftEnum(const std::vector<std::string> &scripts);
 
-
-    private:
+       private:
         void refreshCommandSoftEnum();
 
         // static SimulatedPlayer *createSimPlayer(const std::string &name);

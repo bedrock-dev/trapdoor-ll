@@ -1,6 +1,7 @@
 #include "SlimeChunkHelper.h"
 
 #include "Particle.h"
+#include "TrapdoorMod.h"
 
 namespace trapdoor {
     void SlimeChunkHelper::HeavyTick() {
@@ -46,6 +47,6 @@ namespace trapdoor {
 
     ActionResult SlimeChunkHelper::setRadius(int r) {
         this->showRadius = r;
-        return {fmt::format(tr("slime.info.radius"),r), true};
+        return {fmt::format(tr("slime.info.radius"), r), true};
     }
 }  // namespace trapdoor

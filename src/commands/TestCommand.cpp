@@ -22,6 +22,7 @@
 #include "ScheduleAPI.h"
 #include "SendPacketAPI.h"
 #include "TVec3.h"
+#include "TrapdoorMod.h"
 
 namespace trapdoor {
 
@@ -37,7 +38,7 @@ namespace trapdoor {
         }
     }
 
-    const DynamicCommandInstance * setup_testCommand(int level) {
+    const DynamicCommandInstance *setup_testCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
 
@@ -60,7 +61,7 @@ namespace trapdoor {
             }
         };
         command->setCallback(cb);
-      return  DynamicCommand::setup(std::move(command));
+        return DynamicCommand::setup(std::move(command));
     }
 
 }  // namespace trapdoor
