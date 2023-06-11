@@ -1,3 +1,4 @@
+src/include/config.h
 .vs/
 **/x64/
 **/*.user
