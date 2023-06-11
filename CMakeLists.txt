@@ -6,7 +6,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # variables
 set(TRAPDOOR_VERSION 0.38.0)
-set(GAME_VERSION 1.19.81.01)
+set(GAME_VERSION 1.20.0.01)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BUILD_TYPE Release)
 
@@ -38,8 +38,6 @@ else ()
 endif ()
 
 file(GLOB_RECURSE SRC_FILES_DIR
-        src/base/Particle.cpp
-        src/base/Configuration.cpp
         src/*/*.cpp
         src/*.cpp
         )

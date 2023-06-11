@@ -654,7 +654,7 @@ namespace trapdoor {
 /*
  * 定时保存备背包数据(同步)
  */
-THook(void, "?savePlayers@Level@@UEAAXXZ", Level *self) {
+THook(void, "?save@Level@@UEAAXXZ", Level *self) {
     trapdoor::mod().getSimPlayerManager().savePlayerInventoryToFile();
     original(self);
 }
