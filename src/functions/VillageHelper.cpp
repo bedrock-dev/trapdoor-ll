@@ -75,20 +75,18 @@ namespace trapdoor {
             }
 
             auto tickMap = Village_getDwellerTickMap(v);
-            int index = 0;
-            for (const auto &i : tickMap) {
-                for (auto &kv : i) {
+            for (int i = 0; i <= 1; i++) {
+                for (auto &kv : tickMap[i]) {
                     auto ac = Global<Level>->fetchEntity(kv.first, false);
                     if (ac) {
-                        if (index == DwellerType::Villager) {
+                        if (i == DwellerType::Villager) {
                             ac->setNameTag(ac->getNameTag() + "\n" +
                                            std::to_string(kv.second.tick));
-                        } else {
+                        } else if (i == DwellerType::IronGolem) {
                             ac->setNameTag(std::to_string(kv.second.tick));
                         }
                     }
                 }
-                index++;
             }
         }
 
