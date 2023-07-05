@@ -105,7 +105,7 @@ namespace trapdoor {
         this->initConfig(false);        // 读取配置文件
         this->globalUserConfig.init();  // 读取用户的配置
 
-        trapdoor::setupClientLevel();
+        //  trapdoor::setupClientLevel();
         trapdoor::initCPU();
         trapdoor::SubscribeEvents();
         trapdoor::initRotateBlockHelper();
