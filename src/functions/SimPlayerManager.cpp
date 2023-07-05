@@ -230,6 +230,7 @@ namespace trapdoor {
         auto task = [this, name, sim, itemId]() {
             CHECK_SURVIVAL
             if (bot::switchItemToHandById(sim, itemId)) {  // 交换然后使用就行了
+                trapdoor::logger().debug("try use item {}", bot::getSelectItem(sim)->getName());
                 sim->simulateUseItem(*bot::getSelectItem(sim));
                 sim->sendInventory(true);
             }
@@ -327,10 +328,11 @@ namespace trapdoor {
 
     ActionResult SimPlayerManager::setItem(const string &name, int itemId, int slot) {
         GET_FREE_PLAYER(sim)
-        if (slot == -1) {  // 等于-1，itemID有效，搜索背包
+        if (slot == -1) {  // 等于-1，itemID有效，搜索背包(如果不是-1就表示就是直接的slot)
             bot::searchFirstItemInInvById(sim, slot, itemId);
         }
         bot::swapTwoSlotInInventory(sim->getInventory(), slot, sim->getSelectedItemSlot());
+        sim->sendInventory(true);
         return {"", true};
     }
 
