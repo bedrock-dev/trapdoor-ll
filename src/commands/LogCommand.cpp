@@ -28,7 +28,7 @@ namespace trapdoor {
         }
     }  // namespace
 
-    const DynamicCommandInstance * setup_logCommand(int level) {
+    const DynamicCommandInstance *setup_logCommand(int level) {
         using ParamType = DynamicCommand::ParameterType;
         // create a dynamic command
         auto command = CREATE_CMD(log, level);
@@ -46,16 +46,17 @@ namespace trapdoor {
         command->mandatory("log", ParamType::Enum, optPendingTick,
                            CommandParameterOption::EnumAutocompleteExpansion);
 
-        command->optional("blockPos", ParamType::BlockPos);
+        command->optional("blockpos", ParamType::BlockPos);
 
         command->addOverload({optMain});
         command->addOverload({optSeed});
-        command->addOverload({optPendingTick, "blockPos"});
+        command->addOverload({optPendingTick, "blockpos"});
 
         auto cb = [](DynamicCommand const &command, CommandOrigin const &origin,
                      CommandOutput &output,
                      std::unordered_map<std::string, DynamicCommand::Result> &results) {
-            auto pos = results["blockPos"].isSet ? results["p1"].get<BlockPos>() : BlockPos::MAX;
+            auto pos =
+                results["blockoos"].isSet ? results["blockpos"].get<BlockPos>() : BlockPos::MAX;
             switch (do_hash(results["log"].getRaw<std::string>().c_str())) {
                 case do_hash("mspt"):
                     trapdoor::printMSPT().sendTo(output);
@@ -78,6 +79,6 @@ namespace trapdoor {
         };
         command->setCallback(cb);
 
-       return  DynamicCommand::setup(std::move(command));
+        return DynamicCommand::setup(std::move(command));
     }
 }  // namespace trapdoor
