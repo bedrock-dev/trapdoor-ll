@@ -89,7 +89,7 @@
     "keep-sim-player-inv": true,
     "server-crash-token": "demo",
     "sim-player-prefix": "",
-    "use-client-level": false
+    "use-client-level": true
   },
   "default-functions-config": {
     "[FOR GLOBAL]": "If the following settings are enabled then these features are enabled globally",
