@@ -21,6 +21,7 @@
 #include "SimulateAPIWrapper.h"
 #include "TrapdoorMod.h"
 #include "Utils.h"
+#include "mc/Player.hpp"
 
 namespace trapdoor {
     namespace {
@@ -656,7 +657,8 @@ namespace trapdoor {
 /*
  * 定时保存备背包数据(同步)
  */
-THook(void, "?save@Level@@UEAAXXZ", Level *self) {
+THook(void, "?saveGameData@Level@@UEAAXXZ", Level *self) {
+    // trapdoor::logger().debug("Save inventory");
     trapdoor::mod().getSimPlayerManager().savePlayerInventoryToFile();
     original(self);
 }
