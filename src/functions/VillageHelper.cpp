@@ -337,7 +337,7 @@ namespace trapdoor {
         if (!actor) {
             return "";
         }
-        auto aUid = actor->getUniqueID();
+        auto aUid = actor->getOrCreateUniqueID();
         TextBuilder builder;
         for (auto v : this->vs_) {
             auto dweller_map = Village_getDwellerPOIMap(v.second);

@@ -252,7 +252,7 @@ namespace trapdoor {
         auto ins = playerActor->getBlockFromViewVector();
         auto pos = ins.isNull() ? BlockPos::MAX : ins.getPosition();
         auto uid = ActorUniqueID();
-        if (target) uid = target->getUniqueID();
+        if (target) uid = target->getOrCreateUniqueID();
         auto task = [this, sim, name, pos, uid]() {
             CHECK_SURVIVAL
             auto t = Global<Level>->fetchEntity(uid, true);
@@ -281,7 +281,7 @@ namespace trapdoor {
             auto *playerActor = reinterpret_cast<Actor *>(origin);
             target = playerActor->getActorFromViewVector(5.25);
             if (target) {
-                uid = target->getUniqueID();
+                uid = target->getOrCreateUniqueID();
             }
         }
 
@@ -559,10 +559,10 @@ namespace trapdoor {
         GET_FREE_PLAYER(sim)
 
         auto *playerActor = reinterpret_cast<Actor *>(player);
-        auto uid = playerActor->getUniqueID();
+        auto uid = playerActor->getOrCreateUniqueID();
         auto *target = playerActor->getActorFromViewVector(5.25);
-        if (target) uid = target->getUniqueID();
-        if (uid == sim->getUniqueID()) return ErrorMsg("player.error.follow");
+        if (target) uid = target->getOrCreateUniqueID();
+        if (uid == sim->getOrCreateUniqueID()) return ErrorMsg("player.error.follow");
         auto task = [this, sim, name, uid]() {
             CHECK_SURVIVAL
             auto t = Global<Level>->fetchEntity(uid, true);
@@ -582,7 +582,7 @@ namespace trapdoor {
         trapdoor::TextBuilder builder;
         builder.textF("- Name: %s\n", sim->getName().c_str())
             .textF("- Xuid: %s\n", sim->getXuid().c_str())
-            .textF("- Uid: %ld\n", sim->getUniqueID().get())
+            .textF("- Uid: %ld\n", sim->getOrCreateUniqueID().get())
             .textF("- Game mode: %d\n", static_cast<int>(sim->getPlayerGameType()))
             .textF("- Command Permission level: %d\n",
                    static_cast<int>(sim->getCommandPermissionLevel()))

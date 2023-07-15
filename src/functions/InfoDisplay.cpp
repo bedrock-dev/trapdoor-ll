@@ -37,19 +37,19 @@ namespace trapdoor {
             }
         }
     }  // namespace
-    ActionResult displayEntityInfo(Player *player, Actor *a, bool nbt, const std::string &path) {
+    ActionResult displayEntityInfo(Player *player, Actor *actor, bool nbt, const std::string &path) {
         if (!player) return ErrorPlayerNeed();
-        if (!a) {
+        if (!actor) {
             return ErrorMsg("data.error.no-actor");
         }
         TextBuilder builder;
         if (nbt) {
-            return getNBTString(a->getNbt(), path);
+            return getNBTString(actor->getNbt(), path);
         }
 
         // actorID info;
 #ifdef DEV
-        auto &id = a->getActorIdentifier();
+        auto &id = actor->getActorIdentifier();
         builder.item("CanonicalHash", id.getCanonicalHash().getString())
             .item("CanonicalName", id.getCanonicalName() + "?")
             .item("FullName", id.getFullName() + "?")
@@ -58,11 +58,11 @@ namespace trapdoor {
             .item("LegacyActorType", static_cast<int>(id._getLegacyActorType()));
 #endif
 
-        builder.item("TypeName", a->getTypeName())
-            .item("Uid", a->getUniqueID().get())
-            .item("Position", fromVec3(a->getPos()).toDetailString())
-            .item("DeltaPosition", fromVec3(a->getPosDelta()).toDetailString())
-            .item("Surface", a->isSurfaceMob());
+        builder.item("TypeName", actor->getTypeName())
+            .item("Uid", actor->getOrCreateUniqueID().get())
+            .item("Position", fromVec3(actor->getPos()).toDetailString())
+            .item("DeltaPosition", fromVec3(actor->getPosDelta()).toDetailString())
+            .item("Surface", actor->isSurfaceMob());
 
         //        builder.sText(TextBuilder::AQUA, "Base: \n")
         //            .text(" - type / UID: ")
