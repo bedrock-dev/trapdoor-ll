@@ -8,6 +8,7 @@
 #include <mc/CommandUtils.hpp>
 #include <mc/IntTag.hpp>
 #include <mc/StringTag.hpp>
+#include <magic_enum/magic_enum.hpp>
 #include <regex>
 
 #include "CommandHelper.h"
@@ -36,11 +37,11 @@ namespace trapdoor {
         ADD_RULE(bell, (v + 1) % 16);
         ADD_RULE(torch, (v + 1) % 5);
         ADD_RULE(grindstone, (v + 1) % 12);
-        ADD_RULE(_rail, (v % 8 + 1) % 6 + (v / 8) * 8);
+//        ADD_RULE(_rail, (v % 8 + 1) % 6 + (v / 8) * 8);
         ADD_RULE(lever, (v % 8 + 1) % 6 + (v / 8) * 8);
         ADD_RULE(rot, (v % 8 + 1) % 6 + (v / 8) * 8);
-        ADD_RULE(rail, (v + 1) % 10);
-        ADD_RULE(powered, (v % 4 + 1) % 4 + (v / 4) * 4);
+//        ADD_RULE(rail, (v + 1) % 10);
+//        ADD_RULE(powered, (v + 1) % 5);
         ADD_RULE(anvil, (v % 4 + 1) % 4 + (v / 4) * 4);
         ADD_RULE(lectern, (v % 4 + 1) % 4 + (v / 4) * 4);
         ADD_RULE(_door, (v % 4 + 1) % 4 + (v / 4) * 4);
@@ -51,7 +52,7 @@ namespace trapdoor {
 
     Block *tryGetRotatedBlock(Block *block, BlockSource *blockSource, BlockPos const &pos,
                               const Vec3 &clickPos, unsigned char face) {
-        auto rawTypeName = block->getName();
+        auto rawTypeName = block->getTypeName();
         auto variant = block->getVariant();
         auto typeName = trapdoor::rmmc(rawTypeName);
         auto it =
@@ -200,6 +201,81 @@ namespace trapdoor {
             }
             statesNbt->putInt("direction", direction);
             hasRule = true;
+        } else if (statesNbt->contains("minecraft:facing_direction")) { // 目前是观察者，也许有其它方块也是这个？
+            auto directionStr = statesNbt->getString("minecraft:facing_direction");
+            // Nbt里minecraft:facing_direction的值首字母是小写的，FaceID首字母大写，所以转换一下
+            directionStr[0] = std::toupper(directionStr[0]);
+            // string -> enum
+            FaceID directionEnum = magic_enum::enum_cast<FaceID>(directionStr).value();
+            auto direction = (int)directionEnum;
+            Vec3 mClickPos = (clickPos - pos.toVec3()) - 0.5;
+            if (abs(mClickPos.x) + abs(mClickPos.y) + abs(mClickPos.z) < 0.75) {
+                auto mFace = face;
+                mFace = (mFace > 1 && (typeName == "observer" ))
+                            ? (mFace / 2) * 2 + (mFace + 1) % 2
+                            : mFace;
+                if (direction == mFace) {
+                    direction = (mFace / 2) * 2 + (mFace + 1) % 2;
+                } else {
+                    direction = mFace;
+                }
+            } else {
+                switch (face / 2) {
+                    case 0:
+                        if (abs(mClickPos.x) + mClickPos.z <= 0) {
+                            direction = 2;
+                        } else if (abs(mClickPos.x) - mClickPos.z <= 0) {
+                            direction = 3;
+                        } else if (abs(mClickPos.z) + mClickPos.x <= 0) {
+                            direction = 4;
+                        } else if (abs(mClickPos.z) - mClickPos.x <= 0) {
+                            direction = 5;
+                        }
+                        break;
+                    case 1:
+                        if (abs(mClickPos.x) + mClickPos.y <= 0) {
+                            direction = 0;
+                        } else if (abs(mClickPos.x) - mClickPos.y <= 0) {
+                            direction = 1;
+                        } else if (abs(mClickPos.y) + mClickPos.x <= 0) {
+                            direction = 4;
+                        } else if (abs(mClickPos.y) - mClickPos.x <= 0) {
+                            direction = 5;
+                        }
+                        break;
+                    case 2:
+                        if (abs(mClickPos.z) + mClickPos.y <= 0) {
+                            direction = 0;
+                        } else if (abs(mClickPos.z) - mClickPos.y <= 0) {
+                            direction = 1;
+                        } else if (abs(mClickPos.y) + mClickPos.z <= 0) {
+                            direction = 2;
+                        } else if (abs(mClickPos.y) - mClickPos.z <= 0) {
+                            direction = 3;
+                        }
+                        break;
+                }
+                direction = (direction > 1 && (typeName == "observer"))
+                                ? (direction / 2) * 2 + (direction + 1) % 2
+                                : direction;
+            }
+            // enum -> string
+            std::string result = std::string{magic_enum::enum_name(FaceID(direction))};
+            // 转回小写
+            result[0] = std::tolower(result[0]);
+            statesNbt->putString("minecraft:facing_direction", result);
+            hasRule = true;
+        } else if (statesNbt->contains("rail_direction")) { // 这个是铁轨的
+            auto direction = statesNbt->getInt("rail_direction");
+            if (typeName == "rail") {
+                // 普通铁轨
+                direction = (direction + 1) % 10;
+            } else {
+                // 动力、激活、探测铁轨
+                direction = (direction % 8 + 1) % 6 + (direction / 8) * 8;
+            }
+            statesNbt->putInt("rail_direction",direction);
+            hasRule = true;
         }
         if (hasRule) {
             return Block::create(blockNbt.get());
@@ -216,7 +292,7 @@ namespace trapdoor {
         if (!bi || bi->isNull()) return true;
         auto *originalBlock = bi->getBlock();
         // auto *block = originalBlock;
-        auto rawTypeName = originalBlock->getName();
+        auto rawTypeName = originalBlock->getTypeName();
         auto pos = bi->getPosition();
         auto typeName = trapdoor::rmmc(rawTypeName);
         // int i = 0;
