@@ -100,7 +100,8 @@ namespace trapdoor {
                     return getNBTString(be->getNbt(), path);
                 }
             } else {
-                return ErrorMsg("data.error.no-nbt");
+                return getNBTString(b.getNbt(),path);
+//                return ErrorMsg("data.error.no-nbt");
             }
         }
 
