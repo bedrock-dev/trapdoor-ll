@@ -102,6 +102,7 @@ namespace trapdoor {
 
     void TrapdoorMod::init() {
         printCopyrightInfo();
+
         this->initConfig(false);        // 读取配置文件
         this->globalUserConfig.init();  // 读取用户的配置
 
