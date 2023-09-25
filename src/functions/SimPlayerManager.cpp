@@ -412,7 +412,10 @@ namespace trapdoor {
             return ErrorMsg("player.error.existed");
         }
 
+        trapdoor::logger().debug("Try create sim player");
         auto *sim = SimulatedPlayer::create(name, p, AutomaticID<Dimension, int>(dimID));
+        trapdoor::logger().debug("Create sim player finished");
+
         if (!sim) {
             return ErrorMsg("player.error.spawn");
         }
