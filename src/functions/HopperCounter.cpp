@@ -159,7 +159,7 @@ namespace trapdoor {
             // 最近一分钟的瞬时速度
             .text(" items (")
             .num(static_cast<float>(gtTotal) * 1.0f / static_cast<float>(1200) * 72000)
-            .text("/h)\n");
+            .text("/h) in last 1 mins\n");
 
         for (const auto &i : counterList) {
             builder.sText(TB::GRAY, " - ");
@@ -234,5 +234,5 @@ THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", HopperBlockAct
     // trapdoor::logger().debug("set null {}", reinterpret_cast<uint64_t>(itemStack));
     itemStack->remove(itemStack->getCount());
     // trapdoor::logger().debug("remove finish");
-    //  HOPPER_RET;
+    HOPPER_RET;
 }
