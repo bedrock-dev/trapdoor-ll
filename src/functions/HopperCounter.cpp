@@ -1,5 +1,9 @@
 #include "HopperCounter.h"
 
+#include <minwindef.h>
+#include <vcruntime.h>
+#include <winnt.h>
+
 #include <mc/Block.hpp>
 #include <mc/BlockActor.hpp>
 #include <mc/BlockSource.hpp>
@@ -92,11 +96,22 @@ namespace trapdoor {
 
     void CounterChannel::add(const std::string &itemName, size_t num) {
         counterList[itemName] += num;
+        gtCounter[gameTick] += num;
+        // 维护最近一分钟的数据
+        while (!gtCounter.empty()) {
+            auto it = gtCounter.begin();
+            if (gameTick - it->first >= 1200) {
+                gtCounter.erase(it);
+            } else {
+                break;
+            }
+        }
     }
 
     ActionResult CounterChannel::reset() {
         gameTick = 0;
         counterList.clear();
+        gtCounter.clear();
         return SuccessMsg("hopper.info.channel-cleaned");
     }
 
@@ -114,6 +129,11 @@ namespace trapdoor {
         trapdoor::TextBuilder builder;
 
         builder.text("Channel: ").sTextF(TB::BOLD | TB::WHITE, "%d \n", channel);
+
+        size_t gtTotal = 0;
+        for (auto &kv : this->gtCounter) {
+            gtTotal += kv.second;
+        }
 
         //        if (!simple) {
         //            builder.text("Total ");
@@ -134,9 +154,12 @@ namespace trapdoor {
             .num(static_cast<float>(gameTick) / 72000.0f)
             .text(" h)\n");
 
-        //        } else {
-        //            builder.textF("%d,(%.1f h))\n", n, static_cast<float>(gameTick) / 72000.0f);
-        //        }
+        builder
+            .num(gtTotal)
+            // 最近一分钟的瞬时速度
+            .text(" items (")
+            .num(static_cast<float>(gtTotal) * 1.0f / static_cast<float>(1200) * 72000)
+            .text("/h)\n");
 
         for (const auto &i : counterList) {
             builder.sText(TB::GRAY, " - ");
@@ -171,14 +194,15 @@ THook(void, "?tick@HopperBlockActor@@UEAAXAEAVBlockSource@@@Z", HopperBlockActor
     original(self, region);
 }
 
-THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self, unsigned int index,
-      ItemStackBase *itemStack) {
+THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", HopperBlockActor *self,
+      unsigned int index, ItemStackBase *itemStack) {
     auto &hcm = trapdoor::mod().getHopperChannelManager();
     if (!hcm.isEnable()) {
         HOPPER_RET
     }
     if (!hopperRegion) {
         trapdoor::logger().debug("Invalid Hopper region");
+        HOPPER_RET
     }
 
     auto &ba = dAccess<BlockActor>(self, -200);
@@ -204,11 +228,11 @@ THook(void, "?setItem@HopperBlockActor@@UEAAXHAEBVItemStack@@@Z", void *self, un
         HOPPER_RET;
     }
 
-    trapdoor::logger().debug("{} ==> {}", itemStack->getName(), itemStack->getCount());
+    // trapdoor::logger().debug("{} ==> {}", itemStack->getName(), itemStack->getCount());
     trapdoor::mod().getHopperChannelManager().getChannel(ch).add(itemStack->getName(),
                                                                  itemStack->getCount());
     // trapdoor::logger().debug("set null {}", reinterpret_cast<uint64_t>(itemStack));
-    itemStack->remove(64);
+    itemStack->remove(itemStack->getCount());
     // trapdoor::logger().debug("remove finish");
     //  HOPPER_RET;
 }

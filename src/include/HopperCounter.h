@@ -2,6 +2,7 @@
 #define TRAPDOOR_HOPPER_COUNTER_H
 
 // clang-format off
+#include <vcruntime.h>
 #include "Global.h"
 #include <mc/Vec3.hpp>
 #include <mc/Player.hpp>
@@ -15,7 +16,9 @@ namespace trapdoor {
     class CounterChannel {
         const size_t channel;                       // 频道号
         std::map<std::string, size_t> counterList;  // 数据
+        std::map<size_t, size_t> gtCounter;         // 最近1200gt的数据
         size_t gameTick = 0;                        // 游戏刻
+
        public:
         explicit CounterChannel(size_t ch) : channel(ch), gameTick(0) {}
 
