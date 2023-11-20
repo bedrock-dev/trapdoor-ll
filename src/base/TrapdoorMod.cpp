@@ -1,6 +1,10 @@
 #include "TrapdoorMod.h"
 
+#include <stdio.h>
+
+#include <algorithm>
 #include <cstdlib>
+#include <mc/ChunkPos.hpp>
 #include <mc/MapItem.hpp>
 #include <mc/SimulatedPlayer.hpp>
 
@@ -15,6 +19,7 @@
 #include "SysInfoHelper.h"
 #include "TrapdoorAPI.h"
 #include "config.h"
+#include "mc/Level.hpp"
 
 #define REG_COMMAND(c)                                             \
     auto cfg_##c = cmdCfg.getCommandConfig(#c);                    \
@@ -93,6 +98,13 @@ namespace trapdoor {
         villageHelper.lightTick();
         hopperChannelManager.tick();
         this->spawnAnalyzer.tick();
+        // auto levelOffset = Global<Level>->getTickingOffsets();
+        // printf("[%zu]: (%zu) >", Global<Level>->getCurrentServerTick().t % 20,
+        // levelOffset.size()); const auto max_size = std::min(5ull, levelOffset.size()); for (int i
+        // = 0; i < max_size; i++) {
+        //     printf("[%d, %d]  ", levelOffset[i].x, levelOffset[i].z);
+        // }
+        // printf("\n");
     }
 
     Logger &logger() {
