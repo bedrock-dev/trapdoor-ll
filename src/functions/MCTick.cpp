@@ -195,13 +195,13 @@ namespace trapdoor {
             printAll = true;
         }
 
-        auto chunkPos = fromBlockPos(p).toChunkPos();
-        auto chunk = player->getBlockSource()->getChunk(chunkPos.x, chunkPos.z);
+        const auto chunkPos = fromBlockPos(p).toChunkPos();
+        const auto chunk = player->getBlockSource()->getChunk(chunkPos.x, chunkPos.z);
         if (!chunk) {
             return ErrorMsg("prof.pt.error.chunk");
         }
 
-        auto *queue = reinterpret_cast<TBlockTickingQueue *>(&chunk->getTickQueue());
+        const auto *queue = reinterpret_cast<TBlockTickingQueue *>(&chunk->getTickQueue());
         if (!queue) {
             return ErrorMsg("prof.pt.error.pt-queue");
         }
@@ -296,7 +296,7 @@ THook(void, "?tick@GameSession@@QEAAXXZ", void *level) {
         return;
         // Warp
     } else if (info.status == trapdoor::TickingStatus::Warp) {
-        auto mean_mspt = trapdoor::micro_to_mill(trapdoor::getMSPTinfo().mean());
+        const auto mean_mspt = trapdoor::micro_to_mill(trapdoor::getMSPTinfo().mean());
         int max_wrap_time = static_cast<int>(45.0 / mean_mspt);
         // 最快10倍速
         max_wrap_time = std::min(max_wrap_time, 10000);
@@ -352,18 +352,21 @@ THook(void, "?tick@LevelChunk@@QEAAXAEAVBlockSource@@AEBUTick@@@Z", LevelChunk *
       void *tick) {
     trapdoor::printTickMsg("LevelChunk.tick");
     auto &prof = trapdoor::normalProfiler();
+    const auto dim_id = chunk->getDimension().getDimensionId();
+    auto &cp = chunk->getPosition();
+    const auto tpos = trapdoor::TBlockPos2(cp.x, cp.z);
     if (prof.profiling) {
         TIMER_START
         original(chunk, bs, tick);
         TIMER_END
         prof.chunkInfo.totalTickTime += timeResult;
-        auto dim_id = chunk->getDimension().getDimensionId();
-        auto &cp = chunk->getPosition();
-        auto tpos = trapdoor::TBlockPos2(cp.x, cp.z);
         prof.chunkInfo.chunk_counter[static_cast<int>(dim_id)][tpos].push_back(timeResult);
     } else {
         original(chunk, bs, tick);
     }
+
+    // get ticking info
+    trapdoor::mod().getMicroTickingManager().tickChunk(tpos, static_cast<int>(dim_id));
 }
 
 THook(void, "?tickBlocks@LevelChunk@@QEAAXAEAVBlockSource@@@Z", LevelChunk *chunk, void *bs) {

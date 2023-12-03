@@ -40,7 +40,8 @@ endif ()
 file(GLOB_RECURSE SRC_FILES_DIR
         src/*/*.cpp
         src/*.cpp
-        )
+        src/functions/MicroTicking.cpp
+)
 
 include_directories(SDK-cpp/include)
 include_directories(SDK-cpp/include/llapi)
@@ -74,4 +75,4 @@ target_link_libraries(${TARGET_NAME} Pdh ${PROJECT_SOURCE_DIR}/src/include/3rd/l
 add_custom_command(TARGET ${TARGET_NAME} PRE_BUILD
         COMMAND cmd /c ${PROJECT_SOURCE_DIR}/prepareLib.cmd ${PROJECT_SOURCE_DIR}
         COMMENT "Preparing Library"
-        )
+)

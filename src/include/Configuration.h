@@ -34,6 +34,7 @@ namespace trapdoor {
         std::string simPlayerPrefix;
     };
 
+
     //    struct DefaultEnableFunctions {
     //        bool blockRotate = false;
     //        bool hopperCounter = false;

@@ -7,6 +7,7 @@
 #include "HopperCounter.h"
 #include "HsaHelper.h"
 #include "LoggerAPI.h"
+#include "MicroTicking.h"
 #include "SimPlayerHelper.h"
 #include "SlimeChunkHelper.h"
 #include "SpawnAnalyzer.h"
@@ -53,6 +54,8 @@ namespace trapdoor {
 
         inline UserConfig &getUserConfig() { return this->globalUserConfig; }
 
+        inline MicroTicking &getMicroTickingManager() { return this->tickingManager; }
+
         inline std::unordered_map<std::string, const DynamicCommandInstance *> &
         getCommandInstanceMap() {
             return this->cmdInstanceMap;
@@ -70,6 +73,7 @@ namespace trapdoor {
         SimPlayerManager simPlayerManager;
         SpawnAnalyzer spawnAnalyzer;
         SlimeChunkHelper slimeChunkHelper;
+        MicroTicking tickingManager;
 
         std::unordered_map<std::string, const DynamicCommandInstance *> cmdInstanceMap;
 

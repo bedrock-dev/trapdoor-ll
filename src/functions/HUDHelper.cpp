@@ -10,6 +10,7 @@
 #include <mc/Dimension.hpp>
 #include <mc/Level.hpp>
 #include <mc/Player.hpp>
+#include <unordered_map>
 
 #include "CommandHelper.h"
 #include "Configuration.h"
@@ -70,6 +71,46 @@ namespace trapdoor {
             //            if(!block || !block->isContainerBlock())return  "";
             //           // block->getComparatorSignal();
             return "";
+        }
+
+        // 挪动到MicroTicking里面
+        std::string buildChunkOffset(Player *player) {
+            const int R = 7;
+            auto chunkStatus =
+                std::vector<std::vector<int>>(R * 2 + 1, std::vector<int>(R * 2 + 1, -1));
+            auto &tickingList = trapdoor::mod().getMicroTickingManager().tickingList(
+                player->getDimension().getDimensionId());
+
+            std::map<TBlockPos2, int> cpMap;
+            for (int i = 0; i < tickingList.size(); i++) {
+                cpMap[tickingList[i]] = i;
+            }
+
+            auto p = player->getBlockPos();
+            auto cp = TBlockPos(p.x, p.y, p.z).toChunkPos();
+            for (int i = -R; i <= R; i++) {
+                for (int j = -R; j <= R; j++) {
+                    auto target = TBlockPos2(cp.x + i, cp.z + j);
+                    const auto it = cpMap.find(target);
+                    if (it != cpMap.end()) {
+                        chunkStatus[i + R][j + R] = it->second;
+                    } else {
+                        // trapdoor::logger().debug(
+                        //     "{} {} does not exist in ticking map({} chunks {} tickings)",
+                        //     target.x, target.z, cpMap.size(), tickingList.size());
+                    }
+                }
+            }
+
+            std::string res;
+            for (auto &line : chunkStatus) {
+                std::string buffer;
+                for (auto &cp : line) {
+                    buffer += cp == -1 ? "   " : std::to_string(cp) + " ";
+                }
+                res += (buffer + "\n");
+            }
+            return res;
         }
 
         std::string buildBaseHud(Player *player) {
@@ -226,6 +267,10 @@ namespace trapdoor {
                 if (cfg[HUDItemType::GlobalCap]) {
                     s += ps(buildSpawnCap());
                 }
+                if (cfg[HUDItemType::Chunk]) {
+                    s += ps(buildChunkOffset(p));
+                }
+
                 while (!s.empty() && s.back() == '\n') {
                     s.pop_back();
                 }

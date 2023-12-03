@@ -93,11 +93,12 @@ namespace trapdoor {
         simPlayerManager.tick();
         slimeChunkHelper.HeavyTick();
     }
-
     void TrapdoorMod::lightTick() {
         villageHelper.lightTick();
         hopperChannelManager.tick();
         this->spawnAnalyzer.tick();
+        tickingManager.tick();
+
         // auto levelOffset = Global<Level>->getTickingOffsets();
         // printf("[%zu]: (%zu) >", Global<Level>->getCurrentServerTick().t % 20,
         // levelOffset.size()); const auto max_size = std::min(5ull, levelOffset.size()); for (int i
