@@ -1,3 +1,16 @@
+
+
+
+
+**Important notice: Recently, Mojang has made a decision to destroy the MCBE mod community: they plan to no longer publish the PDB files of BDS in future versions. This decision has sentenced trapdoor to death. Whether trapdoor can continue to be updated from now on does not depend on the developer's wishes, but on Mojang's future decision. Therefore, trapdoor will officially stop updating indefinitely. Thank you for your understanding and support.**
+
+
+
+**重要通知：最近mojang做出了毁灭MCBE mod社区的决定：它们打算在未来的版本中不再公开BDS的PDB文件。这一决定给trapdoor判了死刑 ，此后trapdoor能不能继续更新完全不取决开发者的意愿，而是Mojang在未来的决定。因此，trapdoor将正式无限期停止更新，感谢大家的理解和支持。**
+
+---
+
+
 <br>
 <p align="center">
 <img src="./imgs/logo.svg" alt="drawing" style="width:600px;"/>
